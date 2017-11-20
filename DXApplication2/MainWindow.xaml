@@ -1,0 +1,340 @@
+﻿<dxr:DXRibbonWindow   x:Class="HVCC.Shell.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxd="http://schemas.devexpress.com/winfx/2008/xaml/docking" 
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:local="clr-namespace:HVCC.Shell"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:commands="clr-namespace:HVCC.Shell.Common.Commands;assembly=HVCC.Shell.Common" 
+        xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+        xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+        xmlns:View="clr-namespace:HVCC.Shell.Views"
+        xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"        
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="HVCC Members" 
+        Icon="./Images/Icons/HVCC.ico"
+        WindowState="Maximized"
+        WindowStyle="None"
+        Closing="DXRibbonWindow_Closing"
+        DataContext="{dxmvvm:ViewModelSource Type=vm:PropertiesViewModel}"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibility x:Key="BoolToVis" />
+            <converters:InverseBooleanToVisibility x:Key="InverseBoolToVis" />
+            <converters:InverseBooleanToVisibility x:Key="InverseBool" />
+            <converters:InvertBoolean x:Key="Invert" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:OpenFileDialogService Title="Open File"/>
+        <dxmvvm:SaveFileDialogService Title="Save File"/>
+        <common:TableViewExportService />
+        <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
+        <dx:DXMessageBoxService/>
+        <!-- 
+        Register the DialogViews which are bound to the Show<xxx>Dialog() command
+        in the (Main) PropertiesViewModel.  The dialog service is invoked by the grid tableView, grid-row 
+        double click event, or a ribbon button event.
+        -->
+        <dx:DialogService x:Name="PropertyEditDialogService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <View:PropertyEditDialogView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="dx:DXDialogWindow">
+                    <Setter Property="Width" Value="1180"/>
+                    <Setter Property="Height" Value="950"/>
+                    <Setter Property="WindowStyle" Value="none" />
+                    <Setter Property="dxmvvm:Interaction.BehaviorsTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentControl>
+                                    <resources:CloseByEscapeBehavior />
+                                </ContentControl>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DialogService x:Name="RelationshipDialogService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <View:RelationshipDialogView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="dx:DXDialogWindow">
+                    <Setter Property="Width" Value="800"/>
+                    <Setter Property="Height" Value="350"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DialogService x:Name="WaterSystemEditDialogService"  DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <View:WaterSystemEditDialogView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="dx:DXDialogWindow">
+                    <Setter Property="Width" Value="800"/>
+                    <Setter Property="Height" Value="650"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+    </dxmvvm:Interaction.Behaviors>
+
+
+    <!--<dxr:DXRibbonWindow.CommandBindings>
+        <common:CommandSinkBinding Command="{x:Static commands:CustomCommands.About}" />
+        <common:CommandSinkBinding Command="{x:Static input:ApplicationCommands.Help}" />
+        <common:CommandSinkBinding Command="commands:CustomCommands.SaveAll" />
+        <common:CommandSinkBinding Command="commands:CustomCommands.RequeryReloadAll" />
+    </dxr:DXRibbonWindow.CommandBindings>-->
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" 
+                    Glyph="{dx:DXImage Image=Save_16x16.png}"
+                    Command="{Binding SaveCommand}"
+                    Content="Save"/>
+
+            <dxb:BarButtonItem x:Name="xlsxBtn"
+                    Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}"
+                    Command="{Binding ExportCommand}" CommandParameter="XLSX"
+                    Content="Export XLSX"/>
+
+            <dxb:BarButtonItem x:Name="bAbout" 
+                                   Content="About" 
+                                   Command="{Binding AboutCommand}" 
+                                   Glyph=".\Images\Icons\index-16x16.png" 
+                                   LargeGlyph="./Images/Icons/index-32x32.png" 
+                                   />
+        </dxb:BarManager.Items>
+
+        <Grid>
+            <DockPanel>
+                <dxr:RibbonControl x:Name="TopRibbon" 
+                                       ShowApplicationButton="False" 
+                                       ToolbarShowMode="ShowAbove" 
+                                       RibbonHeaderVisibility="Visible" 
+                                       DockPanel.Dock="Top" 
+                                       >
+                    <!--IsMinimized="{Binding IsRibbonMinimized, Mode=TwoWay}"
+                                       MouseEnter="TopRibbon_MouseEnter"
+                                       MouseLeave="TopRibbon_MouseLeave"-->
+
+                    <!-- These are the Quick Access buttons -->
+                    <dxr:RibbonControl.ToolbarItemLinks>
+                        <dxb:BarButtonItemLink BarItemName="saveBtn" IsEnabled="{Binding IsEnabledSave, Mode=TwoWay}"/>
+                        <dxb:BarButtonItemLink BarItemName="xlsxBtn" IsEnabled="{Binding IsEnabledExport}"/>
+                    </dxr:RibbonControl.ToolbarItemLinks>
+
+                    <!-- Add the About Button to the righthand of the doc panel -->
+                    <dxr:RibbonControl.ApplicationMenu>
+                        <dxr:ApplicationMenu RightPaneWidth="280" ShowRightPane="True">
+                            <dxr:ApplicationMenu.ItemLinks>
+                                <dxb:BarButtonItemLink BarItemName="bAbout" />
+                            </dxr:ApplicationMenu.ItemLinks>
+                            <dxr:ApplicationMenu.RightPane>
+                                <Button Content="Right Pane" />
+                            </dxr:ApplicationMenu.RightPane>
+                        </dxr:ApplicationMenu>
+                    </dxr:RibbonControl.ApplicationMenu>
+                    <dxr:RibbonControl.PageHeaderItemLinks>
+                        <dxb:BarButtonItemLink BarItemName="bAbout" />
+                    </dxr:RibbonControl.PageHeaderItemLinks>
+
+                    <!-- These are the Action Ribbon buttons -->
+                    <dxr:RibbonDefaultPageCategory>
+                        <dxr:RibbonPage Caption="Actions" >
+                            <dxr:RibbonPageGroup Caption="Data">
+                                <dxb:BarButtonItem Content="Save" 
+                                                       Command="{Binding SaveCommand}" 
+                                                       IsVisible="True" 
+                                                       IsEnabled="{Binding IsEnabledSave}"
+                                                       Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}"
+                                                       ToolTip="Save Changes"/>
+                                <!--<dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                                    <dxb:BarButtonItem Content="Undo" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding UndoCommand}"
+                                                       Glyph="{dx:DXImage Image=Reset2_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
+                                                       ToolTip="Discard All Changes"/>-->
+                            </dxr:RibbonPageGroup>
+
+                            <dxr:RibbonPageGroup Caption="Print/Export">
+                                <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding IsEnabledExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                    <dxb:BarButtonItem Content="To XLSX" 
+                                                   Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                    <dxb:BarButtonItem Content="To PDF" 
+                                                   Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                                </dxb:BarSubItem>
+                                <dxb:BarSubItem Content="Print" 
+                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                    <dxb:BarButtonItem Content="Show preview" 
+                                                   Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                    <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                                </dxb:BarSubItem>
+                            </dxr:RibbonPageGroup>
+
+                            <dxr:RibbonPageGroup Caption="Property Action" IsVisible="{Binding IsPropertyRibbonVisible, Mode=TwoWay}">
+                                <!-- 8-8-2017 Disabled -->
+                                <!--<dxb:BarButtonItem x:Name="bbAddRelationship" Content="AddRelationship" 
+                                               IsEnabled="{Binding IsEnabledAddRelationship}"
+                                               ItemClick="bbAddRelationship_ItemClick"
+                                               Glyph="/Images/Icons/Relationship_16x16.png" 
+                                               LargeGlyph="/Images/Icons/Relationship_32x32.png"/>-->
+                                <!--Command="{Binding AddRelationshipCommand}"-->
+
+                                <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
+                                               ItemClick="OnClicked_ChangeOwner" 
+                                               IsEnabled="{Binding IsEnabledChangeOwner}"
+                                               Glyph="/Images/Icons/Ownership_16x16.png" 
+                                               LargeGlyph="/Images/Icons/Ownership_32x32.png"/>
+                                <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
+                                               ItemClick="OnClicked_Import"
+                                               IsEnabled="{Binding IsEnabledImport}"
+                                               Glyph="/Images/Icons/Import-16x16.png" 
+                                               LargeGlyph="/Images/Icons/Import-32x32.png"
+                                               ToolTip="Import Quickbooks balance due information"/>
+                                <!--Command="{Binding ImportCommand}"-->
+                            </dxr:RibbonPageGroup>
+
+                            <dxr:RibbonPageGroup Caption="Property Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
+                                <dxb:BarButtonItem Content="Period Usage"
+                                                       ItemClick="bb_PeriodReportClick"
+                                                       IsVisible="True" 
+                                                       IsEnabled="True"
+                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                       ToolTip="Run Report"/>
+                                <dxb:BarButtonItem Content="Daily Usage"
+                                                       ItemClick="bb_DailyReportClick"
+                                                       IsVisible="True" 
+                                                       IsEnabled="True"
+                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                       ToolTip="Run Report"/>
+                                <dxb:BarButtonItem Content="Property Notes"
+                                                       ItemClick="bb_NotesReportClick"
+                                                       IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                       IsEnabled="True" 
+                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                       ToolTip="Run Report"/>
+                                <dxb:BarButtonItem Content="Balances Due"
+                                                       ItemClick="bb_BalanceReportClick"
+                                                       IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                       IsEnabled="True" 
+                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                       ToolTip="Run Report"/>
+                            </dxr:RibbonPageGroup>
+
+                            <dxr:RibbonPageGroup Caption="Water Action" IsVisible="{Binding IsWaterRibbonVisible}">
+                                <dxb:BarButtonItem x:Name="bbImportMeter" Content="Import" 
+                                               Command="{Binding ImportMeterReadingCommand}"
+                                               IsEnabled="{Binding IsEnabledImport}"
+                                               Glyph="/Images/Icons/Import-16x16.png" 
+                                               LargeGlyph="/Images/Icons/Import-32x32.png"
+                                               ToolTip="Import Meter Reading Data"
+                                    />
+                            </dxr:RibbonPageGroup>
+
+                        </dxr:RibbonPage>
+                    </dxr:RibbonDefaultPageCategory>
+                </dxr:RibbonControl>
+
+                <Grid>
+
+                    <dxd:DockLayoutManager 
+                            x:Name="dockLayoutManager"
+                            AllowDocumentSelector="False"
+                            DockItemActivated="DockLayoutManager_DockItemActivated"
+                            DockItemClosing="DockLayoutManager_DockItemClosing"
+                            ClosingBehavior="ImmediatelyRemove" 
+                           >
+                        <dxd:LayoutGroup x:Name="layoutGroupMain" IsHitTestVisible="False">
+                            <dxd:LayoutGroup Orientation="Vertical" >
+                                <dxd:DocumentGroup ItemWidth="*"
+                                        x:Name="primaryDocumentGroup"
+                                        DestroyOnClosingChildren="True"
+                                        />
+                            </dxd:LayoutGroup>
+                        </dxd:LayoutGroup>
+
+
+                        <!--
+                Add new tiles to this layout group
+            -->
+                        <dxd:DockLayoutManager.AutoHideGroups>
+                            <dxd:AutoHideGroup x:Name="DashBoard" AllowClose="False" DockType="Right" Caption="Dash Board" FloatOnDoubleClick="False" ShowCloseButton="False">
+                                <dxd:LayoutPanel Caption="Dashboard" ItemWidth="200" Padding="1" ShowCloseButton="False">
+                                    <dxd:LayoutGroup Orientation="Vertical">
+                                        <dxd:LayoutGroup Orientation="Vertical">
+                                            <dxd:LabelItem>
+                                                <Label Content="Features" Foreground="#FF0352FB" FontSize="16"/>
+                                            </dxd:LabelItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
+                                                <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
+                                            </dxd:LayoutControlItem>
+                                            <!--<dxd:LayoutControlItem>
+                                                    <Image  Source="Images/Icons/person_icon.png" MouseLeftButtonDown="OnClicked_Relationship" Width="100" Height="100" ToolTip="Look up Relationships"/>
+                                                </dxd:LayoutControlItem>-->
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewGolfCart, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCart" Width="100" Height="100" ToolTip="Look up Golf Cart Info"/>
+                                            </dxd:LayoutControlItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/watermeter.png" MouseLeftButtonDown="OnClicked_WaterSystem" Width="100" Height="100" ToolTip="Look up Water Meter Records"/>
+                                            </dxd:LayoutControlItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="100" Height="100" ToolTip="Look up Water Well Records"/>
+                                            </dxd:LayoutControlItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="100" Height="100" ToolTip="View Permissions"/>
+                                            </dxd:LayoutControlItem>
+                                        </dxd:LayoutGroup>
+                                    </dxd:LayoutGroup>
+                                </dxd:LayoutPanel>
+                            </dxd:AutoHideGroup>
+                        </dxd:DockLayoutManager.AutoHideGroups>
+                    </dxd:DockLayoutManager>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </dxb:BarManager>
+</dxr:DXRibbonWindow>

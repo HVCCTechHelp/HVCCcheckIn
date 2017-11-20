@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=DELL-FY14-04;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.History.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.v_PropertyHistory" Member="v_PropertyHistories">
+    <Type Name="v_PropertyHistory">
+      <Column Name="Section" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Block" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Lot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubLot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AmountOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="IsInGoodStanding" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="NumGolfCart" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CartFeesOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>

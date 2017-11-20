@@ -1,0 +1,317 @@
+﻿<UserControl x:Class="HVCC.Shell.Views.WellMeterReadingsView"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HVCC.Shell.Views"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"  
+        xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+        mc:Ignorable="d" 
+    >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem
+            x:Name="bLastMeterReadings"
+            Content="Last"
+            ItemClick="bb_SummaryReportClick"
+            Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+            ToolTip="Last Meter Readings"
+            />
+            <dxb:BarButtonItem
+            x:Name="bDetailMeterReadings"
+            Content="Detail"
+            ItemClick="bb_DetailReportClick"
+            Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+            ToolTip="Last Meter Readings"
+            />
+
+        </dxb:BarManager.Items>
+        <!--Glyph="{dx:DXImage Image=Refresh_16x16.png}" LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"-->
+
+        <DockPanel x:Name="dockPanel">
+
+            <!--<dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="Well" Caption="Reports">
+                        <dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bLastMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+                </dxr:RibbonDefaultPageCategory>
+            </dxr:RibbonControl>-->
+
+            <dxlc:LayoutControl Orientation="Vertical">
+
+                <dxlc:LayoutGroup Header="Enter Well Meter Readings" 
+                          Orientation="Vertical"
+                          View="GroupBox"
+                          Height="300"
+                          Width="850"
+                          dx:ScrollViewerTouchBehavior.IsEnabled="True" 
+                          Serialization:SerializableItem.TypeName="LayoutGroup">
+
+                    <dxlc:LayoutGroup Orientation="Horizontal">
+                        <dxlc:LayoutItem VerticalAlignment="Top" HorizontalAlignment="Left" IsRequired="True">
+                            <Label Content="Well meter Reading Date: "/>
+                        </dxlc:LayoutItem>
+
+                        <dxlc:LayoutItem VerticalAlignment="Top" HorizontalAlignment="Left" IsRequired="True">
+                            <DatePicker DisplayDate="{Binding ReadingDate, Mode=TwoWay}" Text="{Binding ReadingDate, Mode=TwoWay}" Width="150" />
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+
+                    <dxlc:LayoutItem VerticalAlignment="Top" Margin="0,40,0,0" IsRequired="True">
+                        <dxg:GridControl x:Name="wellMeterReadingGrid" 
+                             ItemsSource="{Binding WellMeterReadings, Mode=TwoWay}" 
+                             IsEnabled="True" 
+                             MaxHeight="250"
+                             MaxWidth="800" Initialized="wellMeterReadingGrid_Initialized"
+                             >
+
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="gridTableView"
+                                Focusable="True"
+                                FocusManager.IsFocusScope="True"
+                                ItemsSourceErrorInfoShowMode="Cell"
+                                EnableImmediatePosting="False"                                
+                                AllowEditing="True"
+				                AllowPerPixelScrolling="True" 
+                                AllowFilterEditor="False"
+                                AllowColumnFiltering="False"
+                                AutoWidth="True" 
+                                ShowAutoFilterRow="False"
+                                ShowGroupPanel="False"
+				                ShowFixedTotalSummary="False" 
+                                ShowTotalSummary="False"
+                                NavigationStyle="Cell" 
+                                CellValueChanged="gridTableView_CellValueChanged"
+                                >
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="WellNumber"  
+                                        x:Name="txtWellNumber"
+                                        Header="Well#"
+                                        Width="25" 
+                                        AllowEditing="False"
+                                        ReadOnly="True" 
+                                        Focusable="False"
+                                        />
+                                <dxg:GridColumn FieldName="MeterReadingDate"  Header="Reading Date" Width="50" 
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            Focusable="False"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:DateEditSettings DisplayFormat="d" />
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+
+                                <dxg:GridColumn Width="5" Focusable="False" ReadOnly="True" >
+                                    <dxg:GridColumn.CellStyle>
+                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" >
+                                            <Setter Property="Background" Value="LightGray" />
+                                        </Style>
+                                    </dxg:GridColumn.CellStyle>
+                                </dxg:GridColumn>
+                                
+                                <dxg:GridColumn FieldName="MeterReading" Header="Meter Reading" Width="75" 
+                                            AllowEditing="True" 
+                                            ReadOnly="False" Validate="GridColumn_Validate"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn x:Name="colUnitOfMeasure" FieldName="MeterUnitOfMeasure" Header="Meter Units" Width="30"      
+                                            AllowEditing="True" 
+                                            ReadOnly="False"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:ComboBoxEditSettings ItemsSource="{Binding UnitList, Mode=OneWay}" 
+                                                  DisplayMember="Description" ValueMember="Description" AllowNullInput="False" AutoComplete="True" />
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+
+                                <dxg:GridColumn Width="5" Focusable="False" ReadOnly="True" >
+                                    <dxg:GridColumn.CellStyle>
+                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" >
+                                            <Setter Property="Background" Value="LightGray" />
+                                        </Style>
+                                    </dxg:GridColumn.CellStyle>
+                                </dxg:GridColumn>
+                                
+                                <dxg:GridColumn x:Name="colThroughput" FieldName="ThroughputInGallons" Header="Gallons Output Since Last Reading" 
+                                            AllowEditing="True" 
+                                            ReadOnly="False"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
+                        </dxg:GridControl>
+
+
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem HorizontalAlignment="Center">
+                        <Button x:Name="btnSave" Width="75" Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsEnabledSave}"/>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup Header="Well Meter History" 
+                          Orientation="Vertical"
+                          Margin="0,10,0,0"
+                          View="GroupBox"
+                          MaxHeight="750"
+                          MaxWidth="850"
+                          dx:ScrollViewerTouchBehavior.IsEnabled="True" 
+                          Serialization:SerializableItem.TypeName="LayoutGroup">
+
+                    <dxlc:LayoutItem VerticalAlignment="Top" IsRequired="True">
+                        <dxg:GridControl x:Name="wellMeterHistoryGrid" 
+                             ItemsSource="{Binding WellMeterReadingHistory}" 
+                             IsEnabled="True" 
+                             MaxWidth="800"
+                             MaxHeight="700"
+                             >
+
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="gridTableView2" 
+                                AllowEditing="False"
+				                AllowPerPixelScrolling="True" 
+                                AutoWidth="True" 
+                                HorizontalAlignment="Left"
+                                ShowAutoFilterRow="False"
+                                ShowGroupPanel="True"
+				                ShowFixedTotalSummary="False" 
+                                ShowTotalSummary="True"
+                                >
+
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Month" Header="Month" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Left"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Year" Header="Year" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Left"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+
+                                <dxg:GridColumn FieldName="MeterReadingDate"  Header="Reading Date" Width="50" 
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            SortIndex="0"
+                                            SortOrder="Descending"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:DateEditSettings DisplayFormat="d" />
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Well3" Header="Well3" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Well5" Header="Well5" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Well7" Header="Well7" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Well8" Header="Well8" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Well10" Header="Well10" Width="50"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="Total" Header="Total Gallons" Width="75"      
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem FieldName="Well3" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Well5" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Well7" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Well8" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Well10" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Total" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                            </dxg:GridControl.TotalSummary>
+                            <!--<dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />-->
+
+                        </dxg:GridControl>
+
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+
+</UserControl>

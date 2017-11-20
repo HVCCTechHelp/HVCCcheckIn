@@ -1,0 +1,161 @@
+﻿<!--        
+            //// The DialogService.ShowDialog() method requires first level access to a ViewModel. Since
+            //// relationships are a sub-item of Property, which is in the PropertiesViewModel, I had to
+            //// create a separate RelationshipViewModel for the dialog service to work
+            //// Additionally, the dialog is defined as a View, and registered as a DialogService.ViewTemplate
+            //// in Main.xaml.
+            //// Also note, the dialog height and width properties are set in Main.xaml, but shown here for reference purposes.
+-->
+
+<UserControl x:Class="HVCC.Shell.Views.RelationshipDialogView" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HVCC.Shell.Views"
+             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common" 
+             mc:Ignorable="d" 
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"    
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
+             xmlns:model="clr-namespace:HVCC.Shell.Models"
+             xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+             d:DesignHeight="350" d:DesignWidth="800"
+             d:DataContext="{dxmvvm:ViewModelSource vm:RelationshipViewModel}"
+             Unloaded="UserControl_Unloaded"
+             >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <dxlc:LayoutControl>
+        <dxlc:LayoutGroup View="Group" Orientation="Vertical" >
+
+                <dxlc:LayoutGroup View="GroupBox" Header="Property" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <dxlc:LayoutItem Width="600">
+                    <TextBox Text="{Binding LotInformation}" Style="{StaticResource TextBoxDisplayStyle}" IsTabStop="False"/>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+            <dxlc:LayoutGroup View="GroupBox" Header="Relationship" Width="Auto" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,20,0,0" PreviewKeyDown="LayoutGroup_PreviewKeyDown">
+                <dxlc:LayoutGroup View="Group" Orientation="Vertical">
+                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                        <dxlc:LayoutGroup View="Group" Width="210" Orientation="Vertical">
+                            <dxlc:LayoutItem Label="Photo: " Width="200">
+                                <dxe:ImageEdit Name="imgEdit"
+                                       Source="{Binding Relationship.Image}"
+                                       Height="120" Width="160"
+                                       IsTabStop="False"
+                                       ShowBorder="True"
+                                       ShowLoadDialogOnClickMode="Always"
+                                       IsReadOnly="False"
+                                       AllowDrop="True"
+                                       ShowMenu="True"
+                                       EditValueChanged="editform_ValueChanged"
+                                       Validate="editform_Validate"
+                                               Drop="imgEdit_Drop"
+                                       >
+                                    <dxe:ImageEdit.MenuTemplate>
+                                        <ControlTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <dxe:ImageEditTakePictureButton />
+                                                <dxe:ImageEditToolSeparator />
+                                                <dxe:ImageEditLoadToolButton />
+                                                <dxe:ImageEditPasteToolButton />
+                                                <dxe:ImageEditToolSeparator />
+                                                <dxe:ImageEditClearToolButton />
+                                                <!--<dxe:ImageEditCopyToolButton Visibility="Collapsed" />-->
+                                                <!--<dxe:ImageEditSaveToolButton Visibility="Collapsed" />-->
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </dxe:ImageEdit.MenuTemplate>
+                                </dxe:ImageEdit>
+                            </dxlc:LayoutItem>
+
+                        </dxlc:LayoutGroup>
+                        <dxlc:LayoutGroup View="Group" Width="Auto" Orientation="Vertical" Margin="0,0,20,0">
+                            <dxlc:LayoutGroup View="Group" Width="Auto" Orientation="Horizontal">
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutItem Label="ID# " HorizontalAlignment="Left" Width="Auto">
+                                <TextBox Text="{Binding Relationship.RelationshipID}" Width="40" 
+                                     Style="{StaticResource TextBoxDisplayStyle}"
+                                     IsReadOnly="True"
+                                     Focusable="False"
+                                     IsHitTestVisible="False"
+                                     />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutGroup View="Group" Width="Auto" Orientation="Horizontal">
+                                <dxlc:LayoutItem Label="First Name: " Width="Auto" HorizontalAlignment="left">
+                                    <dxe:TextEdit Text="{Binding Relationship.FName}" Width="125" x:Name="teFName"
+                                         IsTabStop="True" TabIndex="1"
+                                         Style="{Binding TeStyle}"
+                                         Focusable="{Binding IsEditable}"
+                                         IsHitTestVisible="{Binding IsEditable}"
+                                         AllowNullInput="False"
+                                         ValidateOnEnterKeyPressed="True"
+                                         Validate="Te_Validate"
+                                         />
+                                    <!--IsReadOnly="{Binding IsEditable, Converter={StaticResource Invert}}"-->
+                                    <!--Style="{StaticResource TextBoxDisplayStyle}"-->
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Label="Last Name: " Width="Auto">
+                                    <dxe:TextEdit Text="{Binding Relationship.LName}" Width="175" x:Name="teLName"
+                                         IsTabStop="True" TabIndex="2"
+                                         Style="{Binding TeStyle}"
+                                         Focusable="{Binding IsEditable}"
+                                         IsHitTestVisible="{Binding IsEditable}"
+                                         AllowNullInput="False"
+                                         ValidateOnEnterKeyPressed="True"
+                                         Validate="Te_Validate"
+                                        />
+                                    <!--IsReadOnly="{Binding IsEditable, Converter={StaticResource Invert}}"-->
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutItem Label="Relation to Owner: " Width="Auto" 
+                                         HorizontalAlignment="Left"
+                                         >
+                                <dxe:ComboBoxEdit Name="cbRelationToOwner" Width="150" IsTabStop="True" TabIndex="3"
+                                         EditValue="{Binding Relationship.RelationToOwner}"
+                                         Text="{Binding Relationship.RelationToOwner}"
+                                         AutoComplete="True"
+                                         Style="{Binding CbStyle}"
+                                         Focusable="{Binding IsEditable}"
+                                         IsHitTestVisible="{Binding IsEditable}"
+                                         AllowNullInput="False"
+                                         IsTextEditable="False"
+                                         ValidateOnEnterKeyPressed="True"
+                                         Validate="editform_Validate"
+                                    >
+                                    <!--IsReadOnly="{Binding IsEditable, Converter={StaticResource Invert}}"-->
+                                    <dxe:ComboBoxEdit.Items>
+                                        <!--<dxe:ComboBoxEditItem Content="Owner" />-->
+                                        <dxe:ComboBoxEditItem Content="Spouse/Partner" />
+                                        <dxe:ComboBoxEditItem Content="Child" />
+                                        <dxe:ComboBoxEditItem Content="In-Law" />
+                                        <dxe:ComboBoxEditItem Content="Parent" />
+                                        <dxe:ComboBoxEditItem Content="Grandchild" />
+                                        <dxe:ComboBoxEditItem Content="Grandparent" />
+                                    </dxe:ComboBoxEdit.Items>
+                                </dxe:ComboBoxEdit>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutGroup>
+        
+    <!--
+        If you are thinking of adding control buttons {Add, Edit, Cancel, etc} they are defined
+        in the ViewModel's Command Bindings section {see: ShowRelationshipDialog}
+        -->
+    </dxlc:LayoutControl>
+
+</UserControl>

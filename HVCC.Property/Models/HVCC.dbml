@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=DELL-FY14-04;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.Property.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Relationships" Member="Relationships">
+    <Type Name="Relationship">
+      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="RelationToOwner" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PhotoURI" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Association Name="Property_Relationship" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AnnualPropertyInformation" Member="AnnualPropertyInformations">
+    <Type Name="AnnualPropertyInformation">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AmountOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="IsInGoodStanding" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="NumGolfCart" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CartFeesOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Property_AnnualPropertyInformation" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Properties" Member="Properties">
+    <Type Name="Property">
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Section" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Block" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Lot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubLot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Association Name="Property_Relationship" Member="Relationships" ThisKey="PropertyID" OtherKey="PropertyID" Type="Relationship" />
+      <Association Name="Property_AnnualPropertyInformation" Member="AnnualPropertyInformations" ThisKey="PropertyID" OtherKey="PropertyID" Type="AnnualPropertyInformation" />
+    </Type>
+  </Table>
+  <Table Name="dbo.v_PropertyHistory" Member="v_PropertyHistories">
+    <Type Name="v_PropertyHistory">
+      <Column Name="Section" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Block" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Lot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubLot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AmountOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="IsInGoodStanding" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="NumGolfCart" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CartFeesOwed" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Function Name="dbo.usp_GetRelationsForProperty" Method="usp_GetRelationsForProperty">
+    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
+    <ElementType Name="usp_GetRelationsForPropertyResult">
+      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Relationship" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+</Database>

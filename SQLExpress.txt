@@ -1,0 +1,3 @@
+%DBAdmin%
+
+sa - SQLExpress

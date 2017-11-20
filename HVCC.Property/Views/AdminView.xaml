@@ -1,0 +1,137 @@
+﻿<UserControl xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"  x:Class="HVCC.Property.Views.AdminView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:local="clr-namespace:HVCC.Property.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600">
+
+    <dxlc:LayoutControl>
+        <!-- Add Properties -->
+        <dxlc:LayoutGroup View="GroupBox" Header="Properties" Orientation="Vertical" 
+                              VerticalAlignment="Top" HorizontalAlignment="Center"
+                          Height="400" Width="400">
+            <dxlc:LayoutGroup.ItemStyle>
+                <Style TargetType="{x:Type dxlc:LayoutItem}">
+                    <Setter Property="AddColonToLabel" Value="True" />
+                    <Setter Property="LabelPosition" Value="Top" />
+                </Style>
+            </dxlc:LayoutGroup.ItemStyle>
+
+            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                <dxlc:LayoutGroup Orientation="Vertical"  HorizontalAlignment="Left"  Margin="0,0,5,0">
+                    <dxlc:LayoutItem Label="Section" VerticalAlignment="Top" Width="100"  HorizontalAlignment="Left"  FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtSection"  
+                                          VerticalContentAlignment="Top" 
+                                          MaskType="None"
+                                          ShowBorder="True"
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Block" Width="100" FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtBlock" 
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Starting Lot" Width="100"  FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtStartLot" Text="1"
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          />
+                    </dxlc:LayoutItem>
+
+                    <dxlc:LayoutItem Label="Ending Lot" Width="100"  FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtEndLot"
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem>
+                        <Button x:Name="btnCreateProperties" 
+                                Width="75" Height="25" 
+                                Content="Create" 
+                                Margin="0,20,0,0" 
+                                Visibility="Visible"
+                                Click="OnClick_CreatePropertiesButton"/>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup >
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutGroup>
+
+        <!-- Generate next year's records -->
+        <dxlc:LayoutGroup View="GroupBox" Header="Annual Dues" Orientation="Vertical" 
+                              VerticalAlignment="Top" HorizontalAlignment="Center"
+                          Height="400" Width="400">
+            <dxlc:LayoutGroup.ItemStyle>
+                <Style TargetType="{x:Type dxlc:LayoutItem}">
+                    <Setter Property="AddColonToLabel" Value="True" />
+                    <Setter Property="LabelPosition" Value="Top" />
+                </Style>
+            </dxlc:LayoutGroup.ItemStyle>
+
+            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                <dxlc:LayoutGroup Orientation="Vertical"  HorizontalAlignment="Left"  Margin="0,0,5,0">
+                    <dxlc:LayoutItem Label="Section" VerticalAlignment="Top" Width="100"  HorizontalAlignment="Left"  FontWeight="Bold">
+                        <dxe:SpinEdit x:Name="seForYear" Value="2016" MaskUseAsDisplayFormat="True" Mask="D" MaxValue="{Binding MaxYear}" MinValue="{Binding MinYear}">
+                        </dxe:SpinEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Annual Dues" Width="100" FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtAnnualDues" 
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          Text="260"
+                                          Mask="C2"
+                                          MaskType="Numeric"
+                                          MaskUseAsDisplayFormat="True"
+                                          />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Cart Fees" Width="100"  FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtCartFees"
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          Text="50"
+                                          Mask="C2"
+                                          MaskType="Numeric"
+                                          MaskUseAsDisplayFormat="True"
+                                          />
+                    </dxlc:LayoutItem>
+
+                    <!--<dxlc:LayoutItem Label="BLANK" Width="100"  FontWeight="Bold">
+                        <dxe:TextEdit x:Name="txtEndLot"
+                                          ShowBorder="True" 
+                                          IsReadOnly="False"
+                                          FontWeight="Normal"
+                                          />
+                    </dxlc:LayoutItem>-->
+                    <dxlc:LayoutItem>
+                        <Button x:Name="btnCreateDues" 
+                                Width="75" Height="25" 
+                                Content="Create" 
+                                Margin="0,20,0,0" 
+                                Visibility="Visible"
+                                Click="OnClick_CreateDuesButton"/>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem>
+                        <Button x:Name="btnClearForm" 
+                                Width="75" Height="25" 
+                                Content="Create" 
+                                Margin="0,20,0,0" 
+                                Visibility="Hidden"
+                                Click="OnClick_ClearFormButton"/>
+                    </dxlc:LayoutItem>
+
+                </dxlc:LayoutGroup >
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutGroup>
+
+    </dxlc:LayoutControl>
+</UserControl>

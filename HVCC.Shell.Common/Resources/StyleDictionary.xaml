@@ -1,0 +1,147 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:HVCC.Shell.Common"
+                    xmlns:dxcn="http://schemas.devexpress.com/winfx/2008/xaml/core/internal"
+                    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+                    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+                    xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+                    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+>
+
+    <!-- Grid Styles -->
+    <Style TargetType="{x:Type dxg:TableView}">
+        <Setter Property="AutoFilterRowCellStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type dxg:CellContentPresenter}">
+                    <Setter Property="Background" Value="LightGoldenrodYellow" />
+                    <Setter Property="Foreground" Value="Red" />
+                    <Setter Property="FontWeight" Value="DemiBold" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="NewItemRowCellStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type dxg:NewItemRowCellContentPresenter}">
+                    <Setter Property="Background" Value="LightCyan" />
+                    <Setter Property="Foreground" Value="Blue" />
+                    <Setter Property="FontWeight" Value="DemiBold" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <dxcn:BrushSet x:Key="{dxgt:GridRowThemeKey ResourceKey=CellBackgroundBrushes}">
+        <dxcn:BrushSet.Elements>
+            <dxcn:BrushInfo x:Key="Focused" Brush="{StaticResource {dxgt:GridRowThemeKey ResourceKey=CellBorderFocusedBrush}}" />
+            <dxcn:BrushInfo x:Key="Selected" Brush="{StaticResource {dxgt:GridRowThemeKey ResourceKey=BorderSelectedBrush}}" />
+            <dxcn:BrushInfo x:Key="FocusedAndSelected" Brush="{StaticResource {dxgt:GridRowThemeKey ResourceKey=BorderFocusedBrush}}" />
+            <dxcn:BrushInfo x:Key="BorderBrush" Brush="{StaticResource {dxgt:GridRowThemeKey ResourceKey=GridDataRowDelimiterBrush}}" />
+            <dxcn:BrushInfo x:Key="BorderBrushFocusedRow" Brush="{StaticResource {dxgt:GridRowThemeKey ResourceKey=GridDataRowDelimiterBrush}}" />
+        </dxcn:BrushSet.Elements>
+    </dxcn:BrushSet>
+
+    <Style x:Key="EmptyColumnStyle" TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" >
+        <Setter Property="Background" Value="LightGray" />
+    </Style>
+
+    <Style x:Key="SelectedRowStyle" TargetType="{x:Type dxg:RowControl}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                <Setter Property="Background" Value="Pink" />
+                <Setter Property="Foreground" Value="Black" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsSelected}" Value="False">
+                <Setter Property="Background" Value="LightGreen" />
+                <Setter Property="Foreground" Value="Black" />
+            </DataTrigger>
+            <!--<Trigger Property="dxg:GridViewBase.IsFocusedRow" Value="True">
+                        <Setter Property="Background" Value="Pink" />
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>-->
+        </Style.Triggers>
+    </Style>
+
+    <!-- Layout Styles -->
+    <Style x:Key="LayoutItemStyle" TargetType="dxlc:LayoutItem">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <!-- EditForm Styles -->
+    <Style x:Key="EditFormHeaderStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,0,17,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+    <Style x:Key="EditFormDisplayStyle" TargetType="dxg:EditFormEditor">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="ToolTip" Value="Is Read Only" />
+        <Setter Property="OpacityMask" Value="Transparent" />
+        <Setter Property="Opacity" Value=".10"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+    </Style>
+    <Style x:Key="EditFormEditStyle" TargetType="dxg:EditFormEditor">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="ToolTip" Value="Is Editable" />
+    </Style>
+
+    <!-- TextBox and TextEdit Styles-->
+    <Style x:Key="TextBoxDisplayStyle" TargetType="TextBox">
+        <Setter Property="OverridesDefaultStyle" Value="False" />
+        <Setter Property="Opacity" Value="100" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TextBoxEditStyle" TargetType="TextBox">
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TextEditDisplayStyle" TargetType="dxe:TextEdit">
+        <Setter Property="OverridesDefaultStyle" Value="False" />
+        <Setter Property="Opacity" Value="100" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ShowBorder" Value="False" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TextEditEditStyle" TargetType="dxe:TextEdit">
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="ComboBoxEditStyle" TargetType="dxe:ComboBoxEdit">
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="ComboBoxDisplayStyle" TargetType="dxe:ComboBoxEdit">
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="Flag" TargetType="RadioButton">
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Opacity" Value="0.05"/>
+            </Trigger>
+        </Style.Triggers>
+
+        <Setter Property="BorderThickness" Value="10"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="Transparent"
+                                CornerRadius="20">
+                        <Image Source="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

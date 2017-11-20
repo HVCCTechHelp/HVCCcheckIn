@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:HVCC.Shell.Common"
+                    xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters"
+>
+
+    <converters:BooleanToVisibility x:Key="BoolToVis" />
+    <converters:InverseBooleanToVisibility x:Key="InverseBoolToVis" />
+    <converters:InverseBooleanToVisibility x:Key="InverseBool" />
+    <converters:InvertBoolean x:Key="Invert" />
+
+</ResourceDictionary>

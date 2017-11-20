@@ -1,0 +1,230 @@
+﻿<UserControl x:Class="HVCC.Property.Views.PropertyDetailsView"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HVCC.Property.Views"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        mc:Ignorable="d" 
+        d:DesignHeight="700" d:DesignWidth="900"
+        >
+
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type dxg:TableView}">
+            <Setter Property="AutoFilterRowCellStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type dxg:CellContentPresenter}">
+                        <Setter Property="Background" Value="LightGoldenrodYellow" />
+                        <Setter Property="Foreground" Value="Red" />
+                        <Setter Property="FontWeight" Value="DemiBold" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="IsDirtyStyle"
+               BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}"
+               TargetType="{x:Type dxg:LightweightCellEditor}"
+               >
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=RowData.Row.IsReadOnly}" Value="True" />
+                        <Condition Binding="{Binding Path=RowData.IsSelected}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="DarkGray" />
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=RowData.Row.IsDirty}" Value="True" />
+                        <Condition Binding="{Binding Path=RowData.IsSelected}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="Blue" />
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=RowData.Row.IsDirty}" Value="True" />
+                        <Condition Binding="{Binding Path=RowData.IsSelected}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="Blue" />
+                    <Setter Property="Background" Value="LightYellow" />
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ReadOnlyStyle"
+               BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}"
+               TargetType="{x:Type dxg:LightweightCellEditor}"
+               >
+            <Setter Property="Foreground" Value="DarkGray" />
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=RowData.Row.IsDirty}" Value="True" />
+                        <Condition Binding="{Binding Path=RowData.IsSelected}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="DarkOliveGreen" />
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=RowData.Row.IsDirty}" Value="True" />
+                        <Condition Binding="{Binding Path=RowData.IsSelected}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="DarkOliveGreen" />
+                    <Setter Property="Background" Value="LightYellow" />
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <dxlc:LayoutControl Orientation="Vertical">
+
+        <dxlc:LayoutGroup x:Name="grpboxProperties" View="GroupBox" Header="Properties" VerticalAlignment="Top" IsCollapsible="False" Orientation="Vertical">
+            <dxlc:LayoutGroup.ItemStyle>
+                <Style TargetType="{x:Type dxlc:LayoutItem}">
+                    <Setter Property="AddColonToLabel" Value="True" />
+                    <Setter Property="LabelPosition" Value="Top" />
+                </Style>
+            </dxlc:LayoutGroup.ItemStyle>
+
+            <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
+
+                <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
+                    <dxg:GridControl x:Name="propertyGrid" 
+                             Height="600" 
+                             ItemsSource="{Binding PropertiesList, Mode=TwoWay}" 
+                             SelectedItem="{Binding SelectedProperty}"
+                             IsEnabled="True" 
+                             MasterRowExpanded="grid_MasterRowExpanded"                         
+                             >
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn FieldName="LName" Header="Last Name " Width="50"  
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="FName" Header="First Name " Width="50"  
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="Section" Header="Section" SortOrder="Ascending" Width="20"   
+                                            SortIndex="0" GroupIndex="0"  
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="Block" Header="Block " Width="20"   
+                                            GroupIndex="2"   
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="20"     
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="20"   
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="False"
+                                            />
+                            <dxg:GridColumn FieldName="Year" Header="Year" Width="20"   
+                                            AllowEditing="False" 
+                                            />
+                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.AmountOwed" Header="Dues Owed" Width="20"   
+                                            AllowEditing="True"
+                                            >
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                    </dxe:TextEditSettings>
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.IsInGoodStanding"  Width="10" 
+                                            AllowEditing="True" 
+                                            EditFormVisible="True" 
+                                            EditFormCaption="Good Standing:" 
+                                            />
+                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.NumGolfCart" Visible="False" 
+                                            Width="10" 
+                                            EditFormVisible="True" 
+                                            EditFormCaption="Golf Carts:" 
+                                            ReadOnly="False">
+                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.CartFeesOwed" Header="Cart Fees Owed" Width="20"   
+                                            AllowEditing="True"
+                                            Visible="False" 
+                                            EditFormVisible="True" 
+                                            >
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                    </dxe:TextEditSettings>
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+
+                            <dxg:GridColumn FieldName="Notes" 
+                                            Visible="False" 
+                                            EditFormVisible="True" 
+                                            EditFormColumnSpan="2" 
+                                            EditFormRowSpan="2">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:MemoEditSettings ShowIcon="True" PopupWidth="250" MemoTextWrapping="Wrap" MemoVerticalScrollBarVisibility="Auto" />
+                                </dxg:GridColumn.EditSettings>
+                                <dxg:GridColumn.EditFormTemplate>
+                                    <DataTemplate>
+                                        <dxe:TextEdit Name="PART_Editor" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="100" Margin="0,12,0,0" VerticalScrollBarVisibility="Visible" />
+                                    </DataTemplate>
+                                </dxg:GridColumn.EditFormTemplate>
+                            </dxg:GridColumn>
+                        </dxg:GridControl.Columns>
+
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                        </dxg:GridControl.TotalSummary>
+                        
+                        <dxg:GridControl.View>
+                            <dxg:TableView x:Name="propertiesView" 
+                                AllowEditing="True"
+				                AllowPerPixelScrolling="True" 
+                                AutoWidth="True" 
+                                EditFormShowMode="Inline"
+                                EditFormPostMode="Immediate" 
+				                NavigationStyle="Cell" 
+                                ShowAutoFilterRow="True"
+                                ShowGroupPanel="False"
+				                ShowFixedTotalSummary="True" 
+                                ShowTotalSummary="True"
+                                SearchPanelNullText="Search"
+                                ShowSearchPanelMode="Always"
+                                ShowSearchPanelFindButton="True"
+                                SearchPanelClearOnClose="False"
+                                >
+                                <!--<dxg:TableView.RowCellMenuCustomizations>
+                                    <dxb:BarButtonItem Name="editDetailRowItem" Content="Edit" 
+                                            ItemClick="editRowItem_ItemClick"/>
+                                </dxg:TableView.RowCellMenuCustomizations>-->
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+
+
+                    </dxg:GridControl>
+
+                    <dxmvvm:Interaction.Triggers>
+                        <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding Commands.ShowEditForm, ElementName=tableView}" ProcessEventsFromDisabledEventOwner="True" />
+                    </dxmvvm:Interaction.Triggers>
+                </dxlc:LayoutItem>
+
+            </dxlc:LayoutGroup>
+
+        </dxlc:LayoutGroup>
+    </dxlc:LayoutControl>
+
+</UserControl>
