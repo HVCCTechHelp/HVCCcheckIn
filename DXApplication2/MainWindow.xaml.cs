@@ -14,8 +14,8 @@
     using Models;
     using HVCC.Shell.Common.Interfaces;
     using DevExpress.XtraReports;
-    using DevExpress.Xpf.Printing;    
-    
+    using DevExpress.Xpf.Printing;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -390,8 +390,11 @@
         /// <param name="e"></param>
         private void OnClicked_GolfCart(object sender, MouseButtonEventArgs e)
         {
-            Object content = new HVCC.Shell.Views.GolfCartView() { DataContext = this.DataContext };
-            CreateDockPanel("Golf Cart ", content);
+            //this.viewModelController.CreateGolfCartViewModel();
+
+            IViewModel vm = new GolfCartViewModel() { Caption = "Golf Carts" };
+            Object content = new HVCC.Shell.Views.GolfCartView(vm);
+            CreateDockPanel(vm.Caption, content);
         }
 
         /* -------------  Deprecated: The Relationships DocumentPanel was combined into the Properties Edit Dialog --- */

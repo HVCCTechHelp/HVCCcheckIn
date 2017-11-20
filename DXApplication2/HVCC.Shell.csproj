@@ -222,7 +222,6 @@
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.HelpHandler.cs" />
     <Compile Include="ViewModels\PropertiesViewModel.cs" />
     <Compile Include="ViewModels\RelationshipViewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />

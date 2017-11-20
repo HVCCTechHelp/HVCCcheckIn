@@ -18,15 +18,6 @@
         void RefocusOrOpenViewModel(IMvvmBinder mvvmBinder);
 
         /// <summary>
-        /// Log the error in in database table: [ApplicationSettings].[Diagnostics].[ApplicationEventLog]
-        /// </summary>
-        /// <param name="type">"Error", "Warning", or "Information"</param>
-        /// <param name="tags">Zero or more tag values that will help you filter/query the event log. Any format is allowed.</param>
-        /// <param name="message">The details of this Error, Warning, or Information log record.</param>
-        /// <returns>True if the message was successfully written to the database.</returns>
-        bool LogApplicationEvent(string type, string tags, string message);
-
-        /// <summary>
         /// Gets the list of all open View/ViewModel pairs (as <code>IMvvmBinders</code>).
         /// </summary>
         /// <example><code>

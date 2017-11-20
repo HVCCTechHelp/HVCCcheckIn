@@ -10,10 +10,10 @@
     using System.Data.Linq;
     using System.Linq;
     using DevExpress.Spreadsheet;
+    using HVCC.Shell.Common.ViewModels;
 
-    public partial class GolfCartViewModel : ViewModelBase, INotifyPropertyChanged
+    public partial class GolfCartViewModel : CommonViewModel
     {
-
         public GolfCartViewModel()
         {
         }
@@ -221,6 +221,10 @@
         /* ---------------------------------- GolfCart: Commands & Actions --------------------------------------- */
         #region GolfCartCommands
 
+        public override bool Save()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Check In Command
@@ -305,6 +309,10 @@
                 return _addCartCommand ?? (_addCartCommand = new CommandHandler(() => AddCartAction(), CanNameSearch));
             }
         }
+
+        public override bool IsValid => throw new NotImplementedException();
+
+        public override bool IsDirty => throw new NotImplementedException();
 
         /// <summary>
         /// 
@@ -422,6 +430,7 @@
 
         /* --------------------------- INotify Property Change Implementation ----------------------------- */
         #region INotifyPropertyChagned implementaiton
+            /*============================== CUT
         /// <summary>
         /// INotifyPropertyChanged Implementation
         /// </summary>
@@ -440,6 +449,7 @@
             }
         }
 
+        ================================ TO HERE **************************/
         #endregion
     }
 

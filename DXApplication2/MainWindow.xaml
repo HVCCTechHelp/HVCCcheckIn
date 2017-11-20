@@ -24,7 +24,6 @@
         WindowState="Maximized"
         WindowStyle="None"
         Closing="DXRibbonWindow_Closing"
-        DataContext="{dxmvvm:ViewModelSource Type=vm:PropertiesViewModel}"
         >
 
     <Window.Resources>
@@ -101,14 +100,6 @@
             </dx:DialogService.DialogStyle>
         </dx:DialogService>
     </dxmvvm:Interaction.Behaviors>
-
-
-    <!--<dxr:DXRibbonWindow.CommandBindings>
-        <common:CommandSinkBinding Command="{x:Static commands:CustomCommands.About}" />
-        <common:CommandSinkBinding Command="{x:Static input:ApplicationCommands.Help}" />
-        <common:CommandSinkBinding Command="commands:CustomCommands.SaveAll" />
-        <common:CommandSinkBinding Command="commands:CustomCommands.RequeryReloadAll" />
-    </dxr:DXRibbonWindow.CommandBindings>-->
 
     <dxb:BarManager>
         <dxb:BarManager.Items>

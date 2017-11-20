@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HVCC.Shell.Models;
 using DevExpress.Xpf.Grid;
+using HVCC.Shell.Common.Interfaces;
 
 namespace HVCC.Shell.Views
 {
@@ -23,13 +24,12 @@ namespace HVCC.Shell.Views
     /// </summary>
     public partial class GolfCartView : UserControl
     {
-        //PropertiesViewModel vm = null; 
-        GolfCartViewModel vm = null;
-        PropertiesViewModel pvm = null;
+        IViewModel vm = null;
 
-        public GolfCartView()
+        public GolfCartView(IViewModel vm)
         {
             InitializeComponent();
+            this.DataContext = vm;
             this.Loaded += OnLoaded;
         }
 
@@ -40,26 +40,7 @@ namespace HVCC.Shell.Views
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            // When this view is loaded we associate the ViewModel. On the first load, the data context
-            // is pre-set to the parent VM. We capture that VM, and reset the view's VM to this view's VM.
-            // This is just done on the first load. Otherwise, we associated the VM to the existing VM object.
-            // Also note, OnLoaded() is called when the document panel becomes the active doc panel. 
-            if (this.DataContext is GolfCartViewModel)
-            {
-                // ViewModel (vm) and ParentViewModel (pvm) is already assigned
-                // When this view becomes active, we assign the primary gridTable view for exporing.
-                pvm.GridTableView = this.tableViewCarts;
-            }
-            else
-            {
-                pvm = this.DataContext as PropertiesViewModel;
-                this.DataContext = new GolfCartViewModel();
-
-                pvm.ViewModels.Add(this.DataContext);
-                vm = this.DataContext as GolfCartViewModel;
-                vm.ParentViewModel = pvm;
-                pvm.GridTableView = this.tableViewCarts;
-            }
+            this.DataContext = vm;
         }
 
         /// <summary>

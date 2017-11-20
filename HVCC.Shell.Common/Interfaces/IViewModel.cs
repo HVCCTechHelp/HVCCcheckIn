@@ -11,15 +11,14 @@
         string Caption { get; set; }
 
         event EventHandler CaptionChanged;
-
-        object this[string property] { get; set; }
+        //     Occurs when a property value changes.
+        event EventHandler Saved;
 
         bool IsValid { get; }
+        bool IsDirty { get; }
+        bool Save();
+        void Closing(out bool cancelCloseOperation);
 
-        bool IsSelectGranted { get; }
-        bool IsInsertGranted { get; }
-        bool IsUpdateGranted { get; }
-        bool IsDeleteGranted { get; }
 
         IViewModelHost Host { get; set; }
     }

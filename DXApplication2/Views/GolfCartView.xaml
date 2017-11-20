@@ -19,7 +19,6 @@
         xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
-        DataContext="{dxmvvm:ViewModelSource Type=vm:PropertiesViewModel}"
         >
 
     <UserControl.Resources>
