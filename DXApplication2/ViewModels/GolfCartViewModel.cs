@@ -11,11 +11,14 @@
     using System.Linq;
     using DevExpress.Spreadsheet;
     using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Common.Interfaces;
 
     public partial class GolfCartViewModel : CommonViewModel
     {
-        public GolfCartViewModel()
+        public GolfCartViewModel(IDataContext dc)
         {
+            this.dc = dc as HVCCDataContext;
+            this.Host = HVCC.Shell.Host.Instance;
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -24,10 +27,21 @@
         #endregion
 
         /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
-        bool CanNameSearch = true;
 
         public PropertiesViewModel ParentViewModel
         { get; set; }
+
+        public override bool IsValid => throw new NotImplementedException();
+
+        public override bool IsDirty
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override bool IsBusy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// Controls the enable/disable state of the Save ribbon action button
@@ -221,11 +235,7 @@
         /* ---------------------------------- GolfCart: Commands & Actions --------------------------------------- */
         #region GolfCartCommands
 
-        public override bool Save()
-        {
-            throw new NotImplementedException();
-        }
-
+        bool CanNameSearch = true;
         /// <summary>
         /// Check In Command
         /// </summary>
@@ -310,10 +320,6 @@
             }
         }
 
-        public override bool IsValid => throw new NotImplementedException();
-
-        public override bool IsDirty => throw new NotImplementedException();
-
         /// <summary>
         /// 
         /// </summary>
@@ -360,6 +366,11 @@
             {
                 MessageBoxService.ShowMessage("Please select a name", "Warning", MessageButton.OK, MessageIcon.Warning);
             }
+        }
+
+        public void SaveAction()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -424,32 +435,37 @@
             changeSet = this.dc.GetChangeSet();
         }
 
+        public override bool Save()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         /*================================================================================================================================================*/
 
         /* --------------------------- INotify Property Change Implementation ----------------------------- */
         #region INotifyPropertyChagned implementaiton
-            /*============================== CUT
-        /// <summary>
-        /// INotifyPropertyChanged Implementation
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        /*============================== CUT
+    /// <summary>
+    /// INotifyPropertyChanged Implementation
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
-        /// </summary>
-        /// <param name="propertyName">The name of the property being changed</param>
-        protected virtual void RaisePropertyChanged(string propertyName)
+    /// <summary>
+    /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+    /// </summary>
+    /// <param name="propertyName">The name of the property being changed</param>
+    protected virtual void RaisePropertyChanged(string propertyName)
+    {
+        PropertyChangedEventHandler handler = this.PropertyChanged;
+        if (handler != null)
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            handler(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
 
-        ================================ TO HERE **************************/
+    ================================ TO HERE **************************/
         #endregion
     }
 
@@ -461,7 +477,7 @@
     public partial class GolfCartViewModel : IDisposable
     {
         // Resources that must be disposed:
-        public HVCCDataContext dc = new HVCCDataContext();
+        public HVCCDataContext dc = null;
 
         private bool disposed = false;
 

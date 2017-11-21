@@ -72,8 +72,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandSinkBinding.cs" />
     <Compile Include="Commands\CustomCommands.cs" />
-    <Compile Include="Commands\DashboardCommands.cs" />
     <Compile Include="Converters\BalanceValueToTypeConverter.cs" />
     <Compile Include="Converters\BooleanToVisibility.cs" />
     <Compile Include="Converters\EventArgsConverter.cs" />
@@ -81,14 +81,15 @@
     <Compile Include="Converters\NullToCollapsed.cs" />
     <Compile Include="Converters\RowClickConverter.cs" />
     <Compile Include="ExportService.cs" />
-    <Compile Include="Interfaces\CommandSink.cs" />
-    <Compile Include="Interfaces\IForm.cs" />
+    <Compile Include="CommandSink.cs" />
+    <Compile Include="Interfaces\IDataContext.cs" />
     <Compile Include="Interfaces\IHelpContext.cs" />
     <Compile Include="Interfaces\IMvvmBinder.cs" />
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="Interfaces\IViewModel.cs" />
-    <Compile Include="Interfaces\IViewModelHost.cs" />
+    <Compile Include="Interfaces\IHost.cs" />
     <Compile Include="Interfaces\IViewModelLaunchingPad.cs" />
+    <Compile Include="MvvmBinder.cs" />
     <Compile Include="OBS___GridControlServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

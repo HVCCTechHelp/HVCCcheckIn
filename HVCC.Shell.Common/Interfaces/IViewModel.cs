@@ -12,7 +12,7 @@
 
         event EventHandler CaptionChanged;
         //     Occurs when a property value changes.
-        event EventHandler Saved;
+        //event EventHandler Saved;
 
         bool IsValid { get; }
         bool IsDirty { get; }
@@ -20,6 +20,6 @@
         void Closing(out bool cancelCloseOperation);
 
 
-        IViewModelHost Host { get; set; }
+        IHost Host { get; set; }
     }
 }

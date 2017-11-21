@@ -4,10 +4,14 @@
 
     public enum HostMessageType { Information, Warning, Error, None }
 
-    public interface IViewModelHost
+    public enum HostVerb { Open, Close }
+
+    public interface IHost
     {
         void ShowMessage(string message, string caption, HostMessageType messageType = HostMessageType.None);
         bool PromptYesNo(string messagePrompt, string caption);
+
+        void Execute(HostVerb verb, object param);
 
         /// <summary>
         /// Returns 3 state boolean (bool?)

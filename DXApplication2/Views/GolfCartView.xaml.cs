@@ -22,13 +22,18 @@ namespace HVCC.Shell.Views
     /// <summary>
     /// Interaction logic for GolfCartView.xaml
     /// </summary>
-    public partial class GolfCartView : UserControl
+    public partial class GolfCartView : UserControl, IView
     {
-        IViewModel vm = null;
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
 
         public GolfCartView(IViewModel vm)
         {
             InitializeComponent();
+
             this.DataContext = vm;
             this.Loaded += OnLoaded;
         }
@@ -40,7 +45,7 @@ namespace HVCC.Shell.Views
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            this.DataContext = vm;
+            //this.DataContext = vm;
         }
 
         /// <summary>
@@ -90,7 +95,7 @@ namespace HVCC.Shell.Views
         /// <param name="e"></param>
         private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
         {
-            bool dirty = pvm.IsDirty;
+            //bool dirty = pvm.IsDirty;
             e.Handled = true;
         }
 
@@ -103,13 +108,24 @@ namespace HVCC.Shell.Views
         }
         private void tableViewCarts_CellValueChanged(object sender, CellValueChangedEventArgs e)
         {
-            bool dirty = pvm.IsDirty;
+            //bool dirty = pvm.IsDirty;
             e.Handled = true;
         }
 
         private void bb_ReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
         {
             throw new System.ArgumentException("Button not implemented", "Information");
+        }
+
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

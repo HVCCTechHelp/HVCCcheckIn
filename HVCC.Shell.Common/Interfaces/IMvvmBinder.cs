@@ -5,12 +5,10 @@
 
     public interface IMvvmBinder
     {
+        IDataContext DataContext { get; }
+
         IView View { get; }
 
         IViewModel ViewModel { get; }
-
-        UserControl ViewUI { get; }
-
-        Window ViewWindow { get; }
     }
 }

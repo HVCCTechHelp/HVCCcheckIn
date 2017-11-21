@@ -1,6 +1,8 @@
-namespace HVCC.Shell
+using HVCC.Shell.Common.Interfaces;
+
+namespace HVCC.Shell.Models
 {
-    partial class HVCCDataContext
+    partial class HVCCDataContext : IDataContext
     {
     }
 }

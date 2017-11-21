@@ -168,6 +168,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Host.cs" />
     <Compile Include="Models\DataBaseRole.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Models\HVCC.designer.cs">

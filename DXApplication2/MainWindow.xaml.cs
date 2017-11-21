@@ -21,12 +21,39 @@
     /// </summary>
     public partial class MainWindow : DXRibbonWindow
     {
-        PropertiesViewModel vm = null;
+        //MainViewModel vm = new MainViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
             this.Loaded += OnLoaded;
+            Host.Instance.OpenMvvmBinders.CollectionChanged += OpenMvvmBinders_CollectionChanged;
+        }
+
+        private void OpenMvvmBinders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (var newBinder in e.NewItems)
+                {
+                    if (newBinder is IMvvmBinder)
+                    {
+                        var v = (newBinder as IMvvmBinder).View;
+                        this.CreateDockPanel(v);
+                    }
+                }
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var oldBinder in e.OldItems)
+                {
+                    if (oldBinder is IMvvmBinder)
+                    {
+                        var v = (oldBinder as IMvvmBinder).View;
+                        this.CloseDockPanel(v);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -36,25 +63,20 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //// Bind the properties of the view  to the properties of the view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            // vm = ((PropertiesViewModel)this.DataContext);
-            vm = ((PropertiesViewModel)this.DataContext);
-            vm.ViewModels.Add(this.DataContext);
+            // View First Approach: Bind the View to the ViewModel
+            //this.DataContext = vm;
 
-            if (null != vm)
-            {
-                if (!vm.IsConnected)
-                {
-                    MessageBox.Show("The server is not responding\nPlease check that the server is turned on and try again.\nThe program will now terminate", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    System.Windows.Application.Current.Shutdown();
-                }
-                vm.PropertyChanged +=
-                    new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-                vm.DocGroup = this.primaryDocumentGroup;
-            }
+            //if (null != vm)
+            //{
+            //    if (!vm.IsConnected)
+            //    {
+            //        MessageBox.Show("The server is not responding\nPlease check that the server is turned on and try again.\nThe program will now terminate", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //        System.Windows.Application.Current.Shutdown();
+            //    }
+            //    vm.PropertyChanged +=
+            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
+            //    vm.DocGroup = this.primaryDocumentGroup;
+            //}
         }
 
         /// <summary>
@@ -68,89 +90,89 @@
 
             try
             {
-                switch (e.PropertyName)
-                {
-                    case "IsBusy":
-                        if (vm.IsBusy)
-                        {
-                            Mouse.OverrideCursor = Cursors.Wait;
-                        }
-                        else
-                        {
-                            Mouse.OverrideCursor = Cursors.Arrow;
-                        }
-                        break;
+                //switch (e.PropertyName)
+                //{
+                //    case "IsBusy":
+                //        if (vm.IsBusy)
+                //        {
+                //            Mouse.OverrideCursor = Cursors.Wait;
+                //        }
+                //        else
+                //        {
+                //            Mouse.OverrideCursor = Cursors.Arrow;
+                //        }
+                //        break;
 
-                    // When data changes, we update the panel's caption with an astrict to indicate a dirty state.  Since
-                    // property, relationship, and water share a symbiotic data relationship, if anyone of the property related
-                    // documents panel data change, we update them all.  This leaves the Golf Cart panel as a standalone. Therefore,
-                    // the logic has to account for the combinations of data changes.
-                    case "IsEnabledSave":
-                    case "DataUpdated":
-                        dpList = GetAllDocumentPanels(this.layoutGroupMain);
-                        foreach (DocumentPanel dp in dpList)
-                        {
-                            // If the user landed here from a Change Ownership, then we close the ChangeOwnership document panel and 
-                            // make the Manage Properties panel the active panel.
-                            if (dp.Caption.ToString() == "Change Ownership" && vm.IsBusy)
-                            {
-                                dp.CloseCommand = DevExpress.Xpf.Docking.CloseCommand.Close;
-                                this.primaryDocumentGroup.Remove(dp);
-                                DocumentPanel makeActive = (from x in dpList
-                                                            where x.Caption.ToString() == "Manage Properties"
-                                                            select x).FirstOrDefault();
-                                if (null == makeActive)
-                                {
-                                    makeActive = (from x in dpList
-                                                  select x).LastOrDefault();
-                                }
-                                this.dockLayoutManager.Activate(makeActive);
-                                vm.ActiveDocPanel = makeActive;
-                                break;
-                            }
+                //    // When data changes, we update the panel's caption with an astrict to indicate a dirty state.  Since
+                //    // property, relationship, and water share a symbiotic data relationship, if anyone of the property related
+                //    // documents panel data change, we update them all.  This leaves the Golf Cart panel as a standalone. Therefore,
+                //    // the logic has to account for the combinations of data changes.
+                //    case "IsEnabledSave":
+                //    case "DataUpdated":
+                //        dpList = GetAllDocumentPanels(this.layoutGroupMain);
+                //        foreach (DocumentPanel dp in dpList)
+                //        {
+                //            // If the user landed here from a Change Ownership, then we close the ChangeOwnership document panel and 
+                //            // make the Manage Properties panel the active panel.
+                //            if (dp.Caption.ToString() == "Change Ownership" && vm.IsBusy)
+                //            {
+                //                dp.CloseCommand = DevExpress.Xpf.Docking.CloseCommand.Close;
+                //                this.primaryDocumentGroup.Remove(dp);
+                //                DocumentPanel makeActive = (from x in dpList
+                //                                            where x.Caption.ToString() == "Manage Properties"
+                //                                            select x).FirstOrDefault();
+                //                if (null == makeActive)
+                //                {
+                //                    makeActive = (from x in dpList
+                //                                  select x).LastOrDefault();
+                //                }
+                //                this.dockLayoutManager.Activate(makeActive);
+                //                //vm.ActiveDocPanel = makeActive;
+                //                break;
+                //            }
 
-                            if (vm.IsDirty)
-                            {
-                                dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
-                            }
-                            else
-                            {
-                                dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
-                            }
-                            Helper.UpdateCaption(dp, vm.IsDirty);
-                        }
-                        break;
+                //            //if (vm.IsDirty)
+                //            //{
+                //            //    dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
+                //            //}
+                //            //else
+                //            //{
+                //            //    dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
+                //            //}
+                //            //Helper.UpdateCaption(dp, vm.IsDirty);
+                //        }
+                //        break;
 
-                    // When the active document panel changes, the background colors are adjusted to reflect which
-                    // panel is the active on.
-                    case "ActiveDocPanel":
-                        dpList = GetAllDocumentPanels(this.layoutGroupMain);
-                        foreach (DocumentPanel dp in dpList)
-                        {
-                            if (dp == vm.ActiveDocPanel)
-                            {
-                                dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
-                            }
-                            else
-                            {
-                                dp.TabBackgroundColor = System.Windows.Media.Colors.White;
-                            }
+                //    // When the active document panel changes, the background colors are adjusted to reflect which
+                //    // panel is the active on.
+                //    //case "ActiveDocPanel":
+                //    //    dpList = GetAllDocumentPanels(this.layoutGroupMain);
+                //    //    foreach (DocumentPanel dp in dpList)
+                //    //    {
+                //    //        if (dp == vm.ActiveDocPanel)
+                //    //        {
+                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
+                //    //        }
+                //    //        else
+                //    //        {
+                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.White;
+                //    //        }
 
-                            if (vm.IsDirty)
-                            {
-                                dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
-                            }
-                            Helper.UpdateCaption(dp, vm.IsDirty);
-                        }
-                        break;
+                //    //        if (vm.IsDirty)
+                //    //        {
+                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
+                //    //        }
+                //    //        Helper.UpdateCaption(dp, vm.IsDirty);
+                //    //    }
+                //    //    break;
 
-                    // If there are water meter reading exceptions we create a new document panel to display them in a grid.
-                    case "MeterExceptions":
-                        CreateMeterExceptionsDocPanel();
-                        break;
-                    default:
-                        break;
-                }
+                //    // If there are water meter reading exceptions we create a new document panel to display them in a grid.
+                //    //case "MeterExceptions":
+                //    //    CreateMeterExceptionsDocPanel();
+                //    //    break;
+                //    default:
+                //        break;
+                //}
             }
             catch (Exception ex)
             {
@@ -173,51 +195,51 @@
         /// </remarks>
         private void DockLayoutManager_DockItemClosing(object sender, DevExpress.Xpf.Docking.Base.ItemCancelEventArgs e)
         {
-            if (true == vm.IsDirty)
-            {
-                MessageBoxResult result = MessageBox.Show("You have unsaved edits, Save edits?", "Unsaved Edits", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-                if (MessageBoxResult.Yes == result)
-                {
-                    vm.Save();
-                }
-                else if (MessageBoxResult.Cancel == result)
-                {
-                    e.Cancel = true; ;
-                }
-                else
-                {
-                    result = MessageBox.Show("Confirm you would like to abandon all pending changes", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (MessageBoxResult.Yes == result)
-                    {
-                        //// If the user clicked the window's "X" to close, and they have elected NOT to save
-                        //// the changes, then we revert them back.
-                        if (e.Item.Caption.ToString().Contains("Properties"))
-                        {
-                            vm.CancelPropertyAction();
-                        }
-                        if (e.Item.Caption.ToString().Contains("Golf Cart"))
-                        {
-                            // TO-DO: Golf....move to the GOlf V/VM
-                            //vm.RevertGolfCartEdits();
-                        }
-                        this.primaryDocumentGroup.Remove(e.Item);
-                    }
-                    else
-                    {
-                        e.Cancel = true;
-                    }
-                }
-            }
-            else
-            {
-                this.primaryDocumentGroup.Remove(e.Item);
-                int count = this.primaryDocumentGroup.Items.Count();
-                // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
-                // Main doesn't throw w/ a null reference 
-                this.layoutGroupMain.IsHitTestVisible = true;
-                e.Handled = true;
-            }
-            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
+            //if (true == vm.IsDirty)
+            //{
+            //    MessageBoxResult result = MessageBox.Show("You have unsaved edits, Save edits?", "Unsaved Edits", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+            //    if (MessageBoxResult.Yes == result)
+            //    {
+            //        vm.Save();
+            //    }
+            //    else if (MessageBoxResult.Cancel == result)
+            //    {
+            //        e.Cancel = true; ;
+            //    }
+            //    else
+            //    {
+            //        result = MessageBox.Show("Confirm you would like to abandon all pending changes", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            //        if (MessageBoxResult.Yes == result)
+            //        {
+            //            //// If the user clicked the window's "X" to close, and they have elected NOT to save
+            //            //// the changes, then we revert them back.
+            //            if (e.Item.Caption.ToString().Contains("Properties"))
+            //            {
+            //                vm.CancelPropertyAction();
+            //            }
+            //            if (e.Item.Caption.ToString().Contains("Golf Cart"))
+            //            {
+            //                // TO-DO: Golf....move to the GOlf V/VM
+            //                //vm.RevertGolfCartEdits();
+            //            }
+            //            this.primaryDocumentGroup.Remove(e.Item);
+            //        }
+            //        else
+            //        {
+            //            e.Cancel = true;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    this.primaryDocumentGroup.Remove(e.Item);
+            //    int count = this.primaryDocumentGroup.Items.Count();
+            //    // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
+            //    // Main doesn't throw w/ a null reference 
+            //    this.layoutGroupMain.IsHitTestVisible = true;
+            //    e.Handled = true;
+            //}
+            //Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
         }
 
         /// <remarks>
@@ -228,6 +250,25 @@
             try
             {
                 UserControl uc = ((ContentItem)e.Item).Content as UserControl;
+
+                //// TO-DO:  Dispose of the ViewModel and remove this DocPanel from the DockManager list
+                if (null != uc)
+                {
+                    Host.Instance.Execute(HostVerb.Close, uc);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("DocItemClosed Error: " + ex.Message);
+            }
+        }
+
+        private void CloseDockPanel(IView v)
+        {
+            try
+            {
+                UserControl uc = v as UserControl;
 
                 //// TO-DO:  Dispose of the ViewModel and remove this DocPanel from the DockManager list
                 if (null != uc)
@@ -261,7 +302,7 @@
                 LayoutPanel panel = e.Item as LayoutPanel;
                 if ("Dashboard" != panel.Caption.ToString())
                 {
-                    vm.ActiveDocPanel = panel;
+                    //vm.ActiveDocPanel = panel;
                 }
             }
         }
@@ -322,6 +363,54 @@
 
             return docGroups;
         }
+
+        /// <summary>
+        /// Creates a new document panel, or brings to focus a panel that exists
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="content"></param>
+        private void CreateDockPanel(IView view)
+        {
+            string caption = view.ViewModel.Caption;
+            object content = view;
+
+            //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
+            bool exists = false;
+
+            //// Get the collection of document panels, then check to see if this doc panel already exists.
+            //// An existing panel will become the active panel, and the dashboard flyout will be collapsed.
+            var docGroupMembers = this.primaryDocumentGroup.GetItems();
+            foreach (BaseLayoutItem i in docGroupMembers)
+            {
+                if (0 == String.Compare(i.Caption.ToString().Trim(), caption.Trim(), true))
+                {
+                    exists = true;
+                    primaryDocumentGroup.SelectedTabIndex = i.TabIndex;
+                    this.dockLayoutManager.Activate(i);
+                    break;
+                }
+            }
+
+            if (!exists)
+            {
+                DocumentPanel docPanel = new DocumentPanel(); // { DataContext = this.DataContext };
+
+                docPanel.Caption = caption;
+                docPanel.Content = content;
+
+                this.primaryDocumentGroup.Add(docPanel);
+                primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
+                this.dockLayoutManager.Activate(docPanel);
+                docPanel.TabBackgroundColor = System.Windows.Media.Colors.Aqua;
+            }
+
+            // The LayoutGroup for the DocumentManager is initially not HitTestVisible to
+            // avoid Main throwing w/ a null reference if the user clicks when there aren't
+            // Documents in the DocumentGroup.  Once the first DocumentPanel is created
+            // HitTest is enabled.
+            this.layoutGroupMain.IsHitTestVisible = true;
+        }
+
 
         /// <summary>
         /// Creates a new document panel, or brings to focus a panel that exists
@@ -392,9 +481,10 @@
         {
             //this.viewModelController.CreateGolfCartViewModel();
 
-            IViewModel vm = new GolfCartViewModel() { Caption = "Golf Carts" };
-            Object content = new HVCC.Shell.Views.GolfCartView(vm);
-            CreateDockPanel(vm.Caption, content);
+            //IViewModel vm = new GolfCartViewModel() { Caption = "Golf Carts " };
+            //Object content = new HVCC.Shell.Views.GolfCartView(vm);
+            //CreateDockPanel(vm.Caption, content);
+            Host.Instance.Execute(HostVerb.Open, "Golf Cart");
         }
 
         /* -------------  Deprecated: The Relationships DocumentPanel was combined into the Properties Edit Dialog --- */
@@ -453,16 +543,16 @@
         {
             //this.TopRibbon.IsMinimized = true;
             //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-            if (vm.IsDirty)
-            {
-                MessageBox.Show("Current changes must be saved or undone before you can modify property owenership.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
-                e.Handled = true;
-            }
-            else
-            {
-                Object content = new HVCC.Shell.Views.ChangeOwnerView() { DataContext = this.DataContext };
-                CreateDockPanel("Change Ownership", content);
-            }
+            //if (vm.IsDirty)
+            //{
+            //    MessageBox.Show("Current changes must be saved or undone before you can modify property owenership.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    e.Handled = true;
+            //}
+            //else
+            //{
+            //    Object content = new HVCC.Shell.Views.ChangeOwnerView() { DataContext = this.DataContext };
+            //    CreateDockPanel("Change Ownership", content);
+            //}
         }
 
         /// <summary>
@@ -473,17 +563,17 @@
         private void OnClicked_Import(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
         {
             //this.TopRibbon.IsMinimized = true;
-            if (vm.IsDirty)
-            {
-                MessageBox.Show("Current changes must be saved or undone before you can import property data.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
-                e.Handled = true;
-            }
-            else
-            {
-                Object content = new HVCC.Shell.Views.PropertiesUpdatedView() { DataContext = this.DataContext };
-                CreateDockPanel("Import Results", content);
-                vm.Import();
-            }
+            //if (vm.IsDirty)
+            //{
+            //    MessageBox.Show("Current changes must be saved or undone before you can import property data.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    e.Handled = true;
+            //}
+            //else
+            //{
+            //    Object content = new HVCC.Shell.Views.PropertiesUpdatedView() { DataContext = this.DataContext };
+            //    CreateDockPanel("Import Results", content);
+            //    vm.Import();
+            //}
         }
 
         #region DEPRECATED 8/9/2017
@@ -530,41 +620,18 @@
         {
             //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
 
-            if (vm.IsDirty)
-            {
-                MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                switch (result)
-                {
-                    case MessageBoxResult.Cancel:
-                        e.Cancel = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Expands the Ribbon on MouseEnter
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TopRibbon_MouseEnter(object sender, MouseEventArgs e)
-        {
-            TopRibbon.ExpandMinimizedRibbon();
-            e.Handled = true;
-        }
-
-        /// <summary>
-        /// Minimizes the Ribbon on MouseLeave
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TopRibbon_MouseLeave(object sender, MouseEventArgs e)
-        {
-            TopRibbon.IsMinimized = true;
-            e.Handled = true;
-
+            ////if (vm.IsDirty)
+            ////{
+            ////    MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            ////    switch (result)
+            ////    {
+            ////        case MessageBoxResult.Cancel:
+            ////            e.Cancel = true;
+            ////            break;
+            ////        default:
+            ////            break;
+            ////    }
+            ////}
         }
 
         #region Report Button Events

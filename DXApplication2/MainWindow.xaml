@@ -23,6 +23,7 @@
         Icon="./Images/Icons/HVCC.ico"
         WindowState="Maximized"
         WindowStyle="None"
+        common:CommandSinkBinding.CommandSink="{Binding}" 
         Closing="DXRibbonWindow_Closing"
         >
 
@@ -101,16 +102,21 @@
         </dx:DialogService>
     </dxmvvm:Interaction.Behaviors>
 
+    <dxr:DXRibbonWindow.CommandBindings>
+        <common:CommandSinkBinding Command="{x:Static commands:CustomCommands.Export}" />
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </dxr:DXRibbonWindow.CommandBindings>
+
     <dxb:BarManager>
         <dxb:BarManager.Items>
             <dxb:BarButtonItem x:Name="saveBtn" 
                     Glyph="{dx:DXImage Image=Save_16x16.png}"
-                    Command="{Binding SaveCommand}"
-                    Content="Save"/>
+                    Command="ApplicationCommands.Save"
+                    Content="SaveAll"/>
 
             <dxb:BarButtonItem x:Name="xlsxBtn"
                     Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}"
-                    Command="{Binding ExportCommand}" CommandParameter="XLSX"
+                    Command="{x:Static commands:CustomCommands.Export}" CommandParameter="XLSX"
                     Content="Export XLSX"/>
 
             <dxb:BarButtonItem x:Name="bAbout" 
@@ -129,9 +135,6 @@
                                        RibbonHeaderVisibility="Visible" 
                                        DockPanel.Dock="Top" 
                                        >
-                    <!--IsMinimized="{Binding IsRibbonMinimized, Mode=TwoWay}"
-                                       MouseEnter="TopRibbon_MouseEnter"
-                                       MouseLeave="TopRibbon_MouseLeave"-->
 
                     <!-- These are the Quick Access buttons -->
                     <dxr:RibbonControl.ToolbarItemLinks>
@@ -158,11 +161,8 @@
                     <dxr:RibbonDefaultPageCategory>
                         <dxr:RibbonPage Caption="Actions" >
                             <dxr:RibbonPageGroup Caption="Data">
-                                <dxb:BarButtonItem Content="Save" 
-                                                       Command="{Binding SaveCommand}" 
-                                                       IsVisible="True" 
-                                                       IsEnabled="{Binding IsEnabledSave}"
-                                                       Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}"
+                                <dxb:BarButtonItem x:Name="bSave" Content="Save" Command="ApplicationCommands.Save" 
+                                                   Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}"
                                                        ToolTip="Save Changes"/>
                                 <!--<dxb:BarButtonItem Content="Refresh" 
                                                        IsEnabled="False"
@@ -207,13 +207,6 @@
                             </dxr:RibbonPageGroup>
 
                             <dxr:RibbonPageGroup Caption="Property Action" IsVisible="{Binding IsPropertyRibbonVisible, Mode=TwoWay}">
-                                <!-- 8-8-2017 Disabled -->
-                                <!--<dxb:BarButtonItem x:Name="bbAddRelationship" Content="AddRelationship" 
-                                               IsEnabled="{Binding IsEnabledAddRelationship}"
-                                               ItemClick="bbAddRelationship_ItemClick"
-                                               Glyph="/Images/Icons/Relationship_16x16.png" 
-                                               LargeGlyph="/Images/Icons/Relationship_32x32.png"/>-->
-                                <!--Command="{Binding AddRelationshipCommand}"-->
 
                                 <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                ItemClick="OnClicked_ChangeOwner" 
@@ -277,6 +270,7 @@
                             AllowDocumentSelector="False"
                             DockItemActivated="DockLayoutManager_DockItemActivated"
                             DockItemClosing="DockLayoutManager_DockItemClosing"
+                        DockItemClosed="DockLayoutManager_DockItemClosed"
                             ClosingBehavior="ImmediatelyRemove" 
                            >
                         <dxd:LayoutGroup x:Name="layoutGroupMain" IsHitTestVisible="False">
@@ -303,9 +297,6 @@
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
                                                 <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
                                             </dxd:LayoutControlItem>
-                                            <!--<dxd:LayoutControlItem>
-                                                    <Image  Source="Images/Icons/person_icon.png" MouseLeftButtonDown="OnClicked_Relationship" Width="100" Height="100" ToolTip="Look up Relationships"/>
-                                                </dxd:LayoutControlItem>-->
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewGolfCart, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCart" Width="100" Height="100" ToolTip="Look up Golf Cart Info"/>
                                             </dxd:LayoutControlItem>

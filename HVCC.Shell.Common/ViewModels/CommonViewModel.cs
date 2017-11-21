@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace HVCC.Shell.Common.ViewModels
 {
@@ -34,10 +35,13 @@ namespace HVCC.Shell.Common.ViewModels
 
         public abstract bool IsDirty { get; }
 
-        public IViewModelHost Host { get; set; }
+        public abstract bool IsBusy { get; set; }
+
+        public IHost Host { get; set; }
 
 
         public event EventHandler CaptionChanged;
+        //public event EventHandler Saved;
 
         // Added for Caption set property.
         private void RaiseCaptionChangedEvent(CaptionChangedEventArgs e)
@@ -47,8 +51,6 @@ namespace HVCC.Shell.Common.ViewModels
                 this.CaptionChanged(this, e);
             }
         }
-
-        public event EventHandler Saved;
 
         public void Closing(out bool cancelCloseOperation)
         {

@@ -14,46 +14,62 @@
     using HVCC.Shell.Common.Commands;
     using HVCC.Shell.Common.Interfaces;
     using HVCC.Shell.Views;
+    using HVCC.Shell.Common.ViewModels;
+    using System.Windows.Input;
+    using HVCC.Shell.Resources;
 
     /// <summary>
     /// Shell.Instance is the "ViewModel" to the MainWindow "View".
     /// </summary>
-    internal partial class MainViewModel // MVVM
+    public partial class MainViewModel : CommonViewModel // MVVM
     {
-        //private DashboardViewModel dashboard = new DashboardViewModel();
-
         public void Initialize(MainWindow view)
         {
             this.View = view;
-            //this.LoadModules(); // (NOT IMPLEMENTED)
-
-            //DashboardView dashboardView = this.dashboard.ViewUI as DashboardView;
-            //if (null != dashboardView)
-            //{
-            //    this.View.OpenDashboard(dashboardView);
-            //}
-
-            ////IViewModel form1 = PlugInManager.Construct<IViewModel>(FeatureKind.Form, "HelloWorldForm");  // dynamic call to: void .ctor()
-            ////if (form1 != null)
-            ////{
-            ////    this.View.OpenDocumentPanel(form1, "Hello World");
-            ////}
-
-            ////IViewModel form2 = PlugInManager.Construct<IViewModel>(FeatureKind.Form, "HelloWorldForm");  // dynamic call to: void .ctor()
-            ////if (form2 != null)
-            ////{
-            ////    form2["Message"] = "This text was set via IForm[\"Message\"]=<some string>";
-            ////    this.View.OpenDocumentPanel(form2, "HW2");
-            ////}
-
         }
 
         internal MainWindow View { get; private set; }
+
+        public override bool IsValid
+        {
+            get { return true; }
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        private bool _isBusy = false;
+        public override bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+            set
+            {
+                if (value != _isBusy)
+                {
+                    _isBusy = value;
+                    RaisePropertyChanged("IsBusy");
+                }
+            }
+        }
+
+        public override bool Save()
+        {
+            return true;
+        }
+
     }
 
-    internal partial class MainViewModel : CommandSink // Singleton Implementation & Command registration
+    public partial class MainViewModel : CommonViewModel, ICommandSink //, CommandSink // Singleton Implementation & Command registration
     {
-        private MainViewModel()
+        public MainViewModel()
         {
             this.RegisterCommands();
             this.OpenMvvmBinders.CollectionChanged += this.OpenMvvmBinders_CollectionChanged;
@@ -69,11 +85,52 @@
 
         private void RegisterCommands()
         {
-            this.RegisterAboutHandler();
-            //this.RegisterHelpHandler();
-            //this.RegisterSaveAllHandler();
-            //this.RegisterRefreshAllHandler();
+            this.RegisterSaveHandler();
+            //this.RegisterExportHandler();
+            //this.RegisterPrintHandler();
         }
+
+        private void RegisterSaveHandler()
+        {
+            _sink.RegisterCommand(
+                ApplicationCommands.Save,
+                param => this.CanSaveExecute,
+                param => this.SaveExecute());
+        }
+
+        private bool CanSaveExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        private void SaveExecute()
+        {
+            this.RaiseCommandExecuting(new CommandExecutingEventArgs(ApplicationCommands.Save));
+
+            System.Windows.MessageBox.Show("Execute Save command", "Save", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+
+            this.RaiseCommandExecuted(new CommandExecutedEventArgs(ApplicationCommands.Save, MessageType.None, string.Empty));
+        }
+
+
+#region ICommandSink Implementation
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
+#endregion
 
         public static MainViewModel Instance
         {
@@ -87,7 +144,7 @@
 
     }
 
-    internal partial class MainViewModel // Keep Track of Open IMvvmBinders
+    public partial class MainViewModel: CommonViewModel // Keep Track of Open IMvvmBinders
     {
         private ObservableCollection<IMvvmBinder> openMvvmBinders = new ObservableCollection<IMvvmBinder>();
 
@@ -99,8 +156,6 @@
         internal void Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             MainWindow mw = this.View as MainWindow;
-            //this.dashboard.SaveTilePositions();
-            //this.dashboard.SaveDashboardWidth(mw.toolWindows.ItemWidth.Value);
 
             IEnumerable<IViewModel> allOpenDocuments = from x in this.OpenMvvmBinders
                                                   where x.ViewModel is IViewModel
@@ -108,7 +163,7 @@
             if (null != allOpenDocuments && allOpenDocuments.Count() > 0)
             {
                 bool cancelClose = false;
-                foreach (IForm form in allOpenDocuments)
+                foreach (IViewModel form in allOpenDocuments)
                 {
                     bool cancel = false;
                     form.Closing(out cancel);
@@ -129,7 +184,7 @@
             {
                 string seperator = string.Empty;
                 StringBuilder sb = new StringBuilder();
-                foreach (IForm form in dirtyDocuments)
+                foreach (IViewModel form in dirtyDocuments)
                 {
                     sb.Append(seperator);
                     sb.Append(form.Caption);
@@ -154,9 +209,9 @@
                             }
                             finally
                             {
-                                IEnumerable<IForm> stillDirtyDocuments = from x in this.OpenMvvmBinders
-                                                                         where x.ViewModel is IForm && ((IForm)x.ViewModel).IsDirty
-                                                                         select x.ViewModel as IForm;
+                                IEnumerable<IViewModel> stillDirtyDocuments = from x in this.OpenMvvmBinders
+                                                                         where x.ViewModel is IViewModel && ((IViewModel)x.ViewModel).IsDirty
+                                                                         select x.ViewModel as IViewModel;
                                 e.Cancel = stillDirtyDocuments.Count() > 0;
                             }
                         }
@@ -167,7 +222,7 @@
         }
     }
 
-    internal partial class MainViewModel
+    public partial class MainViewModel
     {
         public event CommandExecutingEventHandler CommandExecuting;
 
@@ -188,5 +243,28 @@
                 this.CommandExecuted(this, e);
             }
         }
+    }
+
+    public partial class MainViewModel
+    {
+        public bool IsConnected
+        {
+            get
+            {
+                //try
+                //{
+                //    dc.CommandTimeout = 5;
+                //    dc.Connection.Open();
+                //    dc.Connection.Close();
+                //    return true;
+                //}
+                //catch (Exception ex)
+                //{
+                //    return false;
+                //}
+                return true;
+            }
+        }
+     
     }
 }

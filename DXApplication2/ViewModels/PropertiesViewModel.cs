@@ -2115,11 +2115,11 @@
             }
         }
 
-        public void About()  // AboutCommand
-        {
-            System.Windows.MessageBox.Show(string.Format("HVCC.exe\nversion {0}\n\nWritten By: Andy Tudhope\nHVCCTechHelp@gmail.com\n(c)2017\n\nUser Role: {1}", CurrentVersion, this.DBRole.ToString()), "About",
-                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-        }
+        //public void About()  // AboutCommand
+        //{
+        //    System.Windows.MessageBox.Show(string.Format("HVCC.exe\nversion {0}\n\nWritten By: Andy Tudhope\nHVCCTechHelp@gmail.com\n(c)2017\n\nUser Role: {1}", CurrentVersion, this.DBRole.ToString()), "About",
+        //        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+        //}
 
         #endregion
 
