@@ -37,7 +37,14 @@
         {
             get
             {
-                return false;
+                ChangeSet cs = dc.GetChangeSet();
+                if (0 != cs.Updates.Count &&
+                    0 != cs.Inserts.Count &&
+                    0 != cs.Deletes.Count)
+                {
+                    return false;
+                }
+                return true;
             }
         }
 
@@ -217,6 +224,7 @@
                              where x.PropertyID == _selectedCart.PropertyID
                              select x).FirstOrDefault();
                     this.SelectedProperty = (Property)p;
+                    _selectedCart.PropertyChanged += _selectedCart_PropertyChanged;
                 }
                 return _selectedCart;
             }
@@ -224,9 +232,23 @@
             {
                 if (value != _selectedCart)
                 {
+                    if (null != _selectedCart)
+                    {
+                        _selectedCart.PropertyChanged -= _selectedCart_PropertyChanged;
+                    }
                     _selectedCart = value;
+                    _selectedCart.PropertyChanged += _selectedCart_PropertyChanged;
                     RaisePropertyChanged("SelectedCart");
                 }
+            }
+        }
+
+        private void _selectedCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (this.IsDirty)
+            {
+                RaisePropertyChanged("IsDirty");
+                this.Caption = this.Caption + "*";
             }
         }
 
@@ -353,14 +375,16 @@
                 this.dc.GolfCarts.InsertOnSubmit(addItem);
 
                 this.SelectedCart = addItem;
-                bool dirty = ParentViewModel.IsDirty;
 
                 // Clear the search text box.
                 this.FoundRelationships.Remove(this.SelectedFoundRelation);
                 this.SearchName = String.Empty;
 
                 // Raise a "DataUpdated" property change event so Main is notified and the docpanel caption is updated and Save button is enabled.
-                RaisePropertyChanged("DataUpdated");
+                if (this.IsDirty)
+                {
+                    RaisePropertyChanged("DataUpdated");
+                }
             }
             else
             {
@@ -528,7 +552,10 @@
 
         protected virtual void DisposeManagedResources()
         {
-            // No op.
+            if (null != _selectedCart)
+            {
+                _selectedCart.PropertyChanged -= _selectedCart_PropertyChanged;
+            }
         }
 
         /// <summary>

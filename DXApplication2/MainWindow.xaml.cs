@@ -15,13 +15,14 @@
     using HVCC.Shell.Common.Interfaces;
     using DevExpress.XtraReports;
     using DevExpress.Xpf.Printing;
+    using System.ComponentModel;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : DXRibbonWindow
     {
-        //MainViewModel vm = new MainViewModel();
+        //MainViewModel vm = new MainViewModel(); // DEPRECATED
 
         public MainWindow()
         {
@@ -30,6 +31,12 @@
             Host.Instance.OpenMvvmBinders.CollectionChanged += OpenMvvmBinders_CollectionChanged;
         }
 
+        /// <summary>
+        /// Summary:
+        ///     Event handler for MvvmBinder collection changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenMvvmBinders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
@@ -63,30 +70,18 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            // View First Approach: Bind the View to the ViewModel
-            //this.DataContext = vm;
-
-            //if (null != vm)
-            //{
-            //    if (!vm.IsConnected)
-            //    {
-            //        MessageBox.Show("The server is not responding\nPlease check that the server is turned on and try again.\nThe program will now terminate", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        System.Windows.Application.Current.Shutdown();
-            //    }
-            //    vm.PropertyChanged +=
-            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-            //    vm.DocGroup = this.primaryDocumentGroup;
-            //}
+            //this.DataContext = vm; // DEPRECATED 
         }
 
         /// <summary>
-        /// Property Changed event handler for the view model
+        /// Summary:
+        ///     Property Changed event handler for view model property changes
         /// </summary>
         /// <param name="sender">object invoking the method</param>
         /// <param name="e">property change event arguments</param>
         protected void PropertiesViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            IEnumerable<DocumentPanel> dpList;
+            //IEnumerable<DocumentPanel> dpList;
 
             try
             {
@@ -191,59 +186,34 @@
         #region DocumentPanel Region
 
         /// <remarks>
-        /// This code removes a dockpanel from the primary document group. 
+        /// Summary:
+        ///     Remove a dockpanel from the primary document group. 
         /// </remarks>
         private void DockLayoutManager_DockItemClosing(object sender, DevExpress.Xpf.Docking.Base.ItemCancelEventArgs e)
         {
-            //if (true == vm.IsDirty)
-            //{
-            //    MessageBoxResult result = MessageBox.Show("You have unsaved edits, Save edits?", "Unsaved Edits", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-            //    if (MessageBoxResult.Yes == result)
-            //    {
-            //        vm.Save();
-            //    }
-            //    else if (MessageBoxResult.Cancel == result)
-            //    {
-            //        e.Cancel = true; ;
-            //    }
-            //    else
-            //    {
-            //        result = MessageBox.Show("Confirm you would like to abandon all pending changes", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            //        if (MessageBoxResult.Yes == result)
-            //        {
-            //            //// If the user clicked the window's "X" to close, and they have elected NOT to save
-            //            //// the changes, then we revert them back.
-            //            if (e.Item.Caption.ToString().Contains("Properties"))
-            //            {
-            //                vm.CancelPropertyAction();
-            //            }
-            //            if (e.Item.Caption.ToString().Contains("Golf Cart"))
-            //            {
-            //                // TO-DO: Golf....move to the GOlf V/VM
-            //                //vm.RevertGolfCartEdits();
-            //            }
-            //            this.primaryDocumentGroup.Remove(e.Item);
-            //        }
-            //        else
-            //        {
-            //            e.Cancel = true;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    this.primaryDocumentGroup.Remove(e.Item);
-            //    int count = this.primaryDocumentGroup.Items.Count();
-            //    // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
-            //    // Main doesn't throw w/ a null reference 
-            //    this.layoutGroupMain.IsHitTestVisible = true;
-            //    e.Handled = true;
-            //}
-            //Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
+            // Remove the selected document panel from the document group.
+            this.primaryDocumentGroup.Remove(e.Item);
+            int count = this.primaryDocumentGroup.Items.Count();
+
+            // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
+            // Main doesn't throw w/ a null reference if the user clicks on the empty document group panel.
+            if (0 < count)
+            {
+                this.layoutGroupMain.IsHitTestVisible = false;
+            }
+            e.Handled = true;
         }
 
         /// <remarks>
-        /// When a document item is closed, clean up our list of <code>OpenMvvmBinder</code>s.
+        /// Summary:
+        ///     When a document panel is closed, clean up our list of <code>OpenMvvmBinders</code>.
+        ///     
+        /// Parameters:
+        ///     Sender
+        ///         Invoking method
+        ///         
+        ///     DockItemClosingEventArgs
+        ///         Event args
         /// </remarks>
         private void DockLayoutManager_DockItemClosed(object sender, DevExpress.Xpf.Docking.Base.DockItemClosedEventArgs e)
         {
@@ -251,33 +221,10 @@
             {
                 UserControl uc = ((ContentItem)e.Item).Content as UserControl;
 
-                //// TO-DO:  Dispose of the ViewModel and remove this DocPanel from the DockManager list
                 if (null != uc)
                 {
+                    // Invoke the Host Instance to execute the close() method on the user control
                     Host.Instance.Execute(HostVerb.Close, uc);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("DocItemClosed Error: " + ex.Message);
-            }
-        }
-
-        private void CloseDockPanel(IView v)
-        {
-            try
-            {
-                UserControl uc = v as UserControl;
-
-                //// TO-DO:  Dispose of the ViewModel and remove this DocPanel from the DockManager list
-                if (null != uc)
-                {
-                    IDisposable disp = uc.DataContext as IDisposable;
-                    if (null != disp)
-                    {
-                        disp.Dispose();
-                    };
                 }
             }
             catch (Exception ex)
@@ -287,7 +234,7 @@
         }
 
         /// <summary>
-        /// Event handler for when a document panel become the active (focused) panel
+        /// Event handler for when a document panel becomes the active (focused) panel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -296,11 +243,9 @@
             //// Check to make sure we actually have a dockpanel to activate
             if (null != e.Item)
             {
-                //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-
                 //// When any panel other than the Dashboard becomes active, we register the panel as active in the ViewModel
                 LayoutPanel panel = e.Item as LayoutPanel;
-                if ("Dashboard" != panel.Caption.ToString())
+                if (null != panel || "Dashboard" != panel.Caption.ToString())
                 {
                     //vm.ActiveDocPanel = panel;
                 }
@@ -329,15 +274,6 @@
 
             return docPanels;
         }
-
-        //private static int GetIDocumentPanelCount(LayoutGroup layoutGroup)
-        //{
-        //    using (IEnumerable<BaseLayoutItem> list = new List<BaseLayoutItem>())
-        //    {
-        //        list = GetAllDocumentPanels();
-        //    }
-        //    return list.Count();
-        //}
 
         /// <summary>
         /// Returns a list of document groups
@@ -374,7 +310,6 @@
             string caption = view.ViewModel.Caption;
             object content = view;
 
-            //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
             bool exists = false;
 
             //// Get the collection of document panels, then check to see if this doc panel already exists.
@@ -393,7 +328,7 @@
 
             if (!exists)
             {
-                DocumentPanel docPanel = new DocumentPanel(); // { DataContext = this.DataContext };
+                DocumentPanel docPanel = new DocumentPanel();
 
                 docPanel.Caption = caption;
                 docPanel.Content = content;
@@ -409,11 +344,55 @@
             // Documents in the DocumentGroup.  Once the first DocumentPanel is created
             // HitTest is enabled.
             this.layoutGroupMain.IsHitTestVisible = true;
+
+            INotifyPropertyChanged pc = view as INotifyPropertyChanged;
+            if (null != pc)
+            {
+                pc.PropertyChanged += Pc_PropertyChanged;
+            }
         }
 
+        private void Pc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsDirty")
+            {
+                // Do a caption change.....?
+            }
+        }
 
         /// <summary>
-        /// Creates a new document panel, or brings to focus a panel that exists
+        /// Summary:
+        ///     When a Document Panel is closed, its associated ViewModel instance is disposed.
+        ///     
+        /// Parameters:
+        ///     IView v - The view being closed
+        /// </summary>
+        /// <param name="v"></param>
+        private void CloseDockPanel(IView v)
+        {
+            try
+            {
+                UserControl uc = v as UserControl;
+
+                //// Dispose of the ViewModel.  The DocPanel was removed from the document group collection in the
+                //// DockPanelClosing event handler.
+                if (null != uc)
+                {
+                    IDisposable disp = uc.DataContext as IDisposable;
+                    if (null != disp)
+                    {
+                        disp.Dispose();
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("DocItemClosed Error: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// (DEPRECATED) Creates a new document panel, or brings to focus a panel that exists
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="content"></param>
@@ -481,25 +460,12 @@
         {
             //this.viewModelController.CreateGolfCartViewModel();
 
+            // Use Dependancy Inversion to bind the viewModel to the view
             //IViewModel vm = new GolfCartViewModel() { Caption = "Golf Carts " };
             //Object content = new HVCC.Shell.Views.GolfCartView(vm);
             //CreateDockPanel(vm.Caption, content);
             Host.Instance.Execute(HostVerb.Open, "Golf Cart");
         }
-
-        /* -------------  Deprecated: The Relationships DocumentPanel was combined into the Properties Edit Dialog --- */
-        /// <summary>
-        /// Creates or Focuses the Relationships DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void OnClicked_Relationship(object sender, MouseButtonEventArgs e)
-        //{
-        //    PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-        //    //vm.IsEnabledAddRelationship = true;
-        //    Object content = new HVCC.Shell.Views.RelationshipView() { DataContext = this.DataContext };
-        //    CreateDockPanel("Manage Relationships", content);
-        //}
 
         /// <summary>
         /// Creates or Focuses the WaterSystem DocumentPanel
@@ -576,35 +542,8 @@
             //}
         }
 
-        #region DEPRECATED 8/9/2017
-        /// <summary>
-        /// Opens the Relationship Dialog box for adding Relationships
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void bbAddRelationship_ItemClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        //{
-        //    //this.TopRibbon.IsMinimized = true;
+        #endregion
 
-        //    // Since the user clicked on the "Add Relationship" ribbon buttion, we have to
-        //    // control some user interaction here.  The DialogService creates a model dialog window.
-        //    // Therefore, when the user clicks on one of the dialog's command buttons, the dialog
-        //    // send back a 'result' on closing.  For the "Add" function to work, we have to wrap
-        //    // the creation and termination user interactions here.  So, if the "Add" button is
-        //    // clicked, the action is to recreate another dialog window.  The dialog button
-        //    // actions are mapped as follows:
-        //    //      Add == MessageBoxResult.None
-        //    //      Update = MessageBoxResult.OK
-        //    //      Cancel = MessageBoxResult.Cancel
-        //    MessageBoxResult result = new MessageBoxResult();
-        //    result = MessageBoxResult.None;
-        //    while (MessageBoxResult.None == result)
-        //    {
-        //        result = vm.ShowRelationshipDialog(null, PropertiesViewModel.DialogType.ADD);
-        //    }
-        //}
-        #endregion
-        #endregion
         private void CreateMeterExceptionsDocPanel()
         {
             Object content = new HVCC.Shell.Views.WaterMeterExceptionsView() { DataContext = this.DataContext };
@@ -612,26 +551,25 @@
         }
 
         /// <summary>
-        /// Event handler invoked when a document panel is closed by the user
+        /// Summary:
+        ///     Event handler invoked when the main window is closed by the user
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DXRibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-
-            ////if (vm.IsDirty)
-            ////{
-            ////    MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            ////    switch (result)
-            ////    {
-            ////        case MessageBoxResult.Cancel:
-            ////            e.Cancel = true;
-            ////            break;
-            ////        default:
-            ////            break;
-            ////    }
-            ////}
+            if (Host.Instance.AnyDirty())
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.Cancel:
+                        e.Cancel = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         #region Report Button Events
@@ -700,9 +638,5 @@
         }
         #endregion
 
-        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
     }
 }

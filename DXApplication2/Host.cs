@@ -7,9 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using HVCC.Shell.Common;
+using System.Data.Linq;
 
 namespace HVCC.Shell
 {
+    /// <summary>
+    /// Summary:
+    ///     Singleton instance of Host class
+    /// </summary>
     public class Host : IHost
     {
         private Host()
@@ -46,14 +51,20 @@ namespace HVCC.Shell
             }
         }
 
-        public static IMvvmBinder GetNewGolfCartView()
+        public bool AnyDirty()
         {
-            ////IDataContext dc = new SqlServerConnectionDataContext();
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext();
-            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts " };
-            IView v = new HVCC.Shell.Views.GolfCartView(vm);
-            return new MvvmBinder(dc, v, vm);
+            foreach (IMvvmBinder b in OpenMvvmBinders)
+            {
+                DataContext dc = b.DataContext as DataContext;
+                ChangeSet cs = dc.GetChangeSet();
+                if (0 != cs.Updates.Count &&
+                    0 != cs.Inserts.Count &&
+                    0 != cs.Deletes.Count)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void Close(IMvvmBinder mvvmBinder)
@@ -79,6 +90,19 @@ namespace HVCC.Shell
         public void ShowMessage(string message, string caption, HostMessageType messageType = HostMessageType.None)
         {
             throw new NotImplementedException();
+        }
+
+        //// 
+        //// Create/Add your View/ViewModel relationships here....
+        ////
+        public static IMvvmBinder GetNewGolfCartView()
+        {
+            ////IDataContext dc = new SqlServerConnectionDataContext();
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts " };
+            IView v = new HVCC.Shell.Views.GolfCartView(vm);
+            return new MvvmBinder(dc, v, vm);
         }
     }
 }

@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using HVCC.Shell.Models;
 using DevExpress.Xpf.Grid;
 using HVCC.Shell.Common.Interfaces;
+using System.ComponentModel;
 
 namespace HVCC.Shell.Views
 {
@@ -36,6 +37,19 @@ namespace HVCC.Shell.Views
 
             this.DataContext = vm;
             this.Loaded += OnLoaded;
+            INotifyPropertyChanged pc = vm as INotifyPropertyChanged;
+            if (null != pc)
+            {
+                pc.PropertyChanged += Pc_PropertyChanged;
+            }
+        }
+
+        private void Pc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsDirty")
+            {
+                // Do a caption change.....?
+            }
         }
 
         /// <summary>
@@ -61,7 +75,7 @@ namespace HVCC.Shell.Views
             {
                 if (null != row)
                 {
-                   // TO-DO: add validation rules
+                    // TO-DO: add validation rules
                 }
             }
             catch (Exception ex)

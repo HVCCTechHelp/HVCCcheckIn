@@ -14,7 +14,7 @@
     /// </summary>
     public partial class PropertyDetailsView : UserControl
     {
-        PropertiesViewModel vm = null; // new PropertiesViewModel();
+        PropertiesViewModel vm = new PropertiesViewModel();
 
         public PropertyDetailsView()
         {
@@ -33,7 +33,7 @@
             //// The properties are INotify, so when one changes it registers a PropertyChange
             //// event on the other.  Also note, this code must reside outside of the
             //// constructor or a XAML error will be thrown.
-            vm = this.DataContext as PropertiesViewModel;
+            //vm = this.DataContext as PropertiesViewModel;
 
             // Assign the grid view for Export and Printing
             vm.GridTableView = this.propertiesView;

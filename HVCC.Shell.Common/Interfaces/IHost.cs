@@ -4,21 +4,23 @@
 
     public enum HostMessageType { Information, Warning, Error, None }
 
-    public enum HostVerb { Open, Close }
+    public enum HostVerb { Open, Close, Update }
 
     public interface IHost
     {
         void ShowMessage(string message, string caption, HostMessageType messageType = HostMessageType.None);
         bool PromptYesNo(string messagePrompt, string caption);
 
-        void Execute(HostVerb verb, object param);
-
         /// <summary>
         /// Returns 3 state boolean (bool?)
         /// </summary>
         /// <returns>Yes==true, No==false, Cancel==null</returns>
         bool? PromptYesNoCancel(string messagePrompt, string caption);
+
+        void Execute(HostVerb verb, object param);
+
         void Close(IMvvmBinder mvvmBinder);
+
         void RefocusOrOpenViewModel(IMvvmBinder mvvmBinder);
 
         /// <summary>

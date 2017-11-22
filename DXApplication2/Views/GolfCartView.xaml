@@ -43,7 +43,7 @@
             Content="Last"
             ItemClick="bb_ReportClick"
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-            ToolTip="Last Meter Readings"
+            ToolTip="List of registered golf carts"
             />
             <!--<dxb:BarButtonItem
             x:Name="bDetailMeterReadings"

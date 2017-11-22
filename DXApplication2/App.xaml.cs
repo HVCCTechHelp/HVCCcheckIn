@@ -14,7 +14,7 @@
     /// </summary>
     public partial class App : Application
     {
-        private void OnAppStartup_UpdateThemeName(object sender, StartupEventArgs e)
+        private void OnAppStartup(object sender, StartupEventArgs e)
         {
             DevExpress.Xpf.Core.ApplicationThemeHelper.UpdateApplicationThemeName();
             Window w = new MainWindow() { DataContext = new MainViewModel() };
