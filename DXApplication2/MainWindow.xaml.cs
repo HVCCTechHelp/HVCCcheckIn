@@ -16,17 +16,17 @@
     using DevExpress.XtraReports;
     using DevExpress.Xpf.Printing;
     using System.ComponentModel;
+    using HVCC.Shell.Common;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : DXRibbonWindow
+    public partial class MainWindow : DXRibbonWindow, IView
     {
-        //MainViewModel vm = new MainViewModel(); // DEPRECATED
-
         public MainWindow()
         {
             InitializeComponent();
+
             this.Loaded += OnLoaded;
             Host.Instance.OpenMvvmBinders.CollectionChanged += OpenMvvmBinders_CollectionChanged;
         }
@@ -46,7 +46,18 @@
                     if (newBinder is IMvvmBinder)
                     {
                         var v = (newBinder as IMvvmBinder).View;
-                        this.CreateDockPanel(v);
+                        INotifyPropertyChanged propChange = (newBinder as IMvvmBinder).ViewModel as INotifyPropertyChanged;
+                        if (null != propChange)
+                        {
+                            propChange.PropertyChanged += ViewModel_PropertyChanged;
+                        }
+
+                        // The MainWindow has an MvvmBinder, but will not have a data context set.  Therefore,
+                        // only Views tied to a Viewmodel/DataContext will be created as a DockPanel.
+                        if (!v.ToString().Contains("MainWindow"))
+                        {
+                            this.CreateDockPanel(v);
+                        }
                     }
                 }
             }
@@ -70,104 +81,84 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //this.DataContext = vm; // DEPRECATED 
+            //// This is a bit wonky....
+            //// The MainView/MainViewModel MVVM binding is handled differently than the other View/ViewModels for
+            //// the tiles because Main is spun up from Appl.xmal.cs. In effect, when Appl.xmal.cs creates MainWindow
+            //// the data context is already set to an instance of MainViewModel.  However, because I want/need to
+            //// register Main as the first MvvMBinder, I have a assign the 'dc' property to an instance of the
+            //// the HVCCDataContext. However, because of the sequence the code executes, I also have to associated
+            //// the MainViewModel's data context to an instance of HVCCDataContext. The result is the two
+            //// references are mutually exclusive, albe it is works....
+            //IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            //IViewModel vm = this.DataContext as MainViewModel;
+            //IView v = this as IView;
+            //IMvvmBinder binder = new MvvmBinder(dc, v, vm);
+            //if ((this.DataContext as MainViewModel).IsConnected)
+            //{
+            //    Host.Instance.OpenMvvmBinders.Add(binder);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Unable to connect to the database", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         /// <summary>
         /// Summary:
-        ///     Property Changed event handler for view model property changes
+        ///     ViewModel Property Changed event handler for view model property changes
         /// </summary>
         /// <param name="sender">object invoking the method</param>
         /// <param name="e">property change event arguments</param>
-        protected void PropertiesViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            //IEnumerable<DocumentPanel> dpList;
 
             try
             {
-                //switch (e.PropertyName)
-                //{
-                //    case "IsBusy":
-                //        if (vm.IsBusy)
-                //        {
-                //            Mouse.OverrideCursor = Cursors.Wait;
-                //        }
-                //        else
-                //        {
-                //            Mouse.OverrideCursor = Cursors.Arrow;
-                //        }
-                //        break;
+                switch (e.PropertyName)
+                {
+                    case "IsBusy":
+                        Mouse.OverrideCursor = Cursors.Wait;
+                        break;
+                    case "IsNotBusy":
+                        Mouse.OverrideCursor = Cursors.Arrow;
+                        break;
 
-                //    // When data changes, we update the panel's caption with an astrict to indicate a dirty state.  Since
-                //    // property, relationship, and water share a symbiotic data relationship, if anyone of the property related
-                //    // documents panel data change, we update them all.  This leaves the Golf Cart panel as a standalone. Therefore,
-                //    // the logic has to account for the combinations of data changes.
-                //    case "IsEnabledSave":
-                //    case "DataUpdated":
-                //        dpList = GetAllDocumentPanels(this.layoutGroupMain);
-                //        foreach (DocumentPanel dp in dpList)
-                //        {
-                //            // If the user landed here from a Change Ownership, then we close the ChangeOwnership document panel and 
-                //            // make the Manage Properties panel the active panel.
-                //            if (dp.Caption.ToString() == "Change Ownership" && vm.IsBusy)
-                //            {
-                //                dp.CloseCommand = DevExpress.Xpf.Docking.CloseCommand.Close;
-                //                this.primaryDocumentGroup.Remove(dp);
-                //                DocumentPanel makeActive = (from x in dpList
-                //                                            where x.Caption.ToString() == "Manage Properties"
-                //                                            select x).FirstOrDefault();
-                //                if (null == makeActive)
-                //                {
-                //                    makeActive = (from x in dpList
-                //                                  select x).LastOrDefault();
-                //                }
-                //                this.dockLayoutManager.Activate(makeActive);
-                //                //vm.ActiveDocPanel = makeActive;
-                //                break;
-                //            }
+                    // When data changes, we update the panel's caption with an astrict to indicate a dirty state.  Since
+                    // property, relationship, and water share a symbiotic data relationship, if anyone of the property related
+                    // documents panel data change, we update them all.  This leaves the Golf Cart panel as a standalone. Therefore,
+                    // the logic has to account for the combinations of data changes.
+                    case "DataChanged":
+                        foreach (IMvvmBinder binder in Host.Instance.OpenMvvmBinders)
+                        {
+                            // Get the document panel that coorsponds to the view.  Null will
+                            // be returned for the MainWindow binder, so that is ignored.
+                            DocumentPanel dp = GetDocumentPanelByView(binder.View);
+                            if (null != dp)
+                            {
+                                dp.Caption = binder.ViewModel.Caption;
+                                if (null != dp)
+                                {
+                                    if (binder.ViewModel.IsDirty)
+                                    {
+                                        dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
+                                    }
+                                    else
+                                    {
+                                        dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
+                                    }
+                                }
+                            }
+                        }
+                        break;
 
-                //            //if (vm.IsDirty)
-                //            //{
-                //            //    dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
-                //            //}
-                //            //else
-                //            //{
-                //            //    dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
-                //            //}
-                //            //Helper.UpdateCaption(dp, vm.IsDirty);
-                //        }
-                //        break;
+                    // If there are water meter reading exceptions we create a new document panel to display them in a grid.
+                    //case "MeterExceptions":
+                    //    CreateMeterExceptionsDocPanel();
+                    //    break;
 
-                //    // When the active document panel changes, the background colors are adjusted to reflect which
-                //    // panel is the active on.
-                //    //case "ActiveDocPanel":
-                //    //    dpList = GetAllDocumentPanels(this.layoutGroupMain);
-                //    //    foreach (DocumentPanel dp in dpList)
-                //    //    {
-                //    //        if (dp == vm.ActiveDocPanel)
-                //    //        {
-                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
-                //    //        }
-                //    //        else
-                //    //        {
-                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.White;
-                //    //        }
-
-                //    //        if (vm.IsDirty)
-                //    //        {
-                //    //            dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
-                //    //        }
-                //    //        Helper.UpdateCaption(dp, vm.IsDirty);
-                //    //    }
-                //    //    break;
-
-                //    // If there are water meter reading exceptions we create a new document panel to display them in a grid.
-                //    //case "MeterExceptions":
-                //    //    CreateMeterExceptionsDocPanel();
-                //    //    break;
-                //    default:
-                //        break;
-                //}
+                    default:
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -300,6 +291,20 @@
             return docGroups;
         }
 
+        private DocumentPanel GetDocumentPanelByView(IView v)
+        {
+            IEnumerable<DocumentPanel> dpList;
+            dpList = GetAllDocumentPanels(this.layoutGroupMain);
+            foreach (DocumentPanel dp in dpList)
+            {
+                if (v == dp.Content)
+                {
+                    return dp;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Creates a new document panel, or brings to focus a panel that exists
         /// </summary>
@@ -307,8 +312,8 @@
         /// <param name="content"></param>
         private void CreateDockPanel(IView view)
         {
-            string caption = view.ViewModel.Caption;
-            object content = view;
+            string viewCaption = view.ViewModel.Caption;
+            //object viewModel = view;
 
             bool exists = false;
 
@@ -317,7 +322,7 @@
             var docGroupMembers = this.primaryDocumentGroup.GetItems();
             foreach (BaseLayoutItem i in docGroupMembers)
             {
-                if (0 == String.Compare(i.Caption.ToString().Trim(), caption.Trim(), true))
+                if (0 == String.Compare(i.Caption.ToString().Trim(), viewCaption.Trim(), true))
                 {
                     exists = true;
                     primaryDocumentGroup.SelectedTabIndex = i.TabIndex;
@@ -330,8 +335,8 @@
             {
                 DocumentPanel docPanel = new DocumentPanel();
 
-                docPanel.Caption = caption;
-                docPanel.Content = content;
+                docPanel.Caption = viewCaption;
+                docPanel.Content = view;
 
                 this.primaryDocumentGroup.Add(docPanel);
                 primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
@@ -344,20 +349,6 @@
             // Documents in the DocumentGroup.  Once the first DocumentPanel is created
             // HitTest is enabled.
             this.layoutGroupMain.IsHitTestVisible = true;
-
-            INotifyPropertyChanged pc = view as INotifyPropertyChanged;
-            if (null != pc)
-            {
-                pc.PropertyChanged += Pc_PropertyChanged;
-            }
-        }
-
-        private void Pc_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsDirty")
-            {
-                // Do a caption change.....?
-            }
         }
 
         /// <summary>
@@ -458,13 +449,8 @@
         /// <param name="e"></param>
         private void OnClicked_GolfCart(object sender, MouseButtonEventArgs e)
         {
-            //this.viewModelController.CreateGolfCartViewModel();
-
-            // Use Dependancy Inversion to bind the viewModel to the view
-            //IViewModel vm = new GolfCartViewModel() { Caption = "Golf Carts " };
-            //Object content = new HVCC.Shell.Views.GolfCartView(vm);
-            //CreateDockPanel(vm.Caption, content);
-            Host.Instance.Execute(HostVerb.Open, "Golf Cart");
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "GolfCart");
         }
 
         /// <summary>
@@ -574,6 +560,8 @@
 
         #region Report Button Events
         Dictionary<int, int> daysInMonth;
+
+
         private Dictionary<int, int> PopulateDates()
         {
             Dictionary<int, int> daysInMonth = new Dictionary<int, int>();
@@ -635,6 +623,22 @@
         {
             Reports.BalancesDueReport report = new Reports.BalancesDueReport();
             PrintHelper.ShowPrintPreview(this, report);
+        }
+
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
+
+        public object SaveState()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RestoreState(object state)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

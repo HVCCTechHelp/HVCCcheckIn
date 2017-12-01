@@ -1,15 +1,16 @@
-﻿using DevExpress.Mvvm;
-using HVCC.Shell.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace HVCC.Shell.Common.ViewModels
+﻿namespace HVCC.Shell.Common.ViewModels
 {
+    using DevExpress.Mvvm;
+    using HVCC.Shell.Common.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using DevExpress.Xpf.Grid;
+
     public abstract class CommonViewModel : ViewModelBase, IViewModel
     {
 
@@ -26,7 +27,7 @@ namespace HVCC.Shell.Common.ViewModels
                 {
                     _caption = value;
                     // Need to rasise CaptionChanged
-                    this.RaiseCaptionChangedEvent(new CaptionChangedEventArgs() { NewCaption = value });
+                    //this.RaiseCaptionChangedEvent(new CaptionChangedEventArgs() { NewCaption = value });
                 }
             }
         }
@@ -38,19 +39,18 @@ namespace HVCC.Shell.Common.ViewModels
         public abstract bool IsBusy { get; set; }
 
         public IHost Host { get; set; }
-
+        public TableView Table { get; set; }
 
         public event EventHandler CaptionChanged;
-        //public event EventHandler Saved;
 
         // Added for Caption set property.
-        private void RaiseCaptionChangedEvent(CaptionChangedEventArgs e)
-        {
-            if (this.CaptionChanged != null)
-            {
-                this.CaptionChanged(this, e);
-            }
-        }
+        //private void RaiseCaptionChangedEvent(CaptionChangedEventArgs e)
+        //{
+        //    if (this.CaptionChanged != null)
+        //    {
+        //        this.CaptionChanged(this, e);
+        //    }
+        //}
 
         public void Closing(out bool cancelCloseOperation)
         {
@@ -64,13 +64,12 @@ namespace HVCC.Shell.Common.ViewModels
             cancelCloseOperation = false;
         }
 
-        public abstract bool Save();
     }
 
     // Added for Caption set property.
-    public class CaptionChangedEventArgs : EventArgs
-    {
-        public string NewCaption { get; internal set; }
-    }
+    //public class CaptionChangedEventArgs : EventArgs
+    //{
+    //    public string NewCaption { get; internal set; }
+    //}
 
 }

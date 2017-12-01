@@ -37,18 +37,20 @@ namespace HVCC.Shell.Views
 
             this.DataContext = vm;
             this.Loaded += OnLoaded;
-            INotifyPropertyChanged pc = vm as INotifyPropertyChanged;
-            if (null != pc)
-            {
-                pc.PropertyChanged += Pc_PropertyChanged;
-            }
+            //INotifyPropertyChanged pc = vm as INotifyPropertyChanged;
+            //if (null != pc)
+            //{
+            //    pc.PropertyChanged += Pc_PropertyChanged;
+            //}
+
+             this.ViewModel.Table = this.tableViewCarts;
         }
 
         private void Pc_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsDirty")
             {
-                // Do a caption change.....?
+                //var view = this as DockPanel;
             }
         }
 
@@ -126,7 +128,7 @@ namespace HVCC.Shell.Views
             e.Handled = true;
         }
 
-        private void bb_ReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        private void bb_XXXXXClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
         {
             throw new System.ArgumentException("Button not implemented", "Information");
         }

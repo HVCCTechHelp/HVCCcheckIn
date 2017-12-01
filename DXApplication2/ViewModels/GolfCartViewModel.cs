@@ -1,35 +1,48 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
     using System;
+    using System.Linq;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using DevExpress.Xpf.Docking;
+    using System.Data.Linq;
+    using HVCC.Shell.Common;
     using DevExpress.Mvvm;
     using HVCC.Shell.Models;
+    using DevExpress.Spreadsheet;
     using System.Windows.Input;
     using HVCC.Shell.Resources;
-    using System.Data.Linq;
-    using System.Linq;
-    using DevExpress.Spreadsheet;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
 
-    public partial class GolfCartViewModel : CommonViewModel
+    public partial class GolfCartViewModel : CommonViewModel, ICommandSink
     {
         public GolfCartViewModel(IDataContext dc)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
+            this.RegisterCommands();
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
         #region Interfaces
         public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
         #endregion
 
-        /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
+        public enum ExportType
+        {
+            PDF,
+            XLSX
+        }
+        public enum PrintType
+        {
+            PREVIEW,
+            PRINT
+        }
 
-        public PropertiesViewModel ParentViewModel
-        { get; set; }
+        /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
 
         public override bool IsValid => throw new NotImplementedException();
 
@@ -37,32 +50,32 @@
         {
             get
             {
+                string[] caption = Caption.ToString().Split('*');
                 ChangeSet cs = dc.GetChangeSet();
-                if (0 != cs.Updates.Count &&
-                    0 != cs.Inserts.Count &&
-                    0 != cs.Deletes.Count)
+                if (0 == cs.Updates.Count &&
+                    0 == cs.Inserts.Count &&
+                    0 == cs.Deletes.Count)
                 {
-                    return false;
+                Caption = caption[0].TrimEnd(' ');
+                return false;
                 }
+                Caption = caption [0].TrimEnd(' ') + "* ";
                 return true;
             }
         }
 
-        public override bool IsBusy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        /// <summary>
-        /// Controls the enable/disable state of the Save ribbon action button
-        /// </summary>
-        private bool _isEnabledSave = false;  // Default: false
-        public bool IsEnabledSave
+        private bool _isBusy = false;
+        public override bool IsBusy
         {
-            get { return this._isEnabledSave; }
+            get
+            { return _isBusy; }
             set
             {
-                if (value != this._isEnabledSave)
+                if(value != _isBusy)
                 {
-                    this._isEnabledSave = value;
-                    RaisePropertyChanged("IsEnabledSave");
+                    _isBusy = value;
+                    if (_isBusy) { RaisePropertyChanged("IsBusy"); }
+                    else { RaisePropertyChanged("IsNotBusy"); }
                 }
             }
         }
@@ -243,13 +256,18 @@
             }
         }
 
+        /// <summary>
+        /// Summary
+        ///     Raises a property changed event when the SelectedCart data is modified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _selectedCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (this.IsDirty)
-            {
-                RaisePropertyChanged("IsDirty");
-                this.Caption = this.Caption + "*";
-            }
+            //if (this.IsDirty)
+            //{
+                RaisePropertyChanged("DataChanged");
+            //}
         }
 
         #endregion
@@ -338,7 +356,7 @@
         {
             get
             {
-                return _addCartCommand ?? (_addCartCommand = new CommandHandler(() => AddCartAction(), CanNameSearch));
+                return _addCartCommand ?? (_addCartCommand = new CommandHandler(() => AddCartAction(), true));
             }
         }
 
@@ -371,6 +389,8 @@
 
                 // add the selected relationship to the registered carts collection. Then remove it from the found relationships collection. Effectively, we move it
                 // from one to the other collection. Lastly, add it to the datacontext queue to be inserted on save.
+                // Additionally, when the RegisteredCarts collection is modified, it will trigger a PropertyChanged event to notify
+                // Main that data has been updated.
                 this.RegisteredCarts.Add(addItem);
                 this.dc.GolfCarts.InsertOnSubmit(addItem);
 
@@ -380,11 +400,6 @@
                 this.FoundRelationships.Remove(this.SelectedFoundRelation);
                 this.SearchName = String.Empty;
 
-                // Raise a "DataUpdated" property change event so Main is notified and the docpanel caption is updated and Save button is enabled.
-                if (this.IsDirty)
-                {
-                    RaisePropertyChanged("DataUpdated");
-                }
             }
             else
             {
@@ -392,9 +407,93 @@
             }
         }
 
-        public void SaveAction()
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _exportCommand;
+        public ICommand ExportCommand
         {
-            throw new NotImplementedException();
+            get
+            {
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((string parameter) => ExportAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Exports data grid to Excel
+        /// </summary>
+        /// <param name="type"></param>
+        public void ExportAction(string parameter) //ExportCommand
+        {
+            try
+            {
+                Enum.TryParse(parameter, out ExportType type);
+
+                switch (type)
+                {
+                    case ExportType.PDF:
+                        SaveFileDialogService.Filter = "PDF files|*.pdf";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                    case ExportType.XLSX:
+                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error exporting data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _printCommand;
+        public ICommand PrintCommand
+        {
+            get
+            {
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((string parameter) => PrintAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Prints the current document
+        /// </summary>
+        /// <param name="type"></param>
+        public void PrintAction(string parameter) //PrintCommand
+        {
+            try
+            {
+                Enum.TryParse(parameter, out PrintType type);
+
+                switch (type)
+                {
+                    case PrintType.PREVIEW:
+                        ExportService.ShowPrintPreview(this.Table);
+                        break;
+                    case PrintType.PRINT:
+                        ExportService.Print(this.Table);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error printing data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
         }
 
         #endregion
@@ -459,40 +558,69 @@
             changeSet = this.dc.GetChangeSet();
         }
 
-        public override bool Save()
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
-
-        /*================================================================================================================================================*/
-
-        /* --------------------------- INotify Property Change Implementation ----------------------------- */
-        #region INotifyPropertyChagned implementaiton
-        /*============================== CUT
-    /// <summary>
-    /// INotifyPropertyChanged Implementation
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    }
+    /*================================================================================================================================================*/
 
     /// <summary>
-    /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+    /// Command sink bindings......
     /// </summary>
-    /// <param name="propertyName">The name of the property being changed</param>
-    protected virtual void RaisePropertyChanged(string propertyName)
+    public partial class GolfCartViewModel : CommonViewModel, ICommandSink
     {
-        PropertyChangedEventHandler handler = this.PropertyChanged;
-        if (handler != null)
+        public void RegisterCommands()
         {
-            handler(this, new PropertyChangedEventArgs(propertyName));
+            this.RegisterSaveHandler();
         }
-    }
 
-    ================================ TO HERE **************************/
+        private void RegisterSaveHandler()
+        {
+            _sink.RegisterCommand(
+                ApplicationCommands.Save,
+                param => this.CanSaveExecute,
+                param => this.SaveExecute());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool CanSaveExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Summary
+        ///     Commits data context changes to the database
+        /// </summary>
+        private void SaveExecute()
+        {
+            this.IsBusy = true;
+            this.dc.SubmitChanges();
+            RaisePropertiesChanged("DataChanged");
+            this.IsBusy = false;
+        }
+
+        #region ICommandSink Implementation
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
         #endregion
-    }
 
+    }
+    /*================================================================================================================================================*/
 
     /// <summary>
     /// Disposition.......

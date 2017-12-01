@@ -20,6 +20,7 @@
     using System.Text;
     using System.Windows.Input;
     using Resources;
+    using HVCC.Shell.Common.Interfaces;
 
     [POCOViewModel]
     public partial class PropertiesViewModel : ViewModelBase, INotifyPropertyChanged
@@ -46,9 +47,21 @@
         /// <summary>
         /// ViewModel Constructor
         /// </summary>
-        public PropertiesViewModel()
+        public PropertiesViewModel() // (IDataContext dc)
         {
+            //this.Host = HVCC.Shell.Host.Instance;
+            //this.dc = dc as HVCCDataContext;
+            //this.OpenMvvmBinders.CollectionChanged += this.OpenMvvmBinders_CollectionChanged;
         }
+
+        //private void OpenMvvmBinders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (this.OpenMvvmBinders != null)
+        //    {
+        //        // TO-DO: Need to figure out if this is necessary.....
+        //        App.OpenDocuments = this.OpenMvvmBinders.Select(x => x.GetType().Name).ToList();
+        //    }
+        //}
 
         private ObservableCollection<Object> _viewModels = new ObservableCollection<Object>();
         public ObservableCollection<Object> ViewModels
@@ -636,10 +649,10 @@
         /// <summary>
         /// Indicates if the client application is connected to the database
         /// </summary>
-        public bool IsConnected
-        {
-            get { return this.TestConnection(); }
-        }
+        //public bool IsConnected
+        //{
+        //    get { return this.TestConnection(); }
+        //}
 
         /// <summary>
         /// Controls the visibility of the Property specific ribbon buttons
@@ -938,22 +951,22 @@
         /// <summary>
         ///  Retrieve the current release version of the application
         /// </summary>
-        internal static string CurrentVersion
-        {
-            get
-            {
-                try
-                {
-                    return System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed
-                           ? System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString()
-                           : "<Unpublished>";
-                }
-                catch (Exception)
-                {
-                    return "<error>";
-                }
-            }
-        }
+        //internal static string CurrentVersion
+        //{
+        //    get
+        //    {
+        //        try
+        //        {
+        //            return System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed
+        //                   ? System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString()
+        //                   : "<Unpublished>";
+        //        }
+        //        catch (Exception)
+        //        {
+        //            return "<error>";
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Tests the connection to the database

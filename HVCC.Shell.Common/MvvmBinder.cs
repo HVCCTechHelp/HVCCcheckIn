@@ -16,6 +16,7 @@ namespace HVCC.Shell.Common
             this.ViewModel = vm;
         }
 
+
         public IDataContext DataContext { get; private set; }
 
         public IView View { get; private set; }

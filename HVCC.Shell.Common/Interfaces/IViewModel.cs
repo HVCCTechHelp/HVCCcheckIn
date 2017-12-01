@@ -1,5 +1,6 @@
 ﻿namespace HVCC.Shell.Common.Interfaces
 {
+    using DevExpress.Xpf.Grid;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,15 +11,13 @@
     {
         string Caption { get; set; }
 
-        event EventHandler CaptionChanged;
-        //     Occurs when a property value changes.
-        //event EventHandler Saved;
+        //event EventHandler CaptionChanged;
+
+        TableView Table { get; set; }
 
         bool IsValid { get; }
         bool IsDirty { get; }
-        bool Save();
         void Closing(out bool cancelCloseOperation);
-
 
         IHost Host { get; set; }
     }

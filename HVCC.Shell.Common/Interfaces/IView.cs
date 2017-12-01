@@ -9,6 +9,7 @@
     public interface IView
     {
         IViewModel ViewModel { get; set; }
+
         object SaveState();
         void RestoreState(object state);
     }

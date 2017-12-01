@@ -2,6 +2,7 @@
 {
     using System.Windows;
     using System.Windows.Controls;
+    using HVCC.Shell.Common;
 
     public interface IMvvmBinder
     {

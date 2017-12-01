@@ -8,6 +8,7 @@
     using System.Windows;
     using HVCC.Shell;
     using HVCC.Shell.ViewModels;
+    using HVCC.Shell.Common.Interfaces;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -17,8 +18,12 @@
         private void OnAppStartup(object sender, StartupEventArgs e)
         {
             DevExpress.Xpf.Core.ApplicationThemeHelper.UpdateApplicationThemeName();
-            Window w = new MainWindow() { DataContext = new MainViewModel() };
-            this.MainWindow = w;
+
+            // Use Dependancy Inversion to bind the viewModel to the view
+            IMvvmBinder b = Host.GetNewMainWindow();
+
+            this.MainWindow = b.View as Window;
+
             this.MainWindow.Show();
             this.MainWindow.Closed += MainWindow_Closed;
         }
