@@ -23,9 +23,8 @@
             IMvvmBinder b = Host.GetNewMainWindow();
 
             this.MainWindow = b.View as Window;
-
-            this.MainWindow.Show();
             this.MainWindow.Closed += MainWindow_Closed;
+            this.MainWindow.Show();
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

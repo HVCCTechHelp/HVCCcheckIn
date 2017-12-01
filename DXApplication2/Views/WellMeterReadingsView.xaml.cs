@@ -5,20 +5,41 @@
     using System.Windows.Controls;
     using HVCC.Shell.ViewModels;
     using DevExpress.Xpf.Printing;
+    using HVCC.Shell.Models;
+    using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common.Interfaces;
+    using System.ComponentModel;
 
 
     /// <summary>
     /// Interaction logic for WellMeterReadingsView.xaml
     /// </summary>
-    public partial class WellMeterReadingsView : UserControl
+    public partial class WellMeterReadingsView : UserControl, IView
     {
-        WaterWellViewModel vm = null;
-        PropertiesViewModel pvm = null;
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
 
-        public WellMeterReadingsView()
+        public WellMeterReadingsView(IViewModel vm)
         {
             InitializeComponent();
+            this.DataContext = vm;
             this.Loaded += OnLoaded;
+
+            this.ViewModel.Table = this.tableViewWellHistory;
+        }
+
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -28,42 +49,14 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            // When this view is loaded we associate the ViewModel. On the first load, the data context
-            // is set to the parent VM. We capture that VM, and reset the view's VM to the associated VM.
-            // This is just done on the first load. Otherwise, we associated the VM to the existing VM object.
-            if (this.DataContext is WaterWellViewModel)
-            {
-                // ViewModel (vm) and ParentViewModel (pvm) is already assigned
-                // When this view becomes active, we assign the primary gridTable view for exporing.
-                pvm.GridTableView = this.gridTableView2;
-            }
-            else
-            {
-                pvm = this.DataContext as PropertiesViewModel;
-                this.DataContext = new WaterWellViewModel();
-
-                pvm.ViewModels.Add(this.DataContext);
-                vm = this.DataContext as WaterWellViewModel;
-                vm.ParentViewModel = pvm;
-                pvm.GridTableView = this.gridTableView2;
-            }
-            this.gridTableView.Focus();
+           this.gridTableView.Focus();
         }
 
-        /// <summary>
-        /// Property Changed event handler for the view model
-        /// </summary>
-        /// <param name="sender">object invoking the method</param>
-        /// <param name="e">property change event arguments</param>
-        //protected void WaterWellViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        default:
-        //            break;
-        //    }
-        //    Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
-        //}
+        private void wellMeterReadingGrid_Initialized(object sender, System.EventArgs e)
+        {
+            wellMeterReadingGrid.CurrentColumn = wellMeterReadingGrid.Columns.GetColumnByFieldName("MeterReading");
+            gridTableView.FocusedRowHandle = 0;
+        }
 
         /// <summary>
         /// 
@@ -77,8 +70,6 @@
             bool isValidValue = System.Int32.TryParse(e.Value.ToString(), out i);
             if (isValidValue)
             {
-                vm.MeterReadingToGallons(sender, e);
-
                 e.IsValid = true;
                 e.Handled = true;
             }
@@ -104,6 +95,8 @@
             e.Handled = true;
         }
 
+
+        // DO-DO: Converto to ViewModel Commands......
         #region Report Button Events
         Dictionary<int, int> daysInMonth;
         private Dictionary<int, int> PopulateDates()
@@ -144,12 +137,5 @@
             PrintHelper.ShowPrintPreview(this, report);
         }
         #endregion // Bar Button Events
-
-        private void wellMeterReadingGrid_Initialized(object sender, System.EventArgs e)
-        {
-            wellMeterReadingGrid.CurrentColumn = wellMeterReadingGrid.Columns.GetColumnByFieldName("MeterReading");
-            gridTableView.FocusedRowHandle = 0;
-
-        }
     }
 }

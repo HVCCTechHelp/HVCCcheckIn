@@ -81,26 +81,12 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //// This is a bit wonky....
-            //// The MainView/MainViewModel MVVM binding is handled differently than the other View/ViewModels for
-            //// the tiles because Main is spun up from Appl.xmal.cs. In effect, when Appl.xmal.cs creates MainWindow
-            //// the data context is already set to an instance of MainViewModel.  However, because I want/need to
-            //// register Main as the first MvvMBinder, I have a assign the 'dc' property to an instance of the
-            //// the HVCCDataContext. However, because of the sequence the code executes, I also have to associated
-            //// the MainViewModel's data context to an instance of HVCCDataContext. The result is the two
-            //// references are mutually exclusive, albe it is works....
-            //IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            //IViewModel vm = this.DataContext as MainViewModel;
-            //IView v = this as IView;
-            //IMvvmBinder binder = new MvvmBinder(dc, v, vm);
-            //if ((this.DataContext as MainViewModel).IsConnected)
-            //{
-            //    Host.Instance.OpenMvvmBinders.Add(binder);
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Unable to connect to the database", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
+            // Check to make sure there is a connection to the database
+            if (!Host.Instance.IsConnected)
+            {
+                MessageBox.Show("Cannot establish connection to the database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.Close();
+            }
         }
 
         /// <summary>
@@ -162,12 +148,12 @@
             }
             catch (Exception ex)
             {
-                // On a change ownership, when the CO docpanel is closed, it modifies the document panel collection. Therefore, and exception is
-                // thrown.  Simply ignore the collection modified expection and continue on.
-                if (!ex.Message.Contains("Collection was modified"))
-                {
+                //// On a change ownership, when the CO docpanel is closed, it modifies the document panel collection. Therefore, and exception is
+                //// thrown.  Simply ignore the collection modified expection and continue on.
+                //if (!ex.Message.Contains("Collection was modified"))
+                //{
                     MessageBox.Show("Error in Main: " + ex.Message);
-                }
+                //}
             }
         }
 
@@ -182,9 +168,34 @@
         /// </remarks>
         private void DockLayoutManager_DockItemClosing(object sender, DevExpress.Xpf.Docking.Base.ItemCancelEventArgs e)
         {
+            DockLayoutManager dm = sender as DockLayoutManager;
+            string caption = dm.ActiveDockItem.Caption.ToString();
+
+            if (Host.Instance.AnyDirty())
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved edits. Save changes before closing?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        e.Cancel = true;
+                        return;
+                    case MessageBoxResult.No:
+                        break;
+                    default:
+                        e.Cancel = true;
+                        return;
+                }
+            }
             // Remove the selected document panel from the document group.
             this.primaryDocumentGroup.Remove(e.Item);
             int count = this.primaryDocumentGroup.Items.Count();
+
+            // Remove the MvvmBinder.....?
+            //int foo = Host.Instance.OpenMvvmBinders.Count;
+            //Host.Instance.RemoveBinderByCaption(caption);
+            Host.Instance.Execute(HostVerb.Close, "WellMeter"); // TO-DO: This may need to move to Closed()
+
+
 
             // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
             // Main doesn't throw w/ a null reference if the user clicks on the empty document group panel.
@@ -306,7 +317,7 @@
         }
 
         /// <summary>
-        /// Creates a new document panel, or brings to focus a panel that exists
+        /// (MVVM) Creates a new document panel, or brings to focus a panel that exists
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="content"></param>
@@ -471,8 +482,7 @@
         /// <param name="e"></param>
         private void OnClicked_WellMeterReadings(object sender, MouseButtonEventArgs e)
         {
-            Object content = new HVCC.Shell.Views.WellMeterReadingsView() { DataContext = this.DataContext };
-            CreateDockPanel("Well Meter Readings ", content);
+            Host.Instance.Execute(HostVerb.Open, "WellMeter");
         }
 
         /// <summary>

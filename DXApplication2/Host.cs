@@ -28,6 +28,7 @@
     /// </summary>
     public class Host : IHost
     {
+#region Singelton Implementation
         private Host()
         {
             this.OpenMvvmBinders = new ObservableCollection<IMvvmBinder>();
@@ -42,8 +43,21 @@
         {
             internal static readonly Host Instance = new Host();
         }
+#endregion
 
+#region Interface Implementation
         public ObservableCollection<IMvvmBinder> OpenMvvmBinders { get; private set; }
+
+        /// <summary>
+        /// Application permissions list
+        /// </summary>
+        /// <example><code>
+        /// VM implementation:  ApplicationPermission permissions = Host.AppPermissions as ApplicationPermission;
+        ///</code></example>
+        public object AppPermissions
+        {
+            get { return ApplPermissions; }
+        }
 
         public void Execute(HostVerb verb, object param)
         {
@@ -54,6 +68,12 @@
                     var binder = GetNewGolfCartView();
                     this.OpenMvvmBinders.Add(binder);
                 }
+                if (param.ToString() == "WellMeter")
+                {
+                    var binder = GetNewWellMeterView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+
             }
             else if (verb == HostVerb.Close)
             {
@@ -62,40 +82,9 @@
             }
         }
 
-        public bool AnyDirty()
-        {
-            foreach (IMvvmBinder b in OpenMvvmBinders)
-            {
-                DataContext dc = b.DataContext as DataContext;
-                // MainViewModel will always be null, so we ignore it.....
-                if (null != dc)
-                {
-                    ChangeSet cs = dc.GetChangeSet();
-                    if (0 != cs.Updates.Count &&
-                        0 != cs.Inserts.Count &&
-                        0 != cs.Deletes.Count)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         public void Close(IMvvmBinder mvvmBinder)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Application permissions list
-        /// <code>
-        /// VM implementation:  ApplicationPermission permissions = Host.AppPermissions as ApplicationPermission;
-        ///</code>
-        /// </summary>
-        public object AppPermissions
-        {
-            get { return ApplPermissions; }
         }
 
         //public bool PromptYesNo(string messagePrompt, string caption)
@@ -118,10 +107,51 @@
         //    throw new NotImplementedException();
         //}
 
-        //// 
-        //// Create/Add your View/ViewModel relationships here....
-        ////
+        #endregion
 
+        public bool AnyDirty()
+        {
+            foreach (IMvvmBinder b in OpenMvvmBinders)
+            {
+                DataContext dc = b.DataContext as DataContext;
+                // MainViewModel will always be null, so we ignore it.....
+                if (null != dc)
+                {
+                    ChangeSet cs = dc.GetChangeSet();
+                    if (0 != cs.Updates.Count ||
+                        0 != cs.Inserts.Count ||
+                        0 != cs.Deletes.Count)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a binder from the collection based on the ViewModel caption
+        /// </summary>
+        /// <param name="caption"></param>
+        public void RemoveBinderByCaption(string caption)
+        {
+            string[] parts = caption.Split('*');
+            caption = parts[0].TrimEnd(' ');
+
+            foreach (MvvmBinder b in OpenMvvmBinders)
+            {
+                if (b.ViewModel.Caption.Contains(caption))
+                {
+                    OpenMvvmBinders.Remove(b);
+                    break;
+                }
+            }
+        }
+
+/* ============================================================================================= */
+        //// 
+        //// Create/Add your View/ViewModel binders here....
+        ////
         public static IMvvmBinder GetNewMainWindow()
         {
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
@@ -137,6 +167,16 @@
             IView v = new HVCC.Shell.Views.GolfCartView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewWellMeterView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
+            IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+
+        /* ================================================================================================ */
 
         #region DataBase Roles/Permissions
         private static HVCCDataContext dc = new HVCCDataContext();

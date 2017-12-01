@@ -17,6 +17,7 @@ namespace HVCC.Shell.Models
     using System.Windows.Media.Imaging;
     using HVCC.Shell.Helpers;
     using System.ComponentModel;
+    using System.Collections.Specialized;
 
     #region Extend Property Model
     public partial class Property
@@ -333,12 +334,12 @@ namespace HVCC.Shell.Models
     #endregion
 
     #region Extend WellMeterReading Model
+
     /// <summary>
     /// Set up validated columns
     /// </summary>
     public partial class WellMeterReading : INotifyPropertyChanging, INotifyPropertyChanged, IDataErrorInfo
     {
-
         string IDataErrorInfo.Error
         {
             get

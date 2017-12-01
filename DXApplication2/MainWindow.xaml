@@ -160,31 +160,6 @@
                                                        ToolTip="Discard All Changes"/>-->
                             </dxr:RibbonPageGroup>
 
-                            <!--<dxr:RibbonPageGroup Caption="Print/Export">
-                                <dxb:BarSubItem Content="Export" 
-                                                    IsEnabled="{Binding IsEnabledExport}"
-                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
-                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
-                                    <dxb:BarButtonItem Content="To XLSX" Command="{x:Static commands:CustomCommands.Export}" CommandParameter="XLSX"                                                   
-                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
-                                    <dxb:BarButtonItem Content="To PDF" Command="{x:Static commands:CustomCommands.Export}" CommandParameter="PDF"
-                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
-                                </dxb:BarSubItem>
-                                <dxb:BarSubItem Content="Print"  
-                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
-                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
-                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
-                                    <dxb:BarButtonItem Content="Show preview" Command="ApplicationCommands.Print" CommandParameter="PREVIEW"
-                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
-                                    <dxb:BarButtonItem Content="Print" Command="ApplicationCommands.Print" CommandParameter="PRINT"
-                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
-                                </dxb:BarSubItem>
-                            </dxr:RibbonPageGroup>-->
-
                             <!--<dxr:RibbonPageGroup Caption="Property Action" IsVisible="{Binding IsPropertyRibbonVisible, Mode=TwoWay}">
 
                                 <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 

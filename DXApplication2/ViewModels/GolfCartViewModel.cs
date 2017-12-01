@@ -31,16 +31,8 @@
         public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
         #endregion
 
-        public enum ExportType
-        {
-            PDF,
-            XLSX
-        }
-        public enum PrintType
-        {
-            PREVIEW,
-            PRINT
-        }
+        public enum ExportType { PDF, XLSX }
+        public enum PrintType { PREVIEW, PRINT }
 
         /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
 

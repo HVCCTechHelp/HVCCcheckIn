@@ -34,7 +34,6 @@ namespace HVCC.Shell.Views
         public GolfCartView(IViewModel vm)
         {
             InitializeComponent();
-
             this.DataContext = vm;
             this.Loaded += OnLoaded;
             //INotifyPropertyChanged pc = vm as INotifyPropertyChanged;
@@ -46,12 +45,15 @@ namespace HVCC.Shell.Views
              this.ViewModel.Table = this.tableViewCarts;
         }
 
-        private void Pc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public object SaveState()
         {
-            if (e.PropertyName == "IsDirty")
-            {
-                //var view = this as DockPanel;
-            }
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -61,7 +63,6 @@ namespace HVCC.Shell.Views
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //this.DataContext = vm;
         }
 
         /// <summary>
@@ -111,7 +112,6 @@ namespace HVCC.Shell.Views
         /// <param name="e"></param>
         private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
         {
-            //bool dirty = pvm.IsDirty;
             e.Handled = true;
         }
 
@@ -122,26 +122,16 @@ namespace HVCC.Shell.Views
             this.tbSearchName.Focus();
             e.Handled = true;
         }
+
         private void tableViewCarts_CellValueChanged(object sender, CellValueChangedEventArgs e)
         {
-            //bool dirty = pvm.IsDirty;
             e.Handled = true;
         }
 
-        private void bb_XXXXXClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            throw new System.ArgumentException("Button not implemented", "Information");
-        }
+        //private void bb_XXXXXClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        //{
+        //    throw new System.ArgumentException("Button not implemented", "Information");
+        //}
 
-        public object SaveState()
-        {
-            //throw new NotImplementedException();
-            return null;
-        }
-
-        public void RestoreState(object state)
-        {
-            //throw new NotImplementedException();
-        }
     }
 }

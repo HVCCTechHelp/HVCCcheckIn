@@ -33,6 +33,13 @@
         ///                                       select mvvm.ViewModel as IForm;
         /// </code></example>
         ObservableCollection<IMvvmBinder> OpenMvvmBinders { get; }
+
+        /// <summary>
+        /// Application permissions list
+        /// </summary>
+        /// <example><code>
+        /// VM implementation:  ApplicationPermission permissions = Host.AppPermissions as ApplicationPermission;
+        ///</code></example>
         object AppPermissions { get; }
     }
 }

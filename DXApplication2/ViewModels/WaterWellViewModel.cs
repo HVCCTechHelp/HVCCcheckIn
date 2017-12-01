@@ -14,38 +14,73 @@
     using System.Windows.Input;
     using Resources;
     using System.Globalization;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common;
+    using System.Collections.Specialized;
 
     [POCOViewModel]
-    public partial class WaterWellViewModel : ViewModelBase, INotifyPropertyChanged
+    public partial class WaterWellViewModel : CommonViewModel, INotifyPropertyChanged
     {
+
         /* ------------------------------ ViewModel Constructor --------------------------------------- */
         /// <summary>
         /// ViewModel Constructor
         /// </summary>
-        public WaterWellViewModel()
+        public WaterWellViewModel(IDataContext dc)
         {
-
+            this.dc = dc as HVCCDataContext;
+            this.Host = HVCC.Shell.Host.Instance;
+            this.RegisterCommands();
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
         #region Interfaces
         public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
         #endregion // Interfaces
 
         #region Enumberables 
-        public enum ExportType
+        public enum ExportType { PDF, XLSX }
+        public enum PrintType { PREVIEW, PRINT }
+        #endregion //enums
+
+        public override bool IsValid => throw new NotImplementedException();
+
+        public override bool IsDirty
         {
-            PDF,
-            XLSX
-        }
-        public enum PrintType
-        {
-            PREVIEW,
-            PRINT
+            get
+            {
+                string[] caption = Caption.ToString().Split('*');
+                ChangeSet cs = dc.GetChangeSet();
+                if (0 == cs.Updates.Count &&
+                    0 == cs.Inserts.Count &&
+                    0 == cs.Deletes.Count)
+                {
+                    Caption = caption[0].TrimEnd(' ');
+                    return false;
+                }
+                Caption = caption[0].TrimEnd(' ') + "* ";
+                return true;
+            }
         }
 
-        #endregion //Types
+        private bool _isBusy = false;
+        public override bool IsBusy
+        {
+            get
+            { return _isBusy; }
+            set
+            {
+                if (value != _isBusy)
+                {
+                    _isBusy = value;
+                    if (_isBusy) { RaisePropertyChanged("IsBusy"); }
+                    else { RaisePropertyChanged("IsNotBusy"); }
+                }
+            }
+        }
 
         /* ------------------------------------- Boolean Properties ------------------------------------------ */
         #region Booleans
@@ -98,8 +133,6 @@
 
         /* ------------------------------------- Water Well Properties ------------------------ */
         #region Properties
-        public PropertiesViewModel ParentViewModel
-        { get; set; }
 
         /// <summary>
         /// The list of unit types used in the grid drop-down control
@@ -172,17 +205,11 @@
                 if (0 == _wellMeterReadings.Count())
                 {
                     SeedMeterReadings(_wellMeterReadings);
+                    this.RegisterForChangedNotification<WellMeterReading>(_wellMeterReadings);
                 }
                 return _wellMeterReadings;
             }
-            set
-            {
-                if (this._wellMeterReadings != value)
-                {
-                    this._wellMeterReadings = value;
-                }
-                RaisePropertyChanged("WellMeterReadings");
-            }
+            set { }
         }
 
         /// <summary>
@@ -272,50 +299,102 @@
             }
         }
 
+        protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
+        {
+            list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
+            foreach (T row in list)
+            {
+                row.PropertyChanged += new PropertyChangedEventHandler(this.ListItem_PropertyChanged);
+            }
+        }
+
+        private void List_CollectionChanged<T>(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) where T : INotifyPropertyChanged
+        {
+            if (e != null && e.OldItems != null)
+            {
+                foreach (T row in e.OldItems)
+                {
+                    if (row != null)
+                    {
+                        // If one is deleted you can DeleteOnSubmit it here or something, also unregister for its property changed
+                        row.PropertyChanged -= this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+
+            if (e != null && e.NewItems != null)
+            {
+                foreach (T row in e.NewItems)
+                {
+                    if (row != null)
+                    {
+                        // If a new one is entered you can InsertOnSubmit it here or something, also register for its property changed
+                        row.PropertyChanged += this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Listen for changes to a collection item property change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if ("MeterReading" == e.PropertyName.ToString())
+            {
+                foreach (WellMeterReading r in this.WellMeterReadings)
+                {
+                    if (null != r.MeterReading && 0 < r.MeterReading)
+                    {
+                        r.ThroughputInGallons = MeterReadingToGallons(r);
+                    }
+                }
+            }
+        }
+
         #endregion // Properties
 
         // ************************************* Public Methods *****************************************************
         #region Public Methods
-            public void MeterReadingToGallons(object sender, DevExpress.Xpf.Grid.GridCellValidationEventArgs e)
+        public long MeterReadingToGallons(WellMeterReading sender)
         {
-            int wellNumber = this.WellMeterReadings[e.RowHandle].WellNumber;
+            
             double units = 1.0;
             double gallons = 0;
-            int xf = 0;
-            double value = 0;
 
             try
             {
-                WellMeterReading wmr = (WellMeterReading)e.Row;
-                Int32.TryParse(e.Value.ToString(), out xf);
-                value = (double)xf;
-
                 WellMeterReading lastReading = (from r in this.dc.WellMeterReadings
-                                   where wellNumber == r.WellNumber
-                                   orderby r.MeterReadingDate descending
-                                   select r).FirstOrDefault();
+                                                where sender.WellNumber == r.WellNumber
+                                                orderby r.MeterReadingDate descending
+                                                select r).FirstOrDefault();
 
                 if (null == lastReading)
                 {
                     MessageBoxService.ShowMessage("No previous readings, please enter the gallons output mannually.");
+                    return 0;
                 }
                 else
                 {
-                    if ("CubicFt" == wmr.MeterUnitOfMeasure)
+                    if ("CubicFt" == sender.MeterUnitOfMeasure)
                     {
-                        units = this.UnitList.Find(Unit => Unit.Description == wmr.MeterUnitOfMeasure).Value;
-                        gallons = (double)(value * units);
-                        this.WellMeterReadings[e.RowHandle].ThroughputInGallons = (long)Math.Round(gallons);
+                        units = this.UnitList.Find(Unit => Unit.Description == sender.MeterUnitOfMeasure).Value;
+                        gallons = (double)(sender.MeterReading * units);
+
+                        return  (long)Math.Round(gallons);
+                    }
+                    else
+                    {
+                        return (long)sender.MeterReading;
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBoxService.ShowMessage("No previous readings, please enter the gallons output mannually.");
-            }
-            finally
-            {
-
+                return 0;
             }
         }
 
@@ -405,30 +484,159 @@
         }
         #endregion // commands
 
-        /*================================================================================================================================================*/
-
-        /* --------------------------- INotify Property Change Implementation ----------------------------- */
-        #region INotifyPropertyChagned implementaiton
-        /// <summary>
-        /// INotifyPropertyChanged Implementation
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        /// Add Cart Command
         /// </summary>
-        /// <param name="propertyName">The name of the property being changed</param>
-        protected virtual void RaisePropertyChanged(string propertyName)
+        private ICommand _exportCommand;
+        public ICommand ExportCommand
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
+            get
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((string parameter) => ExportAction(parameter), true));
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Exports data grid to Excel
+        /// </summary>
+        /// <param name="type"></param>
+        public void ExportAction(string parameter) //ExportCommand
+        {
+            try
+            {
+                Enum.TryParse(parameter, out ExportType type);
+
+                switch (type)
+                {
+                    case ExportType.PDF:
+                        SaveFileDialogService.Filter = "PDF files|*.pdf";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                    case ExportType.XLSX:
+                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error exporting data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _printCommand;
+        public ICommand PrintCommand
+        {
+            get
+            {
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((string parameter) => PrintAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Prints the current document
+        /// </summary>
+        /// <param name="type"></param>
+        public void PrintAction(string parameter) //PrintCommand
+        {
+            try
+            {
+                Enum.TryParse(parameter, out PrintType type);
+
+                switch (type)
+                {
+                    case PrintType.PREVIEW:
+                        ExportService.ShowPrintPreview(this.Table);
+                        break;
+                    case PrintType.PRINT:
+                        ExportService.Print(this.Table);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error printing data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
+        }
+
     }
+
+    /*================================================================================================================================================*/
+
+    /// <summary>
+    /// Command sink bindings......
+    /// </summary>
+    public partial class WaterWellViewModel : CommonViewModel, ICommandSink
+    {
+        public void RegisterCommands()
+        {
+            this.RegisterSaveHandler();
+        }
+
+        private void RegisterSaveHandler()
+        {
+            _sink.RegisterCommand(
+                ApplicationCommands.Save,
+                param => this.CanSaveExecute,
+                param => this.SaveExecute());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool CanSaveExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Summary
+        ///     Commits data context changes to the database
+        /// </summary>
+        private void SaveExecute()
+        {
+            this.IsBusy = true;
+            this.dc.SubmitChanges();
+            RaisePropertiesChanged("DataChanged");
+            this.IsBusy = false;
+        }
+
+        #region ICommandSink Implementation
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
+        #endregion
+
+    }
+    /*================================================================================================================================================*/
 
     /// <summary>
     /// Disposition.......
@@ -437,7 +645,7 @@
     public partial class WaterWellViewModel : IDisposable
     {
         // Resources that must be disposed:
-        private HVCCDataContext dc = new HVCCDataContext();
+        private HVCCDataContext dc = null;
 
         private bool disposed = false;
 

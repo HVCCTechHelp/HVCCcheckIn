@@ -16,7 +16,9 @@
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"  
         xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+        common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
+        d:DesignHeight="768" d:DesignWidth="1024"
     >
 
     <UserControl.Resources>
@@ -30,7 +32,13 @@
 
     <dxmvvm:Interaction.Behaviors>
         <dx:DXMessageBoxService/>
+        <common:TableViewExportService />
+        <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
     </dxmvvm:Interaction.Behaviors>
+
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
 
     <dxb:BarManager>
         <dxb:BarManager.Items>
@@ -48,22 +56,48 @@
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
             ToolTip="Last Meter Readings"
             />
-
         </dxb:BarManager.Items>
-        <!--Glyph="{dx:DXImage Image=Refresh_16x16.png}" LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"-->
 
         <DockPanel x:Name="dockPanel">
 
-            <!--<dxr:RibbonControl DockPanel.Dock="Top">
+            <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="actions" Caption="Actions">
+                        <dxr:RibbonPageGroup Caption="Print/Export">
+                            <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding IsEnabledExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                            </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Print"  
+                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                            </dxb:BarSubItem>
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+
                     <dxr:RibbonPage x:Name="Well" Caption="Reports">
                         <dxr:RibbonPageGroup Caption="Reports">
                             <dxb:BarButtonItemLink BarItemName="bLastMeterReadings" RibbonStyle="Large" MergeType="Replace" />
                             <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
                         </dxr:RibbonPageGroup>
+                        
                     </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
-            </dxr:RibbonControl>-->
+            </dxr:RibbonControl>
 
             <dxlc:LayoutControl Orientation="Vertical">
 
@@ -203,7 +237,7 @@
                              >
 
                             <dxg:GridControl.View>
-                                <dxg:TableView x:Name="gridTableView2" 
+                                <dxg:TableView x:Name="tableViewWellHistory" 
                                 AllowEditing="False"
 				                AllowPerPixelScrolling="True" 
                                 AutoWidth="True" 

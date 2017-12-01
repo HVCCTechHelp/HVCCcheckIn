@@ -41,19 +41,18 @@
     </dxmvvm:Interaction.Behaviors>
 
     <UserControl.CommandBindings>
-        <!--<common:CommandSinkBinding Command="{x:Static commands:CustomCommands.Export}" />-->
         <common:CommandSinkBinding Command="ApplicationCommands.Save" />
     </UserControl.CommandBindings>
 
     <dxb:BarManager>
         <dxb:BarManager.Items>
-            <dxb:BarButtonItem
+            <!--<dxb:BarButtonItem
             x:Name="bXXXXX"
             Content="Last"
             ItemClick="bb_XXXXXClick"
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
             ToolTip="List of registered golf carts"
-            />
+            />-->
             <!--<dxb:BarButtonItem
             x:Name="bDetailMeterReadings"
             Content="Detail"
@@ -61,7 +60,6 @@
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
             ToolTip="Last Meter Readings"
             />-->
-
         </dxb:BarManager.Items>
 
         <DockPanel x:Name="dockPanel">
@@ -69,10 +67,6 @@
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
                     <dxr:RibbonPage x:Name="Golf" Caption="Actions">
-                        <dxr:RibbonPageGroup Caption="Data">
-                            <!--<dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />-->
-                            <!--<dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />-->
-                        </dxr:RibbonPageGroup>
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
@@ -99,11 +93,15 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
+                        <!--<dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>-->
+
                     </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
 
             </dxr:RibbonControl>
-
 
             <dxlc:LayoutControl Orientation="Vertical">
 

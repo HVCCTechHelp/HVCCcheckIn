@@ -70,6 +70,5 @@
     //public class CaptionChangedEventArgs : EventArgs
     //{
     //    public string NewCaption { get; internal set; }
-    //}
-
+    //
 }
