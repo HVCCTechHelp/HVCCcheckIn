@@ -43,10 +43,7 @@
         {
             internal static readonly Host Instance = new Host();
         }
-#endregion
-
-#region Interface Implementation
-        public ObservableCollection<IMvvmBinder> OpenMvvmBinders { get; private set; }
+        #endregion
 
         /// <summary>
         /// Application permissions list
@@ -58,7 +55,59 @@
         {
             get { return ApplPermissions; }
         }
+        public object Parameter { get; set; }
 
+        #region Interface Implementation
+        public ObservableCollection<IMvvmBinder> OpenMvvmBinders { get; private set; }
+        /* ============================================================================================= */
+        //// 
+        //// Create/Add your View/ViewModel binders here....
+        ////
+        public static IMvvmBinder GetNewMainWindow()
+        {
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new MainViewModel(dc) as IViewModel;
+            IView v = new MainWindow() { DataContext = vm } as IView;
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewGolfCartView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts " };
+            IView v = new HVCC.Shell.Views.GolfCartView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewWellMeterView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
+            IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewWaterMeterView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterMeterViewModel(dc) { Caption = "Water Meter Readings " };
+            IView v = new HVCC.Shell.Views.WaterMeterView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewWaterMeterEditDialogView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterMeterEditViewModel(dc) { Caption = "Water Meter Edit" };
+            IView v = new HVCC.Shell.Views.WaterSystemEditDialogView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+
+/// <summary>
+/// Executes Open/Close on MvvmBinders
+/// </summary>
+/// <param name="verb"></param>
+/// <param name="param"></param>
         public void Execute(HostVerb verb, object param)
         {
             if (verb == HostVerb.Open)
@@ -68,16 +117,26 @@
                     var binder = GetNewGolfCartView();
                     this.OpenMvvmBinders.Add(binder);
                 }
-                if (param.ToString() == "WellMeter")
+                else if (param.ToString() == "WellMeter")
                 {
                     var binder = GetNewWellMeterView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "WaterMeter")
+                {
+                    var binder = GetNewWaterMeterView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "WaterMeterEdit")
+                {
+                    var binder = GetNewWaterMeterEditDialogView();
                     this.OpenMvvmBinders.Add(binder);
                 }
 
             }
             else if (verb == HostVerb.Close)
             {
-                var r = this.OpenMvvmBinders.Where(x => x.View == param).FirstOrDefault();
+                var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption == param).FirstOrDefault();
                 this.OpenMvvmBinders.Remove(r);
             }
         }
@@ -146,34 +205,6 @@
                     break;
                 }
             }
-        }
-
-/* ============================================================================================= */
-        //// 
-        //// Create/Add your View/ViewModel binders here....
-        ////
-        public static IMvvmBinder GetNewMainWindow()
-        {
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new MainViewModel(dc) as IViewModel;
-            IView v = new MainWindow() { DataContext = vm } as IView;
-            return new MvvmBinder(dc, v, vm);
-        }
-        public static IMvvmBinder GetNewGolfCartView()
-        {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts " };
-            IView v = new HVCC.Shell.Views.GolfCartView(vm);
-            return new MvvmBinder(dc, v, vm);
-        }
-        public static IMvvmBinder GetNewWellMeterView()
-        {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
-            IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
-            return new MvvmBinder(dc, v, vm);
         }
 
         /* ================================================================================================ */

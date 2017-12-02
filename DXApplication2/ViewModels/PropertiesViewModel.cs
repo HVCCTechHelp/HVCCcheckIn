@@ -1260,6 +1260,7 @@
         }
 
         /// <summary>
+        /// TO-DO: Move to another VM....
         /// Adds new water meter readings to collection
         /// </summary>
         /// <param name="relationshipViewModel"></param>
@@ -1272,14 +1273,14 @@
             // However, the MeterReadings are stored in a separate collection, so we have to iterate
             // over them and add new items to the PropertiesVM in order for them to be registered
             // in the DC's changeset.
-            foreach (WaterMeterReading mr in waterSystemViewModel.MeterReadings)
-            {
-                if (0 == mr.RowID)
-                {
-                    this.SelectedProperty.WaterMeterReadings.Add(mr);
-                    RaisePropertyChanged("WaterDataUpdated");
-                }
-            }
+            //foreach (WaterMeterReading mr in waterSystemViewModel.MeterReadings)
+            //{
+            //    if (0 == mr.RowID)
+            //    {
+            //        this.SelectedProperty.WaterMeterReadings.Add(mr);
+            //        RaisePropertyChanged("WaterDataUpdated");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -2342,70 +2343,70 @@
         /// <summary>
         /// This command fires off the Edit WaterSystem Dialog input form
         /// </summary>
-        public void ShowWaterSystemDialog(Property selectedProperty)
-        {
-            // The WaterSystem dialog is mostly view only.  However, new meter readings
-            // are entered through the meter reading grid.
-            WaterMeterViewModel waterSystemViewModel = null;
+        //public void ShowWaterSystemDialog(Property selectedProperty)
+        //{
+        //    // The WaterSystem dialog is mostly view only.  However, new meter readings
+        //    // are entered through the meter reading grid.
+        //    WaterMeterViewModel waterSystemViewModel = null;
 
-            if (waterSystemViewModel == null)
-            {
-                // Create a new WaterSystemViewModel and copy over the property values from the PropertiesViewModel
-                waterSystemViewModel = new WaterMeterViewModel();
-                waterSystemViewModel.SelectedProperty = this.SelectedProperty;
-                waterSystemViewModel.MeterReadings = this.SelectedProperty.MeterReadings;
-                waterSystemViewModel.ApplPermissions = this.ApplPermissions;
-                if (String.IsNullOrEmpty(this.SelectedProperty.Parcel))
-                {
-                    waterSystemViewModel.CanViewParcel = false;
-                }
-                else
-                {
-                    waterSystemViewModel.CanViewParcel = true;
-                }
-            }
+        //    if (waterSystemViewModel == null)
+        //    {
+        //        // Create a new WaterSystemViewModel and copy over the property values from the PropertiesViewModel
+        //        waterSystemViewModel = new WaterMeterViewModel();
+        //        waterSystemViewModel.SelectedProperty = this.SelectedProperty;
+        //        waterSystemViewModel.MeterReadings = this.SelectedProperty.MeterReadings;
+        //        waterSystemViewModel.ApplPermissions = this.ApplPermissions;
+        //        if (String.IsNullOrEmpty(this.SelectedProperty.Parcel))
+        //        {
+        //            waterSystemViewModel.CanViewParcel = false;
+        //        }
+        //        else
+        //        {
+        //            waterSystemViewModel.CanViewParcel = true;
+        //        }
+        //    }
 
-            if (this.ApplPermissions.CanEditWater)
-            {
-                UICommand updateCommand = new UICommand()
-                {
-                    Caption = "Update",
-                    IsCancel = false,
-                    IsDefault = true,
-                    Command = new DelegateCommand<CancelEventArgs>(
-                        x => AddWaterMeetingReadingToCollection(waterSystemViewModel)
-                        ),
-                };
-                UICommand cancelCommand = new UICommand()
-                {
-                    Id = MessageBoxResult.Cancel,
-                    Caption = "Cancel",
-                    IsCancel = true,
-                    IsDefault = false,
-                    Command = new DelegateCommand<CancelEventArgs>(
-                        x => CancelWaterSystemAction(waterSystemViewModel)
-                        ),
-                };
-                UICommand result = WaterSystemEditDialogService.ShowDialog(
-                    dialogCommands: new List<UICommand>() { updateCommand, cancelCommand },
-                    title: "Edit Water Record",
-                    viewModel: waterSystemViewModel);
-            }
-            else
-            {
-                UICommand cancelCommand = new UICommand()
-                {
-                    Id = MessageBoxResult.Cancel,
-                    Caption = "Cancel",
-                    IsCancel = true,
-                    IsDefault = false,
-                };
-                UICommand result = WaterSystemEditDialogService.ShowDialog(
-                    dialogCommands: new List<UICommand>() { cancelCommand },
-                    title: "Water System",
-                    viewModel: waterSystemViewModel);
-            }
-        }
+        //    if (this.ApplPermissions.CanEditWater)
+        //    {
+        //        UICommand updateCommand = new UICommand()
+        //        {
+        //            Caption = "Update",
+        //            IsCancel = false,
+        //            IsDefault = true,
+        //            Command = new DelegateCommand<CancelEventArgs>(
+        //                x => AddWaterMeetingReadingToCollection(waterSystemViewModel)
+        //                ),
+        //        };
+        //        UICommand cancelCommand = new UICommand()
+        //        {
+        //            Id = MessageBoxResult.Cancel,
+        //            Caption = "Cancel",
+        //            IsCancel = true,
+        //            IsDefault = false,
+        //            Command = new DelegateCommand<CancelEventArgs>(
+        //                x => CancelWaterSystemAction(waterSystemViewModel)
+        //                ),
+        //        };
+        //        UICommand result = WaterSystemEditDialogService.ShowDialog(
+        //            dialogCommands: new List<UICommand>() { updateCommand, cancelCommand },
+        //            title: "Edit Water Record",
+        //            viewModel: waterSystemViewModel);
+        //    }
+        //    else
+        //    {
+        //        UICommand cancelCommand = new UICommand()
+        //        {
+        //            Id = MessageBoxResult.Cancel,
+        //            Caption = "Cancel",
+        //            IsCancel = true,
+        //            IsDefault = false,
+        //        };
+        //        UICommand result = WaterSystemEditDialogService.ShowDialog(
+        //            dialogCommands: new List<UICommand>() { cancelCommand },
+        //            title: "Water System",
+        //            viewModel: waterSystemViewModel);
+        //    }
+        //}
         #endregion
 
 

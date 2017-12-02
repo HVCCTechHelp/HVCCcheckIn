@@ -40,8 +40,8 @@
             return _canExecute;
         }
 
-        private Action<string> _actionWparm;
-        public CommandHandlerWparm(Action<string> action, bool canExecute)
+        private Action<object> _actionWparm;
+        public CommandHandlerWparm(Action<object> action, bool canExecute)
         {
             _actionWparm = action;
             _canExecute = canExecute;
@@ -49,7 +49,7 @@
 
         public void Execute(object parameter)
         {
-            _actionWparm(parameter as string);
+            _actionWparm(parameter as object);
         }
 
         public event EventHandler CanExecuteChanged

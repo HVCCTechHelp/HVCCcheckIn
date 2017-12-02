@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.WaterSystemView"
+﻿<UserControl x:Class="HVCC.Shell.Views.WaterMeterView"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
@@ -15,7 +15,9 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
+        d:DesignHeight="768" d:DesignWidth="1024"
         >
 
     <UserControl.Resources>
@@ -26,12 +28,75 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <dxlc:LayoutControl Orientation="Vertical">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:OpenFileDialogService Title="Open File"/>
+        <dxmvvm:SaveFileDialogService Title="Save File"/>
+        <common:TableViewExportService />
+        <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
 
-        <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
 
-            <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
-                <dxg:GridControl x:Name="propertyGrid" 
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <!--<dxb:BarButtonItem
+            x:Name="bXXXXX"
+            Content="Last"
+            ItemClick="bb_XXXXXClick"
+            Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+            ToolTip="List of registered golf carts"
+            />-->
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="actions" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Print/Export">
+                            <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding IsEnabledExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                            </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Print"  
+                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                            </dxb:BarSubItem>
+                        </dxr:RibbonPageGroup>
+
+                        <!--<dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>-->
+
+                    </dxr:RibbonPage>
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+
+            <dxlc:LayoutControl Orientation="Vertical">
+
+                <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
+
+                    <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
+                        <dxg:GridControl x:Name="propertyGrid" 
                              ItemsSource="{Binding PropertiesList, Mode=TwoWay}" 
                              SelectedItem="{Binding SelectedProperty}"
                              IsEnabled="True" 
@@ -39,8 +104,8 @@
                              MaxHeight="750"
                              >
 
-                    <dxg:GridControl.View>
-                        <dxg:TableView x:Name="propertiesTableView" 
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="propertiesTableView" 
                                 AllowEditing="True"
 				                AllowPerPixelScrolling="True" 
                                 AutoWidth="True" 
@@ -56,114 +121,119 @@
                                 RowDoubleClick="tableView_RowDoubleClick"
                                 >
 
-                            <dxg:TableView.FormatConditions>
-                                <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
-                                    <dxc:Format Foreground="Red"/>
-                                </dxg:FormatCondition>
-                                <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
-                                    <dxc:Format Foreground="Green"/>
-                                </dxg:FormatCondition>
-                            </dxg:TableView.FormatConditions>
-                        </dxg:TableView>
-                    </dxg:GridControl.View>
+                                    <dxg:TableView.FormatConditions>
+                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Red"/>
+                                        </dxg:FormatCondition>
+                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Green"/>
+                                        </dxg:FormatCondition>
+                                    </dxg:TableView.FormatConditions>
+                                    
+                                    <dxmvvm:Interaction.Behaviors>
+                                        <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                                               Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}"/>
+                                    </dxmvvm:Interaction.Behaviors>
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
 
-                    <!-- Use the GroupIndex attribute on the GridColumn to group on opening -->
-                    <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="Section" Header="Section" Width="10"
+                            <!-- Use the GroupIndex attribute on the GridColumn to group on opening -->
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Section" Header="Section" Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True" 
                                             SortOrder="Ascending" SortIndex="0"
                                             />
-                        <dxg:GridColumn FieldName="Block" Header="Block " Width="10"      
+                                <dxg:GridColumn FieldName="Block" Header="Block " Width="10"      
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True"
                                             />
-                        <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"     
+                                <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"     
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True"
                                             />
-                        <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"   
+                                <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"   
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True"
                                             />
-                        <dxg:GridColumn FieldName="BillTo"  Header="BillTo" Width="20" 
+                                <dxg:GridColumn FieldName="BillTo"  Header="BillTo" Width="20" 
                                             Visible="False"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Bill To:" 
                                             />
-                        <dxg:GridColumn FieldName="Status"  Header="Status" Width="20" 
+                                <dxg:GridColumn FieldName="Status"  Header="Status" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Status:" 
                                             />
-                        <dxg:GridColumn FieldName="PhysicalAddress"  Header="Address" Width="100" 
+                                <dxg:GridColumn FieldName="PhysicalAddress"  Header="Address" Width="100" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Address:" 
                                             />
-                        <dxg:GridColumn FieldName="Parcel"  Header="Parcel" Width="20" 
+                                <dxg:GridColumn FieldName="Parcel"  Header="Parcel" Width="20" 
                                             Visible="False"
                                             AllowEditing="True" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Parcel:" 
                                             />
-                        <dxg:GridColumn FieldName="LastMeterEntry.ReadingDate"  Header="Last Reading" Width="20" 
+                                <dxg:GridColumn FieldName="LastMeterEntry.ReadingDate"  Header="Last Reading" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Last Read:" 
                                             >
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d">
-                                </dxe:TextEditSettings>
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="LastMeterEntry.Consumption"  Header="Consumption" Width="20" 
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="LastMeterEntry.Consumption"  Header="Consumption" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Last Read:" 
                                             >
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="MeterNumber"  Header="MeterNumber" Width="20" 
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="MeterNumber"  Header="MeterNumber" Width="20" 
                                             Visible="False"
                                             AllowEditing="True" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Water Meter:" 
                                             />
-                        <dxg:GridColumn FieldName="OwnerLName" Header="Last Name " Width="50"  
+                                <dxg:GridColumn FieldName="OwnerLName" Header="Last Name " Width="50"  
                                             AllowEditing="False" 
                                             EditFormVisible="True"
                                             EditFormCaption="Last Name:"
                                             />
-                        <dxg:GridColumn FieldName="OwnerFName" Header="First Name " Width="50"  
+                                <dxg:GridColumn FieldName="OwnerFName" Header="First Name " Width="50"  
                                             AllowEditing="False" 
                                             EditFormVisible="True"
                                             EditFormCaption="First Name:"
                                             />
-                        <dxg:GridColumn FieldName="OwnerPrimaryPhone"  Header="Phone-1" Width="10" 
+                                <dxg:GridColumn FieldName="OwnerPrimaryPhone"  Header="Phone-1" Width="10" 
                                             Visible="False"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Phone-1:" 
                                             />
-                        <dxg:GridColumn FieldName="OwnerSecondaryPhone"  Header="Phone-2" Width="10" 
+                                <dxg:GridColumn FieldName="OwnerSecondaryPhone"  Header="Phone-2" Width="10" 
                                             Visible="False"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Phone-2:" 
                                             />
-                        <dxg:GridColumn FieldName="WaterSystemNotes"  Header="WaterSystemNotes" Width="20" 
+                                <dxg:GridColumn FieldName="WaterSystemNotes"  Header="WaterSystemNotes" Width="20" 
                                             Visible="False"
                                             AllowEditing="True" 
                                             EditFormVisible="True" 
@@ -171,43 +241,45 @@
                                             EditFormColumnSpan="4" 
                                             EditFormRowSpan="2"
                                             >
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:MemoEditSettings ShowIcon="True" PopupWidth="250" MemoTextWrapping="Wrap" MemoVerticalScrollBarVisibility="Auto" />
-                            </dxg:GridColumn.EditSettings>
-                            <dxg:GridColumn.EditFormTemplate>
-                                <DataTemplate>
-                                    <dxe:TextEdit Name="PART_Editor" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="100" Margin="0,12,0,0" VerticalScrollBarVisibility="Visible" />
-                                </DataTemplate>
-                            </dxg:GridColumn.EditFormTemplate>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="LastMeterEntry.MeterReading"  Header="MeterReading" Width="20" 
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:MemoEditSettings ShowIcon="True" PopupWidth="250" MemoTextWrapping="Wrap" MemoVerticalScrollBarVisibility="Auto" />
+                                    </dxg:GridColumn.EditSettings>
+                                    <dxg:GridColumn.EditFormTemplate>
+                                        <DataTemplate>
+                                            <dxe:TextEdit Name="PART_Editor" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="100" Margin="0,12,0,0" VerticalScrollBarVisibility="Visible" />
+                                        </DataTemplate>
+                                    </dxg:GridColumn.EditFormTemplate>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="LastMeterEntry.MeterReading"  Header="MeterReading" Width="20" 
                                             Visible="False"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Last Read:" 
                                             />
-                        <dxg:GridColumn FieldName="WaterMeterReadings"  Header="Readings" Width="20" 
+                                <dxg:GridColumn FieldName="WaterMeterReadings"  Header="Readings" Width="20" 
                                             Visible="False"
                                             AllowEditing="False" 
                                             EditFormVisible="True" 
                                             EditFormCaption="Readings:" 
                                             />
-                    </dxg:GridControl.Columns>
-                    <!-- columns of the master grid -->
+                            </dxg:GridControl.Columns>
+                            <!-- columns of the master grid -->
 
-                    <dxg:GridControl.TotalSummary>
-                        <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
-                    </dxg:GridControl.TotalSummary>
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                            </dxg:GridControl.TotalSummary>
 
 
-                </dxg:GridControl>
+                        </dxg:GridControl>
 
-                <dxmvvm:Interaction.Triggers>
-                    <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding Commands.ShowEditForm, ElementName=tableView}" ProcessEventsFromDisabledEventOwner="True" />
-                </dxmvvm:Interaction.Triggers>
-            </dxlc:LayoutItem>
+                        <dxmvvm:Interaction.Triggers>
+                            <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding Commands.ShowEditForm, ElementName=tableView}" ProcessEventsFromDisabledEventOwner="True" />
+                        </dxmvvm:Interaction.Triggers>
+                    </dxlc:LayoutItem>
 
-        </dxlc:LayoutGroup>
+                </dxlc:LayoutGroup>
 
-    </dxlc:LayoutControl>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
 </UserControl>

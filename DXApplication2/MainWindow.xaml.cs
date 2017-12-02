@@ -190,16 +190,17 @@
             this.primaryDocumentGroup.Remove(e.Item);
             int count = this.primaryDocumentGroup.Items.Count();
 
-            // Remove the MvvmBinder.....?
-            //int foo = Host.Instance.OpenMvvmBinders.Count;
-            //Host.Instance.RemoveBinderByCaption(caption);
-            Host.Instance.Execute(HostVerb.Close, "WellMeter"); // TO-DO: This may need to move to Closed()
+            // Remove the MvvmBinder.
+            Host.Instance.Execute(HostVerb.Close, caption); // TO-DO: This may need to move to Closed()
 
+            // Set the previous DockPanel as the active panel
+            primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
+            this.dockLayoutManager.Activate(primaryDocumentGroup.Items[primaryDocumentGroup.SelectedTabIndex]);
 
 
             // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so
             // Main doesn't throw w/ a null reference if the user clicks on the empty document group panel.
-            if (0 < count)
+            if (0 == count)
             {
                 this.layoutGroupMain.IsHitTestVisible = false;
             }
@@ -324,7 +325,6 @@
         private void CreateDockPanel(IView view)
         {
             string viewCaption = view.ViewModel.Caption;
-            //object viewModel = view;
 
             bool exists = false;
 
@@ -471,8 +471,7 @@
         /// <param name="e"></param>
         private void OnClicked_WaterSystem(object sender, MouseButtonEventArgs e)
         {
-            Object content = new HVCC.Shell.Views.WaterSystemView() { DataContext = this.DataContext };
-            CreateDockPanel("Water System ", content);
+            Host.Instance.Execute(HostVerb.Open, "WaterMeter");
         }
 
         /// <summary>

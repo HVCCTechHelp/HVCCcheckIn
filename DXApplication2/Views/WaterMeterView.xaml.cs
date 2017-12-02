@@ -9,17 +9,36 @@
     using System;
     using Validation;
     using DevExpress.Xpf.Bars;
+    using HVCC.Shell.Common.Interfaces;
+
     /// <summary>
     /// Interaction logic for WaterSystemView.xaml
     /// </summary>
-    public partial class WaterSystemView : UserControl
+    public partial class WaterMeterView : UserControl, IView
     {
-        PropertiesViewModel vm = null; // new PropertiesViewModel();
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
 
-        public WaterSystemView()
+        public WaterMeterView(IViewModel vm)
         {
             InitializeComponent();
+            this.DataContext = vm;
             this.Loaded += OnLoaded;
+
+            this.ViewModel.Table = this.propertiesTableView;
+        }
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -29,20 +48,6 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //// Bind the properties of the view  to the properties of the view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            vm = this.DataContext as PropertiesViewModel;
-
-            // Assign the grid view for Export and Printing
-            vm.GridTableView = this.propertiesTableView;
-
-            //if (null != vm)
-            //{
-            //    vm.PropertyChanged +=
-            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-            //}
         }
 
         /// <summary>
@@ -52,14 +57,9 @@
         /// <param name="e">property change event arguments</param>
         //protected void PropertiesViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         //{
-        //    PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
-
         //    switch (e.PropertyName)
         //    {
-        //        case "PropertiesList":
-        //        case "WaterDataUpdated":
-        //            this.propertyGrid.RefreshData();
-        //            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
+        //        case "Property":
         //            break;
         //        default:
         //            break;
@@ -109,9 +109,8 @@
         /// <param name="e"></param>
         private void tableView_RowDoubleClick(object sender, RowDoubleClickEventArgs e)
         {
-            PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
-            vm.ShowWaterSystemDialog((Property)propertyGrid.SelectedItem);
+            //PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
+            //vm.ShowWaterSystemDialog((Property)propertyGrid.SelectedItem);
         }
-
     }
 }

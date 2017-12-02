@@ -16,13 +16,17 @@
     using HVCC.Shell.Common.Interfaces;
 
 
-    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
+    public partial class WaterMeterEditViewModel : CommonViewModel, ICommandSink
     {
 
-        public WaterMeterViewModel(IDataContext dc)
+        public WaterMeterEditViewModel(IDataContext dc)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
+            if (null != this.Host.Parameter)
+            {
+                this.SelectedProperty = this.Host.Parameter as Property;
+            }
             this.RegisterCommands();
         }
 
@@ -36,7 +40,7 @@
         public enum ExportType { PDF, XLSX }
         public enum PrintType { PREVIEW, PRINT }
 
-        /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
+        /* ------------------------------------- Properties --------------------------- */
 
         public override bool IsValid => throw new NotImplementedException();
 
@@ -106,7 +110,7 @@
         /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
-        private Property _selectedProperty = null;
+        private Property _selectedProperty = new Property();
         public Property SelectedProperty
         {
             get
@@ -120,7 +124,12 @@
                 //// a Relationship is selected we won't null out the SelectedProperty.
                 if (value != _selectedProperty)
                 {
+                    if (null != _selectedProperty)
+                    {
+                        _selectedProperty.PropertyChanged -= _selectedProperty_PropertyChanged;
+                    }
                     _selectedProperty = value;
+                    _selectedProperty.PropertyChanged += _selectedProperty_PropertyChanged;
                     RaisePropertyChanged("SelectedProperty");
                 }
             }
@@ -132,7 +141,7 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _selectedCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void _selectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged("DataChanged");
         }
@@ -141,94 +150,7 @@
 
         /* ---------------------------------- Commands & Actions --------------------------------------- */
         #region Commands
-        /// <summary>
-        /// Add Cart Command
-        /// </summary>
-        private ICommand _exportCommand;
-        public ICommand ExportCommand
-        {
-            get
-            {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
-            }
-        }
 
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _printCommand;
-        public ICommand PrintCommand
-        {
-            get
-            {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
 
         /// <summary>
         /// Print Command
@@ -246,7 +168,7 @@
         /// Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter) 
+        public void RowDoubleClickAction(object parameter)
         {
             object o = parameter;
             Host.Parameter = this.SelectedProperty;
@@ -266,7 +188,7 @@
     /// <summary>
     /// Command sink bindings......
     /// </summary>
-    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
+    public partial class WaterMeterEditViewModel : CommonViewModel, ICommandSink
     {
         public void RegisterCommands()
         {
@@ -299,6 +221,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertiesChanged("DataChanged");
             this.IsBusy = false;
@@ -327,7 +250,7 @@
     /// Disposition.......
     /// </summary>
     #region public partial class PropertiesViewModel : IDisposable
-    public partial class WaterMeterViewModel : IDisposable
+    public partial class WaterMeterEditViewModel : IDisposable
     {
         // Resources that must be disposed:
         public HVCCDataContext dc = null;
@@ -386,7 +309,7 @@
         /// <summary>
         /// Finalizes an instance of the <see cref="TableForm"/> class.  (a.k.a. destructor)
         /// </summary>
-        ~WaterMeterViewModel()
+        ~WaterMeterEditViewModel()
         {
             // call Dispose with false.  Since we're in the
             // destructor call, the managed resources will be
@@ -395,124 +318,4 @@
         }
     }
     #endregion
-
-
-    // This ViewModel serves as a bridge for the primary Properties VM.  It is required by the
-    // IDialogService. Therefore we create virtual properties for the SelecrtedProperty and
-    // WaterMeterReading collection so we can have a reference to the data elements we need.
-    //public partial class WaterMeterViewModel : ViewModelBase, INotifyPropertyChanged
-    //{
-    //    public WaterMeterViewModel()
-    //    {
-    //        //_canViewParcel = true;
-    //    }
-
-    //    #region Interfaces
-    //    public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-    //    #endregion
-
-    //    /// <summary>
-    //    /// 
-    //    /// </summary>
-    //    public virtual ApplicationPermission ApplPermissions
-    //    {
-    //        get;
-    //        set;
-    //    }
-
-    //    /// <summary>
-    //    /// 
-    //    /// </summary>
-    //    public virtual Property SelectedProperty { get; set; }
-    //    public virtual ObservableCollection<WaterMeterReading> MeterReadings { get; set; }
-
-    //    /// <summary>
-    //    /// 
-    //    /// </summary>
-    //    private bool _canViewParcel;
-    //    public bool CanViewParcel
-    //    {
-    //        get { return this._canViewParcel; }
-    //        set
-    //        {
-    //            if (value != this._canViewParcel)
-    //            {
-    //                this._canViewParcel = value;
-    //                RaisePropertyChanged("CanViewParcel");
-    //            }
-    //        }
-    //    }
-
-    //    #region Public Methods
-    //    /// <summary>
-    //    /// Calculates difference between current and last water meter readings
-    //    /// </summary>
-    //    /// <param name="theProperty"></param>
-    //    /// <returns></returns>
-    //    public int? CalculateWaterConsumption()
-    //    {
-    //        int count = this.MeterReadings.Count;
-    //        if (1 >= count)
-    //        {
-    //            return 0;
-    //        }
-    //        else
-    //        {
-    //            int lastReading = (int)this.MeterReadings[count - 2].MeterReading;
-    //            int currentReading = (int)this.MeterReadings[count - 1].MeterReading;
-    //            return currentReading - lastReading;
-    //        }
-    //    }
-    //    #endregion
-
-    //    #region Private Methods
-
-    //    /// <summary>
-    //    /// View Parcel Command
-    //    /// </summary>
-    //    private ICommand _viewParcelCommand;
-    //    public ICommand ViewParcelCommand
-    //    {
-    //        get
-    //        {
-    //            return _viewParcelCommand ?? (_viewParcelCommand = new CommandHandler(() => ViewParcelAction(), _canViewParcel));
-    //        }
-    //    }
-
-    //    public void ViewParcelAction()
-    //    {
-    //        try
-    //        {
-    //            string absoluteUri = "http://parcels.lewiscountywa.gov/" + this.SelectedProperty.Parcel;
-    //            Process.Start(new ProcessStartInfo(absoluteUri));
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            MessageBoxService.Show(ex.Message);
-    //        }
-    //        finally
-    //        {
-    //        }
-    //    }
-    //    #endregion
-    //    /// <summary>
-    //    /// 
-    //    /// </summary>
-    //    #region INotifyPropertyChagned implementaiton
-    //    public event PropertyChangedEventHandler PropertyChanged;
-
-    //    /// <summary>
-    //    /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
-    //    /// </summary>
-    //    /// <param name="propertyName">The name of the property being changed</param>
-    //    protected virtual void RaisePropertyChanged(string propertyName)
-    //    {
-    //        PropertyChangedEventHandler handler = this.PropertyChanged;
-    //        if (handler != null)
-    //        {
-    //            handler(this, new PropertyChangedEventArgs(propertyName));
-    //        }
-    //    }
-    //    #endregion
-    //}
 }

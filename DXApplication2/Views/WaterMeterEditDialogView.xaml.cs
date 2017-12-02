@@ -2,6 +2,7 @@
 {
     using DevExpress.Xpf.Editors.Validation;
     using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common.Interfaces;
     using HVCC.Shell.Helpers;
     using HVCC.Shell.ViewModels;
     using Models;
@@ -13,12 +14,31 @@
     /// <summary>
     /// Interaction logic for WaterSystemEditDialogView.xaml
     /// </summary>
-    public partial class WaterSystemEditDialogView : UserControl
+    public partial class WaterSystemEditDialogView : UserControl, IView
     {
-        public WaterSystemEditDialogView()
+        ApplicationPermission appPermissions;
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
+
+        public WaterSystemEditDialogView(IViewModel vm)
         {
             InitializeComponent();
+            this.DataContext = vm;
             //this.Loaded += OnLoaded;
+            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+        }
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -41,7 +61,7 @@
             // It is plusuable to assume that the water meter number may get entered incorrectly, or
             // need to be replaced at some point.  Therefore, I've put in a hot-key <LeftCtrl> that
             // will enable editing of this control. Otherwise the control remains read-only.
-            if (e.Key == System.Windows.Input.Key.LeftCtrl && vm.ApplPermissions.CanEditWater)
+            if (e.Key == System.Windows.Input.Key.LeftCtrl && appPermissions.CanEditWater)
             {
                 object resource = TryFindResource("TextEditEditStyle");
                 this.txtMeterNumber.Style = (Style)resource;
@@ -93,8 +113,8 @@
             {
                 if (e.IsValid)
                 {
-                    row.Consumption = vm.CalculateWaterConsumption();
-                    row.PropertyID = vm.SelectedProperty.PropertyID; // assign the PropertID since it's a FK
+                    //row.Consumption = vm.CalculateWaterConsumption();
+                    //row.PropertyID = vm.SelectedProperty.PropertyID; // assign the PropertID since it's a FK
                 }
                 e.Handled = true;
             }

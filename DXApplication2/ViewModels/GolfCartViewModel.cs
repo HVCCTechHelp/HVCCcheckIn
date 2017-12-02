@@ -407,7 +407,7 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((string parameter) => ExportAction(parameter), true));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
             }
         }
 
@@ -415,11 +415,11 @@
         /// Exports data grid to Excel
         /// </summary>
         /// <param name="type"></param>
-        public void ExportAction(string parameter) //ExportCommand
+        public void ExportAction(object parameter) //ExportCommand
         {
             try
             {
-                Enum.TryParse(parameter, out ExportType type);
+                Enum.TryParse(parameter.ToString(), out ExportType type);
 
                 switch (type)
                 {
@@ -454,7 +454,7 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((string parameter) => PrintAction(parameter), true));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
             }
         }
 
@@ -462,11 +462,11 @@
         /// Prints the current document
         /// </summary>
         /// <param name="type"></param>
-        public void PrintAction(string parameter) //PrintCommand
+        public void PrintAction(object parameter) //PrintCommand
         {
             try
             {
-                Enum.TryParse(parameter, out PrintType type);
+                Enum.TryParse(parameter.ToString(), out PrintType type);
 
                 switch (type)
                 {

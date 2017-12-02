@@ -1,25 +1,12 @@
-﻿using HVCC.Shell.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HVCC.Shell.Views
+{
+    using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using HVCC.Shell.Models;
 using DevExpress.Xpf.Grid;
 using HVCC.Shell.Common.Interfaces;
-using System.ComponentModel;
 
-namespace HVCC.Shell.Views
-{
     /// <summary>
     /// Interaction logic for GolfCartView.xaml
     /// </summary>

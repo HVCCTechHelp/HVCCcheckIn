@@ -41,5 +41,7 @@
         /// VM implementation:  ApplicationPermission permissions = Host.AppPermissions as ApplicationPermission;
         ///</code></example>
         object AppPermissions { get; }
+
+        object Parameter { get; set; }
     }
 }
