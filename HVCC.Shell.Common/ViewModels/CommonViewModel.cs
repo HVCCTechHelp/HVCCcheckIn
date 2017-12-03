@@ -34,7 +34,7 @@
 
         public abstract bool IsValid { get; }
 
-        public abstract bool IsDirty { get; }
+        public abstract bool IsDirty { get; set; }
 
         public abstract bool IsBusy { get; set; }
 

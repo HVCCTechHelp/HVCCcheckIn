@@ -13,7 +13,9 @@
              xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
              xmlns:local="clr-namespace:HVCC.Shell.Views"
              xmlns:helper="clr-namespace:HVCC.Shell.Helpers"
+             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+             common:CommandSinkBinding.CommandSink="{Binding}" 
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="900"
              >
@@ -55,6 +57,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
 
 
     <dxlc:LayoutControl>

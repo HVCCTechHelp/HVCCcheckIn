@@ -8,20 +8,39 @@
     using HVCC.Shell.Validation;
     using HVCC.Shell.ViewModels;
     using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common.Interfaces;
+    using System.Data.Linq;
 
     /// <summary>
     /// Interaction logic for ChangeOwnerView.xaml
     /// </summary>
-    public partial class ChangeOwnerView : UserControl
+    public partial class ChangeOwnerView : UserControl, IView
     {
-        PropertiesViewModel vm = null; // new PropertiesViewModel();
-
-        public ChangeOwnerView()
+        ApplicationPermission appPermissions;
+        public IViewModel ViewModel
         {
-            InitializeComponent();
-            this.Loaded += OnLoaded;
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
         }
 
+        public ChangeOwnerView(IViewModel vm)
+        {
+            InitializeComponent();
+            this.DataContext = vm;
+            //this.Loaded += OnLoaded;
+            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+        }
+
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Invoked from the class constructor
@@ -30,17 +49,13 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            vm = this.DataContext as PropertiesViewModel; 
+            //ChangeOwnerViewModel vm = this.DataContext as ChangeOwnerViewModel; 
 
-            //// Bind the properties of the view  to the properties of the FileInformation view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            if (null != vm)
-            {
-                vm.PropertyChanged +=
-                    new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-            }
+            //if (null != vm)
+            //{
+            //    vm.PropertyChanged +=
+            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
+            //}
         }
 
         /// <summary>
@@ -50,16 +65,13 @@
         /// <param name="e">property change event arguments</param>
         protected void PropertiesViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case "OwnerUpdated":
-                    this.btnCommit.IsEnabled = false;
-                    Helper.UpdateCaption(vm.ActiveDocPanel, true);
-                    break;
-                default:
-                    break;
-            }
-            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
+            //switch (e.PropertyName)
+            //{
+            //    case "<property>":
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         /// <summary>
@@ -69,8 +81,6 @@
         /// <param name="e"></param>
         private void relationshipsTableView_Loaded(object sender, RoutedEventArgs e)
         {
-            this.vm.PopulateRelationshipsToProcess();
-            Helper.UpdateCaption(vm.ActiveDocPanel, true);
         }
 
         /// <summary>
@@ -93,9 +103,10 @@
                 }
                 else
                 {
-                    row.Photo = vm.ApplDefault.Photo; //PropertiesViewModel.DefaultBitmapImage;
-                    row.Image = Helper.ArrayToBitmapImage(row.Photo.ToArray());
-                    row.PropertyID = vm.SelectedProperty.PropertyID;
+                    // TO-DO: this work needs to go into the view model
+                    //row.Photo = vm.ApplDefault.Photo; //PropertiesViewModel.DefaultBitmapImage;
+                    //row.Image = Helper.ArrayToBitmapImage(row.Photo.ToArray());
+                    //row.PropertyID = vm.SelectedProperty.PropertyID;
                     e.IsValid = true;
                 }
             }
@@ -119,7 +130,6 @@
         /// <param name="e"></param>
         private void TableView_RowUpdated(object sender, RowEventArgs e)
         {
-            Helper.UpdateCaption(vm.ActiveDocPanel, true);
             e.Handled = true;
         }
     }

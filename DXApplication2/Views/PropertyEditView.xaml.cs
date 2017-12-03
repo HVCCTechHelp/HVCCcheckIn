@@ -8,25 +8,40 @@
     using System;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Media.Imaging;
     using System.Linq;
     using System.IO;
-    using System.Diagnostics;
-    using System.Windows.Navigation;
-    using DevExpress.Xpf.Bars;
-    using DevExpress.Xpf.Docking;
+    using HVCC.Shell.Common.Interfaces;
+    using System.Windows.Media.Imaging;
+
 
     /// <summary>
     /// Interaction logic for PropertyEditDialogView.xaml
     /// </summary>
-    public partial class PropertyEditDialogView : UserControl
+    public partial class PropertyEditView : UserControl, IView
     {
-        PropertyViewModel vm = null;
+        ApplicationPermission appPermissions;
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
 
-        public PropertyEditDialogView()
+        public PropertyEditView(IViewModel vm)
         {
             InitializeComponent();
-            this.Loaded += OnLoaded;
+            this.DataContext = vm;
+            //this.Loaded += OnLoaded;
+            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+        }
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -36,25 +51,6 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //// Bind the properties of the view  to the properties of the view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            vm = ((PropertyViewModel)this.DataContext);
-            if (null != vm.ActiveRelationshipsToProperty && 0 < vm.ActiveRelationshipsToProperty.Count())
-            {
-                vm.SelectedRelation = vm.ActiveRelationshipsToProperty[0];
-            }
-
-            this.btnCheckIn.IsEnabled = false; // Set the default state to 'false' until the user changes any of the counts.
-            this.lgNotes.Header = string.Format("Property Notes ({0})", vm.NoteCount);
-
-            //if (null != vm)
-            //{
-            //    vm.PropertyChanged +=
-            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertyViewModel_PropertyChanged);
-            //}
-
         }
 
         /// <summary>
@@ -64,19 +60,9 @@
         /// <param name="e">property change event arguments</param>
         //protected void PropertyViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         //{
-        //    //PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
-
         //    switch (e.PropertyName)
         //    {
-        //        case "Balance":
-        //            if (vm.SelectedProperty.Balance > 0)
-        //            {
-        //                vm.SelectedProperty.IsInGoodStanding = false;
-        //            }
-        //            else
-        //            {
-        //                vm.SelectedProperty.IsInGoodStanding = true;
-        //            }
+        //        case "<property>":
         //            break;
         //        default:
         //            break;
@@ -109,7 +95,6 @@
         /// <param name="e"></param>
         private void tableViewDetail_ValidateRow(object sender, DevExpress.Xpf.Grid.GridRowValidationEventArgs e)
         {
-            PropertyViewModel vm = this.DataContext as PropertyViewModel;
             Relationship row = e.Row as Relationship;
 
             try
@@ -150,11 +135,11 @@
         /// <param name="e"></param>
         private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
         {
-            //PropertyViewModel vm = this.DataContext as PropertyViewModel;
             Relationship row = e.Row as Relationship;
             if (null == row.Active)
             {
-                vm.AssignDefaultValues(row);
+                // TO-DO: make assignments here.....
+                //vm.AssignDefaultValues(row);
             }
             e.Handled = true;
         }
@@ -176,10 +161,9 @@
         /// <param name="e"></param>
         private void editform_ValueChanged(object sender, DevExpress.Xpf.Editors.EditValueChangedEventArgs e)
         {
+            // TO-DO: Need to refactor the direct ViewModel references
             try
             {
-                PropertyViewModel vm = this.DataContext as PropertyViewModel;
-
                 // The only control that can be updated is the photo.  Therefore, if the value is
                 // null, than the user cleared the image without replacing it with a new image.  In 
                 // this case, we ignore the cancel and retain the existing picture.
@@ -199,29 +183,29 @@
                 if (typeof(BitmapImage) == e.NewValue.GetType())
                 {
                     BitmapImage oldImage = null;
-                    if (null != vm.SelectedRelation.Photo)
-                    {
-                        oldImage = Helper.ArrayToBitmapImage(vm.SelectedRelation.Photo.ToArray());
-                    }
+                    //if (null != vm.SelectedRelation.Photo)
+                    //{
+                    //    oldImage = Helper.ArrayToBitmapImage(vm.SelectedRelation.Photo.ToArray());
+                    //}
 
                     byte[] newPhoto = Helper.BitmapImageToArray(e.NewValue as BitmapImage);
-                    if (null != oldImage)
-                    {
-                        byte[] oldPhoto = Helper.BitmapImageToArray(oldImage);
+                    //if (null != oldImage)
+                    //{
+                    //    byte[] oldPhoto = Helper.BitmapImageToArray(oldImage);
 
-                        if (newPhoto.Count() != oldPhoto.Count())
-                        {
-                            // TO-DO: These properties should be set in the ViewModel, not here.....
-                            vm.SelectedRelation.Photo = newPhoto;
-                            vm.SelectedRelation.Image = e.NewValue as BitmapImage;
-                        }
-                    }
-                    else
-                    {
-                        // TO-DO: These properties should be set in the ViewModel, not here.....
-                        vm.SelectedRelation.Photo = newPhoto;
-                        vm.SelectedRelation.Image = e.NewValue as BitmapImage;
-                    }
+                    //    if (newPhoto.Count() != oldPhoto.Count())
+                    //    {
+                    //        // TO-DO: These properties should be set in the ViewModel, not here.....
+                    //        vm.SelectedRelation.Photo = newPhoto;
+                    //        vm.SelectedRelation.Image = e.NewValue as BitmapImage;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // TO-DO: These properties should be set in the ViewModel, not here.....
+                    //    vm.SelectedRelation.Photo = newPhoto;
+                    //    vm.SelectedRelation.Image = e.NewValue as BitmapImage;
+                    //}
                 }
                 e.Handled = true;
             }
@@ -403,19 +387,22 @@
         /// <param name="e"></param>
         private void PropertyDialog_Unloaded(object sender, RoutedEventArgs e)
         {
+
             this.btnCheckIn.IsEnabled = true; // set true before the window closes, otherwise the 'false' state is retained
-            try
-            {
-                IDisposable disp = this.DataContext as IDisposable;
-                if (null != disp)
-                {
-                    disp.Dispose();
-                };
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Dispose Error: " + ex.Message);
-            }
+
+            // TO-DO: disposition will now be handled through the MvvmBinder interface
+            //try
+            //{
+            //    IDisposable disp = this.DataContext as IDisposable;
+            //    if (null != disp)
+            //    {
+            //        disp.Dispose();
+            //    };
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Dispose Error: " + ex.Message);
+            //}
 
         }
     }

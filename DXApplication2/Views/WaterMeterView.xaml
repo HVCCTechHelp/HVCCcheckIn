@@ -118,7 +118,6 @@
                                 ShowSearchPanelFindButton="True"
                                 SearchPanelClearOnClose="False"
                                 ValidateRow="view_ValidateRow" 
-                                RowDoubleClick="tableView_RowDoubleClick"
                                 >
 
                                     <dxg:TableView.FormatConditions>

@@ -12,6 +12,7 @@
     using HVCC.Shell.Views;
     using System.Data.Linq;
     using HVCC.Shell.Models;
+    using System.Windows;
 
     public enum UserRole
     {
@@ -28,7 +29,7 @@
     /// </summary>
     public class Host : IHost
     {
-#region Singelton Implementation
+        #region Singelton Implementation
         private Host()
         {
             this.OpenMvvmBinders = new ObservableCollection<IMvvmBinder>();
@@ -51,10 +52,9 @@
         /// <example><code>
         /// VM implementation:  ApplicationPermission permissions = Host.AppPermissions as ApplicationPermission;
         ///</code></example>
-        public object AppPermissions
-        {
-            get { return ApplPermissions; }
-        }
+        public object AppPermissions { get { return ApplPermissions; } }
+        public object AppDefault { get { return ApplDefault; } }
+
         public object Parameter { get; set; }
 
         #region Interface Implementation
@@ -70,6 +70,31 @@
             IView v = new MainWindow() { DataContext = vm } as IView;
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewPropertyDetailView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new PropertiesViewModel(dc) { Caption = "Properties" };
+            IView v = new HVCC.Shell.Views.PropertyDetailsView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewPropertyEditView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new PropertyEditViewModel(dc) { Caption = "Property Edit" };
+            IView v = new HVCC.Shell.Views.PropertyEditView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewChangeOwnerView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new ChangeOwnerViewModel(dc) { Caption = "ChangeOwner" };
+            IView v = new HVCC.Shell.Views.ChangeOwnerView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        //
         public static IMvvmBinder GetNewGolfCartView()
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -78,14 +103,7 @@
             IView v = new HVCC.Shell.Views.GolfCartView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewWellMeterView()
-        {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
-            IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
-            return new MvvmBinder(dc, v, vm);
-        }
+        //
         public static IMvvmBinder GetNewWaterMeterView()
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -94,32 +112,46 @@
             IView v = new HVCC.Shell.Views.WaterMeterView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewWaterMeterEditDialogView()
+        public static IMvvmBinder GetNewWaterMeterEditView()
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
             IViewModel vm = new WaterMeterEditViewModel(dc) { Caption = "Water Meter Edit" };
-            IView v = new HVCC.Shell.Views.WaterSystemEditDialogView(vm);
+            IView v = new HVCC.Shell.Views.WaterSystemEditView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        //
+        public static IMvvmBinder GetNewWellMeterView()
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
+            IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
             return new MvvmBinder(dc, v, vm);
         }
 
-/// <summary>
-/// Executes Open/Close on MvvmBinders
-/// </summary>
-/// <param name="verb"></param>
-/// <param name="param"></param>
+        /// <summary>
+        /// Executes Open/Close on MvvmBinders
+        /// </summary>
+        /// <param name="verb"></param>
+        /// <param name="param"></param>
         public void Execute(HostVerb verb, object param)
         {
             if (verb == HostVerb.Open)
             {
-                if (param.ToString() == "GolfCart")
+                if (param.ToString() == "Properties")
                 {
-                    var binder = GetNewGolfCartView();
+                    var binder = GetNewPropertyDetailView();
                     this.OpenMvvmBinders.Add(binder);
                 }
-                else if (param.ToString() == "WellMeter")
+                if (param.ToString() == "PropertyEdit")
                 {
-                    var binder = GetNewWellMeterView();
+                    var binder = GetNewPropertyEditView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "GolfCart")
+                {
+                    var binder = GetNewGolfCartView();
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "WaterMeter")
@@ -129,10 +161,19 @@
                 }
                 else if (param.ToString() == "WaterMeterEdit")
                 {
-                    var binder = GetNewWaterMeterEditDialogView();
+                    var binder = GetNewWaterMeterEditView();
                     this.OpenMvvmBinders.Add(binder);
                 }
-
+                else if (param.ToString() == "WellMeter")
+                {
+                    var binder = GetNewWellMeterView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "ChangeOwner")
+                {
+                    var binder = GetNewChangeOwnerView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
             }
             else if (verb == HostVerb.Close)
             {
@@ -282,6 +323,7 @@
                 }
                 catch (Exception ex)
                 {
+                    MessageBox.Show("Error retrieving application defaults\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
             }
@@ -306,6 +348,7 @@
                     }
                     catch (Exception ex)
                     {
+                        MessageBox.Show("Error retrieving application defaults\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;
                     }
                 }
@@ -327,6 +370,5 @@
         }
 
         #endregion
-
     }
 }

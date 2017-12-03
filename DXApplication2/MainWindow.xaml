@@ -45,60 +45,6 @@
         <dxmvvm:SaveFileDialogService Title="Save File"/>
         <common:TableViewExportService />  <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
         <dx:DXMessageBoxService/>
-        <!-- 
-        Register the DialogViews which are bound to the Show<xxx>Dialog() command
-        in the (Main) PropertiesViewModel.  The dialog service is invoked by the grid tableView, grid-row 
-        double click event, or a ribbon button event.
-        -->
-        <dx:DialogService x:Name="PropertyEditDialogService" DialogWindowStartupLocation="CenterOwner">
-            <dx:DialogService.ViewTemplate>
-                <DataTemplate>
-                    <View:PropertyEditDialogView/>
-                </DataTemplate>
-            </dx:DialogService.ViewTemplate>
-            <dx:DialogService.DialogStyle>
-                <Style TargetType="dx:DXDialogWindow">
-                    <Setter Property="Width" Value="1180"/>
-                    <Setter Property="Height" Value="950"/>
-                    <Setter Property="WindowStyle" Value="none" />
-                    <Setter Property="dxmvvm:Interaction.BehaviorsTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <ContentControl>
-                                    <resources:CloseByEscapeBehavior />
-                                </ContentControl>
-                            </DataTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </dx:DialogService.DialogStyle>
-        </dx:DialogService>
-        <dx:DialogService x:Name="RelationshipDialogService" DialogWindowStartupLocation="CenterOwner">
-            <dx:DialogService.ViewTemplate>
-                <DataTemplate>
-                    <View:RelationshipDialogView/>
-                </DataTemplate>
-            </dx:DialogService.ViewTemplate>
-            <dx:DialogService.DialogStyle>
-                <Style TargetType="dx:DXDialogWindow">
-                    <Setter Property="Width" Value="800"/>
-                    <Setter Property="Height" Value="350"/>
-                </Style>
-            </dx:DialogService.DialogStyle>
-        </dx:DialogService>
-        <dx:DialogService x:Name="WaterSystemEditDialogService"  DialogWindowStartupLocation="CenterOwner">
-            <dx:DialogService.ViewTemplate>
-                <DataTemplate>
-                    <View:WaterSystemEditDialogView/>
-                </DataTemplate>
-            </dx:DialogService.ViewTemplate>
-            <dx:DialogService.DialogStyle>
-                <Style TargetType="dx:DXDialogWindow">
-                    <Setter Property="Width" Value="800"/>
-                    <Setter Property="Height" Value="650"/>
-                </Style>
-            </dx:DialogService.DialogStyle>
-        </dx:DialogService>
     </dxmvvm:Interaction.Behaviors>
 
     <!-- MainWindow is just a wrapper shell for the various Tiles. Therefore, it has no bound commands -->
@@ -259,9 +205,9 @@
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="100" Height="100" ToolTip="Look up Water Well Records"/>
                                             </dxd:LayoutControlItem>
-                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
+                                            <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="100" Height="100" ToolTip="View Permissions"/>
-                                            </dxd:LayoutControlItem>
+                                            </dxd:LayoutControlItem>-->
                                         </dxd:LayoutGroup>
                                     </dxd:LayoutGroup>
                                 </dxd:LayoutPanel>

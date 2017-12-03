@@ -99,18 +99,7 @@
                 e.ErrorContent = "The highlighted field cannot be blank";
                 e.SetError(e.ErrorContent);
             }
-            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tableView_RowDoubleClick(object sender, RowDoubleClickEventArgs e)
-        {
-            //PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
-            //vm.ShowWaterSystemDialog((Property)propertyGrid.SelectedItem);
-        }
     }
 }

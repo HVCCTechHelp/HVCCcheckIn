@@ -20,7 +20,7 @@ namespace HVCC.Shell.Models
     using System.Collections.Specialized;
 
     #region Extend Property Model
-    public partial class Property
+    public partial class Property : INotifyPropertyChanging, INotifyPropertyChanged
     {
         public WaterMeterReading LastMeterEntry
         {

@@ -744,25 +744,25 @@
         #endregion
 
         /* ------------------------------- INotify Implementation --------------------------------------------- */
-        #region INotifyPropertyChagned implementaiton
-        /// <summary>
-        /// 
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        //#region INotifyPropertyChagned implementaiton
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
-        /// </summary>
-        /// <param name="propertyName">The name of the property being changed</param>
-        protected virtual void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
+        ///// <summary>
+        ///// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        ///// </summary>
+        ///// <param name="propertyName">The name of the property being changed</param>
+        //protected virtual void RaisePropertyChanged(string propertyName)
+        //{
+        //    PropertyChangedEventHandler handler = this.PropertyChanged;
+        //    if (handler != null)
+        //    {
+        //        handler(this, new PropertyChangedEventArgs(propertyName));
+        //    }
+        //}
+        //#endregion
     }
 
     /// <summary>

@@ -176,7 +176,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Models\Tile.cs" />
     <Compile Include="Models\WaterMeterException.cs" />
     <Compile Include="Models\WellMeterHistory.cs" />
     <Compile Include="Reports\BalancesDueReport.cs">
@@ -219,15 +218,19 @@
     <Compile Include="Resources\CommandHandler.cs" />
     <Compile Include="Resources\RowTemplateSelector.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
+    <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
     <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
     <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesViewModel.cs" />
+    <Compile Include="ViewModels\PropertyEditViewModel.cs" />
     <Compile Include="ViewModels\RelationshipViewModel.cs" />
-    <Compile Include="ViewModels\PropertyViewModel.cs" />
+    <Compile Include="ViewModels\___PropertyViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
+    <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
     <Compile Include="ViewModels\WaterWellViewModel.cs" />
     <Compile Include="Views\AdministrationView.xaml.cs">
@@ -248,14 +251,14 @@
     <Compile Include="Views\RelationshipDialogView.xaml.cs">
       <DependentUpon>RelationshipDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PropertyEditDialogView.xaml.cs">
-      <DependentUpon>PropertyEditDialogView.xaml</DependentUpon>
+    <Compile Include="Views\PropertyEditView.xaml.cs">
+      <DependentUpon>PropertyEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateFacilitiesUsagesView.xaml.cs">
       <DependentUpon>UpdateFacilitiesUsagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WaterMeterEditDialogView.xaml.cs">
-      <DependentUpon>WaterMeterEditDialogView.xaml</DependentUpon>
+    <Compile Include="Views\WaterMeterEditView.xaml.cs">
+      <DependentUpon>WaterMeterEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WaterMeterExceptionsView.xaml.cs">
       <DependentUpon>WaterMeterExceptionsView.xaml</DependentUpon>
@@ -302,7 +305,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PropertyEditDialogView.xaml">
+    <Page Include="Views\PropertyEditView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -310,7 +313,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WaterMeterEditDialogView.xaml">
+    <Page Include="Views\WaterMeterEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

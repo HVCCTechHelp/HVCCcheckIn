@@ -42,8 +42,9 @@
 
         /* ------------------------------------- Properties --------------------------- */
 
-        public override bool IsValid => throw new NotImplementedException();
+        public override bool IsValid { get { return true; } }
 
+        private bool _isDirty = false;
         public override bool IsDirty
         {
             get
@@ -54,11 +55,17 @@
                     0 == cs.Inserts.Count &&
                     0 == cs.Deletes.Count)
                 {
-                    Caption = caption[0].TrimEnd(' ');
-                    return false;
+                    Caption = caption[0].TrimEnd(' ') + "* ";
                 }
-                Caption = caption[0].TrimEnd(' ') + "* ";
-                return true;
+                else
+                {
+                    Caption = caption[0].TrimEnd(' ');
+                }
+                return _isDirty;
+            }
+            set
+            {
+                _isDirty = value;
             }
         }
 
@@ -148,36 +155,6 @@
 
         #endregion
 
-        /* ---------------------------------- Commands & Actions --------------------------------------- */
-        #region Commands
-
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _rowDoubleClickCommand;
-        public ICommand RowDoubleClickCommand
-        {
-            get
-            {
-                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter)
-        {
-            object o = parameter;
-            Host.Parameter = this.SelectedProperty;
-            Host.Execute(HostVerb.Open, "WaterMeterEdit");
-
-        }
-
-        #endregion
-
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
         #region Methods
 
@@ -190,6 +167,7 @@
     /// </summary>
     public partial class WaterMeterEditViewModel : CommonViewModel, ICommandSink
     {
+        #region ICommandSink Implementation
         public void RegisterCommands()
         {
             this.RegisterSaveHandler();
@@ -227,7 +205,6 @@
             this.IsBusy = false;
         }
 
-        #region ICommandSink Implementation
         private CommandSink _sink = new CommandSink();
 
         // Required by the ICommandSink Interface
@@ -243,6 +220,28 @@
         }
         #endregion
 
+        /// <summary>
+        /// Grid row doubld click event to command handler
+        /// </summary>
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
+        {
+            get
+            {
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RowDoubleClickAction(object parameter)
+        {
+            object o = parameter;
+            Host.Parameter = this.SelectedProperty;
+            Host.Execute(HostVerb.Open, "WaterMeterEdit");
+        }
     }
     /*================================================================================================================================================*/
 

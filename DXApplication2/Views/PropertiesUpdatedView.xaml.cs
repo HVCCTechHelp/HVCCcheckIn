@@ -15,16 +15,39 @@
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
+    using HVCC.Shell.Models;
+    using HVCC.Shell.Validation;
+    using HVCC.Shell.Common.Interfaces;
 
     /// <summary>
     /// Interaction logic for PropertiesUpdatedView.xaml
     /// </summary>
-    public partial class PropertiesUpdatedView : UserControl
+    public partial class PropertiesUpdatedView : UserControl, IView
     {
-        public PropertiesUpdatedView()
+        ApplicationPermission appPermissions;
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
+
+        public PropertiesUpdatedView(IViewModel vm)
         {
             InitializeComponent();
-            this.Loaded += OnLoaded;
+            this.DataContext = vm;
+            //this.Loaded += OnLoaded;
+            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+        }
+
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -34,18 +57,6 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-            vm.GridTableView = this.propertiesTableView;
-
-            //// Bind the properties of the view  to the properties of the view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            //if (null != vm)
-            //{
-            //    vm.PropertyChanged +=
-            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-            //}
         }
 
         /// <summary>
@@ -55,8 +66,6 @@
         /// <param name="e">property change event arguments</param>
         //protected void PropertiesViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         //{
-        //    PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
-
         //    switch (e.PropertyName)
         //    {
         //        default:

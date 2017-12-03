@@ -1,7 +1,6 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
     using System;
-    using System;
     using System.Windows.Input;
 
     public delegate void CommandExecutedEventHandler(object sender, CommandExecutedEventArgs e);

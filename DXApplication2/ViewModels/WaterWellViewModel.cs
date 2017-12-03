@@ -64,6 +64,7 @@
                 Caption = caption[0].TrimEnd(' ') + "* ";
                 return true;
             }
+            set { }
         }
 
         private bool _isBusy = false;

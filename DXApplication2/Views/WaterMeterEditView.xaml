@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.WaterSystemEditDialogView"
+﻿<UserControl x:Class="HVCC.Shell.Views.WaterSystemEditView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -30,22 +30,6 @@
     <UserControl.CommandBindings>
         <common:CommandSinkBinding Command="ApplicationCommands.Save" />
     </UserControl.CommandBindings>
-
-    <dxmvvm:Interaction.Behaviors>
-        <!--<dx:DialogService DialogWindowStartupLocation="CenterOwner">
-            <dx:DialogService.DialogStyle>
-                <Style TargetType="Window">
-                    <Setter Property="SizeToContent" Value="WidthAndHeight"/>
-                    <Setter Property="WindowStyle" Value="ToolWindow"/>
-                </Style>
-            </dx:DialogService.DialogStyle>
-            <dx:DialogService.ViewTemplate>
-                <DataTemplate>
-                    <dxlc:DataLayoutControl CurrentItem="{Binding}" />
-                </DataTemplate>
-            </dx:DialogService.ViewTemplate>
-        </dx:DialogService>-->
-    </dxmvvm:Interaction.Behaviors>
 
     <dxlc:LayoutControl>
         <dxlc:LayoutGroup View="Group" Orientation="Vertical" >

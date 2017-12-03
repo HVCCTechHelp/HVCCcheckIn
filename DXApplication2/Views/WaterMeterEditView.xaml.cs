@@ -12,9 +12,9 @@
     using Validation;
 
     /// <summary>
-    /// Interaction logic for WaterSystemEditDialogView.xaml
+    /// Interaction logic for WaterSystemEditView.xaml
     /// </summary>
-    public partial class WaterSystemEditDialogView : UserControl, IView
+    public partial class WaterSystemEditView : UserControl, IView
     {
         ApplicationPermission appPermissions;
         public IViewModel ViewModel
@@ -23,7 +23,7 @@
             set { this.DataContext = value; }
         }
 
-        public WaterSystemEditDialogView(IViewModel vm)
+        public WaterSystemEditView(IViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;

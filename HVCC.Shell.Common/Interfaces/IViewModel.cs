@@ -16,7 +16,7 @@
         TableView Table { get; set; }
 
         bool IsValid { get; }
-        bool IsDirty { get; }
+        bool IsDirty { get; set; }
         void Closing(out bool cancelCloseOperation);
 
         IHost Host { get; set; }

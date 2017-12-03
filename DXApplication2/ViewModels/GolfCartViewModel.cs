@@ -36,7 +36,7 @@
 
         /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
 
-        public override bool IsValid => throw new NotImplementedException();
+        public override bool IsValid { get { return true; } }
 
         public override bool IsDirty
         {
@@ -48,11 +48,15 @@
                     0 == cs.Inserts.Count &&
                     0 == cs.Deletes.Count)
                 {
-                Caption = caption[0].TrimEnd(' ');
-                return false;
+                    Caption = caption[0].TrimEnd(' ');
+                    return false;
                 }
-                Caption = caption [0].TrimEnd(' ') + "* ";
+                Caption = caption[0].TrimEnd(' ') + "* ";
                 return true;
+            }
+            set
+            {
+
             }
         }
 
@@ -63,7 +67,7 @@
             { return _isBusy; }
             set
             {
-                if(value != _isBusy)
+                if (value != _isBusy)
                 {
                     _isBusy = value;
                     if (_isBusy) { RaisePropertyChanged("IsBusy"); }
@@ -258,15 +262,138 @@
         {
             //if (this.IsDirty)
             //{
-                RaisePropertyChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             //}
         }
 
         #endregion
 
-        /* ---------------------------------- GolfCart: Commands & Actions --------------------------------------- */
-        #region GolfCartCommands
+        /* ---------------------------------- GolfCart:Public/Private Methods ------------------------------------------ */
+        #region GolfCartMethods
 
+        /// <summary>
+        /// A collection of Carts that have been registered
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<GolfCart> GetRegisteredCarts(string timePeriod)
+        {
+            try
+            {
+                //// Get the list of "Properties" from the database
+                var list = (from a in this.dc.GolfCarts
+                            where a.Year == timePeriod
+                            select a);
+
+                return new ObservableCollection<GolfCart>(list);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RevertGolfCartEdits()
+        {
+            ChangeSet changeSet = this.dc.GetChangeSet();
+
+            //// First, check the change set to see if there are pending Updates. If so,
+            //// iterate over the Updates collection to see if they are for the currently
+            //// selected property.  If found, remove them from the change set.
+            if (0 != changeSet.Updates.Count)
+            {
+                foreach (var v in changeSet.Updates)
+                {
+                    if (typeof(GolfCart) == v.GetType())
+                    {
+                        this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
+                    }
+                }
+            }
+            // The, check for Inserts and remove them....
+            if (0 != changeSet.Inserts.Count)
+            {
+                foreach (var v in changeSet.Inserts)
+                {
+                    if (typeof(GolfCart) == v.GetType())
+                    {
+                        this.dc.GetTable(v.GetType()).DeleteOnSubmit(v);
+                        this.RegisteredCarts.Remove((GolfCart)v);
+                    }
+                }
+            }
+            changeSet = this.dc.GetChangeSet();
+        }
+
+        #endregion
+    }
+    /*================================================================================================================================================*/
+
+    /// <summary>
+    /// Command sink bindings......
+    /// </summary>
+    public partial class GolfCartViewModel : CommonViewModel, ICommandSink
+    {
+        public void RegisterCommands()
+        {
+            this.RegisterSaveHandler();
+        }
+
+        private void RegisterSaveHandler()
+        {
+            _sink.RegisterCommand(
+                ApplicationCommands.Save,
+                param => this.CanSaveExecute,
+                param => this.SaveExecute());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool CanSaveExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Summary
+        ///     Commits data context changes to the database
+        /// </summary>
+        private void SaveExecute()
+        {
+            this.IsBusy = true;
+            this.dc.SubmitChanges();
+            RaisePropertiesChanged("DataChanged");
+            this.IsBusy = false;
+        }
+
+        #region ICommandSink Implementation
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
+        #endregion
+
+    }
+
+    /*================================================================================================================================================*/
+    public partial class GolfCartViewModel : CommonViewModel, ICommandSink
+    {
         bool CanNameSearch = true;
         /// <summary>
         /// Check In Command
@@ -445,7 +572,6 @@
             }
         }
 
-
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -487,133 +613,9 @@
                 //this.IsRibbonMinimized = true;
             }
         }
-
-        #endregion
-
-        /* ---------------------------------- GolfCart:Public/Private Methods ------------------------------------------ */
-        #region GolfCartMethods
-
-        /// <summary>
-        /// A collection of Carts that have been registered
-        /// </summary>
-        /// <returns></returns>
-        private ObservableCollection<GolfCart> GetRegisteredCarts(string timePeriod)
-        {
-            try
-            {
-                //// Get the list of "Properties" from the database
-                var list = (from a in this.dc.GolfCarts
-                            where a.Year == timePeriod
-                            select a);
-
-                return new ObservableCollection<GolfCart>(list);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void RevertGolfCartEdits()
-        {
-            ChangeSet changeSet = this.dc.GetChangeSet();
-
-            //// First, check the change set to see if there are pending Updates. If so,
-            //// iterate over the Updates collection to see if they are for the currently
-            //// selected property.  If found, remove them from the change set.
-            if (0 != changeSet.Updates.Count)
-            {
-                foreach (var v in changeSet.Updates)
-                {
-                    if (typeof(GolfCart) == v.GetType())
-                    {
-                        this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
-                    }
-                }
-            }
-            // The, check for Inserts and remove them....
-            if (0 != changeSet.Inserts.Count)
-            {
-                foreach (var v in changeSet.Inserts)
-                {
-                    if (typeof(GolfCart) == v.GetType())
-                    {
-                        this.dc.GetTable(v.GetType()).DeleteOnSubmit(v);
-                        this.RegisteredCarts.Remove((GolfCart)v);
-                    }
-                }
-            }
-            changeSet = this.dc.GetChangeSet();
-        }
-
-        #endregion
     }
+
     /*================================================================================================================================================*/
-
-    /// <summary>
-    /// Command sink bindings......
-    /// </summary>
-    public partial class GolfCartViewModel : CommonViewModel, ICommandSink
-    {
-        public void RegisterCommands()
-        {
-            this.RegisterSaveHandler();
-        }
-
-        private void RegisterSaveHandler()
-        {
-            _sink.RegisterCommand(
-                ApplicationCommands.Save,
-                param => this.CanSaveExecute,
-                param => this.SaveExecute());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private bool CanSaveExecute
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Summary
-        ///     Commits data context changes to the database
-        /// </summary>
-        private void SaveExecute()
-        {
-            this.IsBusy = true;
-            this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
-            this.IsBusy = false;
-        }
-
-        #region ICommandSink Implementation
-        private CommandSink _sink = new CommandSink();
-
-        // Required by the ICommandSink Interface
-        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            return _sink.CanExecuteCommand(command, parameter, out handled);
-        }
-
-        // Required by the ICommandSink Interface
-        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            _sink.ExecuteCommand(command, parameter, out handled);
-        }
-        #endregion
-
-    }
-    /*================================================================================================================================================*/
-
     /// <summary>
     /// Disposition.......
     /// </summary>

@@ -121,7 +121,6 @@
                             DocumentPanel dp = GetDocumentPanelByView(binder.View);
                             if (null != dp)
                             {
-                                dp.Caption = binder.ViewModel.Caption;
                                 if (null != dp)
                                 {
                                     if (binder.ViewModel.IsDirty)
@@ -132,6 +131,7 @@
                                     {
                                         dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
                                     }
+                                    dp.Caption = binder.ViewModel.Caption;
                                 }
                             }
                         }
@@ -244,15 +244,15 @@
         private void DockLayoutManager_DockItemActivated(object sender, DevExpress.Xpf.Docking.Base.DockItemActivatedEventArgs e)
         {
             //// Check to make sure we actually have a dockpanel to activate
-            if (null != e.Item)
-            {
-                //// When any panel other than the Dashboard becomes active, we register the panel as active in the ViewModel
-                LayoutPanel panel = e.Item as LayoutPanel;
-                if (null != panel || "Dashboard" != panel.Caption.ToString())
-                {
-                    //vm.ActiveDocPanel = panel;
-                }
-            }
+            //if (null != e.Item)
+            //{
+            //    //// When any panel other than the Dashboard becomes active, we register the panel as active in the ViewModel
+            //    LayoutPanel panel = e.Item as LayoutPanel;
+            //    if (null != panel || "Dashboard" != panel.Caption.ToString())
+            //    {
+            //        panel.TabBackgroundColor = System.Windows.Media.Colors.Aqua; //System.Windows.Media.Colors.Aqua;
+            //    }
+            //}
         }
 
         /// <summary>
@@ -352,7 +352,7 @@
                 this.primaryDocumentGroup.Add(docPanel);
                 primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
                 this.dockLayoutManager.Activate(docPanel);
-                docPanel.TabBackgroundColor = System.Windows.Media.Colors.Aqua;
+                docPanel.TabBackgroundColor = System.Windows.Media.Colors.Black; //System.Windows.Media.Colors.Aqua;
             }
 
             // The LayoutGroup for the DocumentManager is initially not HitTestVisible to
@@ -364,7 +364,7 @@
 
         /// <summary>
         /// Summary:
-        ///     When a Document Panel is closed, its associated ViewModel instance is disposed.
+        ///     Close a document panel
         ///     
         /// Parameters:
         ///     IView v - The view being closed
@@ -374,70 +374,40 @@
         {
             try
             {
-                UserControl uc = v as UserControl;
-
-                //// Dispose of the ViewModel.  The DocPanel was removed from the document group collection in the
-                //// DockPanelClosing event handler.
-                if (null != uc)
-                {
-                    IDisposable disp = uc.DataContext as IDisposable;
-                    if (null != disp)
-                    {
-                        disp.Dispose();
-                    };
-                }
+                var docGroupMembers = this.primaryDocumentGroup.GetItems();
+                DocumentPanel dp = GetDocumentPanelByView(v);
+                this.primaryDocumentGroup.Remove(dp);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("DocItemClosed Error: " + ex.Message);
+                MessageBox.Show("DocItem Close Error: " + ex.Message);
             }
         }
 
         /// <summary>
-        /// (DEPRECATED) Creates a new document panel, or brings to focus a panel that exists
+        /// Summary:
+        ///     Event handler invoked when the main window is closed by the user
         /// </summary>
-        /// <param name="caption"></param>
-        /// <param name="content"></param>
-        private void CreateDockPanel(string caption, object content)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DXRibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-            bool exists = false;
-
-            //// Get the collection of document panels, then check to see if this doc panel already exists.
-            //// An existing panel will become the active panel, and the dashboard flyout will be collapsed.
-            var docGroupMembers = this.primaryDocumentGroup.GetItems();
-            foreach (BaseLayoutItem i in docGroupMembers)
+            if (Host.Instance.AnyDirty())
             {
-                if (0 == String.Compare(i.Caption.ToString().Trim(), caption.Trim(), true))
+                MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                switch (result)
                 {
-                    exists = true;
-                    primaryDocumentGroup.SelectedTabIndex = i.TabIndex;
-                    this.dockLayoutManager.Activate(i);
-                    break;
+                    case MessageBoxResult.Cancel:
+                        e.Cancel = true;
+                        break;
+                    default:
+                        break;
                 }
             }
-
-            if (!exists)
-            {
-                DocumentPanel docPanel = new DocumentPanel(); // { DataContext = this.DataContext };
-
-                docPanel.Caption = caption;
-                docPanel.Content = content;
-
-                this.primaryDocumentGroup.Add(docPanel);
-                primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
-                this.dockLayoutManager.Activate(docPanel);
-                docPanel.TabBackgroundColor = System.Windows.Media.Colors.Aqua;
-            }
-
-            // The LayoutGroup for the DocumentManager is initially not HitTestVisible to
-            // avoid Main throwing w/ a null reference if the user clicks when there aren't
-            // Documents in the DocumentGroup.  Once the first DocumentPanel is created
-            // HitTest is enabled.
-            this.layoutGroupMain.IsHitTestVisible = true;
         }
         #endregion
 
+        /*===========================================================================================*/
         ////
         //// Add On-Click Event Handlers for each tile or ribbon button here.....
         ////
@@ -449,8 +419,8 @@
         /// <param name="e"></param>
         private void OnClicked_Property(object sender, MouseButtonEventArgs e)
         {
-            Object content = new HVCC.Shell.Views.PropertyDetailsView() { DataContext = this.DataContext };
-            CreateDockPanel("Manage Properties ", content);
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Properties");
         }
 
         /// <summary>
@@ -491,81 +461,11 @@
         /// <param name="e"></param>
         private void OnClicked_Administration(object sender, MouseButtonEventArgs e)
         {
-            Object content = new HVCC.Shell.Views.Administration() { DataContext = this.DataContext };
-            CreateDockPanel("Administration ", content);
-        }
-
-        /// <summary>
-        /// Creates or Focuses the Change Owner DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_ChangeOwner(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            //this.TopRibbon.IsMinimized = true;
-            //PropertiesViewModel vm = ((PropertiesViewModel)this.DataContext);
-            //if (vm.IsDirty)
-            //{
-            //    MessageBox.Show("Current changes must be saved or undone before you can modify property owenership.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    e.Handled = true;
-            //}
-            //else
-            //{
-            //    Object content = new HVCC.Shell.Views.ChangeOwnerView() { DataContext = this.DataContext };
-            //    CreateDockPanel("Change Ownership", content);
-            //}
-        }
-
-        /// <summary>
-        /// Creates or Focuses the property Import DocumentPanel.  The input file is an Excel spread-sheet provided by Koeta from QuickBooks
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_Import(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            //this.TopRibbon.IsMinimized = true;
-            //if (vm.IsDirty)
-            //{
-            //    MessageBox.Show("Current changes must be saved or undone before you can import property data.", "Unsaved Edits", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    e.Handled = true;
-            //}
-            //else
-            //{
-            //    Object content = new HVCC.Shell.Views.PropertiesUpdatedView() { DataContext = this.DataContext };
-            //    CreateDockPanel("Import Results", content);
-            //    vm.Import();
-            //}
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Administration");
         }
 
         #endregion
-
-        private void CreateMeterExceptionsDocPanel()
-        {
-            Object content = new HVCC.Shell.Views.WaterMeterExceptionsView() { DataContext = this.DataContext };
-            CreateDockPanel("Water Meter Import Exceptions", content);
-        }
-
-        /// <summary>
-        /// Summary:
-        ///     Event handler invoked when the main window is closed by the user
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DXRibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (Host.Instance.AnyDirty())
-            {
-                MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                switch (result)
-                {
-                    case MessageBoxResult.Cancel:
-                        e.Cancel = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
 
         #region Report Button Events
         Dictionary<int, int> daysInMonth;

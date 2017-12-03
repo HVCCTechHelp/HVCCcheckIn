@@ -8,18 +8,36 @@
     using DevExpress.Mvvm;
     using DevExpress.Xpf.Grid;
     using DevExpress.Xpf.Docking;
+    using HVCC.Shell.Common.Interfaces;
 
     /// <summary>
     /// Interaction logic for PropertyDetailView.xaml
     /// </summary>
-    public partial class PropertyDetailsView : UserControl
+    public partial class PropertyDetailsView : UserControl, IView
     {
-        PropertiesViewModel vm = new PropertiesViewModel();
+        public IViewModel ViewModel
+        {
+            get { return this.DataContext as IViewModel; }
+            set { this.DataContext = value; }
+        }
 
-        public PropertyDetailsView()
+        public PropertyDetailsView(IViewModel vm)
         {
             InitializeComponent();
+            this.DataContext = vm;
             this.Loaded += OnLoaded;
+
+            this.ViewModel.Table = this.propertiesView;
+        }
+        public object SaveState()
+        {
+            //throw new NotImplementedException();
+            return null;
+        }
+
+        public void RestoreState(object state)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -29,20 +47,6 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //// Bind the properties of the view  to the properties of the view model.  
-            //// The properties are INotify, so when one changes it registers a PropertyChange
-            //// event on the other.  Also note, this code must reside outside of the
-            //// constructor or a XAML error will be thrown.
-            //vm = this.DataContext as PropertiesViewModel;
-
-            // Assign the grid view for Export and Printing
-            vm.GridTableView = this.propertiesView;
-
-            //if (null != vm)
-            //{
-            //    vm.PropertyChanged +=
-            //        new System.ComponentModel.PropertyChangedEventHandler(this.PropertiesViewModel_PropertyChanged);
-            //}
         }
 
         /// <summary>
@@ -54,10 +58,7 @@
         //{
         //    switch (e.PropertyName)
         //    {
-        //        //case "PropertiesList":
-        //        //case "SelectedProperty":
-        //        case "DataUpdated":
-        //            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
+        //        case "<property>":
         //            break;
         //        default:
         //            break;
@@ -93,17 +94,6 @@
                 e.ErrorContent = "The highlighted field cannot be blank";
                 e.SetError(e.ErrorContent);
             }
-            Helper.UpdateCaption(vm.ActiveDocPanel, vm.IsDirty);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tableView_RowDoubleClick(object sender, RowDoubleClickEventArgs e)
-        {
-            UICommand results = vm.ShowPropertyDialog((Property)propertyGrid.SelectedItem);
         }
     }
 }
