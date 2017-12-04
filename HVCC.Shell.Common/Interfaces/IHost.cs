@@ -17,7 +17,7 @@
         /// <returns>Yes==true, No==false, Cancel==null</returns>
         //bool? PromptYesNoCancel(string messagePrompt, string caption);
 
-        void Execute(HostVerb verb, object param);
+        void Execute(HostVerb verb, object param, object arg = null);
 
         void Close(IMvvmBinder mvvmBinder);
 

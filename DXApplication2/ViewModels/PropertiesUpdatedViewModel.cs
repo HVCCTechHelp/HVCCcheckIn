@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using DevExpress.Xpf.Docking;
     using System.Data.Linq;
     using HVCC.Shell.Common;
@@ -14,21 +13,22 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
-    using System.IO;
-    using System.Windows;
-    using DevExpress.Xpf.Spreadsheet;
-    using System.Collections.Generic;
-    using HVCC.Shell.Helpers;
 
     public partial class PropertiesUpdatedViewModel : CommonViewModel, ICommandSink
     {
 
-        public PropertiesUpdatedViewModel(IDataContext dc)
+        public PropertiesUpdatedViewModel(IDataContext dc, object arg)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            ApplPermissions = this.Host.AppDefault as ApplicationPermission;
+            ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
+            ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
+
+            // PropertiesDetailsView: ImportCommand should pass in an ObservableCollection<Property>.
+            // The items in the collection are properties which have updates/changes from an import.
+            ObservableCollection<Property> p = arg as ObservableCollection<Property>;
+            ImportPropertyAction(Host.Parameter);
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -52,6 +52,7 @@
         int RowNum;
         /* ------------------------------------- Properties --------------------------- */
         public ApplicationPermission ApplPermissions { get; set; }
+        public ApplicationDefault ApplDefault { get; set; }
 
         public override bool IsValid {  get { return true; } }
 
@@ -78,7 +79,9 @@
         public override bool IsBusy
         {
             get
-            { return _isBusy; }
+            {
+                return _isBusy;
+            }
             set
             {
                 if (value != _isBusy)
@@ -89,8 +92,9 @@
                 }
             }
         }
-        public virtual bool DialogResult { get; protected set; }
-        public virtual string ResultFileName { get; protected set; }
+
+        //public virtual bool DialogResult { get; protected set; }
+        //public virtual string ResultFileName { get; protected set; }
 
         #region Properties
         /// <summary>
@@ -111,14 +115,14 @@
                 }
                 return this._propertiesList;
             }
-            set
-            {
-                if (this._propertiesList != value)
-                {
-                    this._propertiesList = value;
-                    RaisePropertyChanged("PropertiesList");
-                }
-            }
+            //set
+            //{
+            //    if (this._propertiesList != value)
+            //    {
+            //        this._propertiesList = value;
+            //        RaisePropertyChanged("PropertiesList");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -129,17 +133,13 @@
         {
             get
             {
-                if (this._propertiesUpdated == null)
-                {
-                    this._propertiesUpdated = new ObservableCollection<Property>();
-                }
                 return this._propertiesUpdated;
             }
             set
             {
-                if (this._propertiesList != value)
+                if (this._propertiesUpdated != value)
                 {
-                    this._propertiesList = value;
+                    this._propertiesUpdated = value;
                     RaisePropertyChanged("PropertiesUpdated");
                 }
             }
@@ -168,17 +168,6 @@
             }
         }
 
-        /// <summary>
-        /// Summary
-        ///     Raises a property changed event when the SelectedCart data is modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _selectedCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged("DataChanged");
-        }
-
         #endregion
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
@@ -193,6 +182,7 @@
     /// </summary>
     public partial class PropertiesUpdatedViewModel : CommonViewModel, ICommandSink
     {
+        #region ICommandSink Implementation
         public void RegisterCommands()
         {
             this.RegisterSaveHandler();
@@ -229,7 +219,6 @@
             this.IsBusy = false;
         }
 
-        #region ICommandSink Implementation
         private CommandSink _sink = new CommandSink();
 
         // Required by the ICommandSink Interface
@@ -244,206 +233,13 @@
             _sink.ExecuteCommand(command, parameter, out handled);
         }
         #endregion
-
     }
 
-    public partial class PropertiesUpdatedViewModel: CommonViewModel, ICommandSink
+    public partial class PropertiesUpdatedViewModel: CommonViewModel
     {
 
         /* ---------------------------------- Commands & Actions --------------------------------------- */
         #region Commands
-
-        /// <summary>
-        /// Import Property information from Quickbooks spreadsheet
-        /// </summary>
-        public void Import() // ImportCommand
-        {
-            int[] colArray = new int[3];
-            // Open a file chooser dialog window. Capture the user's file selection.
-            OpenFileDialogService.Filter = "XLSX files|*.xlsx";
-            OpenFileDialogService.FilterIndex = 1;
-            DialogResult = OpenFileDialogService.ShowDialog();
-            if (!DialogResult)
-            {
-                ResultFileName = string.Empty;
-            }
-            else
-            {
-                IFileInfo file = OpenFileDialogService.Files.First();
-                ResultFileName = file.GetFullName();
-            }
-
-            // Set the busy flag so the cursor in the UI will spin to indicate something is happening.
-            this.IsBusy = true;
-            List<Relationship> OwnerList = new List<Relationship>();
-
-            // Process the excel sprea-sheet to import and update the property records
-            try
-            {
-                SpreadsheetControl spreadsheetControl1 = new SpreadsheetControl();
-                IWorkbook workbook = spreadsheetControl1.Document;
-                // Load a workbook from a stream. 
-                using (FileStream stream = new FileStream(ResultFileName, FileMode.Open))
-                {
-                    workbook.LoadDocument(stream, DocumentFormat.OpenXml);
-                    Worksheet sheet = workbook.Worksheets[1];
-                    RowCollection rowCollection = sheet.Rows;
-                    int rowCount = rowCollection.LastUsedIndex;
-
-                    for (int row = 0; row <= rowCount; row++)
-                    {
-                        RowNum = row + 1; // need to account for the zero offset in the spread-sheet
-                        Row currentRow = rowCollection[row];
-                        Range cellRange = currentRow.GetRangeWithAbsoluteReference();
-
-                        // Row[0] is the header row. We read the header to determin what the offsets
-                        // are for the Customer, Bill To and Balance columns. This way, if there are
-                        // more columns included in the import file it can handle the file format.
-                        string cellData = String.Empty;
-                        if (0 == row)
-                        {
-                            for (int cell = 0; cell <= 25; cell++)
-                            {
-                                cellData = cellRange[cell].Value.ToString();
-                                switch (cellData)
-                                {
-                                    case "Customer":
-                                        Visibility v = Visibility.Hidden;
-                                        colArray[(int)Column.Customer] = cell;
-                                        break;
-                                    case "Bill to":
-                                        colArray[(int)Column.BillTo] = cell;
-                                        break;
-                                    case "Balance Total":
-                                        colArray[(int)Column.Balance] = cell;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            if (0 == colArray[(int)Column.Customer] ||
-                                 0 == colArray[(int)Column.BillTo] ||
-                                 0 == colArray[(int)Column.Balance])
-                            {
-                                throw new System.FormatException("Import file is invalid or missing required columns");
-                            }
-                        }
-                        else
-                        {
-                            // Get the 'Customer' data from the cell.  Using 'ConvertCustomerToProperty()', we can
-                            // divide up the string into section-block-lot-sublot so it populates the 'importProperty'
-                            // 
-                            string customer = cellRange[colArray[(int)Column.Customer]].Value.ToString();
-                            Property importProperty = Helper.ConvertCustomerToProperty(customer);
-                            importProperty.Customer = customer;
-                            importProperty.BillTo = cellRange[colArray[(int)Column.BillTo]].Value.ToString();
-                            importProperty.Balance = Decimal.Parse(cellRange[colArray[(int)Column.Balance]].Value.ToString());
-
-                            // Look up PropertyID. If it is not-null then update the property record with the new value(s).
-                            // Otherwise Insert it as a new property record.
-                            Property foundProperty = this.dc.Properties.Where(x => x.Section == importProperty.Section &&
-                                                                                x.Block == importProperty.Block &&
-                                                                                x.Lot == importProperty.Lot &&
-                                                                                x.SubLot == importProperty.SubLot).SingleOrDefault();
-
-                            // In theroy, we should never find a property that isn't already in the database.
-                            if (null == foundProperty)
-                            {
-                                MessageBoxService.ShowMessage("Warnning: A new property is about to be added " + importProperty.Customer);
-                                // TO-DO:  Add handeling of user input (messagebox result)
-
-                                this.PropertiesUpdated.Add(importProperty);
-                                //this.dc.Properties.InsertOnSubmit(importProperty);
-                            }
-                            else // update existing record with new/changed value(s)
-                            {
-                                // Check to see if the Balance amount needs to be updated
-                                if (foundProperty.Balance != importProperty.Balance)
-                                {
-                                    // Assign the new (updated) value to the foundProperty with the values from the import
-                                    // spread-sheet.
-                                    foundProperty.Balance = importProperty.Balance;
-                                    if (foundProperty.Balance > 0)
-                                    {
-                                        foundProperty.IsInGoodStanding = false;
-                                        foundProperty.Status = "Past Due";
-                                    }
-                                    else
-                                    {
-                                        foundProperty.IsInGoodStanding = true;
-                                        foundProperty.Status = String.Empty;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Get the change set for the inport.
-                    ChangeSet cs = this.dc.GetChangeSet();
-
-                    // The Import Results grid is bound to the 'PropertiesUpdated' collection. Since the 
-                    // collection is used in other places, we need to clear the collection before adding
-                    // the change set items.
-                    if (0 > this.PropertiesUpdated.Count)
-                    {
-                        foreach (Property x in this.PropertiesUpdated)
-                        {
-                            this.PropertiesUpdated.Remove(x);
-                        }
-                    }
-
-                    // Add the change set items to the 'PropertiesUpdated' collection is it is reflected
-                    // in the Import Results grid.
-                    foreach (Property p in cs.Updates)
-                    {
-                        this.PropertiesUpdated.Add(p);
-                    }
-
-                    // TO-DO: Handle Save() function......
-                    // Have the user respond to the changes
-                    //MessageResult userInput = MessageBoxService.ShowMessage("Import complete. Do you want to save the results?", "Save Changes", MessageButton.YesNo, MessageIcon.Question, MessageResult.No);
-                    //if (MessageResult.Yes == userInput)
-                    //{
-                    //    //this.Save();
-                    //    MessageBoxService.ShowMessage("Changes saved.", "", MessageButton.OK, MessageIcon.Information);
-                    //}
-                    //else
-                    //{
-                    //    foreach (var v in cs.Updates)
-                    //    {
-                    //        if (typeof(Property) == v.GetType())
-                    //        {
-                    //            this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
-                    //        }
-                    //    }
-                    //}
-
-                    workbook.Dispose();
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //// NOTE: This needs only be executed on the very first import to seed the database.........
-                    //foreach (Property p in this.PropertiesList)
-                    //{
-                    //    //// Try to extract the owner name(s) from the BillTo string
-                    //    AddToOwners = Helper.ExtractOwner(p);
-                    //    foreach (Relationship r in AddToOwners)
-                    //    {
-                    //        this.dc.Relationships.InsertOnSubmit(r);
-                    //    }
-                    //}
-                    //this.Save();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error importing data at row " + RowNum + " Message: " + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-                this.IsBusy = false;
-            }
-        }
 
         /// <summary>
         /// Add Cart Command
@@ -534,29 +330,66 @@
             }
         }
 
+
         /// <summary>
-        /// Print Command
+        /// Import Balance data Command
         /// </summary>
-        private ICommand _rowDoubleClickCommand;
-        //public ICommand RowDoubleClickCommand
-        //{
-        //    get
-        //    {
-        //        return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-        //    }
-        //}
+        private ICommand _importPropertyCommand;
+        public ICommand ImportPropertyCommand
+        {
+            get
+            {
+                return _importPropertyCommand ?? (_importPropertyCommand = new CommandHandlerWparm((object parameter) => ImportPropertyAction(parameter), true));
+            }
+        }
 
         /// <summary>
         /// Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
-        //public void RowDoubleClickAction(object parameter)
-        //{
-        //    object o = parameter;
-        //    Host.Parameter = this.SelectedProperty;
-        //    Host.Execute(HostVerb.Open, "Edit");
+        public void ImportPropertyAction(object parameter)
+        {
+            PropertiesUpdated = parameter as ObservableCollection<Property>;
 
-        //}
+            //ObservableCollection<Property> list = parameter as ObservableCollection<Property>;
+            //foreach (Property p in list)
+            //{
+            //    Property foundProperty = (from x in dc.Properties
+            //                              where x.PropertyID == p.PropertyID
+            //                              select x).FirstOrDefault();
+
+            //    foundProperty.PreviousBalance = p.PreviousBalance;
+            //    foundProperty.Balance = p.Balance;
+            //    foundProperty.Status = p.Status;
+            //    foundProperty.IsInGoodStanding = p.IsInGoodStanding;
+
+            //    this.PropertiesUpdated.Add(foundProperty);
+            //}
+            //ChangeSet cs = dc.GetChangeSet();
+            //RaisePropertyChanged("DataChanged");
+        }
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
+        {
+            get
+            {
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RowDoubleClickAction(object parameter)
+        {
+            Host.Parameter = this.SelectedProperty.PropertyID;
+            Host.Execute(HostVerb.Open, "PropertyEdit");
+        }
 
         #endregion
 
@@ -632,5 +465,6 @@
             this.Dispose(false);
         }
     }
+
 }
 

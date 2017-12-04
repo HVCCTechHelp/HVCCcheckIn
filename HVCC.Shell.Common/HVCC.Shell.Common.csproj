@@ -77,6 +77,7 @@
     <Compile Include="Converters\BalanceValueToTypeConverter.cs" />
     <Compile Include="Converters\BooleanToVisibility.cs" />
     <Compile Include="Converters\EventArgsConverter.cs" />
+    <Compile Include="Converters\BitmapToByteArrayConverter.cs" />
     <Compile Include="Converters\InvertBoolean.cs" />
     <Compile Include="Converters\NullToCollapsed.cs" />
     <Compile Include="Converters\RowClickConverter.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="Interfaces\IHost.cs" />
     <Compile Include="Interfaces\IViewModelLaunchingPad.cs" />
     <Compile Include="MvvmBinder.cs" />
-    <Compile Include="OBS___GridControlServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

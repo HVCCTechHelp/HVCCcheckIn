@@ -26,7 +26,7 @@
             <converters:BooleanToVisibility x:Key="BoolToVis" />
             <converters:InvertBoolean x:Key="Invert" />
             <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
-
+            <converters:BitmapToByteArrayConverter x:Key="BitmapToByteArray"/>
             <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
             <DataTemplate x:Key="cmbTmp">
                 <dxe:ComboBoxEdit Name="PART_Editor" 
@@ -402,7 +402,7 @@
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem Width="425">
                     <dxe:ImageEdit x:Name="imgEdit"
-                                   Source="{Binding  SelectedRelationship.Image, Mode=TwoWay}"
+                                   Source="{Binding  SelectedRelationship.Photo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BitmapToByteArray}}"
                                    IsEnabled="{Binding  ApplPermissions.CanUpdateRelationship}"
                                    Height="275" Width="367"
                                    ShowBorder="True"
@@ -410,8 +410,8 @@
                                    AllowDrop="True"
                                    ShowMenu="True"
                                    Validate="editform_Validate"
-                                   Drop="imgEdit_Drop"
                                    >
+                        <!--Drop="imgEdit_Drop"-->
                         <!--EditValueChanged="editform_ValueChanged"-->
                         <dxe:ImageEdit.MenuTemplate>
                             <ControlTemplate>
@@ -427,10 +427,9 @@
                         </dxe:ImageEdit.MenuTemplate>
 
                         <dxmvvm:Interaction.Behaviors>
-                            <dxmvvm:EventToCommand EventName="EditValueChanged" 
-                                               Command="{Binding ImageEditValueChangedCommand}" CommandParameter=""/>
+                            <dxmvvm:EventToCommand EventName="Drop" Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
                         </dxmvvm:Interaction.Behaviors>
-                        
+
                     </dxe:ImageEdit>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>

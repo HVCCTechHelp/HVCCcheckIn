@@ -15,35 +15,35 @@
 
     public class Helper
     {
-        public static bool GetHasError(DependencyObject obj)
-        {
-            return (bool)obj.GetValue(HasErrorProperty);
-        }
+        //public static bool GetHasError(DependencyObject obj)
+        //{
+        //    return (bool)obj.GetValue(HasErrorProperty);
+        //}
 
-        public static void SetHasError(DependencyObject obj, bool value)
-        {
-            obj.SetValue(HasErrorProperty, value);
-        }
+        //public static void SetHasError(DependencyObject obj, bool value)
+        //{
+        //    obj.SetValue(HasErrorProperty, value);
+        //}
 
-        public static readonly DependencyProperty HasErrorProperty = DependencyProperty.RegisterAttached("HasError", typeof(bool), typeof(Helper), null);
+        //public static readonly DependencyProperty HasErrorProperty = DependencyProperty.RegisterAttached("HasError", typeof(bool), typeof(Helper), null);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="panel"></param>
         /// <param name="isDirty"></param>
-        public static void UpdateCaption(BaseLayoutItem panel, bool isDirty)
-        {
-            string[] caption = panel.Caption.ToString().Split('*');
-            if (isDirty)
-            {
-                panel.Caption = caption[0].TrimEnd(' ') + "* ";
-            }
-            else
-            {
-                panel.Caption = caption[0].TrimEnd(' ');
-            }
-        }
+        //public static void UpdateCaption(BaseLayoutItem panel, bool isDirty)
+        //{
+        //    string[] caption = panel.Caption.ToString().Split('*');
+        //    if (isDirty)
+        //    {
+        //        panel.Caption = caption[0].TrimEnd(' ') + "* ";
+        //    }
+        //    else
+        //    {
+        //        panel.Caption = caption[0].TrimEnd(' ');
+        //    }
+        //}
 
         /// <summary>
         /// Loads image file into a byte array.
@@ -75,41 +75,41 @@
         /// </summary>
         /// <param name="bitmapImage"></param>
         /// <returns></returns>
-        public static byte[] BitmapImageToArray(BitmapImage bitmapImage)
-        {
-            byte[] bytes;
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
-            using (MemoryStream ms = new MemoryStream())
-            {
-                encoder.Save(ms);
-                bytes = ms.ToArray();
-                return bytes;
-            }
-        }
+        //public static byte[] BitmapImageToArray(BitmapImage bitmapImage)
+        //{
+        //    byte[] bytes;
+        //    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+        //    encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        encoder.Save(ms);
+        //        bytes = ms.ToArray();
+        //        return bytes;
+        //    }
+        //}
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="imageData"></param>
         /// <returns></returns>
-        public static BitmapImage ArrayToBitmapImage(byte[] imageData)
-        {
-            if (imageData == null || imageData.Length == 0) return null;
-            var image = new BitmapImage();
-            using (var mem = new MemoryStream(imageData))
-            {
-                mem.Position = 0;
-                image.BeginInit();
-                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = null;
-                image.StreamSource = mem;
-                image.EndInit();
-            }
-            image.Freeze();
-            return image;
-        }
+        //public static BitmapImage ArrayToBitmapImage(byte[] imageData)
+        //{
+        //    if (imageData == null || imageData.Length == 0) return null;
+        //    var image = new BitmapImage();
+        //    using (var mem = new MemoryStream(imageData))
+        //    {
+        //        mem.Position = 0;
+        //        image.BeginInit();
+        //        image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+        //        image.CacheOption = BitmapCacheOption.OnLoad;
+        //        image.UriSource = null;
+        //        image.StreamSource = mem;
+        //        image.EndInit();
+        //    }
+        //    image.Freeze();
+        //    return image;
+        //}
 
         /// <summary>
         /// Extracts the Section-Block-Lot-SubLot information from a Property.Customer string
@@ -188,88 +188,88 @@
         /// </summary>
         /// <param name="theProperty"></param>
         /// <returns></returns>
-        public static List<Relationship> ExtractOwner(Property theProperty)
-        {
-            char[] charsToTrim = {' ', '\t' };
-            string workingString;
-            string[] fullArray = theProperty.BillTo.Split(',');
-            string[] workingArray;
-            List<Relationship> owners = new List<Relationship>();
-            Relationship firstOwner = new Relationship();
+        //public static List<Relationship> ExtractOwner(Property theProperty)
+        //{
+        //    char[] charsToTrim = {' ', '\t' };
+        //    string workingString;
+        //    string[] fullArray = theProperty.BillTo.Split(',');
+        //    string[] workingArray;
+        //    List<Relationship> owners = new List<Relationship>();
+        //    Relationship firstOwner = new Relationship();
 
-            if (0 == theProperty.PropertyID)
-            {
-                return owners;
-            }
-            else
-            {
-                //// Check to see if there is more than one element
-                if (fullArray.Count() > 1)
-                {
-                    //// The first element should be the last name of the owner. However, there
-                    //// may be mutiple owners separated by a slash, or some other odd format present
-                    workingArray = fullArray[0].Split('/');
-                    if (1 == workingArray.Count())
-                    {
-                        workingString = fullArray[0].Trim(charsToTrim);
-                        workingArray = workingString.Split(' '); // make sure the string doesn't have a <sp>
-                        if (1 == workingArray.Count())
-                        {
-                            firstOwner.LName = fullArray[0];
-                        }
-                        else // it appears there was a <sp>, so we use the split working array
-                        {
-                            firstOwner.LName = workingArray[0];
-                        }
+        //    if (0 == theProperty.PropertyID)
+        //    {
+        //        return owners;
+        //    }
+        //    else
+        //    {
+        //        //// Check to see if there is more than one element
+        //        if (fullArray.Count() > 1)
+        //        {
+        //            //// The first element should be the last name of the owner. However, there
+        //            //// may be mutiple owners separated by a slash, or some other odd format present
+        //            workingArray = fullArray[0].Split('/');
+        //            if (1 == workingArray.Count())
+        //            {
+        //                workingString = fullArray[0].Trim(charsToTrim);
+        //                workingArray = workingString.Split(' '); // make sure the string doesn't have a <sp>
+        //                if (1 == workingArray.Count())
+        //                {
+        //                    firstOwner.LName = fullArray[0];
+        //                }
+        //                else // it appears there was a <sp>, so we use the split working array
+        //                {
+        //                    firstOwner.LName = workingArray[0];
+        //                }
 
-                        //// Now try to extract out the first name(s).  There is odd formatting here to deal with as well....
-                        workingString = fullArray[1].TrimStart();
-                        workingArray = workingString.Split(' ');
-                        firstOwner.FName = workingArray[0];
-                        firstOwner.RelationToOwner = "Owner";
-                        firstOwner.PropertyID = theProperty.PropertyID;
-                        owners.Add(firstOwner);
+        //                //// Now try to extract out the first name(s).  There is odd formatting here to deal with as well....
+        //                workingString = fullArray[1].TrimStart();
+        //                workingArray = workingString.Split(' ');
+        //                firstOwner.FName = workingArray[0];
+        //                firstOwner.RelationToOwner = "Owner";
+        //                firstOwner.PropertyID = theProperty.PropertyID;
+        //                owners.Add(firstOwner);
 
-                        //// Check to see if there are two first names (separated by &)
-                        if (fullArray[1].Contains("&"))
-                        {
-                            Relationship secondOwner = new Relationship();
-                            secondOwner.RelationToOwner = firstOwner.RelationToOwner;
-                            secondOwner.PropertyID = firstOwner.PropertyID;
-                            secondOwner.LName = firstOwner.LName;
-                            secondOwner.FName = workingArray[2];
-                            owners.Add(secondOwner);
-                        }
-                        return owners;
-                    }
-                    else
-                    {
-                        return owners;
-                    }
-                }
-                else
-                {
-                    return owners;
-                }
-            }
-        }
+        //                //// Check to see if there are two first names (separated by &)
+        //                if (fullArray[1].Contains("&"))
+        //                {
+        //                    Relationship secondOwner = new Relationship();
+        //                    secondOwner.RelationToOwner = firstOwner.RelationToOwner;
+        //                    secondOwner.PropertyID = firstOwner.PropertyID;
+        //                    secondOwner.LName = firstOwner.LName;
+        //                    secondOwner.FName = workingArray[2];
+        //                    owners.Add(secondOwner);
+        //                }
+        //                return owners;
+        //            }
+        //            else
+        //            {
+        //                return owners;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return owners;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Returns a slash delimited list of unique names from a list
         /// </summary>
         /// <param name="names"></param>
         /// <returns></returns>
-        public static string UniqueNames(List<string> names)
-        {
-            List<string> nameList = (from l in names
-                                      select l).Distinct().ToList();
-            string tString = String.Empty;
-            foreach (string s in nameList)
-            {
-                tString = tString + s + "/";
-            }
-            int lastChr = tString.Length - 1;
-            return tString.Substring(0, lastChr);
-        }
+        //public static string UniqueNames(List<string> names)
+        //{
+        //    List<string> nameList = (from l in names
+        //                              select l).Distinct().ToList();
+        //    string tString = String.Empty;
+        //    foreach (string s in nameList)
+        //    {
+        //        tString = tString + s + "/";
+        //    }
+        //    int lastChr = tString.Length - 1;
+        //    return tString.Substring(0, lastChr);
+        //}
     }
 }

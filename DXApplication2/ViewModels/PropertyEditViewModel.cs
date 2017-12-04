@@ -1,4 +1,6 @@
-﻿namespace HVCC.Shell.ViewModels
+﻿// TO-DO:  Plumb the Save button to the IsEnabledSave
+////////////////////////////////////////////////////////////////////////////////////////////
+namespace HVCC.Shell.ViewModels
 {
     using System;
     using System.Linq;
@@ -18,18 +20,20 @@
     using System.Windows;
     using System.Collections.Generic;
     using System.Text;
+    using System.IO;
 
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
 
-        public PropertyEditViewModel(IDataContext dc)
+        public PropertyEditViewModel(IDataContext dc, object arg)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            if (null != this.Host.Parameter)
+            Property p = arg as Property;
+            if (null != p)
             {
                 int pID;
-                Int32.TryParse(this.Host.Parameter.ToString(), out pID);
+                Int32.TryParse(p.PropertyID.ToString(), out pID);
                 this.SelectedProperty = GetProperty(pID);
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
@@ -224,7 +228,6 @@
                         {
                             this._selectedRelationship.Photo = this.ApplDefault.Photo;
                         }
-                        _selectedRelationship.Image = Helper.ArrayToBitmapImage(this._selectedRelationship.Photo.ToArray());
                         RaisePropertyChanged("SelectedRelationship");
                     }
                 }
@@ -242,6 +245,7 @@
         /// <param name="e"></param>
         private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var x = e.PropertyName;
             RaisePropertyChanged("DataChanged");
         }
 
@@ -252,6 +256,10 @@
         /// <param name="e"></param>
         private void SelectedRelation_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var x = e.PropertyName;
+
+            // TO-DO : conver 'if' to switch..... Add "Photo"
+
             // We listen for changes to the IsGolf/IsPool value of the SelectedProperty so we can update the 
             // Check-In counts for the property.
 
@@ -268,6 +276,7 @@
                     if (r.IsPool) { this.SelectedProperty.PoolMembers += 1; }
                 }
             }
+            RaisePropertyChanged("DataChanged");
         }
 
         #endregion
@@ -338,6 +347,7 @@
     /// </summary>
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
+        #region ICommandSink Implementation
         public void RegisterCommands()
         {
             this.RegisterSaveHandler();
@@ -376,6 +386,21 @@
             RaisePropertiesChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
         }
+
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
+        #endregion
 
         /// <summary>
         /// Print Command
@@ -537,42 +562,98 @@
         }
 
         /// <summary>
-        /// Print Command
+        /// Drop Command
         /// </summary>
-        private ICommand _imageEditValueChangedCommand;
-        public ICommand ImageEditValueChangedCommand
+        private ICommand _dropCommand;
+        public ICommand DropCommand
         {
             get
             {
-                return _imageEditValueChangedCommand ?? (_imageEditValueChangedCommand = new CommandHandlerWparm((object parameter) => ImageEditValueChangedAction(parameter), true));
+                return _dropCommand ?? (_dropCommand = new CommandHandlerWparm((object parameter) => DropAction(parameter), true));
             }
         }
 
         /// <summary>
-        /// Grid row double click event to command action
+        /// ImageEdit (drag &)drop event to command action
         /// </summary>
         /// <param name="type"></param>
-        public void ImageEditValueChangedAction(object parameter)
+        public void DropAction(object parameter)
         {
-            EditValueChangedEventArgs e = parameter as EditValueChangedEventArgs;
+            DragEventArgs e = parameter as DragEventArgs;
+            try
+            {
+                // Only supports file drag & drop
+                if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    return;
+                }
+
+                //Drag the file access
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Only supports single file drag & drop
+                if (1 < files.Count())
+                {
+                    MessageBox.Show("You can only drop a single image on this control");
+                    return;
+                }
+
+                //Note that, because the program supports both pulled also supports drag the past, then ListBox can receive its drag and drop files
+                //In order to prevent conflict mouse clicking and dragging, need to be shielded from the program itself to drag the file
+                //Here to determine whether a document from outside the program drag in, is to determine the image is in the working directory
+                if (files.Length > 0 && (e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
+                {
+                    e.Effects = DragDropEffects.Copy;
+                }
+                else
+                {
+                    e.Effects = DragDropEffects.None;
+                }
+
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        //If the image is from the external drag in, make a backup copy of the file to the working directory
+                        ////string destFile = path + System.IO.Path.GetFileName(file);
+
+                        switch (e.Effects)
+                        {
+                            case DragDropEffects.Copy:
+                                ////File.Copy(file, destFile, false);
+                                if ((Path.GetExtension(file)).Contains(".png") ||
+                                    (Path.GetExtension(file)).Contains(".PNG") ||
+                                    (Path.GetExtension(file)).Contains(".jpg") ||
+                                    (Path.GetExtension(file)).Contains(".JPG") ||
+                                    (Path.GetExtension(file)).Contains(".jpeg") ||
+                                    (Path.GetExtension(file)).Contains(".JPEG") ||
+                                    (Path.GetExtension(file)).Contains(".gif") ||
+                                    (Path.GetExtension(file)).Contains(".GIF"))
+                                {
+                                    SelectedRelationship.Photo = Helper.LoadImage(file);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Only JPG, GIF and PNG files are supported");
+                                    return;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Already exists in this file or import the non image files！");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error processing image file. " + ex.Message);
+            }
         }
-
-        #region ICommandSink Implementation
-        private CommandSink _sink = new CommandSink();
-
-        // Required by the ICommandSink Interface
-        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            return _sink.CanExecuteCommand(command, parameter, out handled);
-        }
-
-        // Required by the ICommandSink Interface
-        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            _sink.ExecuteCommand(command, parameter, out handled);
-        }
-        #endregion
-
     }
     /*================================================================================================================================================*/
 

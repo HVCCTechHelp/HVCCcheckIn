@@ -118,21 +118,20 @@
                         {
                             // Get the document panel that coorsponds to the view.  Null will
                             // be returned for the MainWindow binder, so that is ignored.
+                            // Depending on the dirty state of the view model, the tab background and caption
+                            // are set to indiate dirty/not-dirty.
                             DocumentPanel dp = GetDocumentPanelByView(binder.View);
                             if (null != dp)
                             {
-                                if (null != dp)
+                                if (binder.ViewModel.IsDirty)
                                 {
-                                    if (binder.ViewModel.IsDirty)
-                                    {
-                                        dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
-                                    }
-                                    else
-                                    {
-                                        dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
-                                    }
-                                    dp.Caption = binder.ViewModel.Caption;
+                                    dp.TabBackgroundColor = System.Windows.Media.Colors.Magenta;
                                 }
+                                else
+                                {
+                                    dp.TabBackgroundColor = System.Windows.Media.Colors.Black;
+                                }
+                                dp.Caption = binder.ViewModel.Caption;
                             }
                         }
                         break;

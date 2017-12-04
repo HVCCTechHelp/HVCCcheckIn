@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
@@ -55,6 +56,7 @@
                                    ShowFixedTotalSummary="True" 
                                    ShowTotalSummary="True"
                                    >
+
                         <dxg:TableView.FormatConditions>
                             <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
                                 <dxc:Format Foreground="Red"/>
@@ -64,24 +66,36 @@
                             </dxg:FormatCondition>
                         </dxg:TableView.FormatConditions>
 
-                        <!-- 
-                            Register the GridControlService so the actions buttons in the User Control
-                            that is invoking this resource are plumbed up (Action: Update, Cancel)
-                        -->
                         <dxmvvm:Interaction.Behaviors>
-                            <common:GridControlService/>
+                            <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                                               Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}"/>
                         </dxmvvm:Interaction.Behaviors>
+                        
                     </dxg:TableView>
                 </dxg:GridControl.View>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Customer" Header="Customer" Width="10"
+                    <dxg:GridColumn FieldName="Customer" Header="Customer" Width="25"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             />
-                    <dxg:GridColumn FieldName="Balance" Header="Balance " Width="10"      
+                    <dxg:GridColumn FieldName="PreviousBalance" Header="Previous Balance " Width="25"      
+                                    AllowEditing="False" 
+                                   ReadOnly="True"
+                                    >
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                            </dxe:TextEditSettings>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Balance" Header="New Balance " Width="25"      
                                             AllowEditing="False" 
                                             ReadOnly="True"
-                                            />
+                                    >
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                            </dxe:TextEditSettings>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="OwnerLName" Header="Last Name " Width="50"  
                                             AllowEditing="True" 
                                             />

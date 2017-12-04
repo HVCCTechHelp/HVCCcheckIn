@@ -147,6 +147,25 @@
         }
 
         /// <summary>
+        /// Collection of properties updated by an import
+        /// </summary>
+        private ObservableCollection<Property> _propertiesUpdated = new ObservableCollection<Property>();
+        public ObservableCollection<Property> PropertiesUpdated
+        {
+            get
+            {
+                return this._propertiesUpdated;
+            }
+            set
+            {
+                if (this._propertiesList != value)
+                {
+                    this._propertiesList = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Register for Property Changes to the ViewModel's SelectedProperty entity
         /// </summary>
         /// <param name="sender"></param>
@@ -387,6 +406,7 @@
                 }
             }
         }
+        public virtual bool DialogResult { get; protected set; }
 
         #endregion
 
@@ -530,333 +550,10 @@
                 return null;
             }
         }
-
-        /// <summary>
-        /// Initialize a Relation to default values
-        /// </summary>
-        /// <param name="relation"></param>
-        private void InitializeRelation(Relationship relation)
-        {
-            relation.Active = false;
-            relation.FName = string.Empty;
-            relation.LName = string.Empty;
-            relation.RelationToOwner = string.Empty;
-            relation.PropertyID = this.SelectedProperty.PropertyID;
-            relation.RelationshipID = 0;
-            relation.Photo = this.ApplDefault.Photo; //DefaultBitmapImage;
-            relation.Image = Helper.ArrayToBitmapImage(relation.Photo.ToArray());
-        }
-
-        /// <summary>
-        /// Ads a Relation to the Model's collection
-        /// </summary>
-        /// <param name="relationshipViewModel"></param>
-        private void AddRelationshipToCollection(RelationshipViewModel relationshipViewModel)
-        {
-            if (String.IsNullOrEmpty(relationshipViewModel.Relationship.FName) ||
-                String.IsNullOrEmpty(relationshipViewModel.Relationship.LName) ||
-                String.IsNullOrEmpty(relationshipViewModel.Relationship.RelationToOwner) &&
-                false == relationshipViewModel.Relationship.Active)
-            {
-                relationshipViewModel.IsValid = false;
-            }
-            else
-            {
-                relationshipViewModel.IsValid = true;
-                this.SelectedProperty.Relationships.Add(relationshipViewModel.Relationship);
-                this.RaisePropertyChanged("DataUpdated");
-            }
-        }
-
-        /// <summary>
-        /// Performs no action. Used in conjunction with the "Close" dialog 
-        /// </summary>
-        private void NoAction()
-        { }
-
-        /// <summary>
-        /// PropertyEditDialog "Update" event handler
-        /// </summary>
-        /// <param name="propertyViewModel"></param>
-        //private void UpdatePropertyAction(PropertyViewModel propertyViewModel)
-        //{
-        //    // If the user de-activated any Relationships in the dialog, then they need to be accounted
-        //    // for in the DC.
-        //    // (deprecatred 08/09/2017) this.dc.Relationships.DeleteAllOnSubmit(propertyViewModel.RelationshipsToRemove);
-
-        //    // If the user added new Relationships in the dialog, then they need to be accounted
-        //    // for in the DC. Iterate over the RelationshipsToProperty collection in the Property 
-        //    // ViewModel and test for objects without a relationshipId.  THis effectively copies
-        //    // new relationship records from the PropertyVM to the main PropertiesVM.
-        //    foreach (Relationship r in propertyViewModel.ActiveRelationshipsToProperty)
-        //    {
-        //        if (0 == r.RelationshipID)
-        //        {
-        //            r.Active = true;
-        //            this.SelectedProperty.Relationships.Add(r);
-        //        }
-        //    }
-
-        //    foreach (Relationship r in propertyViewModel.RelationshipsToRemove)
-        //    {
-        //        RemoveRelationship(r);
-        //    }
-
-        //    // If a new comment was entered, we need to add it to the Note collection of the 
-        //    // SelectedProperty in the main PropertiesVM.
-        //    if (!string.IsNullOrEmpty(this.SelectedProperty.NewComment))
-        //    {
-        //        Note newNote = new Note();
-        //        newNote.PropertyID = this.SelectedProperty.PropertyID;
-        //        newNote.Comment = this.SelectedProperty.NewComment;
-        //        this.SelectedProperty.Notes.Add(newNote);
-        //        this.SelectedProperty.NewComment = string.Empty;
-
-        //        // Now add it as "Pending" to the comments textblock in the UI
-        //        StringBuilder sb = new StringBuilder();
-        //        sb.Append("(PENDING) ");
-        //        sb.Append(" - ");
-        //        sb.Append(newNote.Comment);
-        //        sb.AppendLine();
-        //        sb.Append(this.SelectedProperty.PropertyComments);
-        //        this.SelectedProperty.PropertyComments = sb.ToString();
-        //    }
-
-        //    this.SelectedProperty.PoolMembers = 0;
-        //    this.SelectedProperty.PoolGuests = 0;
-        //    this.SelectedProperty.GolfMembers = 0;
-        //    this.SelectedProperty.GolfGuests = 0;
-
-        //    RaisePropertyChanged("DataUpdated");
-        //}
-
-        /// <summary>
-        /// Reverts all pending changes made to Properties and Relationship
-        /// </summary>
-        public void CancelPropertyAction()
-        {
-            bool undo = false;
-            ChangeSet changeSet = this.dc.GetChangeSet();
-
-            //// First, check the change set to see if there are pending Updates. If so,
-            //// iterate over the Updates collection to see if they are for the currently
-            //// selected property.  If found, remove them from the change set.
-            if (0 != changeSet.Updates.Count)
-            {
-                foreach (var v in changeSet.Updates)
-                {
-                    if (typeof(Property) == v.GetType())
-                    {
-                        undo = true;
-                    }
-                    if (typeof(Relationship) == v.GetType())
-                    {
-                        undo = true;
-                    }
-
-                    if (undo)
-                    {
-                        this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
-                        undo = false;
-                    }
-                }
-
-                foreach (var v in changeSet.Inserts)
-                {
-                    if (typeof(Relationship) == v.GetType())
-                    {
-                        this.dc.GetTable(v.GetType()).DeleteOnSubmit(v);
-                    }
-
-                }
-            }
-
-            this.SelectedProperty.PoolMembers = 0;
-            this.SelectedProperty.PoolGuests = 0;
-            this.SelectedProperty.GolfMembers = 0;
-            this.SelectedProperty.GolfGuests = 0;
-
-            //// Lastly, just in case the user entered data into the New Commment field, we
-            //// blank out the string.
-            this.SelectedProperty.NewComment = string.Empty;
-        }
-        private void CancelPropertyAction(PropertyViewModel property)
-        {
-            bool undo = false;
-            ChangeSet changeSet = this.dc.GetChangeSet();
-
-            //// First, check the change set to see if there are pending Updates. If so,
-            //// iterate over the Updates collection to see if they are for the currently
-            //// selected property.  If found, remove them from the change set.
-            if (0 != changeSet.Updates.Count)
-            {
-                foreach (var v in changeSet.Updates)
-                {
-                    if (typeof(Property) == v.GetType())
-                    {
-                        Property p = v as Property;
-                        if (this.SelectedProperty.PropertyID == p.PropertyID)
-                        {
-                            undo = true;
-                        }
-                    }
-                    if (typeof(Relationship) == v.GetType())
-                    {
-                        Relationship r = v as Relationship;
-                        if (this.SelectedProperty.PropertyID == r.PropertyID)
-                        {
-                            undo = true;
-                        }
-                    }
-
-                    if (undo)
-                    {
-                        this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
-                        undo = false;
-                    }
-                }
-            }
-
-            this.SelectedProperty.PoolMembers = 0;
-            this.SelectedProperty.PoolGuests = 0;
-            this.SelectedProperty.GolfMembers = 0;
-            this.SelectedProperty.GolfGuests = 0;
-
-            //// Lastly, just in case the user entered data into the New Commment field, we
-            //// blank out the string.
-            this.SelectedProperty.NewComment = string.Empty;
-        }
-
         #endregion
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods
-
-        #endregion
-
-        /* -------------------------------------- Command Bindings ---------------------------------------- */
-        #region Command Bindings
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //public void Save()  //SaveCommand
-        //{
-        //    // Loop through the registered view models to see which, if any, are dirty.
-        //    foreach (Object o in this.ViewModels)
-        //    {
-        //        if (o.GetType().ToString().Contains("PropertiesViewModel"))
-        //        {
-        //            try
-        //            {
-        //                this.IsBusy = true;
-
-        //                // The ViewModel's data context manages most, but not all, of the changes to the model.  The
-        //                // exception is related to an ownership change.  Ownership relation records are stored in two 
-        //                // different collections, those to be removed and those to be added.  The removals are stored
-        //                // in the VM's 'RelationshipsToRemove' collection which is not associated with the model, rather
-        //                // it is associated to the data grid's SelectedItems collection.  Whereas, the new owenership
-        //                // relationship records are added to the SelectedProperty.Relationships collection (which is
-        //                // in the model).
-        //                // Therefore, before we can process pending changes to the DC, we must first process the
-        //                // two collections so they become part of the DC's change set.
-        //                if (this.ActiveDocPanel.Caption.ToString().Contains("Change Ownership"))
-        //                {
-        //                    this.ExecuteOwnershipChanges();
-        //                }
-
-        //                ChangeSet cs = dc.GetChangeSet();  // <Info> This is only for debugging.......
-        //                this.dc.SubmitChanges();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBoxService.Show("Error Saving data:" + ex.Message);
-        //                return;
-        //            }
-        //            finally
-        //            {
-        //                // In case the user added a note, and we are not importing data.... We have to reread the notes collection [into the DC] in order for it to be reflected
-        //                // in the PropertyEditDialog window.
-        //                if (true == this.ApplPermissions.CanViewPropertyNotes && (!this.ActiveDocPanel.Caption.ToString().Contains("Import")))
-        //                {
-        //                    this.dc.Refresh(RefreshMode.OverwriteCurrentValues, this.SelectedProperty.Notes);
-        //                    this.SelectedProperty.PropertyComments = GetPropertyNotes();
-        //                }
-
-        //                this.IsBusy = false;
-        //                //this.IsRibbonMinimized = true;
-        //                this.IsEnabledSave = false;
-        //                // Raise a DataUpdated property change to Main() so the ChangeOwner doc panel is closed after save.
-        //                RaisePropertyChanged("DataUpdated");
-        //                MessageBoxService.Show("Changes successfully saved!");
-        //            }
-        //        }
-        //        else if (typeof(GolfCartViewModel) == o.GetType())
-        //        {
-        //            //MessageBox.Show("GolfCartViewModel");
-        //            try
-        //            {
-        //                GolfCartViewModel gvm = o as GolfCartViewModel;
-        //                ChangeSet cs = gvm.dc.GetChangeSet();  // <Info> This is only for debugging.......
-        //                gvm.dc.SubmitChanges();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBoxService.Show("Error Saving data:" + ex.Message);
-        //                return;
-        //            }
-        //            finally
-        //            {
-        //            }
-        //        }
-        //        else
-        //        {
-        //            //MessageBox.Show("Unknown ViewModel");
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// Refresh data context..... (NOT IMPLEMENTED)
-        /// </summary>
-        public void Refresh() //RefreshCommand
-        {
-            try
-            {
-                // TO-DO: I'm told this doesn't do anything......?
-                //this.dc.Refresh(RefreshMode.KeepChanges, this.PropertiesList);
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error refreshing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
-        /// <summary>
-        /// Undo database changes.....  (NOT IMPLEMENTED)
-        /// </summary>
-        public void Undo() //UndoCommand
-        {
-            try
-            {
-                // TO-DO:  Add logic to fetch data from the database to replace changes to the model in memory
-                this.dc.Log = System.Console.Out;
-                this.dc.Refresh(RefreshMode.OverwriteCurrentValues, this.PropertiesList);
-                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error undoing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
 
         #endregion
     }
@@ -1034,8 +731,8 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Host.Parameter = this.SelectedProperty.PropertyID;
-            Host.Execute(HostVerb.Open, "PropertyEdit");
+            Property p = parameter as Property;
+            Host.Execute(HostVerb.Open, "PropertyEdit", p);
         }
 
         /// <summary>
@@ -1046,7 +743,7 @@
         {
             get
             {
-                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), true));
+                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanChangeOwner));
             }
         }
 
@@ -1060,6 +757,178 @@
             Host.Execute(HostVerb.Open, "ChangeOwner");
         }
 
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _importCommand;
+        public ICommand ImportCommand
+        {
+            get
+            {
+                return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ImportAction(object parameter)
+        {
+            string importFileName = string.Empty;
+
+            // Open a file chooser dialog window. Capture the user's file selection.
+            OpenFileDialogService.Filter = "XLSX files|*.xlsx";
+            OpenFileDialogService.FilterIndex = 1;
+            DialogResult = OpenFileDialogService.ShowDialog();
+            if (DialogResult)
+            {
+                IFileInfo file = OpenFileDialogService.Files.First();
+                importFileName = file.GetFullName();
+            }
+            // We are only interested in (3) columns in the import file.
+            int[] colArray = new int[3];
+
+            // Set the busy flag so the cursor in the UI will spin to indicate something is happening.
+            RaisePropertyChanged("IsBusy");
+
+            List<Relationship> OwnerList = new List<Relationship>();
+
+            // Process the excel sprea-sheet to import and update the property records
+            try
+            {
+                SpreadsheetControl spreadsheetControl1 = new SpreadsheetControl();
+                IWorkbook workbook = spreadsheetControl1.Document;
+                // Load a workbook from a stream. 
+                using (FileStream stream = new FileStream(importFileName, FileMode.Open))
+                {
+                    workbook.LoadDocument(stream, DocumentFormat.OpenXml);
+                    Worksheet sheet = workbook.Worksheets[1];
+                    RowCollection rowCollection = sheet.Rows;
+                    int rowCount = rowCollection.LastUsedIndex;
+
+                    for (int row = 0; row <= rowCount; row++)
+                    {
+                        RowNum = row + 1; // need to account for the zero offset in the spread-sheet
+                        Row currentRow = rowCollection[row];
+                        Range cellRange = currentRow.GetRangeWithAbsoluteReference();
+
+                        // Row[0] is the header row. We read the header to determin what the offsets
+                        // are for the Customer, Bill To and Balance columns. This way, if there are
+                        // more columns included in the import file it can handle the file format.
+                        string cellData = String.Empty;
+                        if (0 == row)
+                        {
+                            for (int cell = 0; cell <= 25; cell++)
+                            {
+                                cellData = cellRange[cell].Value.ToString();
+                                switch (cellData)
+                                {
+                                    case "Customer":
+                                        Visibility v = Visibility.Hidden;
+                                        colArray[(int)Column.Customer] = cell;
+                                        break;
+                                    case "Bill to":
+                                        colArray[(int)Column.BillTo] = cell;
+                                        break;
+                                    case "Balance Total":
+                                        colArray[(int)Column.Balance] = cell;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if (0 == colArray[(int)Column.Customer] ||
+                                 0 == colArray[(int)Column.BillTo] ||
+                                 0 == colArray[(int)Column.Balance])
+                            {
+                                throw new System.FormatException("Import file is invalid or missing required columns");
+                            }
+                        }
+                        else
+                        {
+                            // Get the 'Customer' data from the cell.  Using 'ConvertCustomerToProperty()', we can
+                            // divide up the string into section-block-lot-sublot so it populates the 'importProperty'
+                            // 
+                            string customer = cellRange[colArray[(int)Column.Customer]].Value.ToString();
+                            Property importProperty = Helper.ConvertCustomerToProperty(customer);
+                            importProperty.Customer = customer;
+                            importProperty.BillTo = cellRange[colArray[(int)Column.BillTo]].Value.ToString();
+                            importProperty.Balance = Decimal.Parse(cellRange[colArray[(int)Column.Balance]].Value.ToString());
+
+                            // Look up PropertyID. If it is not-null then update the property record with the new value(s).
+                            // Otherwise Insert it as a new property record.
+                            Property foundProperty = this.PropertiesList.Where(x => x.Section == importProperty.Section &&
+                                                                                x.Block == importProperty.Block &&
+                                                                                x.Lot == importProperty.Lot &&
+                                                                                x.SubLot == importProperty.SubLot).SingleOrDefault();
+
+                            // In theroy, we should never find a property that isn't already in the database.
+                            if (null == foundProperty)
+                            {
+                                MessageBoxService.ShowMessage("Warnning: A new property is about to be added " + importProperty.Customer);
+                                // TO-DO:  Add handeling of user input (messagebox result)
+
+                                //this.PropertiesUpdated.Add(importProperty);
+                                //this.dc.Properties.InsertOnSubmit(importProperty);
+                            }
+                            else // update existing record with new/changed value(s)
+                            {
+                                // Check to see if the Balance amount needs to be updated
+                                if (foundProperty.Balance != importProperty.Balance)
+                                {
+                                    Property p = new Property();
+                                    //p = (Property)foundProperty.Clone();
+                                    p = foundProperty;
+
+                                    // Assign the new (updated) value to the foundProperty with the values from the import
+                                    // spread-sheet. The previous balance is kept for comparison in the datagrid.
+                                    // Balance values are inverse. Therefore, a positive balance value indicates
+                                    // the member owes money.
+                                    p.PreviousBalance = (decimal)foundProperty.Balance;
+                                    p.Balance = importProperty.Balance;
+                                    if (foundProperty.Balance > 0)
+                                    {
+                                        p.IsInGoodStanding = false;
+                                        p.Status = "Past Due";
+                                    }
+                                    //else
+                                    //{
+                                    //    foundProperty.IsInGoodStanding = true;
+                                    //    foundProperty.Status = String.Empty;
+                                    //}
+                                    this.PropertiesUpdated.Add(p);
+                                }
+                            }
+                        }
+                    }
+
+                    // Get the change set for the inport.
+                    //ChangeSet cs = this.dc.GetChangeSet();
+
+                    // Add the change set items to the 'PropertiesUpdated' collection is it is reflected
+                    // in the Import Results grid.
+                    //foreach (Property p in cs.Updates)
+                    //{
+                    //    this.PropertiesUpdated.Add(p);
+                    //}
+
+                    this.IsBusy = false;
+                    workbook.Dispose();
+                    RaisePropertyChanged("IsNotBusy");
+                    RaisePropertyChanged("DataChanged");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error importing data at row " + RowNum + " Message: " + ex.Message);
+            }
+            finally
+            {
+                Host.Parameter = PropertiesUpdated;
+                Host.Execute(HostVerb.Open, "ImportBalances");
+            }
+        }
         #endregion
 
     }

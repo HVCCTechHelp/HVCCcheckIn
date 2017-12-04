@@ -20,7 +20,7 @@ namespace HVCC.Shell.Models
     using System.Collections.Specialized;
 
     #region Extend Property Model
-    public partial class Property : INotifyPropertyChanging, INotifyPropertyChanged
+    public partial class Property : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
     {
         public WaterMeterReading LastMeterEntry
         {
@@ -146,6 +146,20 @@ namespace HVCC.Shell.Models
             }
         }
 
+        private decimal _previousBalance = 0;
+        public decimal PreviousBalance
+        {
+            get { return _previousBalance; }
+            set
+            {
+                if (_previousBalance != value)
+                {
+                    _previousBalance = value;
+                    RaisePropertyChanged("PreviousBalance");
+                }
+            }
+        }
+
         /* --------------------------- INotify Property Change Implementation ----------------------------- */
         /// <summary>
         /// INotifyPropertyChanged Implementation
@@ -164,6 +178,14 @@ namespace HVCC.Shell.Models
             }
         }
         #endregion
+    }
+
+    public partial class Property: ICloneable
+    {
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
     #endregion
 
@@ -215,30 +237,6 @@ namespace HVCC.Shell.Models
                     }
                 }
                 RaisePropertyChanged("IsGolf");
-            }
-        }
-
-        private BitmapImage _image = null;
-        public BitmapImage Image
-        {
-            get
-            {
-                // Check to make sure the Photo field is not null before trying to convert
-                // it to a BitMap, otherwise a null reference expection will be thrown.
-                if (null != this.Photo)
-                {
-                    return Helper.ArrayToBitmapImage(this.Photo.ToArray());
-                }
-                else
-                { return null; }
-            }
-            set
-            {
-                if (this._image != value)
-                {
-                    this._image = value;
-                }
-                RaisePropertyChanged("Image");
             }
         }
 

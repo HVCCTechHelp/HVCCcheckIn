@@ -21,7 +21,7 @@
         mc:Ignorable="d"
         Title="HVCC Members" 
         Icon="./Images/Icons/HVCC.ico"
-        WindowState="Maximized"
+        WindowState="Normal"
         WindowStyle="None"
         common:CommandSinkBinding.CommandSink="{Binding}" 
         Closing="DXRibbonWindow_Closing"

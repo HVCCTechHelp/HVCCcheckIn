@@ -426,7 +426,7 @@
 
             ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
         }
 

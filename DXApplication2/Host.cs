@@ -78,11 +78,11 @@
             IView v = new HVCC.Shell.Views.PropertyDetailsView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewPropertyEditView()
+        public static IMvvmBinder GetNewPropertyEditView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new PropertyEditViewModel(dc) { Caption = "Property Edit" };
+            IViewModel vm = new PropertyEditViewModel(dc, arg) { Caption = "Property Edit" };
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
@@ -92,6 +92,14 @@
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
             IViewModel vm = new ChangeOwnerViewModel(dc) { Caption = "ChangeOwner" };
             IView v = new HVCC.Shell.Views.ChangeOwnerView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewPropertiesUpdatedView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new PropertiesUpdatedViewModel(dc, arg) { Caption = "Updated Balances" };
+            IView v = new HVCC.Shell.Views.PropertiesUpdatedView(vm);
             return new MvvmBinder(dc, v, vm);
         }
         //
@@ -135,7 +143,7 @@
         /// </summary>
         /// <param name="verb"></param>
         /// <param name="param"></param>
-        public void Execute(HostVerb verb, object param)
+        public void Execute(HostVerb verb, object param, object arg = null)
         {
             if (verb == HostVerb.Open)
             {
@@ -146,7 +154,17 @@
                 }
                 if (param.ToString() == "PropertyEdit")
                 {
-                    var binder = GetNewPropertyEditView();
+                    var binder = GetNewPropertyEditView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "ChangeOwner")
+                {
+                    var binder = GetNewChangeOwnerView();
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "ImportBalances")
+                {
+                    var binder = GetNewPropertiesUpdatedView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "GolfCart")
@@ -167,11 +185,6 @@
                 else if (param.ToString() == "WellMeter")
                 {
                     var binder = GetNewWellMeterView();
-                    this.OpenMvvmBinders.Add(binder);
-                }
-                else if (param.ToString() == "ChangeOwner")
-                {
-                    var binder = GetNewChangeOwnerView();
                     this.OpenMvvmBinders.Add(binder);
                 }
             }
