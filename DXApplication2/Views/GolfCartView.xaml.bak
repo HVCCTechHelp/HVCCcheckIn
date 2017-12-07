@@ -1,0 +1,245 @@
+﻿<UserControl x:Class="HVCC.Shell.Views.GolfCartView"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HVCC.Shell.Views"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        common:CommandSinkBinding.CommandSink="{Binding}" 
+        mc:Ignorable="d" 
+        d:DesignHeight="768" d:DesignWidth="1024"
+        >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibility x:Key="BoolToVis" />
+            <converters:InvertBoolean x:Key="Invert" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:OpenFileDialogService Title="Open File"/>
+        <dxmvvm:SaveFileDialogService Title="Save File"/>
+        <common:TableViewExportService />  <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
+
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <!--<dxb:BarButtonItem
+            x:Name="bXXXXX"
+            Content="Last"
+            ItemClick="bb_XXXXXClick"
+            Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+            ToolTip="List of registered golf carts"
+            />-->
+            <!--<dxb:BarButtonItem
+            x:Name="bDetailMeterReadings"
+            Content="Detail"
+            ItemClick="bb_DetailReportClick"
+            Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+            ToolTip="Last Meter Readings"
+            />-->
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="Golf" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Print/Export">
+                            <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding IsEnabledExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                            </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Print"  
+                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                            </dxb:BarSubItem>
+                        </dxr:RibbonPageGroup>
+
+                        <!--<dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>-->
+
+                    </dxr:RibbonPage>
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+
+            <dxlc:LayoutControl Orientation="Vertical">
+
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                    <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Member Search" Width="400" Height="150">
+                        <dxlc:LayoutGroup  View="Group" Orientation="Vertical" >
+                            <dxlc:LayoutGroup  View="Group" Orientation="Horizontal" >
+
+                                <dxlc:LayoutItem Label="Last Name: " Width="250" Style="{StaticResource LayoutItemStyle}">
+                                    <dxe:TextEdit x:Name="tbSearchName" Text="{Binding SearchName, Mode=TwoWay}" Width="150" 
+                                     IsReadOnly="False"
+                                     Focusable="True"
+                                     Style="{StaticResource TextEditEditStyle}"
+                                     />
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem>
+                                    <Button x:Name="btnNameSearch" Width="75" Height="25" HorizontalAlignment="Left" 
+                        IsEnabled="True"
+                        Command="{Binding NameSearchCommand}"
+                        Content="Search"
+                        />
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+
+                    <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Register New Cart" Height="150"
+                               Visibility="{Binding ApplPermissions.CanEditGolfCart, Converter={StaticResource BoolToVis}}" 
+                               >
+                        <dxlc:LayoutGroup  View="Group" Orientation="Vertical" >
+                            <dxlc:LayoutItem Width="75" HorizontalAlignment="Right" Margin="0,10,20,0">
+                                <Button x:Name="btnAddName" Width="75" Height="25" HorizontalAlignment="Left" Margin="0,0,0,0"
+                        IsEnabled="True"
+                        Command="{Binding AddCartCommand}"
+                        Visibility="{Binding ApplPermissions.CanEditGolfCart, Converter={StaticResource BoolToVis}}" 
+                        Focusable="{Binding ApplPermissions.CanEditGolfCart}"
+                        Content="Add"
+                        />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Year: " Width="175" Style="{StaticResource LayoutItemStyle}">
+                                <dxe:TextEdit Text="{Binding TimePeriod, Mode=TwoWay}" Width="150" 
+                                     IsReadOnly="True"
+                                     Focusable="False"
+                                     Style="{StaticResource TextEditDisplayStyle}"
+                                     />
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="relationshipsGrid" 
+                                     IsEnabled="True"
+                                     ItemsSource="{Binding FoundRelationships}"
+                                     SelectedItem="{Binding SelectedFoundRelation, Mode=TwoWay}"
+                                 Width="Auto"
+                                 HorizontalAlignment="Left"
+                                     >
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewDetail"  
+                                           AllowColumnFiltering="True" 
+                                           AllowGrouping="False"
+                                           ShowGroupPanel="False"
+                                           AllowPerPixelScrolling="True" 
+                                           AutoWidth="True" 
+                                           Height="100"
+                                           >
+
+                                    </dxg:TableView>
+                                </dxg:GridControl.View>
+                                <!-- columns of the detail grid -->
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" SortOrder="Descending" SortIndex="0" IsEnabled="True"/>
+                                    <dxg:GridColumn FieldName="LName" Header="Last Name" Width="100" />
+                                    <dxg:GridColumn FieldName="Customer" Header="Lot" Width="100" />
+                                </dxg:GridControl.Columns>
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Registered Carts">
+                    <dxlc:LayoutItem>
+                        <dxg:GridControl AutoPopulateColumns="False" x:Name="registeredCartGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding RegisteredCarts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 SelectedItem="{Binding SelectedCart, Mode=TwoWay}"
+                                 Width="Auto"
+                                 Height="600"
+                                 HorizontalAlignment="Left"
+                                 >
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="tableViewCarts" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditGolfCart}"
+                                       AllowColumnFiltering="True" 
+                                       AllowGrouping="False"
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       SearchPanelNullText="Search"
+                                       ShowSearchPanelMode="Always"
+                                       ShowSearchPanelFindButton="True"
+                                       SearchPanelClearOnClose="False"
+				                       ShowFixedTotalSummary="True" 
+                                       ShowTotalSummary="True"
+                                       ValidateRow="tableViewDetail_ValidateRow"
+                                       RowUpdated="tableViewDetail_RowUpdated"
+                                       RowCanceled="tableViewDetail_RowCanceled"
+                                       CellValueChanging="tableViewCarts_CellValueChanging"
+                                       CellValueChanged="tableViewCarts_CellValueChanged"
+                                       >
+
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <!-- columns of the detail grid -->
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0"/>
+                                <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="LName" Header="Last Name" Width="100" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="Year" Header="Year" Width="100" />
+                                <dxg:GridColumn FieldName="Quanity" Header="Qty" Width="25">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:SpinEditSettings MaxValue="9" MinValue="1" />
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="IsPaid" Header="Paid" Width="50" />
+                                <dxg:GridColumn FieldName="PaymentDate" Header="Payment Date" Width="100" />
+
+                            </dxg:GridControl.Columns>
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                            </dxg:GridControl.TotalSummary>
+
+                        </dxg:GridControl>
+                    </dxlc:LayoutItem>
+
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+</UserControl>

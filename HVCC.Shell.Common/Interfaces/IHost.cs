@@ -1,6 +1,8 @@
 ﻿namespace HVCC.Shell.Common.Interfaces
 {
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
+
 
     public enum HostMessageType { Information, Warning, Error, None }
 
@@ -8,8 +10,10 @@
 
     public interface IHost
     {
-        //void ShowMessage(string message, string caption, HostMessageType messageType = HostMessageType.None);
-        //bool PromptYesNo(string messagePrompt, string caption);
+        /// <summary>
+        /// Raises a PropertyChanged event
+        /// </summary>
+        event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Returns 3 state boolean (bool?)
@@ -42,7 +46,5 @@
         ///</code></example>
         object AppPermissions { get; }
         object AppDefault { get; }
-
-        object Parameter { get; set; }
     }
 }

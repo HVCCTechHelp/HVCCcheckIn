@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="HVCC.Shell.Views.WaterMeterExceptionsView"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HVCC.Shell.Views"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        mc:Ignorable="d" 
+        d:DesignHeight="768" d:DesignWidth="1024"
+        >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibility x:Key="BoolToVis" />
+            <converters:InvertBoolean x:Key="Invert" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
+
+    <DockPanel x:Name="dockPanel">
+
+        <!--<dxr:RibbonControl DockPanel.Dock="Top">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage x:Name="Golf" Caption="Actions">
+                    <dxr:RibbonPageGroup Caption="Data">
+                        <dxb:BarButtonItemLink BarItemName="bLastMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        --><!--<dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />--><!--
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+        </dxr:RibbonControl>-->
+
+
+        <dxlc:LayoutControl Orientation="Vertical">
+
+            <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Import Exceptions">
+
+                <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
+
+                    <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
+                        <dxg:GridControl x:Name="exceptionGrid" 
+                             ItemsSource="{Binding MeterReadingExceptions}" 
+                             IsEnabled="True" 
+                             MaxHeight="750"
+                             >
+
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="propertiesTableView" 
+                                AllowEditing="False"
+				                AllowPerPixelScrolling="True" 
+                                AutoWidth="True" 
+                                ShowAutoFilterRow="True"
+                                ShowGroupPanel="True"
+				                ShowFixedTotalSummary="True" 
+                                ShowTotalSummary="True"
+                                NavigationStyle="Row"
+                                />
+
+                            </dxg:GridControl.View>
+
+                            <!-- Use the GroupIndex attribute on the GridColumn to group on opening -->
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Customer"  Header="Customer" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            />
+                                <dxg:GridColumn FieldName="CurrentMeterReadingDate"  Header="Reading Date" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="LastMeterReadingDate"  Header="Last Reading Date" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="LastMeterReading"  Header="Last Reading" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            />
+                                <dxg:GridColumn FieldName="CurrentMeterReading"  Header="Current Reading" Width="100" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            />
+                            </dxg:GridControl.Columns>
+                            <!-- columns of the master grid -->
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                            </dxg:GridControl.TotalSummary>
+
+                        </dxg:GridControl>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutControl>
+    </DockPanel>
+
+</UserControl>

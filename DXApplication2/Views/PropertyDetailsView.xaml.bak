@@ -83,18 +83,18 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
                         
-                        <dxr:RibbonPageGroup Caption="Property Action" >
+                        <dxr:RibbonPageGroup Caption="Property Action" IsVisible="{Binding IsPropertyRibbonVisible, Mode=TwoWay}">
 
-                                <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
+                                <dxb:BarButtonItem x:Name="bbChangeOwner" Content="Change Owner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
                                                Glyph="/Images/Icons/Ownership_16x16.png" 
                                                LargeGlyph="/Images/Icons/Ownership_32x32.png"/>
-                                <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
+                                <dxb:BarButtonItem x:Name="bbImport" Content="Update Balances" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
-                                               Glyph="/Images/Icons/Import-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Import-32x32.png"
+                                               Glyph="/Images/Icons/Financial_icon-16x16.png" 
+                                               LargeGlyph="/Images/Icons/Financial_icon-32x32.png"
                                                ToolTip="Import Quickbooks balance due information"/>
                             </dxr:RibbonPageGroup>
 

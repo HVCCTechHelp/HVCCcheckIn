@@ -11,8 +11,6 @@
              xmlns:dxet="http://schemas.devexpress.com/winfx/2008/xaml/editors/themekeys"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-             xmlns:local="clr-namespace:HVCC.Shell.Views"
-             xmlns:helper="clr-namespace:HVCC.Shell.Helpers"
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              xmlns:resources="clr-namespace:HVCC.Shell.Resources"
              common:CommandSinkBinding.CommandSink="{Binding}" 
@@ -99,7 +97,7 @@
                               >
 
                 <dxg:GridControl x:Name="relationshipGrid" 
-                                 ItemsSource="{Binding SelectedProperty.Relationships, Mode=TwoWay}" 
+                                 ItemsSource="{Binding SelectedProperty.Relationships}" 
                                  SelectedItems="{Binding RelationshipsToProcess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  IsEnabled="True"
                                  Height="300"
@@ -107,34 +105,34 @@
                                  >
 
                     <dxg:GridControl.View>
+                        
                         <dxg:TableView x:Name="relationshipsTableView" 
                                        AllowSorting="True"
                                        AutoWidth="True" 
                                        AllowEditing="True"
+                                       NewItemRowPosition="Top"
                                        AllowPerPixelScrolling="True"                                               
                                        NavigationStyle="Cell"
                                        ShowGroupPanel="False"
                                        ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
-                                       NewItemRowPosition="Top"
                                        ShowCheckBoxSelectorColumn="True"
                                        RowStyle="{StaticResource SelectedRowStyle}"
                                        ValidateRow="TableView_ValidateRow"
                                        InvalidRowException="TableView_InvalidRowException"
                                        Loaded="relationshipsTableView_Loaded" 
-                                       RowUpdated="TableView_RowUpdated" 
+                                       RowUpdated="TableView_RowUpdated"  
                                        />
-                        <!--InvalidRowException="TableView_InvalidRowException"-->
                     </dxg:GridControl.View>
 
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="RelationshipID" Header="ID"
+                        <!--<dxg:GridColumn FieldName="RelationshipID" Header="ID"
                                         SortIndex="0"
                                         SortOrder="Ascending"
                                         Width="10"  
                                         AllowEditing="False"
                                         Visible="False"
-                                        />
+                                        />-->
                         <dxg:GridColumn FieldName="FName" Header="First Name"
                                         Width="50"
                                         AllowEditing="True"
@@ -153,6 +151,18 @@
                                         AutoFilterCondition="Default" 
                                         CellTemplateSelector="{StaticResource rowTemplateSelector}"
                                         />
+                        <!--<dxg:GridColumn FieldName="Active" Header="Status" 
+                                        Width="15" 
+                                        AllowEditing="True"
+                                        ReadOnly="False"
+                                        >
+                        </dxg:GridColumn>-->
+                        <!--<dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <dxe:CheckEdit x:Name="PART_Editor" EditValue="True"/>
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>-->
+                                        
                     </dxg:GridControl.Columns>
 
                 </dxg:GridControl>

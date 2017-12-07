@@ -14,18 +14,33 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
-
+    using System.Diagnostics;
 
     public partial class WaterMeterEditViewModel : CommonViewModel, ICommandSink
     {
 
-        public WaterMeterEditViewModel(IDataContext dc)
+        // The WaterMeterEditViewModel should only ever be created by a RowDoubleClick event.
+        // 'parameter' will be a reference to the SelectedProperty of the WaterMeterViewModel
+        // and registered against the WaterMeterViewModel's data context.  Threfore, any change
+        // to SelectedProperty => 'parameter' will be reflected in WaterMeterViewModel's DC (pDC).
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="parameter"></param>
+        public WaterMeterEditViewModel(IDataContext dc, object parameter, IDataContext pDC = null)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            if (null != this.Host.Parameter)
+            Property p = parameter as Property;
+            if (null != p)
             {
-                this.SelectedProperty = this.Host.Parameter as Property;
+                this.SelectedProperty = p as Property;
+                _originalProperty = (Property)p.Clone();
+            }
+            if (null != pDC)
+            {
+                dc = pDC;
             }
             this.RegisterCommands();
         }
@@ -55,18 +70,13 @@
                     0 == cs.Inserts.Count &&
                     0 == cs.Deletes.Count)
                 {
-                    Caption = caption[0].TrimEnd(' ') + "* ";
-                }
-                else
-                {
                     Caption = caption[0].TrimEnd(' ');
+                    return false;
                 }
-                return _isDirty;
+                Caption = caption[0].TrimEnd(' ') + "* ";
+                return true;
             }
-            set
-            {
-                _isDirty = value;
-            }
+            set { }
         }
 
         private bool _isBusy = false;
@@ -117,6 +127,7 @@
         /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
+        private Property _originalProperty = new Property();
         private Property _selectedProperty = new Property();
         public Property SelectedProperty
         {
@@ -201,7 +212,7 @@
             this.IsBusy = true;
             ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
         }
 
@@ -219,32 +230,44 @@
             _sink.ExecuteCommand(command, parameter, out handled);
         }
         #endregion
-
-        /// <summary>
-        /// Grid row doubld click event to command handler
-        /// </summary>
-        private ICommand _rowDoubleClickCommand;
-        public ICommand RowDoubleClickCommand
-        {
-            get
-            {
-                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter)
-        {
-            object o = parameter;
-            Host.Parameter = this.SelectedProperty;
-            Host.Execute(HostVerb.Open, "WaterMeterEdit");
-        }
     }
     /*================================================================================================================================================*/
 
+    public partial class WaterMeterEditViewModel : CommonViewModel
+    {
+
+        private bool _canViewParcel = true;
+        /// <summary>
+        /// View Parcel Command
+        /// </summary>
+        private ICommand _viewParcelCommand;
+        public ICommand ViewParcelCommand
+        {
+            get
+            {
+                return _viewParcelCommand ?? (_viewParcelCommand = new CommandHandler(() => ViewParcelAction(), _canViewParcel));
+            }
+        }
+
+        public void ViewParcelAction()
+        {
+            try
+            {
+                string absoluteUri = "http://parcels.lewiscountywa.gov/" + SelectedProperty.Parcel;
+                Process.Start(new ProcessStartInfo(absoluteUri));
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show(ex.Message);
+            }
+            finally
+            {
+            }
+        }
+
+    }
+
+    /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......
     /// </summary>

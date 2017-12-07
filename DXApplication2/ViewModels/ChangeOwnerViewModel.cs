@@ -14,21 +14,23 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
-
+    using System.Collections.Generic;
 
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
 
-        public ChangeOwnerViewModel(IDataContext dc)
+        public ChangeOwnerViewModel(IDataContext dc, object parameter)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            if (null != this.Host.Parameter)
+            Property p = parameter as Property;
+            if (null != p)
             {
-                int pID;
-                Int32.TryParse(this.Host.Parameter.ToString(), out pID);
-                this.SelectedProperty = GetProperty(pID);
+                SelectedProperty = GetProperty(p.PropertyID);
             }
+            ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
+            ApplDefault = this.Host.AppDefault as ApplicationDefault;
+            CanSaveExecute = false;
             this.RegisterCommands();
         }
 
@@ -44,6 +46,8 @@
 
         /* ------------------------------------- Properties and Commands --------------------------- */
 
+        public ApplicationPermission ApplPermissions { get; set; }
+        public ApplicationDefault ApplDefault { get; set; }
         public override bool IsValid { get; }
 
         private bool _isDirty = false;
@@ -51,12 +55,19 @@
         {
             get
             {
-                return _isDirty;
+                string[] caption = Caption.ToString().Split('*');
+                ChangeSet cs = dc.GetChangeSet();
+                if (0 == cs.Updates.Count &&
+                    0 == cs.Inserts.Count &&
+                    0 == cs.Deletes.Count)
+                {
+                    Caption = caption[0].TrimEnd(' ');
+                    return false;
+                }
+                Caption = caption[0].TrimEnd(' ') + "*";
+                return true;
             }
-            set
-            {
-                _isDirty = value;
-            }
+            set { }
         }
 
         private bool _isBusy = false;
@@ -76,32 +87,21 @@
         }
 
         #region Properties
-
         /// <summary>
-        /// A collection of relationships to act upon, generlly related to ownership additions & deletetions
+        /// Currently selected property from a property grid view
         /// </summary>
-        private ObservableCollection<Relationship> _relationshipsToProcess = null;
-        public ObservableCollection<Relationship> RelationshipsToProcess
+        private Property _selectedProperty = null;
+        public Property SelectedProperty
         {
             get
             {
-                if (this._relationshipsToProcess == null)
-                {
-                    var list = (from r in dc.Relationships
-                                where r.PropertyID == SelectedProperty.PropertyID
-                                select r);
-
-                    _relationshipsToProcess = new ObservableCollection<Relationship>(list);
-                    //this.RegisterForChangedNotification<Relationship>(_relationshipsToProcess);
-                }
-                return this._relationshipsToProcess;
+                return _selectedProperty;
             }
             set
             {
-                if (_relationshipsToProcess != value)
+                if (value != this._selectedProperty)
                 {
-                    _relationshipsToProcess = value;
-                    RaisePropertiesChanged("RelationshipsToProcess");
+                    this._selectedProperty = value;
                 }
             }
         }
@@ -109,58 +109,51 @@
         /// <summary>
         /// A collection of relationships to delete
         /// </summary>
-        private ObservableCollection<Relationship> _relationshipsToDelete = new ObservableCollection<Relationship>();
-        public ObservableCollection<Relationship> RelationshipsToDelete
+        private ObservableCollection<Relationship> _relationshipsToProcess = new ObservableCollection<Relationship>();
+        public ObservableCollection<Relationship> RelationshipsToProcess
         {
             get
             {
-                //this.RegisterForChangedNotification<Relationship>(_relationshipsToDelete);
-                _relationshipsToDelete.CollectionChanged += _relationshipsToDelete_CollectionChanged;
-                return this._relationshipsToDelete;
+                this._relationshipsToProcess.CollectionChanged += _relationshipsToProcess_CollectionChanged;
+                return this._relationshipsToProcess;
             }
             set
-            {
-                if (value != this._relationshipsToDelete)
-                {
-                    this._relationshipsToDelete = value;
-                    RaisePropertyChanged("RelationshipsToDelete");
-                }
-            }
-        }
-
-        private void _relationshipsToDelete_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            // Seleccted in the grid
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-            {
-                IsDirty = true;
-                string[] caption = Caption.ToString().Split('*');
-                Caption = caption[0].TrimEnd(' ') + "*";
-            }
-            // Unselected in the grid
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                if (0 == RelationshipsToDelete.Count())
-                {
-                    IsDirty = false;
-                    string[] caption = Caption.ToString().Split('*');
-                    Caption = caption[0].TrimEnd(' ');
-                }
-            }
-            //if (null != a)
-            //{
-            //    dc.Relationships.DeleteOnSubmit(a);
-            //}
-            //ChangeSet cs = dc.GetChangeSet();
-
-            RaisePropertyChanged("DataChanged");
+            { }
         }
 
         /// <summary>
-        /// Currently selected property from a property grid view
+        /// Executes when the RelationsToProcess collection changes.
         /// </summary>
-        public Property SelectedProperty { get; set; }
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _relationshipsToProcess_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            string action = e.Action.ToString();
 
+            switch (action)
+            {
+                case "Reset":
+                    break;
+                case "Add":
+                    var newItems = e.NewItems;
+                    foreach (Relationship r in newItems)
+                    {
+                        bool result = DeactivateRelationship(r);
+                    }
+                    break;
+                case "Remove":
+                    var oldItems = e.OldItems;
+                    foreach (Relationship r in oldItems)
+                    {
+                        bool result = ActivateRelationship(r);
+                    }
+                    break;
+            }
+            if (0 < _relationshipsToProcess.Count()) { CanSaveExecute = true; } else { CanSaveExecute = false; }
+            RaisePropertyChanged("DataChanged");
+        }
+
+        /* ====== Keep for reference ========= */
         //protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
         //{
         //    list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
@@ -204,7 +197,8 @@
         ///// <param name="e"></param>
         //private void ListItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         //{
-        //    // TO-DO: add logic to handle property changes..... (IsDirty?)
+        //    CanSaveExecute = IsDirty;
+        //    RaisePropertyChanged("DataChanged");
         //}
 
         #endregion
@@ -221,72 +215,12 @@
         }
 
         /// <summary>
-        /// Change ownership of property, called from the Save command
-        /// </summary>
-        private void ExecuteOwnershipChanges()
-        {
-            //// The Ownership changes are bound to two different properties, RelationshipsToProcess and RelationshipsToDelete.
-            //// RelationshipToProcess is the full collection of Relationships to be acted on (added or removed), while
-            //// RelationshipsToDelete (the selected items) are a sub-set.  This is required by the grid in order to show
-            //// the full collection and the items selected. This way, the two collections (deletions/additions) are managed separately. 
-            try
-            {
-                //// First, iterate over the RelationshipToDelete collection and add them to the data context's pending
-                //// deletions collection so they will be removed on Save().  Then remove them from the RelationshipToProcess
-                //// collection.  This will result in the collection just containing items that must be added to the 
-                //// data context's Insert collection on Save().  Lastly, use the common IsDirty flag to indicate the
-                //// data context is dirty, which will enable the Save() command on the Main ribbon.
-                foreach (Relationship r in this.RelationshipsToDelete)
-                {
-                    // v1.3.1.x Relationships can no longer be deleted if there are FacilitiesUsage records
-                    // associated to the RelationshipID due to the FK restraint. Rather, they 
-                    // are now de-activated.
-                    DeactivateRelationship(r);
-                }
-
-                // If a Relationship does not have an ID, we add it as a new Relationship
-                foreach (Relationship r in this.RelationshipsToProcess)
-                {
-                    if (0 == r.RelationshipID &&
-                        !this.RelationshipsToDelete.Contains(r))
-                    {
-                        this.AddRelationship(r);
-                    }
-                }
-
-                //Property foundProperty = (from x in PropertiesUpdated
-                //                          where (x.Section == SelectedProperty.Section &&
-                //                                 x.Block == SelectedProperty.Block &&
-                //                                 x.Lot == SelectedProperty.Lot &&
-                //                                 x.SubLot == SelectedProperty.SubLot)
-                //                          select x).FirstOrDefault();
-                ////
-                //// If we have come by way of an Import, then the collection 'PropertiesUpdated' needs to be updated.
-                //// The Import results grid is bound to 'PropertiesUpdates' collection, so once we remove the relationships for
-                //// the curented (selected) property, we remove that reference from the collection; effectively popping
-                //// it off the list.
-                //if (null != foundProperty)
-                //{
-                //    PropertiesUpdated.Remove(foundProperty);
-                //}
-
-                //// Lastly, null out the two collections so old data doesn't linger.
-                //this.RelationshipsToProcess = null;
-                //this.RelationshipsToDelete = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error changing owner:" + ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Deactivate a relationship from the selected property either by making it inactive or deleting it 
         /// from the Relationships table.
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public bool DeactivateRelationship(Relationship relationship) // TO-DO: <?> Convert to a private method
+        private bool DeactivateRelationship(Relationship relationship) // TO-DO: <?> Convert to a private method
         {
             try
             {
@@ -334,7 +268,7 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public bool AddRelationship(Relationship relationship) //  TO-DO: <?> Convert to a private method
+        private bool ActivateRelationship(Relationship relationship) //  TO-DO: <?> Convert to a private method
         {
             try
             {
@@ -355,25 +289,63 @@
                     // even after the new Relationship is added to the database.]
                     this.SelectedProperty.Relationships.Add(relationship);
                 }
-                else { }
+                else
+                {
+                    var x = (from r in SelectedProperty.Relationships
+                             where r.RelationshipID == relationship.RelationshipID
+                             select r).FirstOrDefault();
+
+                    x.Active = true;
+
+                    ChangeSet cs = dc.GetChangeSet();
+                }
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowMessage("Error adding new Relationship/n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                MessageBoxService.ShowMessage("Error activating new Relationship/n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
                 return false;
             }
         }
 
-        /// <summary>
-        /// Reverts changes made to the Relationship collection of the current selected Property
-        /// </summary>
-        public void RevertRelationshipActions()
+        private bool CheckForOwner()
         {
-            this.RelationshipsToDelete = null;
-            //this.RelationshipsToProcess = null;
-        }
+            try
+            {
+                ChangeSet cs = dc.GetChangeSet();
 
+                // The first thing we need to do is make sure we have at lease one active Relationship
+                // that is also an Owner. New Relationship records will be added to the Selected.Relationship
+                // collection, but their Active status will be null. 
+                IEnumerable<object> addList = (from r in cs.Inserts
+                                               where (r as Relationship).RelationToOwner == "Owner"
+                                               select r);
+                foreach (Relationship r in addList)
+                {
+                    Relationship l = (from y in SelectedProperty.Relationships
+                                      where y.FName == r.FName
+                                      && y.LName == r.LName
+                                      select y).FirstOrDefault();
+                    if (null != l) { l.Active = true; }
+                }
+
+                IEnumerable<object> updateList = (from r in cs.Updates
+                                                  where (r as Relationship).Active == true
+                                                  && (r as Relationship).RelationToOwner == "Owner"
+                                                  select r);
+
+
+                int ownerCount = addList.Count() + updateList.Count();
+                if (0 == ownerCount)
+                { return false; }
+                else { return true; }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.ShowMessage("Relationship error: " + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                return false;
+            }
+        }
         #endregion
     }
 
@@ -401,10 +373,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return true;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -413,21 +383,20 @@
         /// </summary>
         private void SaveExecute()
         {
-            this.IsBusy = true;
-
-            foreach (Relationship r in RelationshipsToProcess)
+            if (CheckForOwner())
             {
-                AddRelationship(r);
+                this.IsBusy = true;
+                RaisePropertiesChanged("IsBusy");
+                ChangeSet cs = dc.GetChangeSet();
+                this.dc.SubmitChanges();
+                this.IsBusy = false;
+                RaisePropertiesChanged("IsNotBusy");
+                Host.Execute(HostVerb.Close, this.Caption);
             }
-            foreach (Relationship r in RelationshipsToDelete)
+            else
             {
-                DeactivateRelationship(r);
+                MessageBoxService.ShowMessage("You must have at lease one owner.", "Warning", MessageButton.OK, MessageIcon.Warning);
             }
-
-            ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();
-            RaisePropertyChanged("DataChanged");
-            this.IsBusy = false;
         }
 
         #region ICommandSink Implementation

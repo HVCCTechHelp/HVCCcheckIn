@@ -194,7 +194,10 @@
 
             // Set the previous DockPanel as the active panel
             primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
-            this.dockLayoutManager.Activate(primaryDocumentGroup.Items[primaryDocumentGroup.SelectedTabIndex]);
+            if (primaryDocumentGroup.SelectedTabIndex > 0)
+            {
+                this.dockLayoutManager.Activate(primaryDocumentGroup.Items[primaryDocumentGroup.SelectedTabIndex]);
+            }
 
 
             // If there are no (more) documents in the documentGroup, then turn off HitTestVisible so

@@ -140,6 +140,75 @@
 
         #endregion
 
+
+        /* ---------------------------------- Public/Private Methods ------------------------------------------ */
+        #region Methods
+
+        #endregion
+    }
+
+    /*================================================================================================================================================*/
+    /// <summary>
+    /// Command sink bindings......
+    /// </summary>
+    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
+    {
+        public void RegisterCommands()
+        {
+            this.RegisterSaveHandler();
+        }
+
+        private void RegisterSaveHandler()
+        {
+            _sink.RegisterCommand(
+                ApplicationCommands.Save,
+                param => this.CanSaveExecute,
+                param => this.SaveExecute());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool CanSaveExecute
+        {
+            get
+            {
+                return false;  // TO-DO : since WaterMeterUpdate is where edits are made, this may be OK
+            }
+        }
+
+        /// <summary>
+        /// Summary
+        ///     Commits data context changes to the database
+        /// </summary>
+        private void SaveExecute()
+        {
+            this.IsBusy = true;
+            this.dc.SubmitChanges();
+            RaisePropertiesChanged("DataChanged");
+            this.IsBusy = false;
+        }
+
+        #region ICommandSink Implementation
+        private CommandSink _sink = new CommandSink();
+
+        // Required by the ICommandSink Interface
+        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            return _sink.CanExecuteCommand(command, parameter, out handled);
+        }
+
+        // Required by the ICommandSink Interface
+        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
+        {
+            _sink.ExecuteCommand(command, parameter, out handled);
+        }
+        #endregion
+
+    }
+
+    public partial class WaterMeterViewModel : CommonViewModel
+    {
         /* ---------------------------------- Commands & Actions --------------------------------------- */
         #region Commands
         /// <summary>
@@ -247,82 +316,15 @@
         /// Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter) 
+        public void RowDoubleClickAction(object parameter)
         {
-            object o = parameter;
-            Host.Parameter = this.SelectedProperty;
-            Host.Execute(HostVerb.Open, "WaterMeterEdit");
-
+            Property p = parameter as Property;
+            Host.Execute(HostVerb.Open, "WaterMeterEdit", p);
         }
 
-        #endregion
-
-        /* ---------------------------------- Public/Private Methods ------------------------------------------ */
-        #region Methods
-
-        #endregion
-    }
- 
-    /*================================================================================================================================================*/
-    /// <summary>
-    /// Command sink bindings......
-    /// </summary>
-    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
-    {
-        public void RegisterCommands()
-        {
-            this.RegisterSaveHandler();
-        }
-
-        private void RegisterSaveHandler()
-        {
-            _sink.RegisterCommand(
-                ApplicationCommands.Save,
-                param => this.CanSaveExecute,
-                param => this.SaveExecute());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private bool CanSaveExecute
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Summary
-        ///     Commits data context changes to the database
-        /// </summary>
-        private void SaveExecute()
-        {
-            this.IsBusy = true;
-            this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
-            this.IsBusy = false;
-        }
-
-        #region ICommandSink Implementation
-        private CommandSink _sink = new CommandSink();
-
-        // Required by the ICommandSink Interface
-        public bool CanExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            return _sink.CanExecuteCommand(command, parameter, out handled);
-        }
-
-        // Required by the ICommandSink Interface
-        public void ExecuteCommand(ICommand command, object parameter, out bool handled)
-        {
-            _sink.ExecuteCommand(command, parameter, out handled);
-        }
         #endregion
 
     }
-
     /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......

@@ -13,6 +13,7 @@
     using System.Data.Linq;
     using HVCC.Shell.Models;
     using System.Windows;
+    using System.ComponentModel;
 
     public enum UserRole
     {
@@ -55,8 +56,6 @@
         public object AppPermissions { get { return ApplPermissions; } }
         public object AppDefault { get { return ApplDefault; } }
 
-        public object Parameter { get; set; }
-
         #region Interface Implementation
         public ObservableCollection<IMvvmBinder> OpenMvvmBinders { get; private set; }
         /* ============================================================================================= */
@@ -70,7 +69,7 @@
             IView v = new MainWindow() { DataContext = vm } as IView;
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewPropertyDetailView()
+        public static IMvvmBinder GetNewPropertyDetailView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
@@ -86,11 +85,11 @@
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewChangeOwnerView()
+        public static IMvvmBinder GetNewChangeOwnerView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new ChangeOwnerViewModel(dc) { Caption = "ChangeOwner" };
+            IViewModel vm = new ChangeOwnerViewModel(dc, arg) { Caption = "ChangeOwner" };
             IView v = new HVCC.Shell.Views.ChangeOwnerView(vm);
             return new MvvmBinder(dc, v, vm);
         }
@@ -103,7 +102,7 @@
             return new MvvmBinder(dc, v, vm);
         }
         //
-        public static IMvvmBinder GetNewGolfCartView()
+        public static IMvvmBinder GetNewGolfCartView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
@@ -112,31 +111,31 @@
             return new MvvmBinder(dc, v, vm);
         }
         //
-        public static IMvvmBinder GetNewWaterMeterView()
+        public static IMvvmBinder GetNewWaterMeterView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterMeterViewModel(dc) { Caption = "Water Meter Readings " };
+            IViewModel vm = new WaterMeterViewModel(dc) { Caption = "Water Meter Readings" };
             IView v = new HVCC.Shell.Views.WaterMeterView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewWaterMeterEditView()
+        public static IMvvmBinder GetNewWaterMeterEditView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterMeterEditViewModel(dc) { Caption = "Water Meter Edit" };
+            IViewModel vm = new WaterMeterEditViewModel(dc, arg) { Caption = "Water Meter Edit" };
             IView v = new HVCC.Shell.Views.WaterSystemEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        //
-        public static IMvvmBinder GetNewWellMeterView()
+        public static IMvvmBinder GetNewWellMeterView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings " };
+            IViewModel vm = new WaterWellViewModel(dc) { Caption = "Well Meter Readings" };
             IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        //
 
         /// <summary>
         /// Executes Open/Close on MvvmBinders
@@ -149,7 +148,7 @@
             {
                 if (param.ToString() == "Properties")
                 {
-                    var binder = GetNewPropertyDetailView();
+                    var binder = GetNewPropertyDetailView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 if (param.ToString() == "PropertyEdit")
@@ -159,7 +158,7 @@
                 }
                 else if (param.ToString() == "ChangeOwner")
                 {
-                    var binder = GetNewChangeOwnerView();
+                    var binder = GetNewChangeOwnerView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "ImportBalances")
@@ -169,29 +168,30 @@
                 }
                 else if (param.ToString() == "GolfCart")
                 {
-                    var binder = GetNewGolfCartView();
+                    var binder = GetNewGolfCartView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "WaterMeter")
                 {
-                    var binder = GetNewWaterMeterView();
+                    var binder = GetNewWaterMeterView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "WaterMeterEdit")
                 {
-                    var binder = GetNewWaterMeterEditView();
+                    var binder = GetNewWaterMeterEditView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "WellMeter")
                 {
-                    var binder = GetNewWellMeterView();
+                    var binder = GetNewWellMeterView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
             }
             else if (verb == HostVerb.Close)
             {
                 var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption == param).FirstOrDefault();
-                this.OpenMvvmBinders.Remove(r);
+                bool result = this.OpenMvvmBinders.Remove(r);
+                RaisePropertyChanged("Refresh");
             }
         }
 
@@ -200,43 +200,34 @@
             throw new NotImplementedException();
         }
 
-        //public bool PromptYesNo(string messagePrompt, string caption)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public bool? PromptYesNoCancel(string messagePrompt, string caption)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void RefocusOrOpenViewModel(IMvvmBinder mvvmBinder)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void ShowMessage(string message, string caption, HostMessageType messageType = HostMessageType.None)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         #endregion
 
+        /// <summary>
+        /// Iterates through the collection of MvvmBinders to see if any ViewModels are dirty.
+        /// </summary>
+        /// <returns></returns>
         public bool AnyDirty()
         {
             foreach (IMvvmBinder b in OpenMvvmBinders)
             {
-                DataContext dc = b.DataContext as DataContext;
-                // MainViewModel will always be null, so we ignore it.....
-                if (null != dc)
+                try
                 {
-                    ChangeSet cs = dc.GetChangeSet();
-                    if (0 != cs.Updates.Count ||
-                        0 != cs.Inserts.Count ||
-                        0 != cs.Deletes.Count)
+                    DataContext dc = b.DataContext as DataContext;
+                    // MainViewModel will always be null, so we ignore it.....
+                    if (null != dc)
                     {
-                        return true;
+                        ChangeSet cs = dc.GetChangeSet();
+                        if (0 != cs.Updates.Count ||
+                            0 != cs.Inserts.Count ||
+                            0 != cs.Deletes.Count)
+                        {
+                            return true;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error in Host: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             return false;
@@ -382,6 +373,22 @@
             }
         }
 
+        #endregion
+
+        #region INotifyPropertyChagned implementaiton
+        /// <summary>
+        /// INotifyPropertyChanged Implementation
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property being changed</param>
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         #endregion
     }
 }

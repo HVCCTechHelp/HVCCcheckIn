@@ -41,7 +41,7 @@
         public IHost Host { get; set; }
         public TableView Table { get; set; }
 
-        public event EventHandler CaptionChanged;
+        //public event EventHandler CaptionChanged;
 
         // Added for Caption set property.
         //private void RaiseCaptionChangedEvent(CaptionChangedEventArgs e)
