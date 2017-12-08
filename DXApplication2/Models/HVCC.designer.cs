@@ -37,7 +37,6 @@ namespace HVCC.Shell.Models
     partial void DeleteProperty(Property instance);
     partial void UpdateFacilityUsage(FacilityUsage instance);
     partial void DeleteFacilityUsage(FacilityUsage instance);
-    partial void DeleteRelationship(Relationship instance);
     partial void InsertWellXProperty(WellXProperty instance);
     partial void UpdateWellXProperty(WellXProperty instance);
     partial void DeleteWellXProperty(WellXProperty instance);
@@ -46,6 +45,8 @@ namespace HVCC.Shell.Models
     partial void DeleteWaterWell(WaterWell instance);
     partial void UpdateWellMeterReading(WellMeterReading instance);
     partial void DeleteWellMeterReading(WellMeterReading instance);
+    partial void UpdateOwnershipChange(OwnershipChange instance);
+    partial void DeleteOwnershipChange(OwnershipChange instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -142,14 +143,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Relationship> Relationships
-		{
-			get
-			{
-				return this.GetTable<Relationship>();
-			}
-		}
-		
 		public System.Data.Linq.Table<WellXProperty> WellXProperties
 		{
 			get
@@ -171,6 +164,22 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<WellMeterReading>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Relationship> Relationships
+		{
+			get
+			{
+				return this.GetTable<Relationship>();
+			}
+		}
+		
+		public System.Data.Linq.Table<OwnershipChange> OwnershipChanges
+		{
+			get
+			{
+				return this.GetTable<OwnershipChange>();
 			}
 		}
 		
@@ -235,22 +244,34 @@ namespace HVCC.Shell.Models
 			obj.RowID = p1.GetValueOrDefault();
 		}
 		
+		private void InsertWellMeterReading(WellMeterReading obj)
+		{
+			System.Nullable<int> p1 = obj.RowId;
+			this.usp_InsertWellMeterReading(((System.Nullable<int>)(obj.WellNumber)), ((System.Nullable<System.DateTime>)(obj.MeterReadingDate)), ((System.Nullable<long>)(obj.MeterReading)), obj.MeterUnitOfMeasure, ((System.Nullable<long>)(obj.ThroughputInGallons)), ref p1);
+			obj.RowId = p1.GetValueOrDefault();
+		}
+		
 		private void InsertRelationship(Relationship obj)
 		{
 			System.Nullable<int> p1 = obj.RelationshipID;
-			this.usp_InsertRelationship(((System.Nullable<bool>)(obj.Active)), ((System.Nullable<int>)(obj.PropertyID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
+			this.usp_InsertRelationship(((System.Nullable<int>)(obj.PropertyID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
 			obj.RelationshipID = p1.GetValueOrDefault();
 		}
 		
 		private void UpdateRelationship(Relationship obj)
 		{
-			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), ((System.Nullable<bool>)(obj.Active)), ((System.Nullable<int>)(obj.PropertyID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
+			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), ((System.Nullable<int>)(obj.PropertyID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
 		}
 		
-		private void InsertWellMeterReading(WellMeterReading obj)
+		private void DeleteRelationship(Relationship obj)
+		{
+			this.usp_DeleteRelationship(((System.Nullable<int>)(obj.RelationshipID)));
+		}
+		
+		private void InsertOwnershipChange(OwnershipChange obj)
 		{
 			System.Nullable<int> p1 = obj.RowId;
-			this.usp_InsertWellMeterReading(((System.Nullable<int>)(obj.WellNumber)), ((System.Nullable<System.DateTime>)(obj.MeterReadingDate)), ((System.Nullable<long>)(obj.MeterReading)), obj.MeterUnitOfMeasure, ((System.Nullable<long>)(obj.ThroughputInGallons)), ref p1);
+			this.usp_InsertOwnershipChange(((System.Nullable<int>)(obj.PropertyID)), obj.PreviousOwner, obj.NewOwner, ref p1);
 			obj.RowId = p1.GetValueOrDefault();
 		}
 		
@@ -409,21 +430,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertRelationship")]
-		public int usp_InsertRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Active", DbType="Bit")] System.Nullable<bool> active, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] ref System.Nullable<int> relationshipId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), active, propertyId, fName, lName, relationToOwner, photo, relationshipId);
-			relationshipId = ((System.Nullable<int>)(result.GetParameterValue(6)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateRelationship")]
-		public int usp_UdateRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Active", DbType="Bit")] System.Nullable<bool> active, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId, active, propertyId, fName, lName, relationToOwner, photo);
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetFacilityUsageForDate")]
 		public ISingleResult<usp_GetFacilityUsageForDateResult> usp_GetFacilityUsageForDate([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipID", DbType="Int")] System.Nullable<int> relationshipID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Golf", DbType="Int")] System.Nullable<int> golf, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Pool", DbType="Int")] System.Nullable<int> pool, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Date1", DbType="DateTime")] System.Nullable<System.DateTime> date1, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Date2", DbType="DateTime")] System.Nullable<System.DateTime> date2)
 		{
@@ -436,6 +442,36 @@ namespace HVCC.Shell.Models
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), wellNumber, meterReadingDate, meterReading, meterUnitOfMeasure, throughputInGallons, rowID);
 			rowID = ((System.Nullable<int>)(result.GetParameterValue(5)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateRelationship")]
+		public int usp_UdateRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId, propertyId, fName, lName, relationToOwner, photo);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertRelationship")]
+		public int usp_InsertRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] ref System.Nullable<int> relationshipId)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, fName, lName, relationToOwner, photo, relationshipId);
+			relationshipId = ((System.Nullable<int>)(result.GetParameterValue(5)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteRelationship")]
+		public int usp_DeleteRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertOwnershipChange")]
+		public int usp_InsertOwnershipChange([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousOwner", DbType="VarChar(100)")] string previousOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewOwner", DbType="VarChar(100)")] string newOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, previousOwner, newOwner, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(3)));
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -1446,9 +1482,11 @@ namespace HVCC.Shell.Models
 		
 		private EntitySet<FacilityUsage> _FacilityUsages;
 		
+		private EntitySet<WellXProperty> _WellXProperties;
+		
 		private EntitySet<Relationship> _Relationships;
 		
-		private EntitySet<WellXProperty> _WellXProperties;
+		private EntitySet<OwnershipChange> _OwnershipChanges;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1516,8 +1554,9 @@ namespace HVCC.Shell.Models
 			this._Notes = new EntitySet<Note>(new Action<Note>(this.attach_Notes), new Action<Note>(this.detach_Notes));
 			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
 			this._FacilityUsages = new EntitySet<FacilityUsage>(new Action<FacilityUsage>(this.attach_FacilityUsages), new Action<FacilityUsage>(this.detach_FacilityUsages));
-			this._Relationships = new EntitySet<Relationship>(new Action<Relationship>(this.attach_Relationships), new Action<Relationship>(this.detach_Relationships));
 			this._WellXProperties = new EntitySet<WellXProperty>(new Action<WellXProperty>(this.attach_WellXProperties), new Action<WellXProperty>(this.detach_WellXProperties));
+			this._Relationships = new EntitySet<Relationship>(new Action<Relationship>(this.attach_Relationships), new Action<Relationship>(this.detach_Relationships));
+			this._OwnershipChanges = new EntitySet<OwnershipChange>(new Action<OwnershipChange>(this.attach_OwnershipChanges), new Action<OwnershipChange>(this.detach_OwnershipChanges));
 			OnCreated();
 		}
 		
@@ -2113,6 +2152,19 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_WellXProperty", Storage="_WellXProperties", ThisKey="PropertyID", OtherKey="PropertyId")]
+		public EntitySet<WellXProperty> WellXProperties
+		{
+			get
+			{
+				return this._WellXProperties;
+			}
+			set
+			{
+				this._WellXProperties.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_Relationship", Storage="_Relationships", ThisKey="PropertyID", OtherKey="PropertyID")]
 		public EntitySet<Relationship> Relationships
 		{
@@ -2126,16 +2178,16 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_WellXProperty", Storage="_WellXProperties", ThisKey="PropertyID", OtherKey="PropertyId")]
-		public EntitySet<WellXProperty> WellXProperties
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_OwnershipChange", Storage="_OwnershipChanges", ThisKey="PropertyID", OtherKey="PropertyID")]
+		public EntitySet<OwnershipChange> OwnershipChanges
 		{
 			get
 			{
-				return this._WellXProperties;
+				return this._OwnershipChanges;
 			}
 			set
 			{
-				this._WellXProperties.Assign(value);
+				this._OwnershipChanges.Assign(value);
 			}
 		}
 		
@@ -2207,6 +2259,18 @@ namespace HVCC.Shell.Models
 			entity.Property = null;
 		}
 		
+		private void attach_WellXProperties(WellXProperty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Property = this;
+		}
+		
+		private void detach_WellXProperties(WellXProperty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Property = null;
+		}
+		
 		private void attach_Relationships(Relationship entity)
 		{
 			this.SendPropertyChanging();
@@ -2219,13 +2283,13 @@ namespace HVCC.Shell.Models
 			entity.Property = null;
 		}
 		
-		private void attach_WellXProperties(WellXProperty entity)
+		private void attach_OwnershipChanges(OwnershipChange entity)
 		{
 			this.SendPropertyChanging();
 			entity.Property = this;
 		}
 		
-		private void detach_WellXProperties(WellXProperty entity)
+		private void detach_OwnershipChanges(OwnershipChange entity)
 		{
 			this.SendPropertyChanging();
 			entity.Property = null;
@@ -2997,329 +3061,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Relationships")]
-	public partial class Relationship : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RelationshipID;
-		
-		private System.Nullable<bool> _Active;
-		
-		private int _PropertyID;
-		
-		private string _FName;
-		
-		private string _LName;
-		
-		private string _RelationToOwner;
-		
-		private System.Data.Linq.Binary _Photo;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-		private EntitySet<FacilityUsage> _FacilityUsages;
-		
-		private EntityRef<Property> _Property;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRelationshipIDChanging(int value);
-    partial void OnRelationshipIDChanged();
-    partial void OnActiveChanging(System.Nullable<bool> value);
-    partial void OnActiveChanged();
-    partial void OnPropertyIDChanging(int value);
-    partial void OnPropertyIDChanged();
-    partial void OnFNameChanging(string value);
-    partial void OnFNameChanged();
-    partial void OnLNameChanging(string value);
-    partial void OnLNameChanged();
-    partial void OnRelationToOwnerChanging(string value);
-    partial void OnRelationToOwnerChanged();
-    partial void OnPhotoChanging(System.Data.Linq.Binary value);
-    partial void OnPhotoChanged();
-    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastModifiedChanged();
-    partial void OnLastModifiedByChanging(string value);
-    partial void OnLastModifiedByChanged();
-    #endregion
-		
-		public Relationship()
-		{
-			this._FacilityUsages = new EntitySet<FacilityUsage>(new Action<FacilityUsage>(this.attach_FacilityUsages), new Action<FacilityUsage>(this.detach_FacilityUsages));
-			this._Property = default(EntityRef<Property>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RelationshipID
-		{
-			get
-			{
-				return this._RelationshipID;
-			}
-			set
-			{
-				if ((this._RelationshipID != value))
-				{
-					this.OnRelationshipIDChanging(value);
-					this.SendPropertyChanging();
-					this._RelationshipID = value;
-					this.SendPropertyChanged("RelationshipID");
-					this.OnRelationshipIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
-		public System.Nullable<bool> Active
-		{
-			get
-			{
-				return this._Active;
-			}
-			set
-			{
-				if ((this._Active != value))
-				{
-					this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
-		public int PropertyID
-		{
-			get
-			{
-				return this._PropertyID;
-			}
-			set
-			{
-				if ((this._PropertyID != value))
-				{
-					if (this._Property.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnPropertyIDChanging(value);
-					this.SendPropertyChanging();
-					this._PropertyID = value;
-					this.SendPropertyChanged("PropertyID");
-					this.OnPropertyIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string FName
-		{
-			get
-			{
-				return this._FName;
-			}
-			set
-			{
-				if ((this._FName != value))
-				{
-					this.OnFNameChanging(value);
-					this.SendPropertyChanging();
-					this._FName = value;
-					this.SendPropertyChanged("FName");
-					this.OnFNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string LName
-		{
-			get
-			{
-				return this._LName;
-			}
-			set
-			{
-				if ((this._LName != value))
-				{
-					this.OnLNameChanging(value);
-					this.SendPropertyChanging();
-					this._LName = value;
-					this.SendPropertyChanged("LName");
-					this.OnLNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string RelationToOwner
-		{
-			get
-			{
-				return this._RelationToOwner;
-			}
-			set
-			{
-				if ((this._RelationToOwner != value))
-				{
-					this.OnRelationToOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._RelationToOwner = value;
-					this.SendPropertyChanged("RelationToOwner");
-					this.OnRelationToOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Photo", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Photo
-		{
-			get
-			{
-				return this._Photo;
-			}
-			set
-			{
-				if ((this._Photo != value))
-				{
-					this.OnPhotoChanging(value);
-					this.SendPropertyChanging();
-					this._Photo = value;
-					this.SendPropertyChanged("Photo");
-					this.OnPhotoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this.OnLastModifiedChanging(value);
-					this.SendPropertyChanging();
-					this._LastModified = value;
-					this.SendPropertyChanged("LastModified");
-					this.OnLastModifiedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this.OnLastModifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._LastModifiedBy = value;
-					this.SendPropertyChanged("LastModifiedBy");
-					this.OnLastModifiedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_FacilityUsage", Storage="_FacilityUsages", ThisKey="RelationshipID", OtherKey="RelationshipId")]
-		public EntitySet<FacilityUsage> FacilityUsages
-		{
-			get
-			{
-				return this._FacilityUsages;
-			}
-			set
-			{
-				this._FacilityUsages.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_Relationship", Storage="_Property", ThisKey="PropertyID", OtherKey="PropertyID", IsForeignKey=true)]
-		public Property Property
-		{
-			get
-			{
-				return this._Property.Entity;
-			}
-			set
-			{
-				Property previousValue = this._Property.Entity;
-				if (((previousValue != value) 
-							|| (this._Property.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Property.Entity = null;
-						previousValue.Relationships.Remove(this);
-					}
-					this._Property.Entity = value;
-					if ((value != null))
-					{
-						value.Relationships.Add(this);
-						this._PropertyID = value.PropertyID;
-					}
-					else
-					{
-						this._PropertyID = default(int);
-					}
-					this.SendPropertyChanged("Property");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_FacilityUsages(FacilityUsage entity)
-		{
-			this.SendPropertyChanging();
-			entity.Relationship = this;
-		}
-		
-		private void detach_FacilityUsages(FacilityUsage entity)
-		{
-			this.SendPropertyChanging();
-			entity.Relationship = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.WellXProperty")]
 	public partial class WellXProperty : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -3948,6 +3689,528 @@ namespace HVCC.Shell.Models
 						this._WellNumber = default(int);
 					}
 					this.SendPropertyChanged("WaterWell");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Relationships")]
+	public partial class Relationship : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RelationshipID;
+		
+		private int _PropertyID;
+		
+		private string _FName;
+		
+		private string _LName;
+		
+		private string _RelationToOwner;
+		
+		private System.Data.Linq.Binary _Photo;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private EntitySet<FacilityUsage> _FacilityUsages;
+		
+		private EntityRef<Property> _Property;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRelationshipIDChanging(int value);
+    partial void OnRelationshipIDChanged();
+    partial void OnPropertyIDChanging(int value);
+    partial void OnPropertyIDChanged();
+    partial void OnFNameChanging(string value);
+    partial void OnFNameChanged();
+    partial void OnLNameChanging(string value);
+    partial void OnLNameChanged();
+    partial void OnRelationToOwnerChanging(string value);
+    partial void OnRelationToOwnerChanged();
+    partial void OnPhotoChanging(System.Data.Linq.Binary value);
+    partial void OnPhotoChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public Relationship()
+		{
+			this._FacilityUsages = new EntitySet<FacilityUsage>(new Action<FacilityUsage>(this.attach_FacilityUsages), new Action<FacilityUsage>(this.detach_FacilityUsages));
+			this._Property = default(EntityRef<Property>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RelationshipID
+		{
+			get
+			{
+				return this._RelationshipID;
+			}
+			set
+			{
+				if ((this._RelationshipID != value))
+				{
+					this.OnRelationshipIDChanging(value);
+					this.SendPropertyChanging();
+					this._RelationshipID = value;
+					this.SendPropertyChanged("RelationshipID");
+					this.OnRelationshipIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					if (this._Property.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPropertyIDChanging(value);
+					this.SendPropertyChanging();
+					this._PropertyID = value;
+					this.SendPropertyChanged("PropertyID");
+					this.OnPropertyIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string FName
+		{
+			get
+			{
+				return this._FName;
+			}
+			set
+			{
+				if ((this._FName != value))
+				{
+					this.OnFNameChanging(value);
+					this.SendPropertyChanging();
+					this._FName = value;
+					this.SendPropertyChanged("FName");
+					this.OnFNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string LName
+		{
+			get
+			{
+				return this._LName;
+			}
+			set
+			{
+				if ((this._LName != value))
+				{
+					this.OnLNameChanging(value);
+					this.SendPropertyChanging();
+					this._LName = value;
+					this.SendPropertyChanged("LName");
+					this.OnLNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string RelationToOwner
+		{
+			get
+			{
+				return this._RelationToOwner;
+			}
+			set
+			{
+				if ((this._RelationToOwner != value))
+				{
+					this.OnRelationToOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._RelationToOwner = value;
+					this.SendPropertyChanged("RelationToOwner");
+					this.OnRelationToOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Photo", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary Photo
+		{
+			get
+			{
+				return this._Photo;
+			}
+			set
+			{
+				if ((this._Photo != value))
+				{
+					this.OnPhotoChanging(value);
+					this.SendPropertyChanging();
+					this._Photo = value;
+					this.SendPropertyChanged("Photo");
+					this.OnPhotoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_FacilityUsage", Storage="_FacilityUsages", ThisKey="RelationshipID", OtherKey="RelationshipId")]
+		public EntitySet<FacilityUsage> FacilityUsages
+		{
+			get
+			{
+				return this._FacilityUsages;
+			}
+			set
+			{
+				this._FacilityUsages.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_Relationship", Storage="_Property", ThisKey="PropertyID", OtherKey="PropertyID", IsForeignKey=true)]
+		public Property Property
+		{
+			get
+			{
+				return this._Property.Entity;
+			}
+			set
+			{
+				Property previousValue = this._Property.Entity;
+				if (((previousValue != value) 
+							|| (this._Property.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Property.Entity = null;
+						previousValue.Relationships.Remove(this);
+					}
+					this._Property.Entity = value;
+					if ((value != null))
+					{
+						value.Relationships.Add(this);
+						this._PropertyID = value.PropertyID;
+					}
+					else
+					{
+						this._PropertyID = default(int);
+					}
+					this.SendPropertyChanged("Property");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_FacilityUsages(FacilityUsage entity)
+		{
+			this.SendPropertyChanging();
+			entity.Relationship = this;
+		}
+		
+		private void detach_FacilityUsages(FacilityUsage entity)
+		{
+			this.SendPropertyChanging();
+			entity.Relationship = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.OwnershipChanges")]
+	public partial class OwnershipChange : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowId;
+		
+		private int _PropertyID;
+		
+		private string _NewOwner;
+		
+		private string _PreviousOwner;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private EntityRef<Property> _Property;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIdChanging(int value);
+    partial void OnRowIdChanged();
+    partial void OnPropertyIDChanging(int value);
+    partial void OnPropertyIDChanged();
+    partial void OnNewOwnerChanging(string value);
+    partial void OnNewOwnerChanged();
+    partial void OnPreviousOwnerChanging(string value);
+    partial void OnPreviousOwnerChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public OwnershipChange()
+		{
+			this._Property = default(EntityRef<Property>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowId
+		{
+			get
+			{
+				return this._RowId;
+			}
+			set
+			{
+				if ((this._RowId != value))
+				{
+					this.OnRowIdChanging(value);
+					this.SendPropertyChanging();
+					this._RowId = value;
+					this.SendPropertyChanged("RowId");
+					this.OnRowIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					if (this._Property.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPropertyIDChanging(value);
+					this.SendPropertyChanging();
+					this._PropertyID = value;
+					this.SendPropertyChanged("PropertyID");
+					this.OnPropertyIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwner", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string NewOwner
+		{
+			get
+			{
+				return this._NewOwner;
+			}
+			set
+			{
+				if ((this._NewOwner != value))
+				{
+					this.OnNewOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._NewOwner = value;
+					this.SendPropertyChanged("NewOwner");
+					this.OnNewOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwner", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string PreviousOwner
+		{
+			get
+			{
+				return this._PreviousOwner;
+			}
+			set
+			{
+				if ((this._PreviousOwner != value))
+				{
+					this.OnPreviousOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._PreviousOwner = value;
+					this.SendPropertyChanged("PreviousOwner");
+					this.OnPreviousOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Property_OwnershipChange", Storage="_Property", ThisKey="PropertyID", OtherKey="PropertyID", IsForeignKey=true)]
+		public Property Property
+		{
+			get
+			{
+				return this._Property.Entity;
+			}
+			set
+			{
+				Property previousValue = this._Property.Entity;
+				if (((previousValue != value) 
+							|| (this._Property.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Property.Entity = null;
+						previousValue.OwnershipChanges.Remove(this);
+					}
+					this._Property.Entity = value;
+					if ((value != null))
+					{
+						value.OwnershipChanges.Add(this);
+						this._PropertyID = value.PropertyID;
+					}
+					else
+					{
+						this._PropertyID = default(int);
+					}
+					this.SendPropertyChanged("Property");
 				}
 			}
 		}

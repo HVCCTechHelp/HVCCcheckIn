@@ -25,20 +25,20 @@ namespace HVCC.Shell.ViewModels
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
 
-        public PropertyEditViewModel(IDataContext dc, object arg)
+        public PropertyEditViewModel(IDataContext dc, object parameter)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            Property p = arg as Property;
+            Property p = parameter as Property;
             if (null != p)
             {
-                int pID;
-                Int32.TryParse(p.PropertyID.ToString(), out pID);
-                this.SelectedProperty = GetProperty(pID);
+                this.SelectedProperty = GetProperty(p.PropertyID);
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
+            CanSaveExecute = false;
             this.RegisterCommands();
+
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -70,7 +70,7 @@ namespace HVCC.Shell.ViewModels
                     Caption = caption[0].TrimEnd(' ');
                     return false;
                 }
-                Caption = caption[0].TrimEnd(' ') + "* ";
+                Caption = caption[0].TrimEnd(' ') + "*";
                 return true;
             }
             set { }
@@ -133,34 +133,6 @@ namespace HVCC.Shell.ViewModels
 
         #region Properties
         /// <summary>
-        /// Collection of properties
-        /// </summary>
-        private ObservableCollection<Property> _propertiesList = null;
-        public ObservableCollection<Property> PropertiesList
-        {
-            get
-            {
-                if (this._propertiesList == null)
-                {
-                    //// Get the list of "Properties" from the database
-                    var list = (from a in this.dc.Properties
-                                select a);
-
-                    this._propertiesList = new ObservableCollection<Property>(list);
-                }
-                return this._propertiesList;
-            }
-            set
-            {
-                if (this._propertiesList != value)
-                {
-                    this._propertiesList = value;
-                    RaisePropertyChanged("PropertiesList");
-                }
-            }
-        }
-
-        /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
         private Property _selectedProperty = null;
@@ -221,9 +193,9 @@ namespace HVCC.Shell.ViewModels
                     {
                         // Once the new value is assigned, we register a new PropertyChanged event listner.
                         this._selectedRelationship.PropertyChanged += SelectedRelation_PropertyChanged;
+
                         //// The database stores the raw binary data of the image.  Before it can be
                         //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
-
                         if (null == this._selectedRelationship.Photo)
                         {
                             this._selectedRelationship.Photo = this.ApplDefault.Photo;
@@ -245,7 +217,7 @@ namespace HVCC.Shell.ViewModels
         /// <param name="e"></param>
         private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var x = e.PropertyName;
+            CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
         }
 
@@ -364,13 +336,7 @@ namespace HVCC.Shell.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        private bool CanSaveExecute
-        {
-            get
-            {
-                return true;
-            }
-        }
+        private bool CanSaveExecute { get; set; }
 
         /// <summary>
         /// Summary
@@ -381,7 +347,7 @@ namespace HVCC.Shell.ViewModels
             this.IsBusy = true;
             RaisePropertiesChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
-            //this.dc.SubmitChanges(); (DEBUG)
+            this.dc.SubmitChanges();
             this.IsBusy = false;
             RaisePropertiesChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
@@ -449,66 +415,66 @@ namespace HVCC.Shell.ViewModels
 
                     //using (dc)
                     //{
-                        List<FacilityUsage> usages = new List<FacilityUsage>();
+                    List<FacilityUsage> usages = new List<FacilityUsage>();
 
-                        // Register the members what are checking in.
-                        foreach (Relationship r in this.SelectedProperty.Relationships)
+                    // Register the members what are checking in.
+                    foreach (Relationship r in this.SelectedProperty.Relationships)
+                    {
+                        if (r.IsGolf || r.IsPool)
                         {
-                            if (r.IsGolf || r.IsPool)
+                            FacilityUsage usage = new FacilityUsage();
+
+                            usage.PropertyID = SelectedProperty.PropertyID;
+                            usage.RelationshipId = r.RelationshipID;
+                            usage.Date = DateTime.Now;
+                            if (r.IsGolf)
                             {
-                                FacilityUsage usage = new FacilityUsage();
-
-                                usage.PropertyID = SelectedProperty.PropertyID;
-                                usage.RelationshipId = r.RelationshipID;
-                                usage.Date = DateTime.Now;
-                                if (r.IsGolf)
-                                {
-                                    usage.GolfRoundsMember = 1;
-                                    activity = "Golf";
-                                }
-                                else
-                                {
-                                    usage.GolfRoundsMember = 0;
-                                }
-                                if (r.IsPool)
-                                {
-                                    usage.PoolMember = 1;
-                                    activity = "the Pool";
-                                }
-                                else
-                                {
-                                    usage.PoolMember = 0;
-                                }
-                                usage.GolfRoundsGuest = 0;
-                                usage.PoolGuest = 0;
-
-                                // Before committing the data, we check to make sure the member(s)
-                                // have not already been checked in for the day.
-                                // 
-                                DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
-                                DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
-
-                                var z = (from p in dc.FacilityUsages
-                                         where p.RelationshipId == r.RelationshipID
-                                         && p.GolfRoundsMember == usage.GolfRoundsMember
-                                         && p.PoolMember == usage.PoolMember
-                                         && (p.Date >= dt1 && p.Date <= dt2)
-                                         select p).FirstOrDefault();
-
-                                if (null == z)
-                                {
-                                    dc.FacilityUsages.InsertOnSubmit(usage);
-                                }
-                                else
-                                {
-                                    string msg = String.Format("Member {0} {1} has already checked in for {2} today.", r.FName, r.LName, activity);
-                                    MessageBoxService.ShowMessage(msg, "Warning", MessageButton.OK, MessageIcon.Information, MessageResult.OK);
-                                }
-
-                                // Flip the Golf & Pool bits so they aren't left in a true state
-                                r.IsPool = false;
-                                r.IsGolf = false;
+                                usage.GolfRoundsMember = 1;
+                                activity = "Golf";
                             }
+                            else
+                            {
+                                usage.GolfRoundsMember = 0;
+                            }
+                            if (r.IsPool)
+                            {
+                                usage.PoolMember = 1;
+                                activity = "the Pool";
+                            }
+                            else
+                            {
+                                usage.PoolMember = 0;
+                            }
+                            usage.GolfRoundsGuest = 0;
+                            usage.PoolGuest = 0;
+
+                            // Before committing the data, we check to make sure the member(s)
+                            // have not already been checked in for the day.
+                            // 
+                            DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
+                            DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
+
+                            var z = (from p in dc.FacilityUsages
+                                     where p.RelationshipId == r.RelationshipID
+                                     && p.GolfRoundsMember == usage.GolfRoundsMember
+                                     && p.PoolMember == usage.PoolMember
+                                     && (p.Date >= dt1 && p.Date <= dt2)
+                                     select p).FirstOrDefault();
+
+                            if (null == z)
+                            {
+                                dc.FacilityUsages.InsertOnSubmit(usage);
+                            }
+                            else
+                            {
+                                string msg = String.Format("Member {0} {1} has already checked in for {2} today.", r.FName, r.LName, activity);
+                                MessageBoxService.ShowMessage(msg, "Warning", MessageButton.OK, MessageIcon.Information, MessageResult.OK);
+                            }
+
+                            // Flip the Golf & Pool bits so they aren't left in a true state
+                            r.IsPool = false;
+                            r.IsGolf = false;
+                        }
                         //}
 
                         // If there are guests of the members, add them last.

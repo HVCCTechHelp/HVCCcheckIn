@@ -26,7 +26,9 @@
             Property p = parameter as Property;
             if (null != p)
             {
+                OriginalProperty = GetProperty(p.PropertyID);
                 SelectedProperty = GetProperty(p.PropertyID);
+                SelectedProperty.BillTo = string.Empty;
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -50,14 +52,13 @@
         public ApplicationDefault ApplDefault { get; set; }
         public override bool IsValid { get; }
 
-        private bool _isDirty = false;
         public override bool IsDirty
         {
             get
             {
                 string[] caption = Caption.ToString().Split('*');
                 ChangeSet cs = dc.GetChangeSet();
-                if (0 == cs.Updates.Count &&
+                if (1 == cs.Updates.Count && // there will always be (1) update, because we null out the BillTo field of SelectedProperty
                     0 == cs.Inserts.Count &&
                     0 == cs.Deletes.Count)
                 {
@@ -87,6 +88,25 @@
         }
 
         #region Properties
+        /// <summary>
+        /// Currently selected property from a property grid view
+        /// </summary>
+        private Property _originalProperty = null;
+        public Property OriginalProperty
+        {
+            get
+            {
+                return _originalProperty;
+            }
+            set
+            {
+                if (value != this._originalProperty)
+                {
+                    this._originalProperty = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
@@ -138,14 +158,14 @@
                     var newItems = e.NewItems;
                     foreach (Relationship r in newItems)
                     {
-                        bool result = DeactivateRelationship(r);
+                        bool result = RemoveRelationship(r);
                     }
                     break;
                 case "Remove":
                     var oldItems = e.OldItems;
                     foreach (Relationship r in oldItems)
                     {
-                        bool result = ActivateRelationship(r);
+                        bool result = AddRelationship(r);
                     }
                     break;
             }
@@ -214,13 +234,22 @@
             return p;
         }
 
+        private Property GetDummyPropertyID()
+        {
+            Property dummyProperty = (from p in dc.Properties
+                                      where p.Customer == "99-99-99-0"
+                                      select p).FirstOrDefault();
+
+            return dummyProperty;
+        }
+
         /// <summary>
         /// Deactivate a relationship from the selected property either by making it inactive or deleting it 
         /// from the Relationships table.
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        private bool DeactivateRelationship(Relationship relationship) // TO-DO: <?> Convert to a private method
+        private bool RemoveRelationship(Relationship relationship) // TO-DO: <?> Convert to a private method
         {
             try
             {
@@ -232,17 +261,30 @@
                     // Test to see if the relationship being removed has any FacilitiesUage records.
                     // If not, we can delete the relationship record. Otherwise, we have to set
                     // the records to inactive.
-                    FacilityUsage chkR = (from x in this.dc.FacilityUsages
-                                          where x.RelationshipId == relationship.RelationshipID
-                                          select x).FirstOrDefault();
+                    IEnumerable<FacilityUsage> fuLList = (from x in this.dc.FacilityUsages
+                                                          where x.RelationshipId == relationship.RelationshipID
+                                                          select x);
 
-                    if (null == chkR)
+                    // If no facility usage records are returned, it is safe to just delete the
+                    // Relationship record; it won't violate the FK contraints.
+                    if (0 == fuLList.Count())
                     {
                         this.dc.Relationships.DeleteOnSubmit(relationship);
                     }
+                    // Otherwise, to deactivate the Relationship (related to F.U. records) we just
+                    // reassign it to the PropertyID = 99-99-99-0
                     else
                     {
-                        relationship.Active = false;
+                        Property dummyProperty = GetDummyPropertyID();
+                        // Now reassign the Relationship to the dummy Property
+                        relationship.PropertyID = dummyProperty.PropertyID;
+
+                        // Lastly, reassign the Facility Usage records associated to the RelationshipID
+                        // to the dummy PropertyID
+                        foreach (FacilityUsage f in fuLList)
+                        {
+                            f.PropertyID = dummyProperty.PropertyID;
+                        }
                     }
                 }
                 else
@@ -253,7 +295,7 @@
                     this.SelectedProperty.Relationships.Remove(relationship);
                 }
                 //}
-                //ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
+                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
                 return true;
             }
             catch (Exception ex)
@@ -268,7 +310,7 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        private bool ActivateRelationship(Relationship relationship) //  TO-DO: <?> Convert to a private method
+        private bool AddRelationship(Relationship relationship) //  TO-DO: <?> Convert to a private method
         {
             try
             {
@@ -277,7 +319,6 @@
                 // relationships.
                 if (0 == relationship.RelationshipID)
                 {
-                    relationship.Active = true;
                     // Add the default HVCC image to the relationship record.  
                     relationship.Photo = (this.Host.AppDefault as ApplicationDefault).Photo;
                     // Add this relationship to the pending database changes. Actual update isn't
@@ -294,8 +335,6 @@
                     var x = (from r in SelectedProperty.Relationships
                              where r.RelationshipID == relationship.RelationshipID
                              select r).FirstOrDefault();
-
-                    x.Active = true;
 
                     ChangeSet cs = dc.GetChangeSet();
                 }
@@ -314,28 +353,25 @@
             {
                 ChangeSet cs = dc.GetChangeSet();
 
+                Property dummyProperty = GetDummyPropertyID();
+
                 // The first thing we need to do is make sure we have at lease one active Relationship
                 // that is also an Owner. New Relationship records will be added to the Selected.Relationship
                 // collection, but their Active status will be null. 
                 IEnumerable<object> addList = (from r in cs.Inserts
                                                where (r as Relationship).RelationToOwner == "Owner"
                                                select r);
-                foreach (Relationship r in addList)
-                {
-                    Relationship l = (from y in SelectedProperty.Relationships
-                                      where y.FName == r.FName
-                                      && y.LName == r.LName
-                                      select y).FirstOrDefault();
-                    if (null != l) { l.Active = true; }
-                }
 
+                // ? What if they keep an existing Owner record.... We may need to check SelectedProperty.Relationships
                 IEnumerable<object> updateList = (from r in cs.Updates
-                                                  where (r as Relationship).Active == true
-                                                  && (r as Relationship).RelationToOwner == "Owner"
+                                                  where (r as Relationship).RelationToOwner == "Owner"
+                                                  && (r as Relationship).PropertyID != SelectedProperty.PropertyID
                                                   select r);
 
 
-                int ownerCount = addList.Count() + updateList.Count();
+                int ownerCount = 0;
+                if (null != addList) { ownerCount += addList.Count(); }
+                if (null != updateList) { ownerCount += updateList.Count(); }
                 if (0 == ownerCount)
                 { return false; }
                 else { return true; }
@@ -387,8 +423,14 @@
             {
                 this.IsBusy = true;
                 RaisePropertiesChanged("IsBusy");
+
+                OwnershipChange oc = new OwnershipChange();
+                oc.NewOwner = SelectedProperty.BillTo;
+                oc.PreviousOwner = OriginalProperty.BillTo;
+                dc.OwnershipChanges.InsertOnSubmit(oc);
+
                 ChangeSet cs = dc.GetChangeSet();
-                this.dc.SubmitChanges();
+                //this.dc.SubmitChanges();
                 this.IsBusy = false;
                 RaisePropertiesChanged("IsNotBusy");
                 Host.Execute(HostVerb.Close, this.Caption);

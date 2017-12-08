@@ -69,8 +69,8 @@
                           Orientation="Vertical"
                           Width="Auto">
 
-            <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Width="Auto" Header="Property Information" HorizontalAlignment="Center">
-                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="200" GroupBoxDisplayMode="Light">
+            <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Width="850" Header="Property Information" HorizontalAlignment="Center">
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="175" GroupBoxDisplayMode="Light">
                     <dxlc:LayoutItem Label="Lot# " />
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.Section}" />
                         <dxlc:LayoutItem Label="-" />
@@ -80,12 +80,12 @@
                     <dxlc:LayoutItem Label="-"/>
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.SubLot}" />
                 </dxlc:LayoutGroup>
-                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="600" HorizontalAlignment="Center">
-                    <dxlc:LayoutItem Label="Owner on Record: " Width="600">
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="800" HorizontalAlignment="Center">
+                    <dxlc:LayoutItem Label="New owner &amp; address on Record: " Width="600">
                         <dxe:TextEdit Text="{Binding SelectedProperty.BillTo, Mode=TwoWay}" Width="Auto" 
-                                      Style="{Binding TeStyle}"
+                                      Style="{Binding TeStyle}" 
                                       IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}" 
+                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}" NullText="REQUIRED" 
                                       />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
@@ -122,9 +122,8 @@
                                        ValidateRow="TableView_ValidateRow"
                                        InvalidRowException="TableView_InvalidRowException"
                                        Loaded="relationshipsTableView_Loaded" 
-                                       RowUpdated="TableView_RowUpdated" 
                                        />
-                        <!--InvalidRowException="TableView_InvalidRowException"-->
+                        <!--RowUpdated="TableView_RowUpdated"-->
                     </dxg:GridControl.View>
 
                     <dxg:GridControl.Columns>
@@ -162,15 +161,6 @@
                            HorizontalAlignment="Center"
                            />
 
-                <dxlc:LayoutGroup View="Group"  
-                                  VerticalAlignment="Top" 
-                                  HorizontalAlignment="Center"
-                                  IsCollapsible="False" 
-                                  Orientation="Horizontal"
-                                  >
-                    <Button x:Name="btnCommit" IsEnabled="True" Content="Commit" Height="25" Width="150" Command="{Binding SaveCommand}" />
-                    <Button x:Name="btnCancel" Content="Cancel" Height="25" Width="150" Command="{Binding CancelChangeOwnerCommand}" />
-                </dxlc:LayoutGroup>
             </dxlc:LayoutGroup>
         </dxlc:LayoutGroup>
     </dxlc:LayoutControl>

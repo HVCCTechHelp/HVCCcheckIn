@@ -133,16 +133,16 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
-        {
-            Relationship row = e.Row as Relationship;
-            if (null == row.Active)
-            {
-                // TO-DO: make assignments here.....
-                //vm.AssignDefaultValues(row);
-            }
-            e.Handled = true;
-        }
+        //private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
+        //{
+        //    Relationship row = e.Row as Relationship;
+        //    if (null == row.Active)
+        //    {
+        //        // TO-DO: make assignments here.....
+        //        //vm.AssignDefaultValues(row);
+        //    }
+        //    e.Handled = true;
+        //}
 
         /// <summary>
         /// 

@@ -324,12 +324,10 @@
                                            Width="650"
                                            Height="275"
                                            ValidateRow="tableViewDetail_ValidateRow"
-                                           RowUpdated="tableViewDetail_RowUpdated"
                                            RowCanceled="tableViewDetail_RowCanceled"
                                            CellValueChanging="tableViewDetail_CellValueChanging"
                                            >
-                                <!--NavigationStyle="{Binding DataContext.NavigationStyle, ElementName=PropertyDialog}" 
-                                           NewItemRowPosition="{Binding DataContext.NewItemPosition, ElementName=PropertyDialog}"-->
+                                <!--RowUpdated="tableViewDetail_RowUpdated"-->
 
                                 <dxg:TableView.RowCellMenuCustomizations>
                                     <dxb:BarButtonItem x:Name="addRowItem"
