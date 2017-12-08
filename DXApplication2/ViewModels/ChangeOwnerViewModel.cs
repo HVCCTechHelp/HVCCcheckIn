@@ -347,6 +347,10 @@
             }
         }
 
+        /// <summary>
+        /// Check for valid Ownership Relationship to Property relationship
+        /// </summary>
+        /// <returns></returns>
         private bool CheckForOwner()
         {
             try
@@ -368,23 +372,22 @@
                                                   && (r as Relationship).PropertyID != SelectedProperty.PropertyID
                                                   select r);
 
-
+                // We use try/catch incase the results of the two queries return invalid results (exception). Otherwise
+                // the 'try' will update the count.
                 int ownerCount = 0;
                 try
                 {
                     ownerCount += addList.Count();
                 }
                 catch
-                {
-                }
+                { }
                 try
                 {
                     ownerCount += updateList.Count();
                 }
                 catch
                 { }
-                if (0 == ownerCount)
-                { return false; }
+                if (0 == ownerCount) { return false; }
                 else { return true; }
             }
             catch (Exception ex)

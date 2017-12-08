@@ -227,7 +227,6 @@
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
-    <Compile Include="ViewModels\RelationshipViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
@@ -466,6 +465,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\watermeter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Financal-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Financal-32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

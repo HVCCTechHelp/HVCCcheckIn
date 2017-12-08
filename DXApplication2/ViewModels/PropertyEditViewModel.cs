@@ -112,6 +112,22 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
+        private string _headerText = string.Empty;
+        public string HeaderText
+        {
+            get
+            {
+                return _headerText;
+            }
+            set
+            {
+                if (_headerText != value)
+                {
+                    _headerText = value;
+                }
+            }
+        }
+
         /// <summary>
         /// An integer representing the count of notes associated to the selected property
         /// </summary>
@@ -140,6 +156,7 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
+                _headerText = String.Format("Lot# {0}", _selectedProperty.Customer);
                 return _selectedProperty;
             }
             set

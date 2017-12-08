@@ -74,7 +74,7 @@
                     Caption = caption[0].TrimEnd(' ');
                     return false;
                 }
-                Caption = caption[0].TrimEnd(' ') + "* ";
+                Caption = caption[0].TrimEnd(' ') + "*";
                 return true;
             }
             set { }
@@ -118,14 +118,6 @@
                 }
                 return this._propertiesList;
             }
-            //set
-            //{
-            //    if (this._propertiesList != value)
-            //    {
-            //        this._propertiesList = value;
-            //        RaisePropertyChanged("PropertiesList");
-            //    }
-            //}
         }
 
         /// <summary>
@@ -160,13 +152,9 @@
             }
             set
             {
-                //// wrap the setter with a check for a null value.  This condition happens when
-                //// a Relationship is selected from the Relationship grid. Therefore, when
-                //// a Relationship is selected we won't null out the SelectedProperty.
                 if (value != _selectedProperty)
                 {
                     _selectedProperty = value;
-                    RaisePropertyChanged("SelectedProperty");
                 }
             }
         }
@@ -213,7 +201,7 @@
             this.IsBusy = true;
             RaisePropertiesChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();
+            //this.dc.SubmitChanges();                       (DEBUG)
             this.IsBusy = false;
             RaisePropertiesChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
@@ -287,7 +275,6 @@
             }
         }
 
-
         /// <summary>
         /// Print Command
         /// </summary>
@@ -329,7 +316,6 @@
                 //this.IsRibbonMinimized = true;
             }
         }
-
 
         /// <summary>
         /// Import Balance data Command

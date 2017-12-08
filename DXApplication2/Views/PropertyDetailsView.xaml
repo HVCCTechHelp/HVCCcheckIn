@@ -93,9 +93,9 @@
                                 <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
-                                               Glyph="/Images/Icons/Import-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Import-32x32.png"
-                                               ToolTip="Import Quickbooks balance due information"/>
+                                               Glyph="/Images/Icons/Financal-16x16.png" 
+                                               LargeGlyph="/Images/Icons/Financal-32x32.png"
+                                               ToolTip="Bulk update dues balance information"/>
                             </dxr:RibbonPageGroup>
 
                         <!--<dxr:RibbonPageGroup Caption="Reports">
