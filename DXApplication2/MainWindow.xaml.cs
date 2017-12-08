@@ -170,6 +170,7 @@
             DockLayoutManager dm = sender as DockLayoutManager;
             string caption = dm.ActiveDockItem.Caption.ToString();
 
+            // TO-DO : can't use "AnyDirty"... Need to figure out which VM we are dealing with.....
             if (Host.Instance.AnyDirty())
             {
                 MessageBoxResult result = MessageBox.Show("You have unsaved edits. Save changes before closing?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);

@@ -358,20 +358,31 @@
                 // The first thing we need to do is make sure we have at lease one active Relationship
                 // that is also an Owner. New Relationship records will be added to the Selected.Relationship
                 // collection, but their Active status will be null. 
-                IEnumerable<object> addList = (from r in cs.Inserts
+                var addList = (from r in cs.Inserts
                                                where (r as Relationship).RelationToOwner == "Owner"
                                                select r);
 
                 // ? What if they keep an existing Owner record.... We may need to check SelectedProperty.Relationships
-                IEnumerable<object> updateList = (from r in cs.Updates
+                var updateList = (from r in cs.Updates
                                                   where (r as Relationship).RelationToOwner == "Owner"
                                                   && (r as Relationship).PropertyID != SelectedProperty.PropertyID
                                                   select r);
 
 
                 int ownerCount = 0;
-                if (null != addList) { ownerCount += addList.Count(); }
-                if (null != updateList) { ownerCount += updateList.Count(); }
+                try
+                {
+                    ownerCount += addList.Count();
+                }
+                catch
+                {
+                }
+                try
+                {
+                    ownerCount += updateList.Count();
+                }
+                catch
+                { }
                 if (0 == ownerCount)
                 { return false; }
                 else { return true; }
