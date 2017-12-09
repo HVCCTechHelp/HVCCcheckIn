@@ -400,7 +400,7 @@
                 <dxlc:LayoutItem>
                     <dxg:GridControl AutoPopulateColumns="False" x:Name="relationshipsGrid" 
                                      IsEnabled="True"
-                                     ItemsSource="{Binding SelectedProperty.Relationships, Mode=TwoWay}"
+                                     ItemsSource="{Binding Relationships, Mode=TwoWay}"
                                      SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}"
                                      >
                         <dxg:GridControl.View>
@@ -420,21 +420,24 @@
                                            ValidateRow="tableViewDetail_ValidateRow"
                                            RowCanceled="tableViewDetail_RowCanceled"
                                            CellValueChanging="tableViewDetail_CellValueChanging"
+                                           NavigationStyle="{Binding NavigationStyle}" 
+                                           NewItemRowPosition="{Binding NewItemPosition}" 
                                            >
-                                <!--RowUpdated="tableViewDetail_RowUpdated"-->
 
                                 <dxg:TableView.RowCellMenuCustomizations>
                                     <dxb:BarButtonItem x:Name="addRowItem"
                                                        Content="Add"
                                                        Glyph="{dx:DXImage Image=Apply_16x16.png}"
-                                                       IsVisible="{Binding DataContext.ApplPermissions.CanAddRelationship, Mode=TwoWay, ElementName=PropertyDialog}"
-                                                       Command="{Binding DataContext.AddRelationshipCommand, ElementName=PropertyDialog}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanAddRelationship, Mode=TwoWay}"
+                                                       Command="{Binding DataContext.AddRelationshipCommand, ElementName=PropertyEdit}"
+                                                       CommandParameter="{Binding DataContext.SelectedRelationship, ElementName=PropertyEdit}"
                                         />
-                                    <dxb:BarButtonItem x:Name="deleteRowItem"
-                                                       Content="Delete"
+                                    <dxb:BarButtonItem x:Name="removeRowItem"
+                                                       Content="Remove"
                                                        Glyph="{dx:DXImage Image=Delete_16x16.png}"
-                                                       IsVisible="{Binding DataContext.ApplPermissions.CanDeleteRelationship, ElementName=PropertyDialog}"
-                                                       Command="{Binding DataContext.DeleteRelationshipCommand, ElementName=PropertyDialog}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanDeleteRelationship}"
+                                                       Command="{Binding DataContext.RemoveRelationshipCommand, ElementName=PropertyEdit}"
+                                                       CommandParameter="{Binding DataContext.SelectedRelationship, ElementName=PropertyEdit}"
                                         />
                                 </dxg:TableView.RowCellMenuCustomizations>
                             </dxg:TableView>
@@ -472,7 +475,6 @@
                                     </ControlTemplate>
                                 </dxg:GridColumn.EditTemplate>
                             </dxg:GridColumn>
-
                             <dxg:GridColumn FieldName="IsPool" Header="Pool" x:Name="ceIsPool" Fixed="Right"
                                         FixedWidth="True" Width="50" AllowResizing="False"
                                         ShowInColumnChooser="False" AllowFocus="True"

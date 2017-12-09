@@ -21,6 +21,7 @@ namespace HVCC.Shell.ViewModels
     using System.Collections.Generic;
     using System.Text;
     using System.IO;
+    using DevExpress.Xpf.Grid;
 
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
@@ -32,7 +33,9 @@ namespace HVCC.Shell.ViewModels
             Property p = parameter as Property;
             if (null != p)
             {
-                this.SelectedProperty = GetProperty(p.PropertyID);
+                SelectedProperty = GetProperty(p.PropertyID);
+                Relationships = GetRelationships(p.PropertyID);
+                SelectedRelationship = Relationships[0];
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -109,6 +112,21 @@ namespace HVCC.Shell.ViewModels
                     this._isCheckinEnabled = value;
                     RaisePropertyChanged("IsCheckinEnabled");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns boolean value to indicate if the selected property has a registered golf cart
+        /// </summary>
+        public bool HasRegisteredCart
+        {
+            get
+            {
+                var xxx = (from a in this.dc.GolfCarts
+                           where a.PropertyID == this.SelectedProperty.PropertyID
+                           select a).FirstOrDefault();
+                if (null == xxx) { return false; }
+                else { return true; }
             }
         }
 
@@ -223,6 +241,26 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
+        /// <summary>
+        /// A collection of relationships to delete
+        /// </summary>
+        private ObservableCollection<Relationship> _relationships = null;
+        public ObservableCollection<Relationship> Relationships
+        {
+            get
+            {
+                this._relationships.CollectionChanged += _relationshipsToProcess_CollectionChanged;
+                return this._relationships;
+            }
+            set
+            {
+                if (_relationships != value)
+                {
+                    _relationships = value;
+                }
+            }
+        }
+
         #endregion
 
         #region Property_Changed
@@ -268,7 +306,151 @@ namespace HVCC.Shell.ViewModels
             RaisePropertyChanged("DataChanged");
         }
 
+        /// <summary>
+        /// Executes when the RelationsToProcess collection changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _relationshipsToProcess_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            string action = e.Action.ToString();
+
+            switch (action)
+            {
+                case "Reset":
+                    break;
+
+                // When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
+                // When new names are added to the Relationships collection, they too result in an "Add" action.
+                // Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
+                case "Add":
+                    var newItems = e.NewItems;
+                    foreach (Relationship r in newItems)
+                    {
+                        if (0 != r.RelationshipID)
+                        {
+                            bool result = Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+                        }
+                        else
+                        {
+                            bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                        }
+                    }
+                    break;
+                case "Remove":
+                    var oldItems = e.OldItems;
+                    foreach (Relationship r in oldItems)
+                    {
+                        bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                    }
+                    break;
+            }
+            //if (0 < _relationshipsToProcess.Count()) { CanSaveExecute = true; } else { CanSaveExecute = false; }
+            CanSaveExecute = IsDirty;
+            RaisePropertyChanged("DataChanged");
+        }
+
         #endregion
+
+
+        /* ----------------------------------- Style Properteis ---------------------------------------- */
+        #region Style Properties
+
+        private GridViewNavigationStyle _navigationStyle = GridViewNavigationStyle.Cell;
+        public GridViewNavigationStyle NavigationStyle
+        {
+            get
+            {
+                return _navigationStyle;
+            }
+            set
+            {
+                if (value != _navigationStyle)
+                {
+                    this._navigationStyle = value;
+                    RaisePropertyChanged("NavigationStyle");
+                }
+            }
+        }
+
+        private NewItemRowPosition _newItemPosition = NewItemRowPosition.None;
+        public NewItemRowPosition NewItemPosition
+        {
+            get
+            {
+                return _newItemPosition;
+            }
+            set
+            {
+                if (value != _newItemPosition)
+                {
+                    this._newItemPosition = value;
+                    RaisePropertyChanged("NewItemPosition");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get TextBox control adornments
+        /// </summary>
+        private System.Windows.Style _tbStyle = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxDisplayStyle"];
+        public System.Windows.Style TbStyle
+        {
+            get
+            {
+                if (this.ApplPermissions.CanEditPropertyInfo)
+                {
+                    System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
+                }
+                else
+                {
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxDisplayStyle"];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get TextEdit control adornments
+        /// </summary>
+        private System.Windows.Style _teStyle = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxDisplayStyle"];
+        public System.Windows.Style TeStyle
+        {
+            get
+            {
+                if (this.ApplPermissions.CanEditPropertyInfo || this.ApplPermissions.CanEditPropertyNotes)
+                {
+                    System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
+                }
+                else
+                {
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["TextEditDisplayStyle"];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get ComboBoxEdit control adornments
+        /// </summary>
+        private System.Windows.Style _cbStyle = (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxDisplayStyle"];
+        public System.Windows.Style CbStyle
+        {
+            get
+            {
+                if (this.ApplPermissions.CanEditPropertyInfo)
+                {
+                    System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
+                }
+                else
+                {
+                    return (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxDisplayStyle"];
+                }
+            }
+        }
+        #endregion
+
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
         #region Methods
         private Property GetProperty(int pID)
@@ -278,12 +460,12 @@ namespace HVCC.Shell.ViewModels
                 Property p = (from x in dc.Properties
                               where x.PropertyID == pID
                               select x).FirstOrDefault();
-                if (null != p)
-                {
-                    this.SelectedRelationship = (from r in p.Relationships
-                                                 where r.RelationToOwner == "Owner"
-                                                 select r).FirstOrDefault();
-                }
+                //if (null != p)
+                //{
+                //    this.SelectedRelationship = (from r in p.Relationships
+                //                                 where r.RelationToOwner == "Owner"
+                //                                 select r).FirstOrDefault();
+                //}
                 return p;
             }
             catch (Exception ex)
@@ -294,7 +476,7 @@ namespace HVCC.Shell.ViewModels
         }
 
         /// <summary>
-        /// Builds a history of property notes
+        /// Returns a collection of Relationships for a given Property
         /// </summary>
         /// <returns></returns>
         private string GetPropertyNotes()
@@ -328,9 +510,25 @@ namespace HVCC.Shell.ViewModels
             }
         }
         #endregion
-    }
-    /*================================================================================================================================================*/
+        private ObservableCollection<Relationship> GetRelationships (int pID)
+        {
+            try
+            {
+                var list = (from x in dc.Relationships
+                                        where x.PropertyID == pID
+                                        select x);
 
+                return new ObservableCollection<Relationship>(list);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.ShowMessage("Can't retrieve property from database\n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                return null;
+            }
+        }
+    }
+
+    /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
@@ -364,8 +562,9 @@ namespace HVCC.Shell.ViewModels
             this.IsBusy = true;
             RaisePropertiesChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();
+            this.dc.SubmitChanges();                     //(DEBUG)
             this.IsBusy = false;
+            RaisePropertyChanged("Refresh");
             RaisePropertiesChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
         }
@@ -384,6 +583,14 @@ namespace HVCC.Shell.ViewModels
             _sink.ExecuteCommand(command, parameter, out handled);
         }
         #endregion
+    }
+    /*================================================================================================================================================*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+    public partial class PropertyEditViewModel
+    {
 
         /// <summary>
         /// Print Command
@@ -613,7 +820,7 @@ namespace HVCC.Shell.ViewModels
                                     (Path.GetExtension(file)).Contains(".gif") ||
                                     (Path.GetExtension(file)).Contains(".GIF"))
                                 {
-                                    SelectedRelationship.Photo = Helper.LoadImage(file);
+                                    SelectedRelationship.Photo = this.ApplDefault.Photo; // Helper.LoadImage(file);
                                 }
                                 else
                                 {
@@ -637,8 +844,54 @@ namespace HVCC.Shell.ViewModels
                 MessageBox.Show("Error processing image file. " + ex.Message);
             }
         }
+
+
+        /// <summary>
+        /// AddRelationship Command
+        /// </summary>
+        private ICommand _addRelationshipCommand;
+        public ICommand AddRelationshipCommand
+        {
+            get
+            {
+                return _addRelationshipCommand ?? (_addRelationshipCommand = new CommandHandlerWparm((object parameter) => AddRelationshipAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// AddRelationshipCommand Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void AddRelationshipAction(object parameter)
+        {
+            NavigationStyle = GridViewNavigationStyle.Row;
+            NewItemPosition = NewItemRowPosition.Top;
+        }
+
+        /// <summary>
+        /// RemoveRelationship Command
+        /// </summary>
+        private ICommand _removeRelationshipCommand;
+        public ICommand RemoveRelationshipCommand
+        {
+            get
+            {
+                return _removeRelationshipCommand ?? (_removeRelationshipCommand = new CommandHandlerWparm((object parameter) => RemoveRelationshipAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// AddRelationshipCommand Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void RemoveRelationshipAction(object parameter)
+        {
+            Relationship r = parameter as Relationship;
+            Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+            this.Relationships.Remove(r);
+        }
+
     }
-    /*================================================================================================================================================*/
 
     /// <summary>
     /// Disposition.......

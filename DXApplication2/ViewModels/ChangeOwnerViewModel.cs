@@ -14,6 +14,7 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Helpers;
     using System.Collections.Generic;
 
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
@@ -26,9 +27,17 @@
             Property p = parameter as Property;
             if (null != p)
             {
-                OriginalProperty = GetProperty(p.PropertyID);
                 SelectedProperty = GetProperty(p.PropertyID);
+                OriginalProperty = SelectedProperty.Clone() as Property;
                 SelectedProperty.BillTo = string.Empty;
+                // Relationships = new ObservableCollection<Relationship>(p.Relationships) ;
+                ObservableCollection<Relationship> tmpRC = new ObservableCollection<Relationship>();
+                foreach (Relationship r in p.Relationships)
+                {
+                    Relationship x = r.Clone() as Relationship;
+                    tmpRC.Add(x);
+                }
+                Relationships = tmpRC;
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -89,9 +98,9 @@
 
         #region Properties
         /// <summary>
-        /// Currently selected property from a property grid view
+        /// Original Property record reference passed in (selected property) from a property grid view
         /// </summary>
-        private Property _originalProperty = null;
+        private Property _originalProperty = new Property();
         public Property OriginalProperty
         {
             get
@@ -129,6 +138,26 @@
         /// <summary>
         /// A collection of relationships to delete
         /// </summary>
+        private ObservableCollection<Relationship> _relationships = null;
+        public ObservableCollection<Relationship> Relationships
+        {
+            get
+            {
+                this._relationships.CollectionChanged += _relationshipsToProcess_CollectionChanged;
+                return this._relationships;
+            }
+            set
+            {
+                if (_relationships != value)
+                {
+                    _relationships = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A collection of relationships to delete
+        /// </summary>
         private ObservableCollection<Relationship> _relationshipsToProcess = new ObservableCollection<Relationship>();
         public ObservableCollection<Relationship> RelationshipsToProcess
         {
@@ -154,18 +183,29 @@
             {
                 case "Reset":
                     break;
+
+                // When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
+                // When new names are added to the Relationships collection, they too result in an "Add" action.
+                // Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
                 case "Add":
                     var newItems = e.NewItems;
                     foreach (Relationship r in newItems)
                     {
-                        bool result = RemoveRelationship(r);
+                        if (0 != r.RelationshipID)
+                        {
+                            bool result = Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+                        }
+                        else
+                        {
+                            bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                        }
                     }
                     break;
                 case "Remove":
                     var oldItems = e.OldItems;
                     foreach (Relationship r in oldItems)
                     {
-                        bool result = AddRelationship(r);
+                        bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
                     }
                     break;
             }
@@ -225,176 +265,13 @@
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
         #region Methods
-
         private Property GetProperty(int pID)
         {
             Property p = (from x in dc.Properties
                           where x.PropertyID == pID
                           select x).FirstOrDefault();
-            return p;
-        }
 
-        private Property GetDummyPropertyID()
-        {
-            Property dummyProperty = (from p in dc.Properties
-                                      where p.Customer == "99-99-99-0"
-                                      select p).FirstOrDefault();
-
-            return dummyProperty;
-        }
-
-        /// <summary>
-        /// Deactivate a relationship from the selected property either by making it inactive or deleting it 
-        /// from the Relationships table.
-        /// </summary>
-        /// <param name="relationship"></param>
-        /// <returns></returns>
-        private bool RemoveRelationship(Relationship relationship) // TO-DO: <?> Convert to a private method
-        {
-            try
-            {
-                // Check to see if this Relationship is in the database (has a non-zero ID), 
-                // or is pending insertion (has a zero ID).
-                if (0 != relationship.RelationshipID)
-                {
-
-                    // Test to see if the relationship being removed has any FacilitiesUage records.
-                    // If not, we can delete the relationship record. Otherwise, we have to set
-                    // the records to inactive.
-                    IEnumerable<FacilityUsage> fuLList = (from x in this.dc.FacilityUsages
-                                                          where x.RelationshipId == relationship.RelationshipID
-                                                          select x);
-
-                    // If no facility usage records are returned, it is safe to just delete the
-                    // Relationship record; it won't violate the FK contraints.
-                    if (0 == fuLList.Count())
-                    {
-                        this.dc.Relationships.DeleteOnSubmit(relationship);
-                    }
-                    // Otherwise, to deactivate the Relationship (related to F.U. records) we just
-                    // reassign it to the PropertyID = 99-99-99-0
-                    else
-                    {
-                        Property dummyProperty = GetDummyPropertyID();
-                        // Now reassign the Relationship to the dummy Property
-                        relationship.PropertyID = dummyProperty.PropertyID;
-
-                        // Lastly, reassign the Facility Usage records associated to the RelationshipID
-                        // to the dummy PropertyID
-                        foreach (FacilityUsage f in fuLList)
-                        {
-                            f.PropertyID = dummyProperty.PropertyID;
-                        }
-                    }
-                }
-                else
-                {
-                    // This is a pending insert, so we can simply remove the record from the in-memory
-                    // store.  We raise a PropertiesList property change event to force any/all bound
-                    // views to be updated.
-                    this.SelectedProperty.Relationships.Remove(relationship);
-                }
-                //}
-                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.ShowMessage("Error: " + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Adds a relationship for the selected property
-        /// </summary>
-        /// <param name="relationship"></param>
-        /// <returns></returns>
-        private bool AddRelationship(Relationship relationship) //  TO-DO: <?> Convert to a private method
-        {
-            try
-            {
-                // Check to see if this Relationship is in the database (has a non-zero ID), 
-                // or is pending insertion (has a zero ID).  We only want to process new
-                // relationships.
-                if (0 == relationship.RelationshipID)
-                {
-                    // Add the default HVCC image to the relationship record.  
-                    relationship.Photo = (this.Host.AppDefault as ApplicationDefault).Photo;
-                    // Add this relationship to the pending database changes. Actual update isn't
-                    // immeidate and is dependent on user clicking the 'save' button.
-                    this.dc.Relationships.InsertOnSubmit(relationship);
-                    // Because of the way I implemented the Relationship grid in the edit dialog,
-                    // the new relationship also needs to be manually added to the VM collection of 
-                    // the selected property.  [It is not automaticly added to the collection via the datacontext
-                    // even after the new Relationship is added to the database.]
-                    this.SelectedProperty.Relationships.Add(relationship);
-                }
-                else
-                {
-                    var x = (from r in SelectedProperty.Relationships
-                             where r.RelationshipID == relationship.RelationshipID
-                             select r).FirstOrDefault();
-
-                    ChangeSet cs = dc.GetChangeSet();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.ShowMessage("Error activating new Relationship/n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Check for valid Ownership Relationship to Property relationship
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckForOwner()
-        {
-            try
-            {
-                ChangeSet cs = dc.GetChangeSet();
-
-                Property dummyProperty = GetDummyPropertyID();
-
-                // The first thing we need to do is make sure we have at lease one active Relationship
-                // that is also an Owner. New Relationship records will be added to the Selected.Relationship
-                // collection, but their Active status will be null. 
-                var addList = (from r in cs.Inserts
-                                               where (r as Relationship).RelationToOwner == "Owner"
-                                               select r);
-
-                // ? What if they keep an existing Owner record.... We may need to check SelectedProperty.Relationships
-                var updateList = (from r in cs.Updates
-                                                  where (r as Relationship).RelationToOwner == "Owner"
-                                                  && (r as Relationship).PropertyID != SelectedProperty.PropertyID
-                                                  select r);
-
-                // We use try/catch incase the results of the two queries return invalid results (exception). Otherwise
-                // the 'try' will update the count.
-                int ownerCount = 0;
-                try
-                {
-                    ownerCount += addList.Count();
-                }
-                catch
-                { }
-                try
-                {
-                    ownerCount += updateList.Count();
-                }
-                catch
-                { }
-                if (0 == ownerCount) { return false; }
-                else { return true; }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.ShowMessage("Relationship error: " + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
-                return false;
-            }
+            return p as Property;
         }
         #endregion
     }
@@ -433,7 +310,7 @@
         /// </summary>
         private void SaveExecute()
         {
-            if (CheckForOwner())
+            if (Helper.CheckForOwner(this.dc, this.SelectedProperty))
             {
                 this.IsBusy = true;
                 RaisePropertiesChanged("IsBusy");
@@ -473,11 +350,10 @@
 
     }
 
+    /*================================================================================================================================================*/
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
 
-        /* ---------------------------------- Commands & Actions --------------------------------------- */
-        #region Commands
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -524,7 +400,6 @@
             }
         }
 
-
         /// <summary>
         /// Print Command
         /// </summary>
@@ -568,9 +443,9 @@
         }
 
         /// <summary>
-        /// Print Command
+        /// RowDoubleClick Command
         /// </summary>
-        private ICommand _rowDoubleClickCommand;
+        //private ICommand _rowDoubleClickCommand;
         //public ICommand RowDoubleClickCommand
         //{
         //    get
@@ -590,10 +465,8 @@
         //    Host.Execute(HostVerb.Open, "Edit");
 
         //}
-
-        #endregion
-
     }
+
     /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......

@@ -187,11 +187,25 @@ namespace HVCC.Shell.Models
             return this.MemberwiseClone();
         }
     }
+
+    public partial class Property : IDXDataErrorInfo
+    {
+        public void GetError(ErrorInfo info)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void GetPropertyError(string propertyName, ErrorInfo info)
+        {
+            //throw new NotImplementedException();
+        }
+    }
+
     #endregion
 
     #region Extend Relationship Model
 
-    public partial class Relationship
+    public partial class Relationship : ICloneable
     {
 
         private bool _isPool = false;
@@ -276,16 +290,12 @@ namespace HVCC.Shell.Models
         #endregion
     }
 
-    public partial class Property : IDXDataErrorInfo
-    {
-        public void GetError(ErrorInfo info)
-        {
-            //throw new NotImplementedException();
-        }
 
-        public void GetPropertyError(string propertyName, ErrorInfo info)
+    public partial class Relationship : ICloneable
+    {
+        public object Clone()
         {
-            //throw new NotImplementedException();
+            return this.MemberwiseClone();
         }
     }
 
@@ -379,7 +389,7 @@ namespace HVCC.Shell.Models
 
     #endregion
 
-    #region ********************* Class: Unit ********************************
+    #region ********************* Class: Unit {Used By WellWater<View/ViewModel> ********************************
     /// <summary>
     /// Class to describe a month as descriptive text and integer index
     /// </summary>

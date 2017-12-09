@@ -99,7 +99,7 @@
                               >
 
                 <dxg:GridControl x:Name="relationshipGrid" 
-                                 ItemsSource="{Binding SelectedProperty.Relationships, Mode=TwoWay}" 
+                                 ItemsSource="{Binding Relationships, Mode=TwoWay}" 
                                  SelectedItems="{Binding RelationshipsToProcess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  IsEnabled="True"
                                  Height="300"
