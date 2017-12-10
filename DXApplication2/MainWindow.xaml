@@ -105,59 +105,6 @@
                                                        LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
                                                        ToolTip="Discard All Changes"/>-->
                             </dxr:RibbonPageGroup>
-
-                            <!--<dxr:RibbonPageGroup Caption="Property Action" IsVisible="{Binding IsPropertyRibbonVisible, Mode=TwoWay}">
-
-                                <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
-                                               ItemClick="OnClicked_ChangeOwner" 
-                                               IsEnabled="{Binding IsEnabledChangeOwner}"
-                                               Glyph="/Images/Icons/Ownership_16x16.png" 
-                                               LargeGlyph="/Images/Icons/Ownership_32x32.png"/>
-                                <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
-                                               ItemClick="OnClicked_Import"
-                                               IsEnabled="{Binding IsEnabledImport}"
-                                               Glyph="/Images/Icons/Import-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Import-32x32.png"
-                                               ToolTip="Import Quickbooks balance due information"/>
-                            </dxr:RibbonPageGroup>-->
-
-                            <!--<dxr:RibbonPageGroup Caption="Property Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
-                                <dxb:BarButtonItem Content="Period Usage"
-                                                       ItemClick="bb_PeriodReportClick"
-                                                       IsVisible="True" 
-                                                       IsEnabled="True"
-                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                       ToolTip="Run Report"/>
-                                <dxb:BarButtonItem Content="Daily Usage"
-                                                       ItemClick="bb_DailyReportClick"
-                                                       IsVisible="True" 
-                                                       IsEnabled="True"
-                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                       ToolTip="Run Report"/>
-                                <dxb:BarButtonItem Content="Property Notes"
-                                                       ItemClick="bb_NotesReportClick"
-                                                       IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
-                                                       IsEnabled="True" 
-                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                       ToolTip="Run Report"/>
-                                <dxb:BarButtonItem Content="Balances Due"
-                                                       ItemClick="bb_BalanceReportClick"
-                                                       IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
-                                                       IsEnabled="True" 
-                                                       Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                       ToolTip="Run Report"/>
-                            </dxr:RibbonPageGroup>-->
-
-                            <!--<dxr:RibbonPageGroup Caption="Water Action" IsVisible="{Binding IsWaterRibbonVisible}">
-                                <dxb:BarButtonItem x:Name="bbImportMeter" Content="Import" 
-                                               Command="{Binding ImportMeterReadingCommand}"
-                                               IsEnabled="{Binding IsEnabledImport}"
-                                               Glyph="/Images/Icons/Import-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Import-32x32.png"
-                                               ToolTip="Import Meter Reading Data"
-                                    />
-                            </dxr:RibbonPageGroup>-->
-
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
                 </dxr:RibbonControl>

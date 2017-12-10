@@ -15,6 +15,7 @@
     using HVCC.Shell.Helpers;
     using DevExpress.Spreadsheet;
     using DevExpress.Xpf.Spreadsheet;
+    using DevExpress.Xpf.Printing;
     using System.Collections.Generic;
     using System.Windows;
     using System.Text;
@@ -23,10 +24,10 @@
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
 
-    public partial class PropertiesViewModel : CommonViewModel, ICommandSink
+    public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
     {
 
-        public PropertiesViewModel(IDataContext dc)
+        public PropertiesDetailsViewModel(IDataContext dc)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
@@ -568,7 +569,7 @@
     /// <summary>
     /// Command sink bindings......
     /// </summary>
-    public partial class PropertiesViewModel : CommonViewModel, ICommandSink
+    public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
     {
         public void RegisterCommands()
         {
@@ -628,7 +629,7 @@
     /// <summary>
     /// ViewModel Commands
     /// </summary>
-    public partial class PropertiesViewModel : CommonViewModel, ICommandSink
+    public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
     {
         #region Commands
         /// <summary>
@@ -776,15 +777,101 @@
         }
 
         /// <summary>
-        /// Grid row double click event to command action
+        /// Facility Usage by date range report
         /// </summary>
         /// <param name="type"></param>
         public void ImportAction(object parameter)
         {
             Host.Execute(HostVerb.Open, "ImportBalances");
         }
-        #endregion
 
+        /// <summary>
+        /// Facility Usage by date range report
+        /// </summary>
+        private ICommand _periodUsageReportCommand;
+        public ICommand PeriodUsageReportCommand
+        {
+            get
+            {
+                return _periodUsageReportCommand ?? (_periodUsageReportCommand = new CommandHandlerWparm((object parameter) => PeriodUsageReportAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Facility Usage by date range report
+        /// </summary>
+        /// <param name="type"></param>
+        public void PeriodUsageReportAction(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Facility Usage for the current day
+        /// </summary>
+        private ICommand _dayUsageReportCommand;
+        public ICommand DayUsageReportCommand
+        {
+            get
+            {
+                return _dayUsageReportCommand ?? (_dayUsageReportCommand = new CommandHandlerWparm((object parameter) => DayUsageReportAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void DayUsageReportAction(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _propertyNotesReportCommand;
+        public ICommand PropertyNotesReportCommand
+        {
+            get
+            {
+                return _propertyNotesReportCommand ?? (_propertyNotesReportCommand = new CommandHandlerWparm((object parameter) => PropertyNotesReportAction(parameter), ApplPermissions.CanViewPropertyNotes));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void PropertyNotesReportAction(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _duesBalanceReportCommand;
+        public ICommand DuesBalanceReportCommand
+        {
+            get
+            {
+                return _duesBalanceReportCommand ?? (_duesBalanceReportCommand = new CommandHandlerWparm((object parameter) => DuesBalanceReportAction(parameter), ApplPermissions.CanViewPropertyNotes));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void DuesBalanceReportAction(object parameter)
+        {
+            Reports.BalancesDueReport report = new Reports.BalancesDueReport();
+            //PrintHelper.ShowPrintPreview(this, report);
+        }
+
+
+        #endregion
     }
 
     /*================================================================================================================================================*/
@@ -792,7 +879,7 @@
     /// Disposition.......
     /// </summary>
     #region public partial class PropertiesViewModel : IDisposable
-    public partial class PropertiesViewModel : IDisposable
+    public partial class PropertiesDetailsViewModel : IDisposable
     {
         // Resources that must be disposed:
         private HVCCDataContext dc = null;
@@ -852,7 +939,7 @@
         /// <summary>
         /// Finalizes an instance of the <see cref="TableForm"/> class.  (a.k.a. destructor)
         /// </summary>
-        ~PropertiesViewModel()
+        ~PropertiesDetailsViewModel()
         {
             // call Dispose with false.  Since we're in the
             // destructor call, the managed resources will be

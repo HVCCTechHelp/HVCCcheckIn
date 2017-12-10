@@ -225,7 +225,7 @@
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
-    <Compile Include="ViewModels\PropertiesViewModel.cs" />
+    <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />

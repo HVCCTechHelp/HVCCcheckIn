@@ -9,7 +9,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
              d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{dxmvvm:ViewModelSource Type=vm:PropertiesViewModel}"
+             DataContext="{dxmvvm:ViewModelSource Type=vm:PropertiesDetailsViewModel}"
              >
     
     <dxlc:LayoutControl Orientation="Vertical">

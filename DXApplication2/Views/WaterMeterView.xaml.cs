@@ -88,7 +88,7 @@
         /// <param name="e"></param>
         private void view_ValidateRow(object sender, GridRowValidationEventArgs e)
         {
-            PropertiesViewModel vm = this.DataContext as PropertiesViewModel;
+            PropertiesDetailsViewModel vm = this.DataContext as PropertiesDetailsViewModel;
 
             Property row = e.Row as Property;
             //if (null != row)

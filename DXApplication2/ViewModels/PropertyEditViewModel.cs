@@ -476,7 +476,7 @@ namespace HVCC.Shell.ViewModels
         }
 
         /// <summary>
-        /// Returns a collection of Relationships for a given Property
+        /// Returns the Notes for a given Property
         /// </summary>
         /// <returns></returns>
         private string GetPropertyNotes()
@@ -509,7 +509,11 @@ namespace HVCC.Shell.ViewModels
                 return null;
             }
         }
-        #endregion
+
+        /// <summary>
+        /// Returns a collection of Relationships for a given Property
+        /// </summary>
+        /// <returns></returns>
         private ObservableCollection<Relationship> GetRelationships (int pID)
         {
             try
@@ -526,6 +530,7 @@ namespace HVCC.Shell.ViewModels
                 return null;
             }
         }
+        #endregion
     }
 
     /*================================================================================================================================================*/

@@ -73,7 +73,7 @@
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new PropertiesViewModel(dc) { Caption = "Properties" };
+            IViewModel vm = new PropertiesDetailsViewModel(dc) { Caption = "Properties" };
             IView v = new HVCC.Shell.Views.PropertyDetailsView(vm);
             return new MvvmBinder(dc, v, vm);
         }

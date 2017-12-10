@@ -56,7 +56,7 @@
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage x:Name="properties" Caption="Actions">
+                    <dxr:RibbonPage x:Name="propertyActions" Caption="Actions">
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
@@ -82,32 +82,60 @@
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
-                        
                         <dxr:RibbonPageGroup Caption="Property Action" >
 
-                                <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
+                            <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
                                                Glyph="/Images/Icons/Ownership_16x16.png" 
                                                LargeGlyph="/Images/Icons/Ownership_32x32.png"/>
-                                <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
+                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Financal-16x16.png" 
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
                                                ToolTip="Bulk update dues balance information"/>
-                            </dxr:RibbonPageGroup>
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+
+                    <dxr:RibbonPage x:Name="propertyReports" Caption="Reports">
 
                         <!--<dxr:RibbonPageGroup Caption="Reports">
                             <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
                             <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
                         </dxr:RibbonPageGroup>-->
 
+                        <dxr:RibbonPageGroup Caption="Property Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
+                            <dxb:BarButtonItem Content="Period Usage"
+                                                   ItemClick="bb_PeriodReportClick"
+                                                   IsVisible="True" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report"/>
+                            <dxb:BarButtonItem Content="Daily Usage"
+                                                   ItemClick="bb_DailyReportClick"
+                                                   IsVisible="True" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report"/>
+                            <dxb:BarButtonItem Content="Property Notes"
+                                                   ItemClick="bb_NotesReportClick"
+                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsEnabled="True" 
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report"/>
+                            <dxb:BarButtonItem Content="Balances Due"
+                                                   ItemClick="bb_BalanceReportClick"
+                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsEnabled="True" 
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report"/>
+                        </dxr:RibbonPageGroup>
+
                     </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
 
             </dxr:RibbonControl>
-
 
             <dxlc:LayoutControl Orientation="Vertical">
                 <dxlc:LayoutGroup x:Name="grpboxProperties" View="Group" VerticalAlignment="Top" IsCollapsible="False" Orientation="Vertical">
@@ -125,7 +153,6 @@
                              ItemsSource="{Binding PropertiesList, Mode=OneWay}" 
                              SelectedItem="{Binding SelectedProperty, Mode=TwoWay}"
                              IsEnabled="True" 
-                             MasterRowExpanded="grid_MasterRowExpanded"  
                              MaxHeight="800"
                              >
 
@@ -153,12 +180,12 @@
                                                 <dxc:Format Foreground="Green"/>
                                             </dxg:FormatCondition>
                                         </dxg:TableView.FormatConditions>
-                                        
+
                                         <dxmvvm:Interaction.Behaviors>
                                             <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}"/>
                                         </dxmvvm:Interaction.Behaviors>
-                                        
+
                                     </dxg:TableView>
                                 </dxg:GridControl.View>
 

@@ -30,14 +30,7 @@
                 SelectedProperty = GetProperty(p.PropertyID);
                 OriginalProperty = SelectedProperty.Clone() as Property;
                 SelectedProperty.BillTo = string.Empty;
-                // Relationships = new ObservableCollection<Relationship>(p.Relationships) ;
-                ObservableCollection<Relationship> tmpRC = new ObservableCollection<Relationship>();
-                foreach (Relationship r in p.Relationships)
-                {
-                    Relationship x = r.Clone() as Relationship;
-                    tmpRC.Add(x);
-                }
-                Relationships = tmpRC;
+                Relationships = GetRelationships(p.PropertyID);
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -273,6 +266,28 @@
 
             return p as Property;
         }
+
+        /// <summary>
+        /// Returns a collection of Relationships for a given Property
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<Relationship> GetRelationships(int pID)
+        {
+            try
+            {
+                var list = (from x in dc.Relationships
+                            where x.PropertyID == pID
+                            select x);
+
+                return new ObservableCollection<Relationship>(list);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.ShowMessage("Can't retrieve property from database\n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                return null;
+            }
+        }
+
         #endregion
     }
 
@@ -321,7 +336,7 @@
                 dc.OwnershipChanges.InsertOnSubmit(oc);
 
                 ChangeSet cs = dc.GetChangeSet();
-                //this.dc.SubmitChanges();
+                this.dc.SubmitChanges();                              // (DEBUG)
                 this.IsBusy = false;
                 RaisePropertiesChanged("IsNotBusy");
                 Host.Execute(HostVerb.Close, this.Caption);
