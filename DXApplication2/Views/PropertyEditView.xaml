@@ -331,6 +331,48 @@
                 </dxlc:LayoutGroup>
 
                 <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                    <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerAddress}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label=" " Width="Auto">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerAddress2}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+                
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                    <dxlc:LayoutItem Label="City/ST/Zip: " Width="400">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerCity}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label=" " Width="Auto">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerState}" Width="50" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label=" " Width="Auto">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerZip}" Width="75" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+
+                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
                             <dxe:TextEdit Text="{Binding SelectedProperty.OwnerPrimaryPhone}" Width="Auto" 

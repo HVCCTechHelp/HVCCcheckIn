@@ -14,7 +14,7 @@
         xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"  
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"  
         xmlns:resources="clr-namespace:HVCC.Shell.Resources"
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
@@ -31,7 +31,7 @@
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
-        <dx:DXMessageBoxService/>
+        <dx:DXMessageBoxService />
         <common:TableViewExportService />
         <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
     </dxmvvm:Interaction.Behaviors>
@@ -42,15 +42,13 @@
 
     <dxb:BarManager>
         <dxb:BarManager.Items>
-            <dxb:BarButtonItem
-            x:Name="bLastMeterReadings"
+            <dxb:BarButtonItem x:Name="bLastMeterReadings"
             Content="Last"
             ItemClick="bb_SummaryReportClick"
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
             ToolTip="Last Meter Readings"
             />
-            <dxb:BarButtonItem
-            x:Name="bDetailMeterReadings"
+            <dxb:BarButtonItem x:Name="bDetailMeterReadings"
             Content="Detail"
             ItemClick="bb_DetailReportClick"
             Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
@@ -70,10 +68,10 @@
                                                     LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
                                 <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
                                                    Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}" />
                                 <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
                                                    Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}" />
                             </dxb:BarSubItem>
                             <dxb:BarSubItem Content="Print"  
                                                     IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
@@ -81,10 +79,10 @@
                                                     LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
                                 <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
                                                    Glyph="{dx:DXImage Image=Preview_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
                                 <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
@@ -111,7 +109,7 @@
 
                     <dxlc:LayoutGroup Orientation="Horizontal">
                         <dxlc:LayoutItem VerticalAlignment="Top" HorizontalAlignment="Left" IsRequired="True">
-                            <Label Content="Well meter Reading Date: "/>
+                            <Label Content="Well meter Reading Date: " />
                         </dxlc:LayoutItem>
 
                         <dxlc:LayoutItem VerticalAlignment="Top" HorizontalAlignment="Left" IsRequired="True">
@@ -124,7 +122,8 @@
                              ItemsSource="{Binding WellMeterReadings, Mode=TwoWay}" 
                              IsEnabled="True" 
                              MaxHeight="250"
-                             MaxWidth="800" Initialized="wellMeterReadingGrid_Initialized"
+                             MaxWidth="800"
+                             Initialized="wellMeterReadingGrid_Initialized"
                              >
 
                             <dxg:GridControl.View>
@@ -157,19 +156,21 @@
                                         ReadOnly="True" 
                                         Focusable="False"
                                         />
-                                <dxg:GridColumn FieldName="MeterReadingDate"  Header="Reading Date" Width="50" 
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            Focusable="False"
-                                            >
+                                <dxg:GridColumn FieldName="MeterReadingDate" Header="Reading Date" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        Focusable="False"
+                                        >
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:DateEditSettings DisplayFormat="d" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
 
-                                <dxg:GridColumn Width="5" Focusable="False" ReadOnly="True" >
+                                <dxg:GridColumn Width="5" Focusable="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.CellStyle>
-                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" >
+                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}">
                                             <Setter Property="Background" Value="LightGray" />
                                         </Style>
                                     </dxg:GridColumn.CellStyle>
@@ -177,10 +178,11 @@
                                 
                                 <dxg:GridColumn FieldName="MeterReading" Header="Meter Reading" Width="75" 
                                             AllowEditing="True" 
-                                            ReadOnly="False" Validate="GridColumn_Validate"
+                                            ReadOnly="False"
+                                            Validate="GridColumn_Validate"
                                             >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn x:Name="colUnitOfMeasure" FieldName="MeterUnitOfMeasure" Header="Meter Units" Width="30"      
@@ -193,9 +195,11 @@
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
 
-                                <dxg:GridColumn Width="5" Focusable="False" ReadOnly="True" >
+                                <dxg:GridColumn Width="5" Focusable="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.CellStyle>
-                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" >
+                                        <Style TargetType="dxg:LightweightCellEditor" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}">
                                             <Setter Property="Background" Value="LightGray" />
                                         </Style>
                                     </dxg:GridColumn.CellStyle>
@@ -206,7 +210,7 @@
                                             ReadOnly="False"
                                             >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                             </dxg:GridControl.Columns>
@@ -215,7 +219,7 @@
 
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem HorizontalAlignment="Center">
-                        <Button x:Name="btnSave" Width="75" Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsEnabledSave}"/>
+                        <Button x:Name="btnSave" Width="75" Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsEnabledSave}" />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
 
@@ -252,79 +256,79 @@
                             </dxg:GridControl.View>
 
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Month" Header="Month" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Month" Header="Month" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Left"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Left" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Year" Header="Year" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Year" Header="Year" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Left"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Left" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
 
-                                <dxg:GridColumn FieldName="MeterReadingDate"  Header="Reading Date" Width="50" 
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            SortIndex="0"
+                                <dxg:GridColumn FieldName="MeterReadingDate" Header="Reading Date" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        SortIndex="0"
                                             SortOrder="Descending"
                                             >
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:DateEditSettings DisplayFormat="d" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Well3" Header="Well3" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Well3" Header="Well3" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Well5" Header="Well5" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Well5" Header="Well5" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Well7" Header="Well7" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Well7" Header="Well7" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Well8" Header="Well8" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Well8" Header="Well8" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Well10" Header="Well10" Width="50"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Well10" Header="Well10" Width="50" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Total" Header="Total Gallons" Width="75"      
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
-                                            >
+                                <dxg:GridColumn FieldName="Total" Header="Total Gallons" Width="75" 
+                                            AllowEditing="False"
+                                        ReadOnly="True" 
+                                        >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric"  DisplayFormat="{}{0:n0}"/>
+                                        <dxe:TextEditSettings HorizontalContentAlignment="Right" Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                             </dxg:GridControl.Columns>

@@ -150,7 +150,13 @@
             Reports.BalancesDueReport report = new Reports.BalancesDueReport();
             PrintHelper.ShowPrintPreview(this, report);
         }
-        #endregion
 
+        private void bb_AnnualInvoiceReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        {
+            Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+            report.Parameters["selectedProperty"].Value = (this.propertyGrid.SelectedItem as Property).PropertyID;
+            PrintHelper.ShowPrintPreview(this, report);
+        }
+        #endregion
     }
 }

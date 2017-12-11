@@ -16,7 +16,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
@@ -34,10 +34,10 @@
     </UserControl.Resources>
     
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:OpenFileDialogService Title="Open File"/>
-        <dxmvvm:SaveFileDialogService Title="Save File"/>
+        <dxmvvm:OpenFileDialogService Title="Open File" />
+        <dxmvvm:SaveFileDialogService Title="Save File" />
         <common:TableViewExportService />  <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
-        <dx:DXMessageBoxService/>
+        <dx:DXMessageBoxService />
     </dxmvvm:Interaction.Behaviors>
 
     <UserControl.CommandBindings>
@@ -75,10 +75,10 @@
                                                     LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
                                 <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
                                                    Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}" />
                                 <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
                                                    Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}" />
                             </dxb:BarSubItem>
                             <dxb:BarSubItem Content="Print"  
                                                     IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
@@ -86,10 +86,10 @@
                                                     LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
                                 <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
                                                    Glyph="{dx:DXImage Image=Preview_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
                                 <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
@@ -106,9 +106,10 @@
             <dxlc:LayoutControl Orientation="Vertical">
 
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                    <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Member Search" Width="400" Height="150">
-                        <dxlc:LayoutGroup  View="Group" Orientation="Vertical" >
-                            <dxlc:LayoutGroup  View="Group" Orientation="Horizontal" >
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Member Search" Width="400" Height="150"
+                               >
+                        <dxlc:LayoutGroup View="Group" Orientation="Vertical">
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
 
                                 <dxlc:LayoutItem Label="Last Name: " Width="250" Style="{StaticResource LayoutItemStyle}">
                                     <dxe:TextEdit x:Name="tbSearchName" Text="{Binding SearchName, Mode=TwoWay}" Width="150" 
@@ -129,10 +130,10 @@
                         </dxlc:LayoutGroup>
                     </dxlc:LayoutGroup>
 
-                    <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Register New Cart" Height="150"
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Register New Cart" Height="150"
                                Visibility="{Binding ApplPermissions.CanEditGolfCart, Converter={StaticResource BoolToVis}}" 
                                >
-                        <dxlc:LayoutGroup  View="Group" Orientation="Vertical" >
+                        <dxlc:LayoutGroup View="Group" Orientation="Vertical">
                             <dxlc:LayoutItem Width="75" HorizontalAlignment="Right" Margin="0,10,20,0">
                                 <Button x:Name="btnAddName" Width="75" Height="25" HorizontalAlignment="Left" Margin="0,0,0,0"
                         IsEnabled="True"
@@ -173,7 +174,7 @@
                                 </dxg:GridControl.View>
                                 <!-- columns of the detail grid -->
                                 <dxg:GridControl.Columns>
-                                    <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" SortOrder="Descending" SortIndex="0" IsEnabled="True"/>
+                                    <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" SortOrder="Descending" SortIndex="0" IsEnabled="True" />
                                     <dxg:GridColumn FieldName="LName" Header="Last Name" Width="100" />
                                     <dxg:GridColumn FieldName="Customer" Header="Lot" Width="100" />
                                 </dxg:GridControl.Columns>
@@ -182,7 +183,7 @@
                     </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
 
-                <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Registered Carts">
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Registered Carts">
                     <dxlc:LayoutItem>
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="registeredCartGrid" 
                                  IsEnabled="True"
@@ -217,9 +218,9 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0"/>
-                                <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" ReadOnly="True"/>
-                                <dxg:GridColumn FieldName="LName" Header="Last Name" Width="100" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="FName" Header="First Name" Width="75" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="LName" Header="Last Name" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Year" Header="Year" Width="100" />
                                 <dxg:GridColumn FieldName="Quanity" Header="Qty" Width="25">
                                     <dxg:GridColumn.EditSettings>

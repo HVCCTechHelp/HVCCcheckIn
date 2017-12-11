@@ -5,7 +5,7 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v15.2"   
+             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,14 +23,14 @@
             <Setter Property="AutoFilterRowCellStyle">
                 <Setter.Value>
                     <Style TargetType="{x:Type dxg:CellContentPresenter}">
-                        <Setter Property="Background" Value="LightGoldenrodYellow"/>
-                        <Setter Property="Foreground" Value="Blue"/>
-                        <Setter Property="FontWeight" Value="DemiBold"/>
+                        <Setter Property="Background" Value="LightGoldenrodYellow" />
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="FontWeight" Value="DemiBold" />
                     </Style>
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="IsDirtyStyle"
+        <!--<Style x:Key="IsDirtyStyle"
                BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}"
                TargetType="{x:Type dxg:LightweightCellEditor}"
                >
@@ -59,6 +59,7 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+
         <Style x:Key="ReadOnlyStyle"
                BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}"
                TargetType="{x:Type dxg:LightweightCellEditor}"
@@ -81,7 +82,7 @@
                     <Setter Property="Background" Value="LightYellow" />
                 </MultiDataTrigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
     </UserControl.Resources>
 
 
@@ -93,8 +94,8 @@
 
 
 
-    <dxlc:LayoutControl Orientation="Vertical" >
-        <dxlc:LayoutGroup View="GroupBox"  x:Name="grpProperties" Orientation="Vertical" >
+    <dxlc:LayoutControl Orientation="Vertical">
+        <dxlc:LayoutGroup View="GroupBox" x:Name="grpProperties" Orientation="Vertical">
             <dxlc:LayoutGroup.ItemStyle>
                 <Style TargetType="{x:Type dxlc:LayoutItem}">
                     <Setter Property="AddColonToLabel" Value="True" />
@@ -105,159 +106,165 @@
             <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
 
                 <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
-                    <dxg:GridControl  x:Name="propertiesGrid" 
+                    <Grid>
+                        <dxg:GridControl x:Name="propertiesGrid" 
                               Height="600"
                               ItemsSource="{Binding PropertiesList}"
                               SelectedItem="{Binding SelectedProperty}"
-                              IsEnabled="True" MasterRowExpanded="grid_MasterRowExpanded" 
+                              IsEnabled="True" 
+                              MasterRowExpanded="grid_MasterRowExpanded" 
                               >
 
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="propertiesTableView" 
+				                    AllowPerPixelScrolling="True" 
+				                    NavigationStyle="Row" 
+				                    AutoWidth="True"
+                                    ShowAutoFilterRow="True"
+                                    ShowGroupPanel="False"
+				                    ShowFixedTotalSummary="True" 
+                                    ShowTotalSummary="True"
+                                    SearchPanelNullText="Search"
+                                    ShowSearchPanelMode="Always"
+                                    ShowSearchPanelFindButton="True"
+                                    SearchPanelClearOnClose="False"
+                                />
+                            </dxg:GridControl.View>
 
-                        <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="LName" Header="Last Name " Width="100" />
-                            <dxg:GridColumn FieldName="Section" Header="Section" SortOrder="Descending" Width="20" SortIndex="0"/>
-                            <dxg:GridColumn FieldName="Block" Header="Block " Width="20" />
-                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="20"/>
-                            <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="20"/>
-                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.Year" Header="Year" Width="20"/>
-                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.AmountOwed" Header="DuesOwed" Width="20">
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                    </dxe:TextEditSettings>
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.IsInGoodStanding" Header="GoodStanding" Width="50"/>
-                        </dxg:GridControl.Columns>
-
-                <dxg:GridControl.View>
-                    <dxg:TableView 
-				        x:Name="propertiesTableView" 
-				        AllowPerPixelScrolling="True" 
-				        NavigationStyle="Row" 
-				        AutoWidth="True"
-                        ShowAutoFilterRow="True"
-                        ShowGroupPanel="False"
-				        ShowFixedTotalSummary="True" 
-                        ShowTotalSummary="True"
-                        SearchPanelNullText="Search"
-                        ShowSearchPanelMode="Always"
-                        ShowSearchPanelFindButton="True"
-                        SearchPanelClearOnClose="False"
-                    />
-                </dxg:GridControl.View>
-
-                <dxg:GridControl.DetailDescriptor>
-                    <dxg:DataControlDetailDescriptor
-                            ItemsSourceBinding="{Binding Relationships}">
-                        <dxg:GridControl x:Name="relationshipGrid" SelectedItem="{Binding SelectedRelation}" IsEnabled="True">
                             <dxg:GridControl.Columns>
-                                        <dxg:GridColumn FieldName="FName" Header="First Name" x:Name="tbFName"
+                                <dxg:GridColumn FieldName="LName" Header="Last Name " Width="50" />
+                                <dxg:GridColumn FieldName="FName" Header="First Name " Width="50" />
+                                <dxg:GridColumn FieldName="Section" Header="Section" SortOrder="Ascending" Width="20" SortIndex="0" />
+                                <dxg:GridColumn FieldName="Block" Header="Block " Width="20" />
+                                <dxg:GridColumn FieldName="Lot" Header="Lot" Width="20" />
+                                <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="20" />
+                                <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.AmountOwed" Header="DuesOwed" Width="20">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.CartFeesOwed" Header="CartFeesOwed" Width="20">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.IsInGoodStanding" Header="GoodStanding" Width="50" />
+                            </dxg:GridControl.Columns>
+
+
+                            <dxg:GridControl.DetailDescriptor>
+                                <dxg:DataControlDetailDescriptor ItemsSourceBinding="{Binding Relationships}">
+                                    <dxg:GridControl x:Name="relationshipGrid" SelectedItem="{Binding SelectedRelation}" IsEnabled="True">
+                                        <dxg:GridControl.Columns>
+                                            <dxg:GridColumn x:Name="viewFName" FieldName="FName" Header="First Name"
                                                         SortOrder="Ascending" 
                                                         Width="50" 
                                                         SortIndex="0"  
                                                         AllowEditing="True"
                                                         EditFormVisible="True"
                                                         >
-                                            <dxg:GridColumn.EditSettings>
-                                                <dxe:TextEditSettings AllowNullInput="False" />
-                                            </dxg:GridColumn.EditSettings>
-                                        </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="LName" Header="Last Name" 
+                                                <!--<dxg:GridColumn.EditSettings>
+                                                    <dxe:TextEditSettings x:Name="tesFName" AllowNullInput="False"/>
+                                                </dxg:GridColumn.EditSettings>-->
+                                            </dxg:GridColumn>
+                                            <dxg:GridColumn FieldName="LName" Header="Last Name" 
                                                         Width="50" 
                                                         AllowEditing="True"
-                                                        EditFormVisible="True">
-                                            <dxg:GridColumn.EditSettings>
-                                                <dxe:TextEditSettings AllowNullInput="False" />
-                                            </dxg:GridColumn.EditSettings>
-                                        </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship" 
+                                                        EditFormVisible="True"
+                                                        >
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:TextEditSettings AllowNullInput="False" />
+                                                </dxg:GridColumn.EditSettings>
+                                            </dxg:GridColumn>
+                                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship" 
                                                         Width="50" 
                                                         AutoFilterCondition="Default"  
                                                         AllowEditing="True"
-                                                        EditFormVisible="True">
-                                    <dxg:GridColumn.EditFormTemplate>
-                                                <DataTemplate>
-                                                    <dxe:ComboBoxEdit 
-                                                        Name="PART_Editor"
+                                                        EditFormVisible="True"
+                                                        >
+                                                <dxg:GridColumn.EditFormTemplate>
+                                                    <DataTemplate>
+                                                        <dxe:ComboBoxEdit Name="PART_Editor"
                                                         EditValue="{Binding SelectedRelation.RelationToOwner}"
                                                         Text="{Binding SelectedRelation.RelationToOwner}"
                                                           AutoComplete="True" 
                                                           AllowNullInput="False"
                                                           >
-                                                        <dxe:ComboBoxEdit.Items>
-                                                            <dxe:ComboBoxEditItem Content="Owner" />
-                                                            <dxe:ComboBoxEditItem Content="Child" />
-                                                            <dxe:ComboBoxEditItem Content="In-Law" />
-                                                            <dxe:ComboBoxEditItem Content="Grandchild" />
-                                                            <dxe:ComboBoxEditItem Content="Grandparent" />
-                                                        </dxe:ComboBoxEdit.Items>
+                                                            <dxe:ComboBoxEdit.Items>
+                                                                <dxe:ComboBoxEditItem Content="Owner" />
+                                                                <dxe:ComboBoxEditItem Content="Child" />
+                                                                <dxe:ComboBoxEditItem Content="In-Law" />
+                                                                <dxe:ComboBoxEditItem Content="Grandchild" />
+                                                                <dxe:ComboBoxEditItem Content="Grandparent" />
+                                                            </dxe:ComboBoxEdit.Items>
                                                         </dxe:ComboBoxEdit>
-                                                </DataTemplate>
-                                            </dxg:GridColumn.EditFormTemplate>
-                                </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="PhotoURI" 
+                                                    </DataTemplate>
+                                                </dxg:GridColumn.EditFormTemplate>
+                                            </dxg:GridColumn>
+
+                                            <dxg:GridColumn FieldName="PhotoURI" 
                                                         Visible="false" 
-                                                        EditFormVisible="True" 
+                                                        EditFormVisible="True"
                                                         EditFormColumnSpan="1" 
                                                         EditFormRowSpan="5" 
                                                         EditFormCaption="Image:" 
                                                         ReadOnly="False">
-                                            <dxg:GridColumn.EditSettings>
-                                                <dxe:ImageEditSettings/>
-                                            </dxg:GridColumn.EditSettings>
-                                            <dxg:GridColumn.EditFormTemplate>
-                                                <DataTemplate>
-                                                    <dxe:ImageEdit  Name="PART_Editor"  
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:ImageEditSettings />
+                                                </dxg:GridColumn.EditSettings>
+                                                <dxg:GridColumn.EditFormTemplate>
+                                                    <DataTemplate>
+                                                        <dxe:ImageEdit Name="PART_Editor"  
                                                        Height="120" Width="160"
                                                        ShowMenu="true" 
                                                        ShowBorder="True"
                                                        ShowLoadDialogOnClickMode="Always"
                                                        IsReadOnly="False" 
-                                                       EditValueChanged="EditValueChanges"
+                                                       EditValueChanged="EditValueChanges" 
+                                                       AllowDrop="True"
                                                        />
-                                                </DataTemplate>
-                                            </dxg:GridColumn.EditFormTemplate>
-                                        </dxg:GridColumn>
-                                    </dxg:GridControl.Columns>
+                                                    </DataTemplate>
+                                                </dxg:GridColumn.EditFormTemplate>
+                                            </dxg:GridColumn>
+                                        </dxg:GridControl.Columns>
 
-                            <dxg:GridControl.View>
-                                <dxg:TableView x:Name="relationshipsTableView"  
-                                    AllowColumnFiltering="True" 
-                                    AllowGrouping="True"  
-                                    AllowPerPixelScrolling="True" 
-                                    AllowLeaveInvalidEditor="False"
-                                    AutoWidth="True" 
-                                    AllowEditing="False"
-                                    EditFormShowMode="InlineHideRow"
-                                    CellValueChanging="View_CellValueChanging"
-                                    CellStyle="{DynamicResource ResourceKey=IsDirtyStyle}"
-                                    NavigationStyle="Cell" 
-                                    NewItemRowPosition="Bottom"
+                                        <dxg:GridControl.View>
+                                            <dxg:TableView x:Name="relationshipsTableView"  
+                                                AutoWidth="True" 
+                                                AllowEditing="True"
+                                                AllowPerPixelScrolling="True"
+                                                AllowLeaveInvalidEditor="False"
+                                                EditFormShowMode="InlineHideRow"
+                                                NavigationStyle="Row" 
+                                                NewItemRowPosition="Bottom"
+                                                ShowEditFormOnDoubleClick="True"
+                                                ShowEditFormUpdateCancelButtons="True"
+                                                CellValueChanging="view_CellValueChanging"
+                                                ValidateRow="view_ValidateRow" 
+                                                InitNewRow="view_InitNewRow"
+                                             >
+                                                <dxg:TableView.RowCellMenuCustomizations>
+                                                    <dxb:BarButtonItem Name="editDetailRowItem" Content="Edit" 
+                                            ItemClick="editRowItem_ItemClick" />
 
-                                    ValidateRow="View_ValidateRow"
-                                    ShowEditFormOnDoubleClick="True"
-                                    ShowEditFormUpdateCancelButtons="True"
-                                 >
-                                            <!--InitNewRow="View_InitNewRow"-->
-                                            <dxg:TableView.RowCellMenuCustomizations>
-                                        <dxb:BarButtonItem Name="editDetailRowItem" Content="Edit" 
-                                            ItemClick="editRowItem_ItemClick"/>
-
-                                        <dxb:BarButtonItem x:Name="deleteRowItem"
+                                                    <dxb:BarButtonItem x:Name="deleteRowItem"
                                            Content="Delete"
                                            Command="{x:Static dxg:GridCommands.DeleteFocusedRow}"
                                            CommandTarget="{Binding ElementName=grid, Path=View}"
                                            IsVisible="true"
                                            />
-                                    </dxg:TableView.RowCellMenuCustomizations>
+                                                </dxg:TableView.RowCellMenuCustomizations>
 
-                                </dxg:TableView>
-                            </dxg:GridControl.View>
+                                            </dxg:TableView>
+                                        </dxg:GridControl.View>
+                                    </dxg:GridControl>
+                                </dxg:DataControlDetailDescriptor>
+                            </dxg:GridControl.DetailDescriptor>
+
                         </dxg:GridControl>
-                    </dxg:DataControlDetailDescriptor>
-                </dxg:GridControl.DetailDescriptor>
-
-                    </dxg:GridControl>
+                    </Grid>
                 </dxlc:LayoutItem>
 
             </dxlc:LayoutGroup>

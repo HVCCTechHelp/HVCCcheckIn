@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HVCC.History.Views"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
-             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v15.2"   
+             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900"
              >
@@ -19,16 +19,16 @@
             <Setter Property="AutoFilterRowCellStyle">
                 <Setter.Value>
                     <Style TargetType="{x:Type dxg:CellContentPresenter}">
-                        <Setter Property="Background" Value="LightGoldenrodYellow"/>
-                        <Setter Property="Foreground" Value="Blue"/>
-                        <Setter Property="FontWeight" Value="DemiBold"/>
+                        <Setter Property="Background" Value="LightGoldenrodYellow" />
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="FontWeight" Value="DemiBold" />
                     </Style>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
 
-    <dxlc:LayoutControl Orientation="Vertical" >
+    <dxlc:LayoutControl Orientation="Vertical">
 
         <dxlc:LayoutGroup View="GroupBox" Header="Properties" VerticalAlignment="Top" IsCollapsible="False" Orientation="Vertical">
             <dxlc:LayoutGroup.ItemStyle>
@@ -49,23 +49,22 @@
                                      AutoExpandAllGroups="False"
                                      >
                         <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="Year" Header="Year" Width="10"  SortOrder="Descending" GroupIndex="0"/>
-                            <dxg:GridColumn FieldName="Section" Header="Section" SortOrder="Descending" Width="10" SortIndex="0"/>
+                            <dxg:GridColumn FieldName="Year" Header="Year" Width="10" SortOrder="Descending" GroupIndex="0" />
+                            <dxg:GridColumn FieldName="Section" Header="Section" SortOrder="Descending" Width="10" SortIndex="0" />
                             <dxg:GridColumn FieldName="Block" Header="Block " Width="10" />
-                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"/>
-                            <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"/>
-                            <dxg:GridColumn FieldName="AmountOwed" Header="Dues Owed" Width="10" >
+                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10" />
+                            <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10" />
+                            <dxg:GridColumn FieldName="AmountOwed" Header="Dues Owed" Width="10">
                                 <dxg:GridColumn.EditSettings>
                                     <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                     </dxe:TextEditSettings>
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="IsInGoodStanding" Width="10"/>
+                            <dxg:GridColumn FieldName="IsInGoodStanding" Width="10" />
                         </dxg:GridControl.Columns>
 
                         <dxg:GridControl.View>
-                            <dxg:TableView 
-				            x:Name="tableView2" 
+                            <dxg:TableView x:Name="tableView2" 
 				            AllowPerPixelScrolling="True" 
 				            NavigationStyle="Row" 
 				            AutoWidth="True"
@@ -95,20 +94,28 @@
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                     <dxlc:LayoutGroup View="GroupBox" Header="Lot" Orientation="Vertical" Width="75" Margin="0,0,5,0">
                         <dxlc:LayoutItem Width="50" HorizontalAlignment="Left">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Section}" ShowBorder="False" IsReadOnly="True"/>
+                            <dxe:TextEdit Text="{Binding SelectedProperty.Section}" ShowBorder="False"
+                                          IsReadOnly="True"
+                                          />
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Width="50" HorizontalAlignment="Left">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Block}"  ShowBorder="False" IsReadOnly="True"/>
+                            <dxe:TextEdit Text="{Binding SelectedProperty.Block}" ShowBorder="False"
+                                          IsReadOnly="True"
+                                          />
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Width="50" HorizontalAlignment="Left">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Lot}"  ShowBorder="False" IsReadOnly="True"/>
+                            <dxe:TextEdit Text="{Binding SelectedProperty.Lot}" ShowBorder="False"
+                                          IsReadOnly="True"
+                                          />
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Width="50" HorizontalAlignment="Left">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.SubLot}"  ShowBorder="False" IsReadOnly="True"/>
+                            <dxe:TextEdit Text="{Binding SelectedProperty.SubLot}" ShowBorder="False"
+                                          IsReadOnly="True"
+                                          />
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
-                    <dxlc:LayoutGroup Orientation="Vertical"  HorizontalAlignment="Left"  Margin="0,0,5,0">
-                        <dxlc:LayoutItem Label="For Year" VerticalAlignment="Top" Width="100"  HorizontalAlignment="Left"  FontWeight="Bold">
+                    <dxlc:LayoutGroup Orientation="Vertical" HorizontalAlignment="Left" Margin="0,0,5,0">
+                        <dxlc:LayoutItem Label="For Year" VerticalAlignment="Top" Width="100" HorizontalAlignment="Left" FontWeight="Bold">
                             <dxe:TextEdit x:Name="tbForYear" Text="{Binding SelectedProperty.ForYear}" 
                                           VerticalContentAlignment="Top" 
                                           MaskType="None"
@@ -126,7 +133,7 @@
                                           Margin="20,0,0,0"
                                           />
                         </dxlc:LayoutItem>-->
-                        <dxlc:LayoutItem Label="Good Standing" Width="150"  FontWeight="Bold">
+                        <dxlc:LayoutItem Label="Good Standing" Width="150" FontWeight="Bold">
                             <dxe:CheckEdit x:Name="cbGoodStanding" EditValue="{Binding SelectedProperty.IsInGoodStanding}" 
                                            HorizontalAlignment="Center"
                                            IsEnabled="False"
@@ -134,15 +141,15 @@
                                            Margin="20,0,0,0"
                                            />
                         </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup >
-                    <dxlc:LayoutGroup  Orientation="Vertical" Width="200" HorizontalAlignment="Left" Margin="0,0,5,0">
-                        <dxlc:LayoutItem Label="Dues Owed" Width="150"  HorizontalAlignment="Left" FontWeight="Bold">
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup Orientation="Vertical" Width="200" HorizontalAlignment="Left" Margin="0,0,5,0">
+                        <dxlc:LayoutItem Label="Dues Owed" Width="150" HorizontalAlignment="Left" FontWeight="Bold">
                             <dxe:TextEdit x:Name="txAmountOwed" Text="{Binding SelectedProperty.AmountOwed}" 
                                           Mask="c" MaskType="Numeric" 
                                           MaskUseAsDisplayFormat="True"
                                           MaskSaveLiteral="False"
                                           ShowBorder="False"
-                                          IsReadOnly="True"                                           
+                                          IsReadOnly="True"
                                           FontWeight="Normal"
                                           Margin="20,0,0,0"
                                           >
@@ -150,7 +157,7 @@
                             </dxe:TextEdit>
                         </dxlc:LayoutItem>
                         <dxlc:LayoutGroup Orientation="Horizontal">
-                            <dxlc:LayoutItem Label="Golf Carts" Width="75"  HorizontalAlignment="Left" FontWeight="Bold">
+                            <dxlc:LayoutItem Label="Golf Carts" Width="75" HorizontalAlignment="Left" FontWeight="Bold">
                                 <dxe:TextEdit x:Name="txGolfCarts" Text="{Binding SelectedProperty.GolfCarts}" 
                                                   Width="50" 
                                                   HorizontalAlignment="Left"
@@ -161,25 +168,27 @@
                                                   Margin="10,0,0,0"
                                                   />
                             </dxlc:LayoutItem>
-                            <dxlc:LayoutItem Label="Fees Owed" Width="100"  HorizontalAlignment="Left" FontWeight="Bold">
+                            <dxlc:LayoutItem Label="Fees Owed" Width="100" HorizontalAlignment="Left" FontWeight="Bold">
                                 <dxe:TextEdit x:Name="txCartFeesOwed" Text="{Binding SelectedProperty.CartFeesOwed}" 
                                           Mask="c" MaskType="Numeric" 
                                           MaskUseAsDisplayFormat="True"
                                           MaskSaveLiteral="False"
                                               ShowBorder="False"
-                                              IsReadOnly="True"
-                                              FontWeight="Normal">
+                                                  IsReadOnly="True"
+                                                  FontWeight="Normal"
+                                                  >
                                 </dxe:TextEdit>
                             </dxlc:LayoutItem>
                         </dxlc:LayoutGroup>
                     </dxlc:LayoutGroup>
-                    <dxlc:LayoutGroup  Orientation="Vertical" Width="350" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <dxlc:LayoutItem Label="Comments" Height="145"  Width="350" HorizontalAlignment="Left" FontWeight="Bold">
+                    <dxlc:LayoutGroup Orientation="Vertical" Width="350" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <dxlc:LayoutItem Label="Comments" Height="145" Width="350" HorizontalAlignment="Left" FontWeight="Bold">
                             <dxe:TextEdit x:Name="txComments" Text="{Binding SelectedProperty.Comments}" 
                                           TextWrapping="Wrap"
                                           Height="140" 
                                           FontWeight="Normal"
-                                          IsReadOnly="True"/>
+                                          IsReadOnly="True"
+                                          />
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
