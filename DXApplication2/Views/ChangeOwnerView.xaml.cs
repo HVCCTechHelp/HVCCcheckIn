@@ -49,7 +49,6 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //ChangeOwnerViewModel vm = this.DataContext as ChangeOwnerViewModel; 
 
             //if (null != vm)
             //{
@@ -81,6 +80,8 @@
         /// <param name="e"></param>
         private void relationshipsTableView_Loaded(object sender, RoutedEventArgs e)
         {
+            relationshipGrid.SelectAll();
+            txOwnerLName.Focus();
         }
 
         /// <summary>

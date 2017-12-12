@@ -155,7 +155,9 @@
         {
             Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
             report.Parameters["selectedProperty"].Value = (this.propertyGrid.SelectedItem as Property).PropertyID;
-            PrintHelper.ShowPrintPreview(this, report);
+            //PrintHelper.ShowPrintPreview(this, report);
+            report.CreateDocument();
+            report.ExportToPdf(@"D:\Invoices\Invoice.PDF");
         }
         #endregion
     }

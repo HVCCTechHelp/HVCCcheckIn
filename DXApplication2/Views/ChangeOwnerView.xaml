@@ -13,8 +13,9 @@
              xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
              xmlns:local="clr-namespace:HVCC.Shell.Views"
              xmlns:helper="clr-namespace:HVCC.Shell.Helpers"
-             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+             xmlns:validation="clr-namespace:HVCC.Shell.Validation"
+             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="900"
@@ -23,37 +24,37 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="cmbTmp">
-            <dxe:ComboBoxEdit Name="PART_Editor"
+                <dxe:ComboBoxEdit Name="PART_Editor"
                               EditValue="{Binding RelationToOwner}"
                               Text="{Binding RelationToOwner}"
                               AutoComplete="True" 
                               AllowNullInput="False"
                               ValidateOnTextInput="True"
                                   >
-                <dxe:ComboBoxEdit.Items>
-                    <dxe:ComboBoxEditItem Content="Owner" />
-                    <dxe:ComboBoxEditItem Content="Spouse/Partner" />
-                    <dxe:ComboBoxEditItem Content="Child" />
-                    <dxe:ComboBoxEditItem Content="In-Law" />
+                    <dxe:ComboBoxEdit.Items>
+                        <dxe:ComboBoxEditItem Content="Owner" />
+                        <dxe:ComboBoxEditItem Content="Spouse/Partner" />
+                        <dxe:ComboBoxEditItem Content="Child" />
+                        <dxe:ComboBoxEditItem Content="In-Law" />
                         <dxe:ComboBoxEditItem Content="Parent" />
                         <dxe:ComboBoxEditItem Content="Grandchild" />
-                    <dxe:ComboBoxEditItem Content="Grandparent" />
-                </dxe:ComboBoxEdit.Items>
-            </dxe:ComboBoxEdit>
-        </DataTemplate>
-        <DataTemplate x:Key="txtTmp">
-            <dxe:TextEdit Name="PART_Editor"/>
-        </DataTemplate>
+                        <dxe:ComboBoxEditItem Content="Grandparent" />
+                    </dxe:ComboBoxEdit.Items>
+                </dxe:ComboBoxEdit>
+            </DataTemplate>
+            <DataTemplate x:Key="txtTmp">
+                <dxe:TextEdit Name="PART_Editor"/>
+            </DataTemplate>
             <resources:RowTemplateSelector x:Key="rowTemplateSelector"
                                TxtTemplate="{StaticResource txtTmp}"
                                CmbTemplate="{StaticResource cmbTmp}"
                                />
-            
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
                 <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -73,21 +74,188 @@
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="175" GroupBoxDisplayMode="Light">
                     <dxlc:LayoutItem Label="Lot# " />
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.Section}" />
-                        <dxlc:LayoutItem Label="-" />
+                    <dxlc:LayoutItem Label="-" />
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.Block}" />
                     <dxlc:LayoutItem Label="-"/>
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.Lot}" />
                     <dxlc:LayoutItem Label="-"/>
                     <dxlc:LayoutItem Label="{Binding SelectedProperty.SubLot}" />
                 </dxlc:LayoutGroup>
-                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="800" HorizontalAlignment="Center">
-                    <dxlc:LayoutItem Label="New owner &amp; address on Record: " Width="600">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.BillTo, Mode=TwoWay}" Width="Auto" 
-                                      Style="{Binding TeStyle}" 
-                                      IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}" NullText="REQUIRED" 
-                                      />
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="500">
+                    <dxlc:LayoutItem Label="Bill To: " Width="Auto">
+                        <dxe:TextEdit Text="{Binding SelectedProperty.BillTo}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="True" 
+                                      Focusable="False"
+                                     />
                     </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutGroup>
+
+            <dxlc:LayoutGroup View="GroupBox" Width="850" Header="Owner Information" 
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              IsCollapsible="False" 
+                              IsCollapsed="False" 
+                              Orientation="Vertical">
+
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                    <dxlc:LayoutItem Label="Owner Last Name: " Width="Auto">
+                        <dxe:TextEdit Name="txOwnerLName"
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerLName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerLName"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="First Name: " Width="Auto">
+                        <dxe:TextEdit Name="txOwnerFName"
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerFName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerFName"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                    <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
+                        <dxe:TextEdit
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerAddress" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerAddress"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label=" " Width="Auto">
+                        <dxe:TextEdit Text="{Binding OwnerAddress2}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                    <dxlc:LayoutItem Label="City: " HorizontalAlignment="Left" Width="400">
+                        <dxe:TextEdit
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerCity" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerCity"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="State: " HorizontalAlignment="Left" Width="Auto">
+                        <dxe:TextEdit
+                              IsEnabled="True"
+                              Width="50" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerState" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerState"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
+                        <dxe:TextEdit
+                              IsEnabled="True"
+                              Width="75" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="OwnerZip" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerZip"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                        <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
+                            <dxe:TextEdit Text="{Binding OwnerPrimaryPhone}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
+                            <dxe:TextEdit Text="{Binding OwnerSecondaryPhone}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                        <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
+                            <dxe:TextEdit Text="{Binding OwnerEmail}" Width="Auto" 
+                                      Style="{Binding TeStyle}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                     />
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutGroup>
 
@@ -100,7 +268,7 @@
 
                 <dxg:GridControl x:Name="relationshipGrid" 
                                  ItemsSource="{Binding Relationships, Mode=TwoWay}" 
-                                 SelectedItems="{Binding RelationshipsToProcess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 SelectedItems="{Binding RelationshipsToProcess, Mode=TwoWay}"
                                  IsEnabled="True"
                                  Height="300"
                                  SelectionMode="MultipleRow" 

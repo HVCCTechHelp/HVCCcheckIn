@@ -9,7 +9,7 @@
 >
 
     <!-- Grid Styles -->
-    <Style TargetType="{x:Type dxg:TableView}">
+    <Style x:Key="cellStyles" TargetType="{x:Type dxg:TableView}">
         <Setter Property="AutoFilterRowCellStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type dxg:CellContentPresenter}">

@@ -224,6 +224,7 @@
     <Compile Include="Resources\CloseByEscapeBehavior.cs" />
     <Compile Include="Resources\CommandHandler.cs" />
     <Compile Include="Resources\RowTemplateSelector.cs" />
+    <Compile Include="Validation\RequiredValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
     <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
