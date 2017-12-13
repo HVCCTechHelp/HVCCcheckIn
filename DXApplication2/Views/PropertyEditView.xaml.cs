@@ -259,5 +259,22 @@
             //}
 
         }
+
+        /// <summary>
+        /// Executed when the View is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PropertyEdit_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Force an update on the controls that require validation.  This will force
+            // them to be invalid if data is missing.
+            teOwnerFName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerLName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerAddress.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerCity.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerState.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerZip.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+        }
     }
 }

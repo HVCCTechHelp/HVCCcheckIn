@@ -40,7 +40,7 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel39 = new DevExpress.XtraReports.UI.XRLabel();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
-            this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
+            this.sqlDataSource = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.reportHeaderBand1 = new DevExpress.XtraReports.UI.ReportHeaderBand();
             this.xrLabel43 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel38 = new DevExpress.XtraReports.UI.XRLabel();
@@ -62,7 +62,6 @@
             this.xrLine28 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLine27 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLine26 = new DevExpress.XtraReports.UI.XRLine();
-            this.xrLabel41 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel33 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel31 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLine25 = new DevExpress.XtraReports.UI.XRLine();
@@ -119,10 +118,11 @@
             this.xrLabel24 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPageBreak1 = new DevExpress.XtraReports.UI.XRPageBreak();
             this.xrRichText1 = new DevExpress.XtraReports.UI.XRRichText();
-            this.xrLabel40 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel42 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel11 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrCheckBox1 = new DevExpress.XtraReports.UI.XRCheckBox();
+            this.xrLabel40 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel41 = new DevExpress.XtraReports.UI.XRLabel();
             this.Title = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailCaption3 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3 = new DevExpress.XtraReports.UI.XRControlStyle();
@@ -204,10 +204,10 @@
             this.BottomMargin.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
-            // sqlDataSource1
+            // sqlDataSource
             // 
-            this.sqlDataSource1.ConnectionName = "HVCC.Shell.Properties.Settings.HVCCConnectionStringDEV";
-            this.sqlDataSource1.Name = "sqlDataSource1";
+            this.sqlDataSource.ConnectionName = "HVCC.Shell.Properties.Settings.HVCCConnectionString";
+            this.sqlDataSource.Name = "sqlDataSource";
             storedProcQuery1.Name = "Properties";
             queryParameter1.Name = "@PropertyID";
             queryParameter1.Type = typeof(DevExpress.DataAccess.Expression);
@@ -218,10 +218,10 @@
             customSqlQuery1.Sql = "select \"Seasons\".\"RowID\", \"Seasons\".\"TimePeriod\",\r\n       \"Seasons\".\"IsCurrent\", " +
     "\"Seasons\".\"AnnualDues\", \"Seasons\".\"CartFee\"\r\n  from \"dbo\".\"Seasons\" \"Seasons\"\r\nw" +
     "here \"Seasons\".\"IsCurrent\" = 1";
-            this.sqlDataSource1.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
+            this.sqlDataSource.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
             storedProcQuery1,
             customSqlQuery1});
-            this.sqlDataSource1.ResultSchemaSerializable = resources.GetString("sqlDataSource1.ResultSchemaSerializable");
+            this.sqlDataSource.ResultSchemaSerializable = resources.GetString("sqlDataSource.ResultSchemaSerializable");
             // 
             // reportHeaderBand1
             // 
@@ -486,16 +486,6 @@
             this.xrLine26.Name = "xrLine26";
             this.xrLine26.SizeF = new System.Drawing.SizeF(298.4893F, 2.130676F);
             this.xrLine26.StylePriority.UseBorderWidth = false;
-            // 
-            // xrLabel41
-            // 
-            this.xrLabel41.Font = new System.Drawing.Font("Wingdings", 18F);
-            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(654.8918F, 431.3466F);
-            this.xrLabel41.Name = "xrLabel41";
-            this.xrLabel41.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel41.SizeF = new System.Drawing.SizeF(44.81984F, 23F);
-            this.xrLabel41.StylePriority.UseFont = false;
-            this.xrLabel41.Text = "#";
             // 
             // xrLabel33
             // 
@@ -1059,16 +1049,6 @@
             this.xrRichText1.SerializableRtfString = resources.GetString("xrRichText1.SerializableRtfString");
             this.xrRichText1.SizeF = new System.Drawing.SizeF(716.9198F, 759.6956F);
             // 
-            // xrLabel40
-            // 
-            this.xrLabel40.Font = new System.Drawing.Font("Wingdings", 18F);
-            this.xrLabel40.LocationFloat = new DevExpress.Utils.PointFloat(22.22222F, 432.3466F);
-            this.xrLabel40.Name = "xrLabel40";
-            this.xrLabel40.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel40.SizeF = new System.Drawing.SizeF(44.81984F, 23F);
-            this.xrLabel40.StylePriority.UseFont = false;
-            this.xrLabel40.Text = "#";
-            // 
             // xrLabel42
             // 
             this.xrLabel42.Font = new System.Drawing.Font("Times New Roman", 10F);
@@ -1095,6 +1075,26 @@
             this.xrCheckBox1.Name = "xrCheckBox1";
             this.xrCheckBox1.SizeF = new System.Drawing.SizeF(120F, 23F);
             this.xrCheckBox1.Text = "Primary Residence";
+            // 
+            // xrLabel40
+            // 
+            this.xrLabel40.Font = new System.Drawing.Font("Wingdings", 18F);
+            this.xrLabel40.LocationFloat = new DevExpress.Utils.PointFloat(22.22222F, 432.3466F);
+            this.xrLabel40.Name = "xrLabel40";
+            this.xrLabel40.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel40.SizeF = new System.Drawing.SizeF(44.81984F, 23F);
+            this.xrLabel40.StylePriority.UseFont = false;
+            this.xrLabel40.Text = "#";
+            // 
+            // xrLabel41
+            // 
+            this.xrLabel41.Font = new System.Drawing.Font("Wingdings", 18F);
+            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(654.8918F, 431.3466F);
+            this.xrLabel41.Name = "xrLabel41";
+            this.xrLabel41.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel41.SizeF = new System.Drawing.SizeF(44.81984F, 23F);
+            this.xrLabel41.StylePriority.UseFont = false;
+            this.xrLabel41.Text = "#";
             // 
             // Title
             // 
@@ -1167,9 +1167,9 @@
             this.BottomMargin,
             this.reportHeaderBand1});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
-            this.sqlDataSource1});
+            this.sqlDataSource});
             this.DataMember = "Properties";
-            this.DataSource = this.sqlDataSource1;
+            this.DataSource = this.sqlDataSource;
             this.Margins = new System.Drawing.Printing.Margins(51, 48, 181, 20);
             this.Parameters.AddRange(new DevExpress.XtraReports.Parameters.Parameter[] {
             this.selectedProperty});
@@ -1191,7 +1191,7 @@
         private DevExpress.XtraReports.UI.DetailBand Detail;
         private DevExpress.XtraReports.UI.TopMarginBand TopMargin;
         private DevExpress.XtraReports.UI.BottomMarginBand BottomMargin;
-        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource;
         private DevExpress.XtraReports.UI.ReportHeaderBand reportHeaderBand1;
         private DevExpress.XtraReports.UI.XRLabel xrLabel1;
         private DevExpress.XtraReports.UI.XRControlStyle Title;

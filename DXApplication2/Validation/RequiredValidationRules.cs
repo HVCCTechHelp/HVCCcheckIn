@@ -56,7 +56,6 @@
                    "OwnerFName" == fieldName
                 || "OwnerLName" == fieldName
                 || "OwnerAddress" == fieldName
-                || "OwnerAddress2" == fieldName
                 || "OwnerCity" == fieldName
                 || "OwnerZip" == fieldName
                 )

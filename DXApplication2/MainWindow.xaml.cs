@@ -186,14 +186,12 @@
                         return;
                 }
             }
-            // Remove the selected document panel from the document group.
-            this.primaryDocumentGroup.Remove(e.Item);
-            int count = this.primaryDocumentGroup.Items.Count();
 
             // Remove the MvvmBinder.
             Host.Instance.Execute(HostVerb.Close, caption); // TO-DO: This may need to move to Closed()
 
             // Set the previous DockPanel as the active panel
+            int count = this.primaryDocumentGroup.Items.Count();
             primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
             if (primaryDocumentGroup.SelectedTabIndex > 0)
             {
@@ -235,7 +233,7 @@
             }
             catch (Exception ex)
             {
-                MessageBox.Show("DocItemClosed Error: " + ex.Message);
+                MessageBox.Show("DockItem Closed Error: " + ex.Message);
             }
         }
 

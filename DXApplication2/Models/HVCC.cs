@@ -160,6 +160,27 @@ namespace HVCC.Shell.Models
             }
         }
 
+        /// <summary>
+        /// Initializes a Property with default values
+        /// </summary>
+        public void InitializeProperty()
+        {
+
+            // Initialize the SelectedProperty fields that need to be input
+            OwnerFName = String.Empty;
+            OwnerLName = String.Empty;
+            OwnerAddress = String.Empty;
+            OwnerAddress2 = String.Empty;
+            OwnerCity = String.Empty;
+            OwnerState = String.Empty;
+            OwnerZip = String.Empty;
+            OwnerPrimaryPhone = String.Empty;
+            OwnerSecondaryPhone = String.Empty;
+            OwnerEmail = String.Empty;
+            IsInGoodStanding = true;
+            IsSendEmail = false;
+        }
+
         /* --------------------------- INotify Property Change Implementation ----------------------------- */
         /// <summary>
         /// INotifyPropertyChanged Implementation

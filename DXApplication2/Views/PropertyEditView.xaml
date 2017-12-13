@@ -15,9 +15,11 @@
              xmlns:model="clr-namespace:HVCC.Shell.Models"
              xmlns:resources="clr-namespace:HVCC.Shell.Resources"
              xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+             xmlns:validation="clr-namespace:HVCC.Shell.Validation"
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              d:DesignHeight="850" d:DesignWidth="1024"
+             Loaded="PropertyEdit_Loaded"
              Unloaded="PropertyDialog_Unloaded"
              >
 
@@ -130,7 +132,6 @@
                         <dxlc:LayoutItem Label="Status:" 
                                      Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                                      >
-                            <!--Width="300"-->
                             <dxe:TextEdit Text="{Binding SelectedProperty.Status}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
@@ -310,33 +311,66 @@
                               HorizontalAlignment="Left"
                               Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                               IsCollapsible="True" 
-                              IsCollapsed="True" 
+                              IsCollapsed="False" 
                               Orientation="Vertical">
 
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                    <dxlc:LayoutItem Label="Owner Name: " Width="300">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerLName}" Width="Auto" 
-                                      Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                    <dxlc:LayoutItem Label="Owner First Name: " Width="300">
+                        <dxe:TextEdit x:Name="teOwnerFName"
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerFName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerFName"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label=", " Width="Auto">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerFName}" Width="Auto" 
-                                      Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                    <dxlc:LayoutItem Label="Last Name: " Width="Auto">
+                        <dxe:TextEdit  x:Name="teOwnerLName" 
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerLName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerLName"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
 
                 <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
                     <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerAddress}" Width="Auto" 
+                        <dxe:TextEdit x:Name="teOwnerAddress"
+                                      Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerAddress" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerAddress"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem Label=" " Width="Auto">
                         <dxe:TextEdit Text="{Binding SelectedProperty.OwnerAddress2}" Width="Auto" 
@@ -346,28 +380,66 @@
                                      />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
-                
+
+
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                    <dxlc:LayoutItem Label="City/ST/Zip: " Width="400">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerCity}" Width="Auto" 
-                                      Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                    <dxlc:LayoutItem Label="City: " HorizontalAlignment="Left" Width="400">
+                        <dxe:TextEdit x:Name="teOwnerCity"
+                              IsEnabled="True"
+                              Width="Auto" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerCity" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerCity"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label=" " Width="Auto">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerState}" Width="50" 
-                                      Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                    <dxlc:LayoutItem Label="State: " HorizontalAlignment="Left" Width="Auto">
+                        <dxe:TextEdit x:Name="teOwnerState"
+                              IsEnabled="True"
+                              Width="50" 
+                              Style="{Binding TeStyle}"
+                              MaskType="RegEx" Mask="(\p{Lu}|\W)+"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerState" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True" >
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerState"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label=" " Width="Auto">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.OwnerZip}" Width="75" 
-                                      Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                     />
+                    <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
+                        <dxe:TextEdit x:Name="teOwnerZip"
+                              IsEnabled="True"
+                              Width="75" 
+                              Style="{Binding TeStyle}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              ValidateOnEnterKeyPressed="True"
+                              ValidateOnTextInput="False"
+                              >
+                            <dxe:TextEdit.EditValue>
+                                <Binding Path="SelectedProperty.OwnerZip" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                    <Binding.ValidationRules>
+                                        <validation:RequiredValidationRule FieldName="OwnerZip"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </dxe:TextEdit.EditValue>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
 
@@ -397,6 +469,18 @@
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
                                      />
                         </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                        <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
+                            <CheckBox Width="25"
+                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
+                                     IsChecked="{Binding SelectedProperty.IsSendEmail, Mode=TwoWay}"
+                                     IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                     Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                     Margin="0,-5,0,0"
+                                     />
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem Label="(Owner has signed agreement on file agreeing to send HVCC communications via E-mail)" FontStyle="Italic" HorizontalAlignment="Left"/>
                     </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
 

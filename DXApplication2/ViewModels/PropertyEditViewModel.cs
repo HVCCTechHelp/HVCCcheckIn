@@ -22,6 +22,8 @@ namespace HVCC.Shell.ViewModels
     using System.Text;
     using System.IO;
     using DevExpress.Xpf.Grid;
+    using System.Diagnostics;
+    using HVCC.Shell.Validation;
 
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
@@ -35,13 +37,15 @@ namespace HVCC.Shell.ViewModels
             {
                 SelectedProperty = GetProperty(p.PropertyID);
                 Relationships = GetRelationships(p.PropertyID);
-                SelectedRelationship = Relationships[0];
+                if (0 < Relationships.Count())
+                {
+                    SelectedRelationship = Relationships[0];
+                }
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             CanSaveExecute = false;
             this.RegisterCommands();
-
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -58,7 +62,7 @@ namespace HVCC.Shell.ViewModels
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
 
-        public override bool IsValid { get { return true; } }
+        public override bool IsValid { get { return CkIsValid(); } }
 
         public override bool IsDirty
         {
@@ -271,9 +275,12 @@ namespace HVCC.Shell.ViewModels
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            CanSaveExecute = IsDirty;
-            RaisePropertyChanged("DataChanged");
+        {            
+            if (CkIsValid() && IsDirty)
+            {
+                CanSaveExecute = true;
+                RaisePropertyChanged("DataChanged");
+            }
         }
 
         /// <summary>
@@ -460,12 +467,6 @@ namespace HVCC.Shell.ViewModels
                 Property p = (from x in dc.Properties
                               where x.PropertyID == pID
                               select x).FirstOrDefault();
-                //if (null != p)
-                //{
-                //    this.SelectedRelationship = (from r in p.Relationships
-                //                                 where r.RelationToOwner == "Owner"
-                //                                 select r).FirstOrDefault();
-                //}
                 return p;
             }
             catch (Exception ex)
@@ -591,9 +592,9 @@ namespace HVCC.Shell.ViewModels
     }
     /*================================================================================================================================================*/
 
-        /// <summary>
-        /// 
-        /// </summary>
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class PropertyEditViewModel
     {
 
@@ -895,6 +896,193 @@ namespace HVCC.Shell.ViewModels
             Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
             this.Relationships.Remove(r);
         }
+
+        private bool _canViewParcel = true;
+        /// <summary>
+        /// View Parcel Command
+        /// </summary>
+        private ICommand _viewParcelCommand;
+        public ICommand ViewParcelCommand
+        {
+            get
+            {
+                return _viewParcelCommand ?? (_viewParcelCommand = new CommandHandler(() => ViewParcelAction(), _canViewParcel));
+            }
+        }
+
+        public void ViewParcelAction()
+        {
+            try
+            {
+                string absoluteUri = "http://parcels.lewiscountywa.gov/" + SelectedProperty.Parcel;
+                Process.Start(new ProcessStartInfo(absoluteUri));
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show(ex.Message);
+            }
+            finally
+            {
+            }
+        }
+
+        private bool _canViewMap = true;
+        /// <summary>
+        /// View Parcel Command
+        /// </summary>
+        private ICommand _viewMapCommand;
+        public ICommand ViewMapCommand
+        {
+            get
+            {
+                return _viewMapCommand ?? (_viewMapCommand = new CommandHandler(() => ViewMapAction(), _canViewMap));
+            }
+        }
+
+        public void ViewMapAction()
+        {
+            try
+            {
+                StringBuilder absoluteUri = new StringBuilder();
+                absoluteUri.Append("https://www.google.com/maps/place/");
+                absoluteUri.Append(this.SelectedProperty.PhysicalAddress.Replace(" ", "+"));
+                absoluteUri.Append(" Packwood, WA 98361");
+                Process.Start(new ProcessStartInfo(absoluteUri.ToString()));
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show(ex.Message);
+            }
+            finally
+            {
+            }
+        }
+
+
+    }
+
+    /*======================================================= Validation ==============================================================================*/
+    public partial class PropertyEditViewModel : INotifyPropertyChanged, IDataErrorInfo
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool CkIsValid()
+        {
+            StringBuilder message = new StringBuilder();
+
+            if (
+                   !String.IsNullOrEmpty(SelectedProperty.OwnerFName)
+                && !String.IsNullOrEmpty(SelectedProperty.OwnerLName)
+                && !String.IsNullOrEmpty(SelectedProperty.OwnerAddress)
+                && !String.IsNullOrEmpty(SelectedProperty.OwnerCity)
+                && !String.IsNullOrEmpty(SelectedProperty.OwnerState)
+                && !String.IsNullOrEmpty(SelectedProperty.OwnerZip)
+                )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Registers the required Properties to be validated
+        /// </summary>
+        string IDataErrorInfo.Error
+        {
+            get
+            {
+                IDataErrorInfo iDataErrorInfo = (IDataErrorInfo)this;
+                string error = String.Empty;
+
+                //// The following properties must contain data in order to pass basic validation
+                error =
+                      iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerState)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip)];
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    return "Please check input data.";
+                    //return error;
+                }
+                return null;
+
+            }
+        }
+
+        /// <summary>
+        /// Runs the validation rules on the FileInformationView based on the property name
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        string IDataErrorInfo.this[string columnName]
+        {
+            get
+            { // is hit...
+                // If invoked, will throw validation error if property is null/blank
+
+                StringBuilder errorMsg = new StringBuilder();
+
+                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerFName", SelectedProperty.OwnerFName));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerLName", SelectedProperty.OwnerLName));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerAddress", SelectedProperty.OwnerAddress));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerCity", SelectedProperty.OwnerCity));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerState))
+                {
+                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "OwnerState", SelectedProperty.OwnerState));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerZip", SelectedProperty.OwnerZip));
+                    return errorMsg.ToString();
+                }
+                //// No errors found......
+                return null;
+            }
+        }
+        #region IsValid
+        ///// <summary>
+        ///// Runs validation on the view model
+        ///// </summary>
+        ///// <returns></returns>
+        //public string IsValid()
+        //{
+        //    StringBuilder message = new StringBuilder();
+
+        //    message.Append(this.EnableValidationAndGetError());
+
+
+        //    if (!String.IsNullOrEmpty(SelectedProperty.OwnerFName))
+        //    {
+        //        message.Append(RequiredValidationRule.CheckNullInput(SelectedProperty.OwnerFName, SelectedProperty.OwnerFName));
+        //    }
+
+        //    return message.ToString();
+        //}
+        #endregion
+
 
     }
 

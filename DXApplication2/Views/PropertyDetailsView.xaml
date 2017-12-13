@@ -239,11 +239,11 @@
                                             </dxe:TextEditSettings>
                                         </dxg:GridColumn.EditSettings>
                                     </dxg:GridColumn>
-                                    <dxg:GridColumn FieldName="OwnerLName" Header="Last Name " Width="50"  
+                                    <dxg:GridColumn FieldName="OwnerFName" Header="First Name " Width="50"  
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             />
-                                    <dxg:GridColumn FieldName="OwnerFName" Header="First Name " Width="50"  
+                                    <dxg:GridColumn FieldName="OwnerLName" Header="Last Name " Width="50"  
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             />
