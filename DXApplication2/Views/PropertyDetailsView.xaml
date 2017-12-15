@@ -233,7 +233,6 @@
                                             ReadOnly="True"
                                             Visible="True"
                                             >
-                                        <!--ShowInColumnChooser="{Binding ApplPermissions.CanEditPropertyInfo, Mode=TwoWay}"-->
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                             </dxe:TextEditSettings>
@@ -262,7 +261,7 @@
                                             Visible="False" 
                                             AllowEditing="True" 
                                             ReadOnly="True"
-                                            ShowInColumnChooser="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                            ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="Parcel" Header="Parcel" Width="20"
                                             Visible="False" 
@@ -273,21 +272,25 @@
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             />
-                                    <dxg:GridColumn FieldName="OwnerAddress2" Header="Owner Address" Width="20"
+                                    <dxg:GridColumn FieldName="OwnerAddress2" Header="Owner Address2" Width="20"
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             />
                                     <dxg:GridColumn FieldName="OwnerCity" Header="City" Width="20"
                                             Visible="False" 
                                             AllowEditing="False" 
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             ReadOnly="True"
                                             />
                                     <dxg:GridColumn FieldName="OwnerState" Header="State" Width="5" 
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="&gt;LL">
@@ -298,6 +301,7 @@
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="00000">
@@ -308,6 +312,7 @@
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="(999) 000-0000">
@@ -318,11 +323,13 @@
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             />
                                     <dxg:GridColumn FieldName="OwnerEmail" Header="EMail" Width="10"
                                             Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"
                                             />
                                 </dxg:GridControl.Columns>
 

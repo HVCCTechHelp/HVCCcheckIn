@@ -235,7 +235,7 @@ namespace HVCC.Shell.ViewModels
 
                         //// The database stores the raw binary data of the image.  Before it can be
                         //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
-                        if (null == this._selectedRelationship.Photo)
+                        if (null == this._selectedRelationship.Photo && null != ApplDefault)
                         {
                             this._selectedRelationship.Photo = this.ApplDefault.Photo;
                         }
@@ -533,7 +533,6 @@ namespace HVCC.Shell.ViewModels
         }
         #endregion
     }
-
     /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
@@ -566,12 +565,12 @@ namespace HVCC.Shell.ViewModels
         private void SaveExecute()
         {
             this.IsBusy = true;
-            RaisePropertiesChanged("IsBusy");
+            RaisePropertyChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();                     //(DEBUG)
             this.IsBusy = false;
             RaisePropertyChanged("Refresh");
-            RaisePropertiesChanged("IsNotBusy");
+            RaisePropertyChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
         }
 
@@ -590,8 +589,8 @@ namespace HVCC.Shell.ViewModels
         }
         #endregion
     }
-    /*================================================================================================================================================*/
 
+    /*================================================================================================================================================*/
     /// <summary>
     /// 
     /// </summary>

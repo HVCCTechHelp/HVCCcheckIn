@@ -364,7 +364,7 @@
             if (Helper.CheckForOwner(this.dc, this.SelectedProperty) && IsValid)
             {
                 this.IsBusy = true;
-                RaisePropertiesChanged("IsBusy");
+                RaisePropertyChanged("IsBusy");
 
                 OwnershipChange oc = new OwnershipChange();
                 oc.NewOwner = SelectedProperty.BillTo;
@@ -374,7 +374,7 @@
                 ChangeSet cs = dc.GetChangeSet();
                 this.dc.SubmitChanges();                              // (DEBUG)
                 this.IsBusy = false;
-                RaisePropertiesChanged("IsNotBusy");
+                RaisePropertyChanged("IsNotBusy");
                 Host.Execute(HostVerb.Close, this.Caption);
             }
             else

@@ -199,11 +199,11 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
-            RaisePropertiesChanged("IsBusy");
+            RaisePropertyChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
             //this.dc.SubmitChanges();                       (DEBUG)
             this.IsBusy = false;
-            RaisePropertiesChanged("IsNotBusy");
+            RaisePropertyChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
         }
 

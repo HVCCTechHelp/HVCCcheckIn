@@ -185,7 +185,7 @@
         {
             this.IsBusy = true;
             this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
         }
 
@@ -207,10 +207,9 @@
 
     }
 
+    /*================================================================================================================================================*/
     public partial class WaterMeterViewModel : CommonViewModel
     {
-        /* ---------------------------------- Commands & Actions --------------------------------------- */
-        #region Commands
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -321,9 +320,6 @@
             Property p = parameter as Property;
             Host.Execute(HostVerb.Open, "WaterMeterEdit", p);
         }
-
-        #endregion
-
     }
     /*================================================================================================================================================*/
     /// <summary>

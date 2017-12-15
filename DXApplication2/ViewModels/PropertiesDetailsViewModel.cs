@@ -41,9 +41,9 @@
         /* -------------------------------- Interfaces ------------------------------------------------ */
         #region Interfaces
         public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return null; } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
         protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        public virtual IExportService ExportService { get { return null; } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public enum ExportType { PDF, XLSX }
         public enum PrintType { PREVIEW, PRINT }
 
@@ -603,7 +603,7 @@
         {
             this.IsBusy = true;
             this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
         }
 
@@ -631,7 +631,6 @@
     /// </summary>
     public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
     {
-        #region Commands
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -650,6 +649,7 @@
         /// <param name="type"></param>
         public void ExportAction(object parameter) //ExportCommand
         {
+            string fn;
             try
             {
                 Enum.TryParse(parameter.ToString(), out ExportType type);
@@ -659,6 +659,9 @@
                     case ExportType.PDF:
                         SaveFileDialogService.Filter = "PDF files|*.pdf";
                         if (SaveFileDialogService.ShowDialog())
+
+                            fn = SaveFileDialogService.GetFullFileName();
+
                             ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
                         break;
                     case ExportType.XLSX:
@@ -869,9 +872,6 @@
             Reports.BalancesDueReport report = new Reports.BalancesDueReport();
             //PrintHelper.ShowPrintPreview(this, report);
         }
-
-
-        #endregion
     }
 
     /*================================================================================================================================================*/

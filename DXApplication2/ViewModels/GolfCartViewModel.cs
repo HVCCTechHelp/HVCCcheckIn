@@ -369,7 +369,7 @@
         {
             this.IsBusy = true;
             this.dc.SubmitChanges();
-            RaisePropertiesChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
         }
 

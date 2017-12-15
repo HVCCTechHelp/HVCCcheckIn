@@ -76,12 +76,17 @@
         /// <returns></returns>
         public static string CkStateAbbreviation(string fieldName, object fieldValue, object nullValue = null)
         {
-            string state = fieldValue.ToString().ToUpper();
-            string errorMessage = string.Empty;  
-
-            if ( state.Length != 2 && states.IndexOf(state) == 0)
+            string errorMessage = string.Empty;
+            if (null != fieldValue)
             {
-                errorMessage = string.Format("{0} invalid state abbreviation.", state);
+                if (fieldName.Length != 2 && states.IndexOf(fieldValue.ToString()) < 1)
+                {
+                    errorMessage = string.Format("{0} invalid state abbreviation.", fieldName);
+                }
+            }
+            else
+            {
+                return CheckNullInput(fieldName, fieldValue, nullValue);
             }
             return errorMessage;
         }
@@ -117,7 +122,24 @@
         /// <returns></returns>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            string error = CheckNullInput(FieldName, value);
+            //string error = CheckNullInput(FieldName, value);
+            string error = string.Empty;
+
+            switch (FieldName)
+            {
+                case "OwnerFName":
+                case "OwnerLName":
+                case "OwnerAddress":
+                case "OwnerCity":
+                case "OwnerZip":
+                    error = CheckNullInput(FieldName, value);
+                    break;
+                case "OwnerState":
+                    error = CkStateAbbreviation(FieldName, value);
+                    break;
+                default:
+                    break;
+            }
 
             if (!string.IsNullOrEmpty(error))
                 return new ValidationResult(false, error);

@@ -425,7 +425,7 @@
                     <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
                         <dxe:TextEdit x:Name="teOwnerZip"
                               IsEnabled="True"
-                              Width="75" 
+                              Width="125" 
                               Style="{Binding TeStyle}"
                               IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                               Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
