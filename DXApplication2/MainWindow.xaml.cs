@@ -425,6 +425,28 @@
         }
 
         /// <summary>
+        /// Creates or Focuses the Owners DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_OwnerXRelationships(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "OwnerXRelationships");
+        }
+
+        /// <summary>
+        /// Creates or Focuses the Owners DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_Owners(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Owners");
+        }
+
+        /// <summary>
         /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
         /// </summary>
         /// <param name="sender"></param>

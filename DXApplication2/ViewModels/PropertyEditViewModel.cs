@@ -36,7 +36,8 @@ namespace HVCC.Shell.ViewModels
             if (null != p)
             {
                 SelectedProperty = GetProperty(p.PropertyID);
-                Relationships = GetRelationships(p.PropertyID);
+
+                Relationships = GetRelationships();
                 if (0 < Relationships.Count())
                 {
                     SelectedRelationship = Relationships[0];
@@ -170,6 +171,60 @@ namespace HVCC.Shell.ViewModels
         }
 
         #region Properties
+        /// <summary>
+        /// Gets the Owner to Property XRef
+        /// </summary>
+        private OwnerXProperty _oXp = new OwnerXProperty();
+        public OwnerXProperty OxP
+        {
+            get
+            {
+                object _oXp = (from x in dc.OwnerXProperties
+                               where x.PropertyID == SelectedProperty.PropertyID
+                               select x).FirstOrDefault();
+
+                return _oXp as OwnerXProperty;
+            }
+        }
+        /// <summary>
+        /// Gets the Owner to Relationships XRef
+        /// </summary>
+        private OwnerXRelationship _oXr = new OwnerXRelationship();
+        public OwnerXRelationship OxR
+        {
+            get
+            {
+                object _oXr = (from x in dc.OwnerXRelationships
+                               where x.RelationshipID == OxP.OwnerID
+                               select x).FirstOrDefault();
+
+                return _oXr as OwnerXRelationship;
+            }
+        }
+
+        /// <summary>
+        /// The Owner record for the selected property
+        /// </summary>
+        private Owner _owner = new Owner();
+        public Owner Owner
+        {
+            get
+            {
+                _owner = (from o in dc.Owners
+                          where o.OwnerID == OxP.OwnerID
+                          select o).SingleOrDefault();
+
+                return _owner;
+            }
+            set
+            {
+                if (_owner != value)
+                {
+                    _owner = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
@@ -515,15 +570,28 @@ namespace HVCC.Shell.ViewModels
         /// Returns a collection of Relationships for a given Property
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Relationship> GetRelationships (int pID)
+        private ObservableCollection<Relationship> GetRelationships ()
         {
             try
             {
-                var list = (from x in dc.Relationships
-                                        where x.PropertyID == pID
+                ObservableCollection < Relationship > rCollection = new ObservableCollection<Relationship>();
+
+                // Get the list of Relationships for the Property owner using the OxP xref
+                var list = (from x in dc.OwnerXRelationships
+                                        where x.OwnerID == OxP.OwnerID
                                         select x);
 
-                return new ObservableCollection<Relationship>(list);
+                // Itterate over the list of relationships and add them to the Relationship collection.
+                foreach (OwnerXRelationship oxr in list)
+                {
+                    Relationship r = (from x in dc.Relationships
+                                where x.RelationshipID == oxr.RelationshipID
+                                select x).SingleOrDefault();
+
+                    rCollection.Add(r);
+                }
+
+                return rCollection;
             }
             catch (Exception ex)
             {

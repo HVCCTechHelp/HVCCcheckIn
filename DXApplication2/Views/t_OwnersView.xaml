@@ -1,0 +1,191 @@
+﻿<UserControl x:Class="HVCC.Shell.Views.OwnersView"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HVCC.Shell.Views"
+        xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+        xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
+        common:CommandSinkBinding.CommandSink="{Binding}" 
+        mc:Ignorable="d" 
+        d:DesignHeight="768" d:DesignWidth="1024"
+        >
+
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:OpenFileDialogService Title="Open File" />
+        <dxmvvm:SaveFileDialogService Title="Save File" />
+        <common:TableViewExportService />
+        <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
+        <dx:DXMessageBoxService />
+    </dxmvvm:Interaction.Behaviors>
+
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="propertyActions" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Print/Export">
+                            <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding IsEnabledExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}" />
+                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}" />
+                            </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Print"  
+                                                    IsEnabled="{Binding IsEnabledPrint, Mode=TwoWay}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
+                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
+                            </dxb:BarSubItem>
+                        </dxr:RibbonPageGroup>
+                        <dxr:RibbonPageGroup Caption="Owner Action">
+
+                            <!--<dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
+                                               Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
+                                               IsEnabled="{Binding IsEnabledChangeOwner}"
+                                               Glyph="/Images/Icons/Ownership_16x16.png" 
+                                               LargeGlyph="/Images/Icons/Ownership_32x32.png" />-->
+                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
+                                               Command="{Binding ImportCommand}"
+                                               IsEnabled="{Binding ApplPermissions.CanImport}"
+                                               Glyph="/Images/Icons/Financal-16x16.png" 
+                                               LargeGlyph="/Images/Icons/Financal-32x32.png"
+                                               ToolTip="Bulk update dues balance information" />
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+            <dxlc:LayoutControl Orientation="Vertical">
+
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Owner List">
+                    <dxlc:LayoutItem>
+                        <dxg:GridControl AutoPopulateColumns="False" x:Name="duplicateGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding DuplicatesList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="Auto"
+                                 Height="200"
+                                 HorizontalAlignment="Left"
+                                 >
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="tableViewDuplicates" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                       AllowColumnFiltering="True" 
+                                       AllowGrouping="False"
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       SearchPanelNullText="Search"
+                                       ShowSearchPanelMode="Always"
+                                       ShowSearchPanelFindButton="True"
+                                       SearchPanelClearOnClose="False"
+				                       ShowFixedTotalSummary="True" 
+                                       ShowTotalSummary="True"
+                                       >
+
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <!-- columns of the detail grid -->
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="OwnerFName" Header="FName" Width="100" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="OwnerLName" Header="LName" Width="100" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="BillTo" Header="BillTo" Width="Auto" />
+                            </dxg:GridControl.Columns>
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                            </dxg:GridControl.TotalSummary>
+
+                        </dxg:GridControl>
+                    </dxlc:LayoutItem>
+
+                </dxlc:LayoutGroup>
+
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Owner List">
+                    <dxlc:LayoutItem>
+                        <dxg:GridControl AutoPopulateColumns="False" x:Name="ownerGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding OwnersList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 SelectedItem="{Binding SelectedOwner, Mode=TwoWay}"
+                                 Width="Auto"
+                                 Height="500"
+                                 HorizontalAlignment="Left"
+                                 >
+                            <dxg:GridControl.View>
+                                <dxg:TableView x:Name="tableViewOwners" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                       AllowColumnFiltering="True" 
+                                       AllowGrouping="False"
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       SearchPanelNullText="Search"
+                                       ShowSearchPanelMode="Always"
+                                       ShowSearchPanelFindButton="True"
+                                       SearchPanelClearOnClose="False"
+				                       ShowFixedTotalSummary="True" 
+                                       ShowTotalSummary="True"
+                                       >
+
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <!-- columns of the detail grid -->
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="City" Header="City" Width="50" />
+                                <dxg:GridColumn FieldName="State" Header="State" Width="25"/>
+                                <dxg:GridColumn FieldName="Zip" Header="Zip" Width="30" />
+                                <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" />
+                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" />
+                                <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" />
+                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" />
+                            </dxg:GridControl.Columns>
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                            </dxg:GridControl.TotalSummary>
+
+                        </dxg:GridControl>
+                    </dxlc:LayoutItem>
+
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+</UserControl>

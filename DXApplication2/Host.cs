@@ -85,6 +85,22 @@
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewOwnersView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new OwnersViewModel(dc) { Caption = "Owners" };
+            IView v = new HVCC.Shell.Views.OwnersView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewOwnerXRelationshipsView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new OwnerXRelationshipsViewModel(dc) { Caption = "OwnerXRelationships" };
+            IView v = new HVCC.Shell.Views.OwnerXRelationshipsView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         public static IMvvmBinder GetNewChangeOwnerView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -151,9 +167,19 @@
                     var binder = GetNewPropertyDetailView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
-                if (param.ToString() == "PropertyEdit")
+                else if (param.ToString() == "PropertyEdit")
                 {
                     var binder = GetNewPropertyEditView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "Owners")
+                {
+                    var binder = GetNewOwnersView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "OwnerXRelationships")
+                {
+                    var binder = GetNewOwnerXRelationshipsView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "ChangeOwner")

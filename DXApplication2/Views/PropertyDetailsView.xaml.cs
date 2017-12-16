@@ -2,12 +2,8 @@
 {
     using System.Windows;
     using System.Windows.Controls;
-    using HVCC.Shell.Helpers;
     using HVCC.Shell.Models;
-    using HVCC.Shell.ViewModels;
-    using DevExpress.Mvvm;
     using DevExpress.Xpf.Grid;
-    using DevExpress.Xpf.Docking;
     using HVCC.Shell.Common.Interfaces;
     using System.Collections.Generic;
     using System;
