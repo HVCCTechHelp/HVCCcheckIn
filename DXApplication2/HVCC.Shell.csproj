@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
     <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
+    <Compile Include="ViewModels\t_GolfCartXOwnerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\t_OwnersViewModel.cs" />
@@ -246,6 +247,9 @@
     </Compile>
     <Compile Include="Views\ChangeOwnerView.xaml.cs">
       <DependentUpon>ChangeOwnerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\t_GolfCartXOwnerView.xaml.cs">
+      <DependentUpon>t_GolfCartXOwnerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\t_OwnersView.xaml.cs">
       <DependentUpon>t_OwnersView.xaml</DependentUpon>
@@ -297,6 +301,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChangeOwnerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\t_GolfCartXOwnerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

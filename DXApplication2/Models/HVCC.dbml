@@ -50,46 +50,6 @@
       <Column Name="Photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
     </Type>
   </Table>
-  <Table Name="dbo.GolfCarts" Member="GolfCarts">
-    <Type Name="GolfCart">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Year" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Quanity" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
-      <Association Name="Property_GolfCart" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId6">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="fName" Member="FName" />
-      <Argument Parameter="lName" Member="LName" />
-      <Argument Parameter="year" Member="Year" />
-      <Argument Parameter="quanity" Member="Quanity" />
-      <Argument Parameter="isPaid" Member="IsPaid" />
-      <Argument Parameter="paymentDate" Member="PaymentDate" />
-      <Argument Parameter="rowID" Member="RowID" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId7">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="fName" Member="FName" />
-      <Argument Parameter="lName" Member="LName" />
-      <Argument Parameter="year" Member="Year" />
-      <Argument Parameter="quanity" Member="Quanity" />
-      <Argument Parameter="isPaid" Member="IsPaid" />
-      <Argument Parameter="paymentDate" Member="PaymentDate" />
-    </UpdateFunction>
-    <DeleteFunction FunctionId="FunctionId8">
-      <Argument Parameter="rowId" Member="RowID" />
-    </DeleteFunction>
-  </Table>
   <Table Name="dbo.ApplicationPermissions" Member="ApplicationPermissions">
     <Type Name="ApplicationPermission">
       <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
@@ -115,31 +75,6 @@
       <Column Name="CanPrint" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CanViewAdministration" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
-  </Table>
-  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
-    <Type Name="FacilityUsage">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Relationship_FacilityUsage" Member="Relationship" ThisKey="RelationshipId" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
-      <Association Name="Property_FacilityUsage" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId9">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="relationshipId" Member="RelationshipId" />
-      <Argument Parameter="golfRoundsMember" Member="GolfRoundsMember" />
-      <Argument Parameter="golfRoundsGuest" Member="GolfRoundsGuest" />
-      <Argument Parameter="poolMember" Member="PoolMember" />
-      <Argument Parameter="poolGuest" Member="PoolGuest" />
-      <Argument Parameter="rowID" Member="RowID" />
-    </InsertFunction>
   </Table>
   <Table Name="dbo.WellXProperty" Member="WellXProperties">
     <Type Name="WellXProperty">
@@ -172,7 +107,7 @@
       <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="WaterWell_WellMeterReading" Member="WaterWell" ThisKey="WellNumber" OtherKey="WellNumber" Type="WaterWell" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId10">
+    <InsertFunction FunctionId="FunctionId6">
       <Argument Parameter="wellNumber" Member="WellNumber" />
       <Argument Parameter="meterReadingDate" Member="MeterReadingDate" />
       <Argument Parameter="meterReading" Member="MeterReading" />
@@ -180,40 +115,6 @@
       <Argument Parameter="throughputInGallons" Member="ThroughputInGallons" />
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
-  </Table>
-  <Table Name="dbo.Relationships" Member="Relationships">
-    <Type Name="Relationship">
-      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="RelationToOwner" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Relationship_FacilityUsage" Member="FacilityUsages" ThisKey="RelationshipID" OtherKey="RelationshipId" Type="FacilityUsage" />
-      <Association Name="Relationship_OwnerXRelationship" Member="OwnerXRelationships" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="OwnerXRelationship" />
-      <Association Name="Property_Relationship" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId11">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="fName" Member="FName" />
-      <Argument Parameter="lName" Member="LName" />
-      <Argument Parameter="relationToOwner" Member="RelationToOwner" />
-      <Argument Parameter="photo" Member="Photo" />
-      <Argument Parameter="relationshipId" Member="RelationshipID" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId12">
-      <Argument Parameter="relationshipId" Member="RelationshipID" />
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="fName" Member="FName" />
-      <Argument Parameter="lName" Member="LName" />
-      <Argument Parameter="relationToOwner" Member="RelationToOwner" />
-      <Argument Parameter="photo" Member="Photo" />
-    </UpdateFunction>
-    <DeleteFunction FunctionId="FunctionId13">
-      <Argument Parameter="relationshipId" Member="RelationshipID" />
-    </DeleteFunction>
   </Table>
   <Table Name="dbo.OwnershipChanges" Member="OwnershipChanges">
     <Type Name="OwnershipChange">
@@ -225,7 +126,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Property_OwnershipChange" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId14">
+    <InsertFunction FunctionId="FunctionId7">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="previousOwner" Member="PreviousOwner" />
       <Argument Parameter="newOwner" Member="NewOwner" />
@@ -240,99 +141,6 @@
       <Column Name="AnnualDues" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="CartFee" Type="System.Decimal" DbType="Money" CanBeNull="true" />
     </Type>
-  </Table>
-  <Table Name="dbo.Properties" Member="Properties">
-    <Type Name="Property">
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Section" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Block" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Lot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="SubLot" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
-      <Column Name="BillTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Balance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="IsInGoodStanding" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Parcel" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="PhysicalAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="Status" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Column Name="CommonNotes" Type="System.String" DbType="VarChar(400)" CanBeNull="true" />
-      <Column Name="OwnerLName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="OwnerFName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="OwnerAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="OwnerAddress2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="OwnerCity" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="OwnerState" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
-      <Column Name="OwnerZip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="OwnerPrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="OwnerSecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="OwnerEmail" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="IsSendEmail" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="MeterNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="WaterSystemNotes" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Property_WaterMeterReading" Member="WaterMeterReadings" ThisKey="PropertyID" OtherKey="PropertyID" Type="WaterMeterReading" />
-      <Association Name="Property_Note" Member="Notes" ThisKey="PropertyID" OtherKey="PropertyID" Type="Note" />
-      <Association Name="Property_GolfCart" Member="GolfCarts" ThisKey="PropertyID" OtherKey="PropertyID" Type="GolfCart" />
-      <Association Name="Property_FacilityUsage" Member="FacilityUsages" ThisKey="PropertyID" OtherKey="PropertyID" Type="FacilityUsage" />
-      <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
-      <Association Name="Property_Relationship" Member="Relationships" ThisKey="PropertyID" OtherKey="PropertyID" Type="Relationship" />
-      <Association Name="Property_OwnershipChange" Member="OwnershipChanges" ThisKey="PropertyID" OtherKey="PropertyID" Type="OwnershipChange" />
-      <Association Name="Property_OwnerXProperty" Member="OwnerXProperties" ThisKey="PropertyID" OtherKey="PropertyID" Type="OwnerXProperty" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId15">
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="section" Member="Section" />
-      <Argument Parameter="block" Member="Block" />
-      <Argument Parameter="lot" Member="Lot" />
-      <Argument Parameter="subLot" Member="SubLot" />
-      <Argument Parameter="billTo" Member="BillTo" />
-      <Argument Parameter="balance" Member="Balance" />
-      <Argument Parameter="isInGoodStanding" Member="IsInGoodStanding" />
-      <Argument Parameter="parcel" Member="Parcel" />
-      <Argument Parameter="physicalAddress" Member="PhysicalAddress" />
-      <Argument Parameter="status" Member="Status" />
-      <Argument Parameter="ownerLName" Member="OwnerLName" />
-      <Argument Parameter="ownerFName" Member="OwnerFName" />
-      <Argument Parameter="ownerAddress" Member="OwnerAddress" />
-      <Argument Parameter="ownerAddress2" Member="OwnerAddress2" />
-      <Argument Parameter="ownerCity" Member="OwnerCity" />
-      <Argument Parameter="ownerState" Member="OwnerState" />
-      <Argument Parameter="ownerZip" Member="OwnerZip" />
-      <Argument Parameter="ownerPrimaryPhone" Member="OwnerPrimaryPhone" />
-      <Argument Parameter="ownerSecondaryPhone" Member="OwnerSecondaryPhone" />
-      <Argument Parameter="ownerEmail" Member="OwnerEmail" />
-      <Argument Parameter="meterNumber" Member="MeterNumber" />
-      <Argument Parameter="waterSystemNotes" Member="WaterSystemNotes" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId16">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="section" Member="Section" />
-      <Argument Parameter="block" Member="Block" />
-      <Argument Parameter="lot" Member="Lot" />
-      <Argument Parameter="subLot" Member="SubLot" />
-      <Argument Parameter="billTo" Member="BillTo" />
-      <Argument Parameter="balance" Member="Balance" />
-      <Argument Parameter="isInGoodStanding" Member="IsInGoodStanding" />
-      <Argument Parameter="parcel" Member="Parcel" />
-      <Argument Parameter="physicalAddress" Member="PhysicalAddress" />
-      <Argument Parameter="status" Member="Status" />
-      <Argument Parameter="commonNotes" Member="CommonNotes" />
-      <Argument Parameter="ownerLName" Member="OwnerLName" />
-      <Argument Parameter="ownerFName" Member="OwnerFName" />
-      <Argument Parameter="ownerAddress" Member="OwnerAddress" />
-      <Argument Parameter="ownerAddress2" Member="OwnerAddress2" />
-      <Argument Parameter="ownerCity" Member="OwnerCity" />
-      <Argument Parameter="ownerState" Member="OwnerState" />
-      <Argument Parameter="ownerZip" Member="OwnerZip" />
-      <Argument Parameter="ownerPrimaryPhone" Member="OwnerPrimaryPhone" />
-      <Argument Parameter="ownerSecondaryPhone" Member="OwnerSecondaryPhone" />
-      <Argument Parameter="ownerEmail" Member="OwnerEmail" />
-      <Argument Parameter="isSendEmail" Member="IsSendEmail" />
-      <Argument Parameter="meterNumber" Member="MeterNumber" />
-      <Argument Parameter="waterSystemNotes" Member="WaterSystemNotes" />
-    </UpdateFunction>
   </Table>
   <Table Name="dbo.Owners" Member="Owners">
     <Type Name="Owner">
@@ -350,10 +158,11 @@
       <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Owner_OwnerXProperty" Member="OwnerXProperties" ThisKey="OwnerID" OtherKey="OwnerID" Type="OwnerXProperty" />
-      <Association Name="Owner_OwnerXRelationship" Member="OwnerXRelationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="OwnerXRelationship" />
+      <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
+      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
+      <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
     </Type>
-    <InsertFunction FunctionId="FunctionId17">
+    <InsertFunction FunctionId="FunctionId8">
       <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="mailTo" Member="MailTo" />
       <Argument Parameter="address" Member="Address" />
@@ -368,22 +177,93 @@
       <Argument Parameter="ownerID" Member="OwnerID" />
     </InsertFunction>
   </Table>
-  <Table Name="dbo.OwnerXProperty" Member="OwnerXProperties">
-    <Type Name="OwnerXProperty">
+  <Table Name="dbo.Properties" Member="Properties">
+    <Type Name="Property">
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Section" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Block" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Lot" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubLot" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="BillTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Balance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="IsInGoodStanding" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Parcel" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PhysicalAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Column Name="CommonNotes" Type="System.String" DbType="VarChar(400)" CanBeNull="true" />
+      <Column Name="MeterNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="WaterSystemNotes" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Property_WaterMeterReading" Member="WaterMeterReadings" ThisKey="PropertyID" OtherKey="PropertyID" Type="WaterMeterReading" />
+      <Association Name="Property_Note" Member="Notes" ThisKey="PropertyID" OtherKey="PropertyID" Type="Note" />
+      <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
+      <Association Name="Property_OwnershipChange" Member="OwnershipChanges" ThisKey="PropertyID" OtherKey="PropertyID" Type="OwnershipChange" />
+      <Association Name="Owner_Property" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <UpdateFunction FunctionId="FunctionId9">
+      <Argument Parameter="propertyId" Member="PropertyID" />
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="section" Member="Section" />
+      <Argument Parameter="block" Member="Block" />
+      <Argument Parameter="lot" Member="Lot" />
+      <Argument Parameter="subLot" Member="SubLot" />
+      <Argument Parameter="billTo" Member="BillTo" />
+      <Argument Parameter="balance" Member="Balance" />
+      <Argument Parameter="isInGoodStanding" Member="IsInGoodStanding" />
+      <Argument Parameter="parcel" Member="Parcel" />
+      <Argument Parameter="physicalAddress" Member="PhysicalAddress" />
+      <Argument Parameter="status" Member="Status" />
+      <Argument Parameter="commonNotes" Member="CommonNotes" />
+      <Argument Parameter="meterNumber" Member="MeterNumber" />
+      <Argument Parameter="waterSystemNotes" Member="WaterSystemNotes" />
+    </UpdateFunction>
+  </Table>
+  <Table Name="dbo.GolfCarts" Member="GolfCarts">
+    <Type Name="GolfCart">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Owner_OwnerXProperty" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-      <Association Name="Property_OwnerXProperty" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Quanity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
+      <Association Name="Owner_GolfCart" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.OwnerXRelationship" Member="OwnerXRelationships">
-    <Type Name="OwnerXRelationship">
+  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
+    <Type Name="FacilityUsage">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Relationships" Member="Relationships">
+    <Type Name="Relationship">
+      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Owner_OwnerXRelationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-      <Association Name="Relationship_OwnerXRelationship" Member="Relationship" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
+      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="RelationToOwner" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
@@ -461,34 +341,11 @@
     <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="VarChar(MAX)" />
     <Return Type="System.Boolean" />
   </Function>
-  <Function Id="FunctionId8" Name="dbo.usp_DeleteGolfCart" Method="usp_DeleteGolfCart">
+  <Function Name="dbo.usp_DeleteGolfCart" Method="usp_DeleteGolfCart">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId6" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
-    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId7" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
-    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
+  <Function Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
     <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
@@ -517,7 +374,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Id="FunctionId10" Name="dbo.usp_InsertWellMeterReading" Method="usp_InsertWellMeterReading">
+  <Function Id="FunctionId6" Name="dbo.usp_InsertWellMeterReading" Method="usp_InsertWellMeterReading">
     <Parameter Name="WellNumber" Parameter="wellNumber" Type="System.Int32" DbType="Int" />
     <Parameter Name="MeterReadingDate" Parameter="meterReadingDate" Type="System.DateTime" DbType="DateTime" />
     <Parameter Name="MeterReading" Parameter="meterReading" Type="System.Int64" DbType="BigInt" />
@@ -526,91 +383,18 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId12" Name="dbo.usp_UdateRelationship" Method="usp_UdateRelationship">
-    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="RelationToOwner" Parameter="relationToOwner" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId11" Name="dbo.usp_InsertRelationship" Method="usp_InsertRelationship">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="RelationToOwner" Parameter="relationToOwner" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
-    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId13" Name="dbo.usp_DeleteRelationship" Method="usp_DeleteRelationship">
+  <Function Name="dbo.usp_DeleteRelationship" Method="usp_DeleteRelationship">
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId14" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
+  <Function Id="FunctionId7" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="PreviousOwner" Parameter="previousOwner" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="NewOwner" Parameter="newOwner" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId16" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
-    <Parameter Name="SubLot" Parameter="subLot" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="BillTo" Parameter="billTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Decimal(19,4)" />
-    <Parameter Name="IsInGoodStanding" Parameter="isInGoodStanding" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="Parcel" Parameter="parcel" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="PhysicalAddress" Parameter="physicalAddress" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Status" Parameter="status" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="CommonNotes" Parameter="commonNotes" Type="System.String" DbType="VarChar(400)" />
-    <Parameter Name="OwnerLName" Parameter="ownerLName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerFName" Parameter="ownerFName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerAddress" Parameter="ownerAddress" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerAddress2" Parameter="ownerAddress2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerCity" Parameter="ownerCity" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerState" Parameter="ownerState" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="OwnerZip" Parameter="ownerZip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerPrimaryPhone" Parameter="ownerPrimaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerSecondaryPhone" Parameter="ownerSecondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerEmail" Parameter="ownerEmail" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="IsSendEmail" Parameter="isSendEmail" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
-    <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId15" Name="dbo.usp_InsertProperty" Method="usp_InsertProperty">
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
-    <Parameter Name="SubLot" Parameter="subLot" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="BillTo" Parameter="billTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Decimal(19,4)" />
-    <Parameter Name="IsInGoodStanding" Parameter="isInGoodStanding" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="Parcel" Parameter="parcel" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="PhysicalAddress" Parameter="physicalAddress" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Status" Parameter="status" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="OwnerLName" Parameter="ownerLName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerFName" Parameter="ownerFName" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerAddress" Parameter="ownerAddress" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerAddress2" Parameter="ownerAddress2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerCity" Parameter="ownerCity" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="OwnerState" Parameter="ownerState" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="OwnerZip" Parameter="ownerZip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerPrimaryPhone" Parameter="ownerPrimaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerSecondaryPhone" Parameter="ownerSecondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="OwnerEmail" Parameter="ownerEmail" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
-    <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId17" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
+  <Function Id="FunctionId8" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
@@ -625,22 +409,85 @@
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_InsertOwnerXProperty" Method="usp_InsertOwnerXProperty">
+  <Function Name="dbo.usp_DeleteGolfCartXOwner" Method="usp_DeleteGolfCartXOwner">
+    <Parameter Name="CartID" Parameter="cartID" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_InsertProperty" Method="usp_InsertProperty">
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
+    <Parameter Name="SubLot" Parameter="subLot" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="BillTo" Parameter="billTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Decimal(19,4)" />
+    <Parameter Name="IsInGoodStanding" Parameter="isInGoodStanding" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="Parcel" Parameter="parcel" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="PhysicalAddress" Parameter="physicalAddress" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Status" Parameter="status" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
+    <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
+    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="CartID" Parameter="cartID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_DeleteRelationshipXOwner" Method="usp_DeleteRelationshipXOwner">
+    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId9" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
+    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
+    <Parameter Name="SubLot" Parameter="subLot" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="BillTo" Parameter="billTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Decimal(19,4)" />
+    <Parameter Name="IsInGoodStanding" Parameter="isInGoodStanding" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="Parcel" Parameter="parcel" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="PhysicalAddress" Parameter="physicalAddress" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Status" Parameter="status" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="CommonNotes" Parameter="commonNotes" Type="System.String" DbType="VarChar(400)" />
+    <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
+    <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_InsertOwnerXRelationship" Method="usp_InsertOwnerXRelationship">
+  <Function Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
+    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="RelationshipID" Parameter="relationshipID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_DeleteOwnerXProperty" Method="usp_DeleteOwnerXProperty">
-    <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
+  <Function Name="dbo.usp_InsertRelationship" Method="usp_InsertRelationship">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="RelationToOwner" Parameter="relationToOwner" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
+    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_DeleteOwnerXRelationship" Method="usp_DeleteOwnerXRelationship">
-    <Parameter Name="RelationshipID" Parameter="relationshipID" Type="System.Int32" DbType="Int" />
+  <Function Name="dbo.usp_UdateRelationship" Method="usp_UdateRelationship">
+    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FName" Parameter="fName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="LName" Parameter="lName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="RelationToOwner" Parameter="relationToOwner" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

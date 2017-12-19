@@ -32,10 +32,8 @@
                 SelectedProperty = GetProperty(p.PropertyID);
                 OriginalProperty = SelectedProperty.Clone() as Property;
 
-                SelectedProperty.InitializeProperty();
-
                 // Get the relationship records related to this property.
-                Relationships = GetRelationships(p.PropertyID);
+                Relationships = GetRelationships(p.OwnerID);
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -100,6 +98,20 @@
         }
 
         #region Properties
+
+        public Owner Owner
+        {
+            get
+            {
+                Owner o = (from x in dc.Owners
+                           where x.OwnerID == SelectedProperty.OwnerID
+                           select x).FirstOrDefault();
+
+                return o as Owner;
+            }
+        }
+
+
         /// <summary>
         /// Original Property record reference passed in (selected property) from a property grid view
         /// </summary>
@@ -141,6 +153,18 @@
                     }
 
                     this._selectedProperty = value;
+
+                    _selectedProperty.Owner.MailTo = string.Empty;
+                    _selectedProperty.Owner.Address = string.Empty;
+                    _selectedProperty.Owner.Address2 = string.Empty;
+                    _selectedProperty.Owner.City = string.Empty;
+                    _selectedProperty.Owner.State = string.Empty;
+                    _selectedProperty.Owner.Zip = string.Empty;
+                    _selectedProperty.Owner.PrimaryPhone = string.Empty;
+                    _selectedProperty.Owner.SecondaryPhone = string.Empty;
+                    _selectedProperty.Owner.EmailAddress = string.Empty;
+                    _selectedProperty.Owner.IsSendByEmail = false;
+
                     // Once the new value is assigned, we register a new PropertyChanged event listner.
                     this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
                 }
@@ -214,18 +238,18 @@
 
                 // When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
                 // When new names are added to the Relationships collection, they too result in an "Add" action.
-                // Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
+                // Therefore, the logic needs to determine which actual action (Add or Remove) needs to happen.
                 case "Add":
                     var newItems = e.NewItems;
                     foreach (Relationship r in newItems)
                     {
                         if (0 != r.RelationshipID)
                         {
-                            bool result = Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+                            bool result = Helper.RemoveRelationship(this.dc, r, "ChangeOwner");
                         }
                         else
                         {
-                            bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                            bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
                         }
                     }
                     break;
@@ -233,7 +257,7 @@
                     var oldItems = e.OldItems;
                     foreach (Relationship r in oldItems)
                     {
-                        bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                        bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
                     }
                     break;
             }
@@ -294,6 +318,7 @@
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
         #region Methods
+
         private Property GetProperty(int pID)
         {
             Property p = (from x in dc.Properties
@@ -307,15 +332,16 @@
         /// Returns a collection of Relationships for a given Property
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Relationship> GetRelationships(int pID)
+        private ObservableCollection<Relationship> GetRelationships(int oID)
         {
             try
             {
-                var list = (from x in dc.Relationships
-                            where x.PropertyID == pID
-                            select x);
+                var rList = (from x in dc.Relationships
+                             where x.OwnerID == SelectedProperty.OwnerID
+                             && x.Active == true
+                             select x);
 
-                return new ObservableCollection<Relationship>(list);
+                return new ObservableCollection<Relationship>(rList);
             }
             catch (Exception ex)
             {
@@ -372,7 +398,7 @@
                 dc.OwnershipChanges.InsertOnSubmit(oc);
 
                 ChangeSet cs = dc.GetChangeSet();
-                this.dc.SubmitChanges();                              // (DEBUG)
+                this.dc.SubmitChanges();    
                 this.IsBusy = false;
                 RaisePropertyChanged("IsNotBusy");
                 Host.Execute(HostVerb.Close, this.Caption);
@@ -530,12 +556,11 @@
             StringBuilder message = new StringBuilder();
 
             if (
-                   !String.IsNullOrEmpty(SelectedProperty.OwnerFName)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerLName)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerAddress)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerCity)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerState)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerZip)
+                   !String.IsNullOrEmpty(SelectedProperty.Owner.MailTo)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.Address)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.City)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.State)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.Zip)
                 )
             {
                 return true;
@@ -557,12 +582,11 @@
 
                 //// The following properties must contain data in order to pass basic validation
                 error =
-                    iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerState)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip)];
+                    iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.City)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.State)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip)];
 
                 if (!string.IsNullOrEmpty(error))
                 {
@@ -586,34 +610,29 @@
 
                 StringBuilder errorMsg = new StringBuilder();
 
-                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName))
+                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerFName", SelectedProperty.OwnerFName));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "MailTo", SelectedProperty.Owner.MailTo));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerLName", SelectedProperty.OwnerLName));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Address", SelectedProperty.Owner.Address));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.City))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerAddress", SelectedProperty.OwnerAddress));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "City", SelectedProperty.Owner.City));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.State))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerCity", SelectedProperty.OwnerCity));
+                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "State", SelectedProperty.Owner.State));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerState))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip))
                 {
-                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "OwnerState", SelectedProperty.OwnerState));
-                    return errorMsg.ToString();
-                }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip))
-                {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerZip", SelectedProperty.OwnerZip));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Zip", SelectedProperty.Owner.Zip));
                     return errorMsg.ToString();
                 }
                 //// No errors found......

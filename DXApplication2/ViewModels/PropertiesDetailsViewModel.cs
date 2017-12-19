@@ -134,13 +134,7 @@
         {
             get
             {
-                if (null == _propertiesList)
-                {
-                    var list = (from a in this.dc.Properties
-                                select a);
-                    return new ObservableCollection<Property>(list);
-                }
-                return this._propertiesList;
+                return FetchProperties();
             }
             set
             {
@@ -268,64 +262,13 @@
             }
         }
 
-        /// <summary>
-        /// An integer representing the count of notes associated to the selected property
-        /// </summary>
-        private int _noteCount = 0;
-        public int NoteCount
-        {
-            get
-            {
-                return this._noteCount;
-            }
-            set
-            {
-                if (this._noteCount != value)
-                {
-                    this._noteCount = value;
-                }
-            }
-        }
+        public int NoteCount { get; set; }
         #endregion
 
         #endregion
 
         /* ----------------------------------- Boolean Properties ----------------------------------------- */
         #region Boolean Properties
-
-        /// <summary>
-        /// Controls the enable/disable state of the Save ribbon action button
-        /// </summary>
-        private bool _isEnabledSave = false;  // Default: false
-        public bool IsEnabledSave
-        {
-            get { return _isEnabledSave; }
-            set
-            {
-                if (value != _isEnabledSave)
-                {
-                    _isEnabledSave = value;
-                    RaisePropertyChanged("IsEnabledSave");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Controls the enable/disable state of the Import ribbon action button
-        /// </summary>
-        private bool _isEnabledImport = false;  // Default: false
-        public bool IsEnabledImport
-        {
-            get { return _isEnabledImport; }
-            set
-            {
-                if (value != _isEnabledImport)
-                {
-                    _isEnabledImport = value;
-                    RaisePropertyChanged("IsEnabledImport");
-                }
-            }
-        }
 
         /// <summary>
         /// Controls enable/disbale state of the Add Relationship ribbion action button
@@ -360,41 +303,6 @@
                 }
             }
         }
-
-        /// <summary>
-        /// Controls enable/disbale state of the Add Relationship ribbion action button
-        /// </summary>
-        private bool _isEnabledExport = true; // Default: true
-        public bool IsEnabledExport
-        {
-            get { return _isEnabledExport; }
-            set
-            {
-                if (value != _isEnabledExport)
-                {
-                    _isEnabledExport = value;
-                    //RaisePropertyChanged("IsEnabledExport");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Controls enable/disbale state of the Add Relationship ribbion action button
-        /// </summary>
-        private bool _isEnabledPrint = true; // Default: true
-        public bool IsEnabledPrint
-        {
-            get { return _isEnabledPrint; }
-            set
-            {
-                if (value != _isEnabledPrint)
-                {
-                    _isEnabledPrint = value;
-                    //RaisePropertyChanged("IsEnabledPrint");
-                }
-            }
-        }
-
         #endregion
 
         /* ----------------------------------- Style Properteis ------------------------------------------- */
@@ -467,27 +375,6 @@
         /// Queries the database to get the current list of property records
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<FacilityUsage> GetFacilitiyUsages()
-        {
-            try
-            {
-                //// Get the list of "Properties" from the database
-                var list = (from a in this.dc.FacilityUsages
-                            select a);
-
-                return new ObservableCollection<FacilityUsage>(list);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving Facilitity Usage data : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Queries the database to get the current list of property records
-        /// </summary>
-        /// <returns></returns>
         private ObservableCollection<Property> FetchProperties()
         {
             try
@@ -519,7 +406,7 @@
                              orderby n.Entered descending
                              select n);
 
-                this._noteCount = notes.Count();
+                NoteCount = notes.Count();
 
                 // Iterate through the notes collection and build a string of the notes in 
                 // decending order.  This string will be reflected in the UI as a read-only

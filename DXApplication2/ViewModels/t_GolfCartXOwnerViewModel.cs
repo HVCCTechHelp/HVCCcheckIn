@@ -16,9 +16,9 @@
     using HVCC.Shell.Common.Interfaces;
     using System.Windows;
 
-    public partial class OwnerXRelationshipsViewModel : CommonViewModel, ICommandSink
+    public partial class GolfCartXOwnerViewModel : CommonViewModel, ICommandSink
     {
-        public OwnerXRelationshipsViewModel(IDataContext dc)
+        public GolfCartXOwnerViewModel(IDataContext dc)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
@@ -28,8 +28,6 @@
 
             //Host.PropertyChanged +=
             //    new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
-
-            var junk = this.OwnerList;
         }
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
@@ -71,7 +69,20 @@
             }
         }
 
-        public ObservableCollection<Owner> OwnerList
+        public ObservableCollection<GolfCart> CartList
+        {
+            get
+            {
+
+                var list = (from r in dc.GolfCarts
+                                select r);
+
+
+                return new ObservableCollection<GolfCart>(list);
+            }
+        }
+
+        public ObservableCollection<Owner> Owners
         {
             get
             {
@@ -79,37 +90,6 @@
                             select o);
 
                 return new ObservableCollection<Owner>(list);
-            }
-        }
-
-        private ObservableCollection<Relationship> _relationshipList = null;
-        public ObservableCollection<Relationship> RelationshipList
-        {
-            get
-            {
-                return _relationshipList;
-            }
-            set
-            {
-                if (this._relationshipList != value)
-                {
-                    this._relationshipList = value;
-                    RaisePropertyChanged("RelationshipList");
-                }
-            }
-        }
-
-        private Owner _selectedOwner = null;
-        public Owner SelectedOwner
-        {
-            get { return _selectedOwner; }
-            set
-            {
-                if (_selectedOwner != value)
-                {
-                    _selectedOwner = value;
-                    RaisePropertyChanged("SeletedOwner");
-                }
             }
         }
 
@@ -138,14 +118,36 @@
 
         /* ------------------------------------ PRivate Methods -------------------------------------------- */
         #region Private Methods
+
+        /// <summary>
+        /// Queries the database to get the current list of property records
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<Owner> FetchOwners()
+        {
+            try
+            {
+                //// Force a refresh of the datacontext, then get the list of "Properties" from the database
+                this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
+                var list = (from a in this.dc.Owners
+                            select a);
+                return new ObservableCollection<Owner>(list);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving Property data : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
         #endregion
     }
+
 
     /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
-    public partial class OwnerXRelationshipsViewModel : CommonViewModel, ICommandSink
+    public partial class GolfCartXOwnerViewModel : CommonViewModel, ICommandSink
     {
         public void RegisterCommands()
         {
@@ -205,7 +207,7 @@
     /// <summary>
     /// ViewModel Commands
     /// </summary>
-    public partial class OwnerXRelationshipsViewModel : CommonViewModel, ICommandSink
+    public partial class GolfCartXOwnerViewModel : CommonViewModel, ICommandSink
     {
         /// <summary>
         /// Add Cart Command
@@ -317,23 +319,39 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            //OwnerXRelationships           
-            //var oXr = (from r in dc.RelationshipsXOwners
-            //           where r.OwnerID == SelectedOwner.OwnerID
-            //           select r);
+            //Owner p = parameter as Owner;
+            //Host.Execute(HostVerb.Open, "OwnerEdit", p);
+        }
 
-            //ObservableCollection<Relationship> rList = new ObservableCollection<Relationship>();
+        /// <summary>
+        /// Import Command
+        /// </summary>
+        private ICommand _getRelationshipsCommand;
+        public ICommand GetRelationshipsCommand
+        {
+            get
+            {
+                return _getRelationshipsCommand ?? (_getRelationshipsCommand = new CommandHandlerWparm((object parameter) => GetRelationshipsAction(parameter), ApplPermissions.CanImport));
+            }
+        }
 
-            //foreach (RelationshipsXOwner ox in oXr)
+        /// <summary>
+        /// TO-DO: ??
+        /// </summary>
+        /// <param name="type"></param>
+        public void GetRelationshipsAction(object parameter)
+        {
+            //foreach (GolfCart r in CartList)
             //{
-            //    Relationship r = (from x in dc.Relationships
-            //                      where x.RelationshipID == ox.RelationshipID
-            //                      select x).FirstOrDefault();
+            //    PropertyXOwner oxr = (from x in dc.PropertyXOwners
+            //                          where x.PropertyID == r.PropertyID
+            //                          select x).FirstOrDefault();
 
-            //    rList.Add(r);
+            //    dc.usp_InsertGolfCartXOwner((int)oxr.OwnerID, r.CartID);
             //}
 
-            //RelationshipList = rList;
+            //RaisePropertyChanged("DataChanged");
+            //RaisePropertyChanged("IsNotBusy");
         }
     }
 
@@ -342,7 +360,7 @@
     /// Disposition.......
     /// </summary>
     #region public partial class PropertiesViewModel : IDisposable
-    public partial class OwnerXRelationshipsViewModel : IDisposable
+    public partial class GolfCartXOwnerViewModel : IDisposable
     {
         // Resources that must be disposed:
         private HVCCDataContext dc = null;
@@ -402,7 +420,7 @@
         /// <summary>
         /// Finalizes an instance of the <see cref="TableForm"/> class.  (a.k.a. destructor)
         /// </summary>
-        ~OwnerXRelationshipsViewModel()
+        ~GolfCartXOwnerViewModel()
         {
             // call Dispose with false.  Since we're in the
             // destructor call, the managed resources will be

@@ -53,11 +53,11 @@
             //// Determine which field (property) we are validating
             string fieldName = BindableBase.GetPropertyName(expression);   // Is hit...
             if (
-                   "OwnerFName" == fieldName
-                || "OwnerLName" == fieldName
-                || "OwnerAddress" == fieldName
-                || "OwnerCity" == fieldName
-                || "OwnerZip" == fieldName
+                   "MailTo" == fieldName
+                || "Address" == fieldName
+                || "City" == fieldName
+                || "State" == fieldName
+                || "Zip" == fieldName
                 )
             {
                 return CheckNullInput(fieldName, fieldValue, nullValue);
@@ -104,7 +104,7 @@
             //// Determine which field (property) we are validating
             string fieldName = BindableBase.GetPropertyName(expression);   // Is hit...
 
-            if ("OwnerState" == fieldName)
+            if ("State" == fieldName)
             {
                 return CkStateAbbreviation(fieldName, fieldValue, nullValue);
             }
@@ -127,14 +127,14 @@
 
             switch (FieldName)
             {
-                case "OwnerFName":
-                case "OwnerLName":
-                case "OwnerAddress":
-                case "OwnerCity":
-                case "OwnerZip":
+                case "MailTo":
+                case "Address":
+                case "City":
+                case "State":
+                case "Zip":
                     error = CheckNullInput(FieldName, value);
                     break;
-                case "OwnerState":
+                case "tate":
                     error = CkStateAbbreviation(FieldName, value);
                     break;
                 default:

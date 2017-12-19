@@ -328,7 +328,7 @@
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="Owner.MailTo" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
-                                        <validation:RequiredValidationRule FieldName="OwnerFName"/>
+                                        <validation:RequiredValidationRule FieldName="MailTo"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </dxe:TextEdit.EditValue>
@@ -347,7 +347,7 @@
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="Owner.Address" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
-                                        <validation:RequiredValidationRule FieldName="OwnerAddress"/>
+                                        <validation:RequiredValidationRule FieldName="Address"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </dxe:TextEdit.EditValue>
@@ -377,7 +377,7 @@
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="Owner.City" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
-                                        <validation:RequiredValidationRule FieldName="OwnerCity"/>
+                                        <validation:RequiredValidationRule FieldName="City"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </dxe:TextEdit.EditValue>
@@ -397,7 +397,7 @@
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="Owner.State" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True" >
                                     <Binding.ValidationRules>
-                                        <validation:RequiredValidationRule FieldName="OwnerState"/>
+                                        <validation:RequiredValidationRule FieldName="State"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </dxe:TextEdit.EditValue>
@@ -416,7 +416,7 @@
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="Owner.Zip" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
-                                        <validation:RequiredValidationRule FieldName="OwnerZip"/>
+                                        <validation:RequiredValidationRule FieldName="Zip"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </dxe:TextEdit.EditValue>
@@ -454,10 +454,10 @@
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
                             <CheckBox Width="25"
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
                                      IsChecked="{Binding Owner.IsSendByEmail, Mode=TwoWay}"
                                      IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
                                      Margin="0,-5,0,0"
                                      />
                         </dxlc:LayoutItem>
@@ -524,12 +524,16 @@
                                            AutoWidth="True" 
                                            Width="650"
                                            Height="275"
-                                           ValidateRow="tableViewDetail_ValidateRow"
                                            RowCanceled="tableViewDetail_RowCanceled"
                                            CellValueChanging="tableViewDetail_CellValueChanging"
                                            NavigationStyle="{Binding NavigationStyle}" 
                                            NewItemRowPosition="{Binding NewItemPosition}" 
                                            >
+
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand EventName="ValidateRow" Command="{Binding ValidateRowCommand}" PassEventArgsToCommand="True"/>
+                                </dxmvvm:Interaction.Behaviors>
+
 
                                 <dxg:TableView.RowCellMenuCustomizations>
                                     <dxb:BarButtonItem x:Name="addRowItem"

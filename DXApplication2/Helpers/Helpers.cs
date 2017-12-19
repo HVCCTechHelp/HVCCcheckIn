@@ -18,31 +18,6 @@
 
     public class Helper
     {
-        /// <summary>
-        /// Loads image file into a byte array.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public static byte[] LoadImage(string fileName)
-        {
-            byte[] _Buffer = null;
-            try
-            {
-                FileStream _FileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                BinaryReader _BinaryReader = new BinaryReader(_FileStream);
-                long _TotalBytes = new System.IO.FileInfo(fileName).Length;
-                _Buffer = _BinaryReader.ReadBytes((Int32)_TotalBytes);
-                _FileStream.Close();
-                _FileStream.Dispose();
-                _BinaryReader.Close();
-                return _Buffer;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public static Binary LoadDefalutImage(IDataContext datacontext)
         {
             HVCCDataContext dc = datacontext as HVCCDataContext;
@@ -130,7 +105,7 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public static bool AddRelationship(IDataContext datacontext, Property selectedProperty, Relationship relationship) 
+        public static bool AddRelationship(IDataContext datacontext, Owner owner, Relationship relationship) 
         {
             HVCCDataContext dc = datacontext as HVCCDataContext;
 
@@ -143,32 +118,11 @@
                 {
                     // Add the default HVCC image to the relationship record.  
                     relationship.Photo = LoadDefalutImage(dc);
-
-                    // Add this relationship to the pending database changes. Actual update isn't
-                    // immeidate and is dependent on user clicking the 'save' button.
-                    relationship.PropertyID = selectedProperty.PropertyID;
-                    relationship.Customer = selectedProperty.Customer;
+                    relationship.Active = true;
+                    relationship.OwnerID = owner.OwnerID;
                     dc.Relationships.InsertOnSubmit(relationship);
-
-                    // Because of the way I implemented the Relationship grid in the edit dialog,
-                    // the new relationship also needs to be manually added to the VM collection of 
-                    // the selected property.  [It is not automaticly added to the collection via the datacontext
-                    // even after the new Relationship is added to the database.]
-                    //selectedProperty.Relationships.Add(relationship);
-
-                    ChangeSet cs = dc.GetChangeSet();
-                    return true;
                 }
-                else
-                {
-                    //var x = (from r in selectedProperty.Relationships
-                    //         where r.RelationshipID == relationship.RelationshipID
-                    //         select r).FirstOrDefault();
-
-                    //ChangeSet cs = dc.GetChangeSet();
-
-                    return false;
-                }
+                return true;
             }
             catch (Exception ex)
             {
@@ -183,53 +137,47 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public static bool RemoveRelationship(IDataContext datacontext, Property selectedProperty, Relationship relationship)
+        public static bool RemoveRelationship(IDataContext datacontext, Relationship relationship, string action = null)
         {
             HVCCDataContext dc = datacontext as HVCCDataContext;
 
             try
             {
-                // Check to see if this Relationship is in the database (has a non-zero ID), 
-                // or is pending insertion (has a zero ID).
-                if (0 != relationship.RelationshipID)
+                //// Check to see if this Relationship is in the database (has a non-zero ID), 
+                //// or is pending insertion (has a zero ID).
+                if (0 != relationship.RelationshipID 
+                    && !relationship.RelationToOwner.Contains("Owner")
+                    && string.IsNullOrEmpty(action))
                 {
 
                     // Test to see if the relationship being removed has any FacilitiesUage records.
                     // If not, we can delete the relationship record. Otherwise, we have to set
                     // the records to inactive.
-                    IEnumerable<FacilityUsage> fuLList = (from x in dc.FacilityUsages
-                                                          where x.RelationshipId == relationship.RelationshipID
-                                                          select x);
+                    IEnumerable<FacilityUsage> fuList = (from x in dc.FacilityUsages
+                                                         where x.RelationshipId == relationship.RelationshipID
+                                                         select x);
 
                     // If no facility usage records are returned, it is safe to just delete the
-                    // Relationship record; it won't violate the FK contraints.  Since the passed in Relationship object (relationship)
-                    // is not attached to an enity set (it is local to the VM), we need to query the SelectedPropert.Relationship
-                    // collection to get the Relationships record that is attached so it is attached and therefore can be removed
-                    // from the datacontext.
-                    if (0 == fuLList.Count())
+                    // Relationship record. Since the passed in Relationship object (relationship)
+                    // is not attached to an enity set (it is local to the VM), we need to query the Relationship
+                    // table.
+                    if (0 == fuList.Count())
                     {
-                        Relationship r = (from x in selectedProperty.Relationships
-                                          where x.RelationshipID == relationship.RelationshipID
-                                          select x).FirstOrDefault();
-
-                        dc.Relationships.DeleteOnSubmit(r);
+                        dc.Relationships.DeleteOnSubmit(relationship);
                     }
                     // Otherwise, to deactivate the Relationship (related to F.U. records) we just
-                    // reassign it to the PropertyID = 99-99-99-0
+                    // set the Active flag false.
                     else
                     {
-                        Property dummyProperty = GetDummyPropertyID(dc);
-                        // Now reassign the Relationship to the dummy Property
-                        relationship.PropertyID = dummyProperty.PropertyID;
-
-                        // Lastly, reassign the Facility Usage records associated to the RelationshipID
-                        // to the dummy PropertyID
-                        foreach (FacilityUsage f in fuLList)
-                        {
-                            f.PropertyID = dummyProperty.PropertyID;
-                        }
+                        relationship.Active = false;
                     }
                 }
+                // If this is an Ownership Change, we just make the relationship inactive
+                else if (action.Contains("ChangeOwner"))
+                {
+                    relationship.Active = false;
+                }
+                // Otherwise, the RelationshipID is 0, so it is a pending insert
                 else
                 {
 
@@ -238,9 +186,8 @@
                     // views to be updated.
                     //selectedProperty.Relationships.Remove(relationship);
                     dc.Relationships.DeleteOnSubmit(relationship);
-                    ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
                 }
-                //}
+                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
                 return true;
             }
             catch (Exception ex)
@@ -274,7 +221,6 @@
                 // ? What if they keep an existing Owner record.... We may need to check SelectedProperty.Relationships
                 var updateList = (from r in cs.Updates
                                   where (r as Relationship).RelationToOwner == "Owner"
-                                  && (r as Relationship).PropertyID != selectedProperty.PropertyID
                                   select r);
 
                 // We use try/catch incase the results of the two queries return invalid results (exception). Otherwise

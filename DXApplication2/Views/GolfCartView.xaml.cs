@@ -106,7 +106,7 @@ using HVCC.Shell.Common.Interfaces;
         {
             // Set the focus to the name search text box to force a CellValueChanged event to fire. 
             // This in turn will cause IsDirty to be evaluated.
-            this.tbSearchName.Focus();
+            //this.tbSearchName.Focus();
             e.Handled = true;
         }
 

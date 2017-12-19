@@ -156,6 +156,99 @@
             }
         }
 
+        /*===========================================================================================*/
+        ////
+        //// Add On-Click Event Handlers for each tile or ribbon button here.....
+        ////
+        #region On-Click Events
+        /// <summary>
+        /// Creates or Focuses the Owners DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_Owners(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Owners");
+        }
+
+        /// <summary>
+        /// Creates or Focuses the Properties DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_Property(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Properties");
+        }
+
+        /// <summary>
+        /// Creates or Focuses the Owners DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //private void OnClicked_OwnerXRelationships(object sender, MouseButtonEventArgs e)
+        //{
+        //    // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+        //    Host.Instance.Execute(HostVerb.Open, "OwnerXRelationships");
+        //}
+
+        /// <summary>
+        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //private void OnClicked_GolfCartXOwner(object sender, MouseButtonEventArgs e)
+        //{
+        //    // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+        //    Host.Instance.Execute(HostVerb.Open, "GolfCartXOwner");
+        //}
+
+        /// <summary>
+        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_GolfCart(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "GolfCart");
+        }
+
+        /// <summary>
+        /// Creates or Focuses the WaterSystem DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_WaterSystem(object sender, MouseButtonEventArgs e)
+        {
+            Host.Instance.Execute(HostVerb.Open, "WaterMeter");
+        }
+
+        /// <summary>
+        /// Creates or Focuses the WaterSystem DocumentPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_WellMeterReadings(object sender, MouseButtonEventArgs e)
+        {
+            Host.Instance.Execute(HostVerb.Open, "WellMeter");
+        }
+
+        /// <summary>
+        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_Administration(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Administration");
+        }
+
+        #endregion
+
         ////
         //// All things related to DocumentPanels
         ////
@@ -406,88 +499,6 @@
                 }
             }
         }
-        #endregion
-
-        /*===========================================================================================*/
-        ////
-        //// Add On-Click Event Handlers for each tile or ribbon button here.....
-        ////
-        #region On-Click Events
-        /// <summary>
-        /// Creates or Focuses the Properties DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_Property(object sender, MouseButtonEventArgs e)
-        {
-            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-            Host.Instance.Execute(HostVerb.Open, "Properties");
-        }
-
-        /// <summary>
-        /// Creates or Focuses the Owners DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_OwnerXRelationships(object sender, MouseButtonEventArgs e)
-        {
-            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-            Host.Instance.Execute(HostVerb.Open, "OwnerXRelationships");
-        }
-
-        /// <summary>
-        /// Creates or Focuses the Owners DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_Owners(object sender, MouseButtonEventArgs e)
-        {
-            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-            Host.Instance.Execute(HostVerb.Open, "Owners");
-        }
-
-        /// <summary>
-        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_GolfCart(object sender, MouseButtonEventArgs e)
-        {
-            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-            Host.Instance.Execute(HostVerb.Open, "GolfCart");
-        }
-
-        /// <summary>
-        /// Creates or Focuses the WaterSystem DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_WaterSystem(object sender, MouseButtonEventArgs e)
-        {
-            Host.Instance.Execute(HostVerb.Open, "WaterMeter");
-        }
-
-        /// <summary>
-        /// Creates or Focuses the WaterSystem DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_WellMeterReadings(object sender, MouseButtonEventArgs e)
-        {
-            Host.Instance.Execute(HostVerb.Open, "WellMeter");
-        }
-
-        /// <summary>
-        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnClicked_Administration(object sender, MouseButtonEventArgs e)
-        {
-            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-            Host.Instance.Execute(HostVerb.Open, "Administration");
-        }
-
         #endregion
 
         #region Report Button Events

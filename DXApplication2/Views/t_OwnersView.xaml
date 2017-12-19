@@ -69,8 +69,8 @@
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
+                        
                         <dxr:RibbonPageGroup Caption="Owner Action">
-
                             <!--<dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
@@ -92,56 +92,12 @@
 
                 <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Owner List">
                     <dxlc:LayoutItem>
-                        <dxg:GridControl AutoPopulateColumns="False" x:Name="duplicateGrid" 
-                                 IsEnabled="True"
-                                 ItemsSource="{Binding DuplicatesList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="Auto"
-                                 Height="200"
-                                 HorizontalAlignment="Left"
-                                 >
-                            <dxg:GridControl.View>
-                                <dxg:TableView x:Name="tableViewDuplicates" 
-                                       AllowEditing="{Binding ApplPermissions.CanEditOwnerInfo}"
-                                       AllowColumnFiltering="True" 
-                                       AllowGrouping="False"
-                                       ShowGroupPanel="False"
-                                       AllowPerPixelScrolling="True" 
-                                       AutoWidth="True" 
-                                       SearchPanelNullText="Search"
-                                       ShowSearchPanelMode="Always"
-                                       ShowSearchPanelFindButton="True"
-                                       SearchPanelClearOnClose="False"
-				                       ShowFixedTotalSummary="True" 
-                                       ShowTotalSummary="True"
-                                       >
-
-                                </dxg:TableView>
-                            </dxg:GridControl.View>
-                            <!-- columns of the detail grid -->
-                            <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
-                                <dxg:GridColumn FieldName="OwnerFName" Header="FName" Width="100" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="OwnerLName" Header="LName" Width="100" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="BillTo" Header="BillTo" Width="Auto" />
-                            </dxg:GridControl.Columns>
-
-                            <dxg:GridControl.TotalSummary>
-                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
-                            </dxg:GridControl.TotalSummary>
-
-                        </dxg:GridControl>
-                    </dxlc:LayoutItem>
-
-                </dxlc:LayoutGroup>
-
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Owner List">
-                    <dxlc:LayoutItem>
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="ownerGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding OwnersList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  SelectedItem="{Binding SelectedOwner, Mode=TwoWay}"
                                  Width="Auto"
-                                 Height="500"
+                                 Height="700"
                                  HorizontalAlignment="Left"
                                  >
                             <dxg:GridControl.View>

@@ -14,6 +14,9 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
+    using System.Data.Linq.SqlClient;
+    using System.Windows;
+    using System.Collections.Generic;
 
     public partial class GolfCartViewModel : CommonViewModel, ICommandSink
     {
@@ -76,6 +79,25 @@
             }
         }
 
+        ///// <summary>
+        ///// A collection of registered golf carts to display in the grid of the view
+        ///// </summary>
+        //private ObservableCollection<GolfCart> _registeredCarts = null;
+        //public ObservableCollection<GolfCart> RegisteredCarts
+        //{
+        //    get
+        //    {
+        //        if (_registeredCarts == null)
+        //        {
+        //            var currentSeason = (from s in this.dc.Seasons
+        //                                 where s.IsCurrent == true
+        //                                 select s).FirstOrDefault();
+        //            _registeredCarts = GetRegisteredCarts(currentSeason.TimePeriod);
+        //        }
+        //        return _registeredCarts;
+        //    }
+        //}
+
         /// <summary>
         /// 
         /// </summary>
@@ -129,125 +151,80 @@
         #region Property entities
 
         /// <summary>
-        /// Currently selected property from a property grid view
+        /// The Owner record for the selected property
         /// </summary>
-        private Property _selectedProperty = null;
-        public Property SelectedProperty
+        private ObservableCollection<Owner> _owners = null;
+        public ObservableCollection<Owner> Owners
         {
             get
             {
-                return _selectedProperty;
+                return _owners;
             }
             set
             {
-                //// wrap the setter with a check for a null value.  This condition happens when
-                //// a Relationship is selected from the Relationship grid. Therefore, when
-                //// a Relationship is selected we won't null out the SelectedProperty.
-                if (value != _selectedProperty)
+                if (_owners != value)
                 {
-                    _selectedProperty = value;
-                    RaisePropertyChanged("SelectedProperty");
+                    _owners = value;
+                    RaisePropertyChanged("Owners");
                 }
-            }
-        }
-
-        /// <summary>
-        /// A collection of relationships to display in the Relationships grid of the view
-        /// </summary>
-        private ObservableCollection<Relationship> _foundRelationships = null;
-        public ObservableCollection<Relationship> FoundRelationships
-        {
-            get
-            {
-                return _foundRelationships;
-            }
-            set
-            {
-                if (_foundRelationships != value)
-                {
-                    _foundRelationships = value;
-                    this.SelectedFoundRelation = _foundRelationships[0];
-                    RaisePropertyChanged("FoundRelationships");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Currently selected relationship
-        /// </summary>
-        private Relationship _selectedFoundRelation = new Relationship();
-        public Relationship SelectedFoundRelation
-        {
-            get
-            {
-                return _selectedFoundRelation;
-            }
-            set
-            {
-                if (value != _selectedFoundRelation)
-                {
-                    _selectedFoundRelation = value;
-                    RaisePropertyChanged("SelectedFoundRelation");
-                }
-            }
-        }
-
-        /// <summary>
-        /// A collection of registered golf carts to display in the grid of the view
-        /// </summary>
-        private ObservableCollection<GolfCart> _registeredCarts = null;
-        public ObservableCollection<GolfCart> RegisteredCarts
-        {
-            get
-            {
-                if (_registeredCarts == null)
-                {
-                    var currentSeason = (from s in this.dc.Seasons
-                                         where s.IsCurrent == true
-                                         select s).FirstOrDefault();
-                    _registeredCarts = GetRegisteredCarts(currentSeason.TimePeriod);
-                }
-                return _registeredCarts;
-            }
-            set
-            {
-                if (_registeredCarts != value)
-                {
-                    _registeredCarts = value;
-                }
-                RaisePropertyChanged("RegisteredCarts");
             }
         }
 
         /// <summary>
         /// Currently selected golf cart record
         /// </summary>
-        private GolfCart _selectedCart = new GolfCart();
-        public GolfCart SelectedCart
+        private Owner _selectedOwner = new Owner();
+        public Owner SelectedOwner
         {
             get
             {
-                if (null != _selectedCart)
-                {
-                    var p = (from x in this.dc.Properties
-                             where x.PropertyID == _selectedCart.PropertyID
-                             select x).FirstOrDefault();
-                    this.SelectedProperty = (Property)p;
-                    _selectedCart.PropertyChanged += _selectedCart_PropertyChanged;
-                }
-                return _selectedCart;
+                return _selectedOwner;
             }
             set
             {
-                if (value != _selectedCart)
+                if (value != _selectedOwner)
                 {
-                    if (null != _selectedCart)
-                    {
-                        _selectedCart.PropertyChanged -= _selectedCart_PropertyChanged;
-                    }
-                    _selectedCart = value;
-                    _selectedCart.PropertyChanged += _selectedCart_PropertyChanged;
-                    RaisePropertyChanged("SelectedCart");
+                    _selectedOwner = value;
+                }
+            }
+        }
+
+        public ObservableCollection<GolfCart> RegisteredGolfCarts
+        {
+            get
+            {
+                try
+                {
+                    var list = (from x in dc.GolfCarts
+                                select x);
+
+                    return new ObservableCollection<GolfCart>(list);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Currently selected golf cart record
+        /// </summary>
+        private GolfCart _selectedCartOwner = null;
+        public GolfCart SelectedCartOwner
+        {
+            get
+            {
+                return _selectedCartOwner;
+            }
+            set
+            {
+                if (value != _selectedCartOwner)
+                {
+
+                    _selectedCartOwner = value;
+                    RaisePropertyChanged("SelectedCartOwner");
                 }
             }
         }
@@ -270,63 +247,6 @@
 
         /* ---------------------------------- GolfCart:Public/Private Methods ------------------------------------------ */
         #region GolfCartMethods
-
-        /// <summary>
-        /// A collection of Carts that have been registered
-        /// </summary>
-        /// <returns></returns>
-        private ObservableCollection<GolfCart> GetRegisteredCarts(string timePeriod)
-        {
-            try
-            {
-                //// Get the list of "Properties" from the database
-                var list = (from a in this.dc.GolfCarts
-                            where a.Year == timePeriod
-                            select a);
-
-                return new ObservableCollection<GolfCart>(list);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void RevertGolfCartEdits()
-        {
-            ChangeSet changeSet = this.dc.GetChangeSet();
-
-            //// First, check the change set to see if there are pending Updates. If so,
-            //// iterate over the Updates collection to see if they are for the currently
-            //// selected property.  If found, remove them from the change set.
-            if (0 != changeSet.Updates.Count)
-            {
-                foreach (var v in changeSet.Updates)
-                {
-                    if (typeof(GolfCart) == v.GetType())
-                    {
-                        this.dc.Refresh(RefreshMode.OverwriteCurrentValues, v);
-                    }
-                }
-            }
-            // The, check for Inserts and remove them....
-            if (0 != changeSet.Inserts.Count)
-            {
-                foreach (var v in changeSet.Inserts)
-                {
-                    if (typeof(GolfCart) == v.GetType())
-                    {
-                        this.dc.GetTable(v.GetType()).DeleteOnSubmit(v);
-                        this.RegisteredCarts.Remove((GolfCart)v);
-                    }
-                }
-            }
-            changeSet = this.dc.GetChangeSet();
-        }
 
         #endregion
     }
@@ -407,6 +327,16 @@
             }
         }
 
+        //public IQueryable<v_GolfCartRegistration> SearchForOwnerOfRegisteredCart(string qs)
+        //{
+        //    var q = RegisteredGolfCarts.AsQueryable();
+
+        //    var likestr = string.Format("%{0}%", qs);
+        //    q = q.Where(x => x.MailTo.Contains(qs));
+
+        //    return q as IQueryable<v_GolfCartRegistration>;
+        //}
+
         /// <summary>
         /// 
         /// </summary>
@@ -414,56 +344,47 @@
         {
             try
             {
-                // Query the Relationships table to get a list of Relationships matching the last name, filtered by Owner.  
-                var list = (from a in this.dc.Relationships
-                            where a.LName == this.SearchName
-                            && a.RelationToOwner == "Owner"
-                            select a);
+                var owners = (from x in dc.GolfCarts
+                              select x);
 
-                ObservableCollection<Relationship> relationships = new ObservableCollection<Relationship>();
-                GolfCart cart = new GolfCart();
-                foreach (Relationship r in list)
+                // If no owners are found in current collection of known carts, then this name (& cart) needs
+                // to be registered.
+                if (1 == owners.Count())
                 {
-                    try
-                    {
-                        // Now check to make sure there isn't already a record in the GolfCart registration Table.
-                        cart = (from g in this.RegisteredCarts
-                                where g.PropertyID == r.PropertyID
-                                && g.LName == r.LName
-                                select g).FirstOrDefault();
+                    MessageBox.Show("Owner already has registered cart", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //v_GolfCartRegistration foundOwner = owners.ElementAt(0);
+                    //var element = (from x in RegisteredGolfCarts
+                    //               where x.CartID == foundOwner.CartID
+                    //               select x).SingleOrDefault();
 
-                        // If no registered cart was found, then we add the name being searched for to the list of names to choose from to add.
-                        if (null == cart)
-                        {
-                            Property property = (from c in this.dc.Properties
-                                                 where c.PropertyID == r.PropertyID
-                                                 select c).FirstOrDefault();
-                            r.Customer = property.Customer;
-                            relationships.Add(r);
-                            this.FoundRelationships = relationships;
-                        }
-                        // otherwise, there is already a registered cart for this name & propertyID combination. In this case we make the searched
-                        // for name the selected cart record in the registered cart grid.
-                        else
-                        {
-                            this.SelectedCart = cart;
-                        }
-                    }
-                    catch (Exception ex)
+                    //SelectedCartOwner = element as v_GolfCartRegistration;
+                }
+                // The search name does not exist in the collection of known/registered cart,
+                // so we will search the Owners table for a match.
+                else if (1 < owners.Count())
+                {
+                    var ownerList = (from o in dc.Owners
+                                     select o);
+
+                    var q = ownerList.AsQueryable();
+
+                    var likestr = string.Format("%{0}%", SearchName);
+                    q = q.Where(x => x.MailTo.Contains(likestr));
+                    IQueryable<Owner> matchingOwners = q as IQueryable<Owner>;
+
+                    if (0 < matchingOwners.Count())
                     {
-                        MessageBoxService.ShowMessage("Error: " + ex.Message);
+                        Owners = new ObservableCollection<Owner>(matchingOwners);
                     }
-                    finally
-                    {
-                    }
+                }
+                else
+                {
+                    MessageBox.Show("No names match your search criteria", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
                 MessageBoxService.Show("Search Error: " + ex.Message);
-            }
-            finally
-            {
             }
         }
 
@@ -484,46 +405,7 @@
         /// </summary>
         public void AddCartAction()
         {
-            if (null != this.SelectedFoundRelation.Property)
-            {
-                GolfCart addItem = new GolfCart();
-                addItem.FName = this.SelectedFoundRelation.FName;
-                addItem.LName = this.SelectedFoundRelation.LName;
-                addItem.PropertyID = this.SelectedFoundRelation.PropertyID;
-                addItem.Year = this.TimePeriod;
-                addItem.Quanity = 1;
-                addItem.IsPaid = true;
-                addItem.PaymentDate = DateTime.Now;
-                try
-                {
-                    Property p = (from x in this.dc.Properties
-                                  where x.PropertyID == this.SelectedFoundRelation.PropertyID
-                                  select x).FirstOrDefault();
-                    addItem.Customer = p.Customer;
-                }
-                catch (Exception ex)
-                {
-                    MessageBoxService.ShowMessage("Error: " + ex.Message);
-                }
-
-                // add the selected relationship to the registered carts collection. Then remove it from the found relationships collection. Effectively, we move it
-                // from one to the other collection. Lastly, add it to the datacontext queue to be inserted on save.
-                // Additionally, when the RegisteredCarts collection is modified, it will trigger a PropertyChanged event to notify
-                // Main that data has been updated.
-                this.RegisteredCarts.Add(addItem);
-                this.dc.GolfCarts.InsertOnSubmit(addItem);
-
-                this.SelectedCart = addItem;
-
-                // Clear the search text box.
-                this.FoundRelationships.Remove(this.SelectedFoundRelation);
-                this.SearchName = String.Empty;
-
-            }
-            else
-            {
-                MessageBoxService.ShowMessage("Please select a name", "Warning", MessageButton.OK, MessageIcon.Warning);
-            }
+            MessageBox.Show("Not Implemented", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>
@@ -674,10 +556,6 @@
 
         protected virtual void DisposeManagedResources()
         {
-            if (null != _selectedCart)
-            {
-                _selectedCart.PropertyChanged -= _selectedCart_PropertyChanged;
-            }
         }
 
         /// <summary>

@@ -26,6 +26,8 @@
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
 
+            OwnersList = FetchOwners();
+
             Host.PropertyChanged +=
                 new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
         }
@@ -69,24 +71,7 @@
             }
         }
 
-        private ObservableCollection<Property> _duplicatesList = new ObservableCollection<Property>();
-        public ObservableCollection<Property> DuplicatesList
-        {
-            get
-            {
-                return _duplicatesList;
-            }
-            set
-            {
-                if (this._duplicatesList != value)
-                {
-                    this._duplicatesList = value;
-                    RaisePropertyChanged("DuplicatesList");
-                }
-            }
-        }
-
-        private ObservableCollection<Owner> _ownersList = new ObservableCollection<Owner>();
+        private ObservableCollection<Owner> _ownersList = null;
         public ObservableCollection<Owner> OwnersList
         {
             get
@@ -373,90 +358,6 @@
         /// <param name="type"></param>
         public void ImportAction(object parameter)
         {
-            int pID = 0;
-
-            var rList = (from r in dc.Relationships
-                         select r);
-            
-            foreach (Relationship r in rList)
-            {
-                pID = r.PropertyID;
-
-                OwnerXProperty oxr = (from x in dc.OwnerXProperties
-                           where x.PropertyID == pID
-                           select x).FirstOrDefault();
-
-                dc.usp_InsertOwnerXRelationship((int)oxr.OwnerID, r.RelationshipID);
-            }
-
-
-            //int? ownerID = 0;
-
-            //DuplicatesList.Clear();
-            //OwnersList.Clear();
-
-            //var pList = (from p in dc.Properties
-            //             select p);
-
-            //RaisePropertyChanged("IsBusy");
-            //foreach (Property p in pList)
-            //{
-            //    Owner o = new Owner();
-            //    o.Customer = p.Customer;
-            //    o.MailTo = String.Format("{0} {1}", p.OwnerFName, p.OwnerLName);
-            //    o.Address = p.OwnerAddress;
-            //    o.Address2 = p.OwnerAddress2;
-            //    o.City = p.OwnerCity;
-            //    o.State = p.OwnerState;
-            //    o.Zip = p.OwnerZip;
-            //    o.PrimaryPhone = p.OwnerPrimaryPhone;
-            //    o.SecondaryPhone = p.OwnerSecondaryPhone;
-            //    o.IsSendByEmail = (bool)p.IsSendEmail;
-            //    o.EmailAddress = p.OwnerEmail;
-
-            //    Owner c = (from x in OwnersList
-            //               where x.Address == o.Address
-            //               && x.City == o.City
-            //               && x.State == o.State
-            //               && x.Zip == o.Zip
-            //               select x).FirstOrDefault();
-
-                //if (null == c)
-                //{
-
-                //    dc.usp_InsertOwner(
-                //        o.Customer,
-                //        o.MailTo,
-                //        o.Address,
-                //        o.Address2,
-                //        o.City,
-                //        o.State,
-                //        o.Zip,
-                //        o.PrimaryPhone,
-                //        o.SecondaryPhone,
-                //        o.EmailAddress,
-                //        o.IsSendByEmail,
-                //        ref ownerID);
-                    
-                //    if (0 == ownerID)
-                //    {
-                //        break;
-                //    }
-
-                //    dc.usp_InsertOwnerXProperty((int)ownerID, (int)p.PropertyID);
-                //    o.OwnerID = (int)ownerID;
-                //    OwnersList.Add(o);
-                //}
-                //else
-            //    {
-            //        //MessageBox.Show("Skipping: " + o.MailTo);
-            //        DuplicatesList.Add(p);
-            //        dc.usp_InsertOwnerXProperty((int)c.OwnerID, (int)p.PropertyID);
-            //    }
-            //}
-
-            RaisePropertyChanged("DataChanged");
-            RaisePropertyChanged("IsNotBusy");
         }
     }
 

@@ -69,6 +69,14 @@
             IView v = new MainWindow() { DataContext = vm } as IView;
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewOwnersView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new OwnersViewModel(dc) { Caption = "Owners" };
+            IView v = new HVCC.Shell.Views.OwnersView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         public static IMvvmBinder GetNewPropertyDetailView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -85,22 +93,26 @@
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewOwnersView(object arg)
-        {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new OwnersViewModel(dc) { Caption = "Owners" };
-            IView v = new HVCC.Shell.Views.OwnersView(vm);
-            return new MvvmBinder(dc, v, vm);
-        }
-        public static IMvvmBinder GetNewOwnerXRelationshipsView(object arg)
-        {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new OwnerXRelationshipsViewModel(dc) { Caption = "OwnerXRelationships" };
-            IView v = new HVCC.Shell.Views.OwnerXRelationshipsView(vm);
-            return new MvvmBinder(dc, v, vm);
-        }
+
+
+        //public static IMvvmBinder GetNewOwnerXRelationshipsView(object arg)
+        //{
+        //    ////IDataContext dc = new UnitTextConnectionDataContext();
+        //    IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+        //    IViewModel vm = new OwnerXRelationshipsViewModel(dc) { Caption = "OwnerXRelationships" };
+        //    IView v = new HVCC.Shell.Views.OwnerXRelationshipsView(vm);
+        //    return new MvvmBinder(dc, v, vm);
+        //}
+        //public static IMvvmBinder GetNewGolfCartXOwnerView(object arg)
+        //{
+        //    ////IDataContext dc = new UnitTextConnectionDataContext();
+        //    IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+        //    IViewModel vm = new GolfCartXOwnerViewModel(dc) { Caption = "GolfCartsXOwner" };
+        //    IView v = new HVCC.Shell.Views.GolfCartXOwnerView(vm);
+        //    return new MvvmBinder(dc, v, vm);
+        //}
+
+
         public static IMvvmBinder GetNewChangeOwnerView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -117,12 +129,11 @@
             IView v = new HVCC.Shell.Views.PropertiesUpdatedView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        //
         public static IMvvmBinder GetNewGolfCartView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts " };
+            IViewModel vm = new GolfCartViewModel(dc) { Caption = "Golf Carts" };
             IView v = new HVCC.Shell.Views.GolfCartView(vm);
             return new MvvmBinder(dc, v, vm);
         }
@@ -177,11 +188,20 @@
                     var binder = GetNewOwnersView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
-                else if (param.ToString() == "OwnerXRelationships")
-                {
-                    var binder = GetNewOwnerXRelationshipsView(arg);
-                    this.OpenMvvmBinders.Add(binder);
-                }
+
+
+                //else if (param.ToString() == "OwnerXRelationships")
+                //{
+                //    var binder = GetNewOwnerXRelationshipsView(arg);
+                //    this.OpenMvvmBinders.Add(binder);
+                //}
+                //else if (param.ToString() == "GolfCartXOwner")
+                //{
+                //    var binder = GetNewGolfCartXOwnerView(arg);
+                //    this.OpenMvvmBinders.Add(binder);
+                //}
+
+
                 else if (param.ToString() == "ChangeOwner")
                 {
                     var binder = GetNewChangeOwnerView(arg);

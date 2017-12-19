@@ -82,8 +82,7 @@
         {
             // Force an update on the controls that require validation.  This will force
             // them to be invalid if data is missing.
-            teOwnerFName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teOwnerLName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teOwnerMailTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teOwnerAddress.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teOwnerCity.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teOwnerState.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
@@ -98,7 +97,7 @@
         private void relationshipsTableView_Loaded(object sender, RoutedEventArgs e)
         {
             relationshipGrid.SelectAll();
-            teOwnerFName.Focus();
+            teOwnerMailTo.Focus();
         }
 
         /// <summary>

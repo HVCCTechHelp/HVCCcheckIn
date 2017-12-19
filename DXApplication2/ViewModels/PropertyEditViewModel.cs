@@ -36,6 +36,7 @@ namespace HVCC.Shell.ViewModels
             if (null != p)
             {
                 SelectedProperty = GetProperty(p.PropertyID);
+                Owner = SelectedProperty.Owner;
 
                 Relationships = GetRelationships();
                 if (0 < Relationships.Count())
@@ -127,10 +128,12 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                var xxx = (from a in this.dc.GolfCarts
-                           where a.PropertyID == this.SelectedProperty.PropertyID
+                // Using the PropertyXOwner Xref to get the OwnerID, we can
+                // then query the GolfCartXOwner to see if the owner owns a golf cart.
+                var cart = (from a in this.dc.GolfCarts
+                           where a.OwnerID == SelectedProperty.Owner.OwnerID
                            select a).FirstOrDefault();
-                if (null == xxx) { return false; }
+                if (null == cart) { return false; }
                 else { return true; }
             }
         }
@@ -171,59 +174,6 @@ namespace HVCC.Shell.ViewModels
         }
 
         #region Properties
-        /// <summary>
-        /// Gets the Owner to Property XRef
-        /// </summary>
-        private OwnerXProperty _oXp = new OwnerXProperty();
-        public OwnerXProperty OxP
-        {
-            get
-            {
-                object _oXp = (from x in dc.OwnerXProperties
-                               where x.PropertyID == SelectedProperty.PropertyID
-                               select x).FirstOrDefault();
-
-                return _oXp as OwnerXProperty;
-            }
-        }
-        /// <summary>
-        /// Gets the Owner to Relationships XRef
-        /// </summary>
-        private OwnerXRelationship _oXr = new OwnerXRelationship();
-        public OwnerXRelationship OxR
-        {
-            get
-            {
-                object _oXr = (from x in dc.OwnerXRelationships
-                               where x.RelationshipID == OxP.OwnerID
-                               select x).FirstOrDefault();
-
-                return _oXr as OwnerXRelationship;
-            }
-        }
-
-        /// <summary>
-        /// The Owner record for the selected property
-        /// </summary>
-        private Owner _owner = new Owner();
-        public Owner Owner
-        {
-            get
-            {
-                _owner = (from o in dc.Owners
-                          where o.OwnerID == OxP.OwnerID
-                          select o).SingleOrDefault();
-
-                return _owner;
-            }
-            set
-            {
-                if (_owner != value)
-                {
-                    _owner = value;
-                }
-            }
-        }
 
         /// <summary>
         /// Currently selected property from a property grid view
@@ -320,6 +270,37 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
+        private Owner _owner = null;
+        public Owner Owner
+        {
+            get
+            {
+                return _owner;
+            }
+            set
+            {
+                if (value != _owner)
+                {
+                    // When the selected relationship is change; a new selection is made, we unregister the previous PropertyChanged
+                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
+                    // We use this PropertyChanged trigger to handle Image changes, and to manage the Golf/Pool check ins.
+                    if (_owner != null)
+                    {
+                        _owner.PropertyChanged -= SelectedProperty_PropertyChanged;
+                    }
+
+                    _owner = value;
+                    if (null != _owner)
+                    {
+                        // Once the new value is assigned, we register a new PropertyChanged event listner.
+                        _owner.PropertyChanged += SelectedProperty_PropertyChanged;
+
+                        RaisePropertyChanged("Owner");
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Property_Changed
@@ -347,8 +328,6 @@ namespace HVCC.Shell.ViewModels
         {
             var x = e.PropertyName;
 
-            // TO-DO : conver 'if' to switch..... Add "Photo"
-
             // We listen for changes to the IsGolf/IsPool value of the SelectedProperty so we can update the 
             // Check-In counts for the property.
 
@@ -359,7 +338,7 @@ namespace HVCC.Shell.ViewModels
                 this.SelectedProperty.GolfMembers = 0;
                 this.SelectedProperty.PoolMembers = 0;
 
-                foreach (Relationship r in this.SelectedProperty.Relationships)
+                foreach (Relationship r in this.Relationships)
                 {
                     if (r.IsGolf) { this.SelectedProperty.GolfMembers += 1; }
                     if (r.IsPool) { this.SelectedProperty.PoolMembers += 1; }
@@ -391,11 +370,19 @@ namespace HVCC.Shell.ViewModels
                     {
                         if (0 != r.RelationshipID)
                         {
-                            bool result = Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+                            bool result = Helper.RemoveRelationship(this.dc, r);
                         }
                         else
                         {
-                            bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                            // If the FName string is empty, than we landed here as a result of an 'Add' to the 
+                            // Relationship collection firing on a collection change event.  We can ignore this
+                            // request for now.
+                            if (!string.IsNullOrEmpty(r.FName)
+                                && !string.IsNullOrEmpty(r.LName)
+                                && !string.IsNullOrEmpty(r.RelationToOwner))
+                            {
+                                bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
+                            }
                         }
                     }
                     break;
@@ -403,7 +390,7 @@ namespace HVCC.Shell.ViewModels
                     var oldItems = e.OldItems;
                     foreach (Relationship r in oldItems)
                     {
-                        bool result = Helper.AddRelationship(this.dc, this.SelectedProperty, r);
+                        bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
                     }
                     break;
             }
@@ -574,24 +561,13 @@ namespace HVCC.Shell.ViewModels
         {
             try
             {
-                ObservableCollection < Relationship > rCollection = new ObservableCollection<Relationship>();
-
                 // Get the list of Relationships for the Property owner using the OxP xref
-                var list = (from x in dc.OwnerXRelationships
-                                        where x.OwnerID == OxP.OwnerID
+                var list = (from x in dc.Relationships
+                                        where x.OwnerID == SelectedProperty.OwnerID
+                                        && x.Active == true
                                         select x);
 
-                // Itterate over the list of relationships and add them to the Relationship collection.
-                foreach (OwnerXRelationship oxr in list)
-                {
-                    Relationship r = (from x in dc.Relationships
-                                where x.RelationshipID == oxr.RelationshipID
-                                select x).SingleOrDefault();
-
-                    rCollection.Add(r);
-                }
-
-                return rCollection;
+                return new ObservableCollection<Relationship>(list);
             }
             catch (Exception ex)
             {
@@ -635,7 +611,7 @@ namespace HVCC.Shell.ViewModels
             this.IsBusy = true;
             RaisePropertyChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();                     //(DEBUG)
+            this.dc.SubmitChanges();             
             this.IsBusy = false;
             RaisePropertyChanged("Refresh");
             RaisePropertyChanged("IsNotBusy");
@@ -715,7 +691,7 @@ namespace HVCC.Shell.ViewModels
                     List<FacilityUsage> usages = new List<FacilityUsage>();
 
                     // Register the members what are checking in.
-                    foreach (Relationship r in this.SelectedProperty.Relationships)
+                    foreach (Relationship r in Relationships)
                     {
                         if (r.IsGolf || r.IsPool)
                         {
@@ -772,7 +748,6 @@ namespace HVCC.Shell.ViewModels
                             r.IsPool = false;
                             r.IsGolf = false;
                         }
-                        //}
 
                         // If there are guests of the members, add them last.
                         if (0 < this.SelectedProperty.PoolGuests || 0 < this.SelectedProperty.GolfGuests)
@@ -793,15 +768,15 @@ namespace HVCC.Shell.ViewModels
                             dc.FacilityUsages.InsertOnSubmit(gUsage);
                         }
 
-                        ChangeSet cs = dc.GetChangeSet();
-                        //dc.SubmitChanges(); (DEBUG)
-                        MessageBox.Show("Check In Complete");
                     }
+                    ChangeSet cs = dc.GetChangeSet();
+                    dc.SubmitChanges();
+                    MessageBox.Show("Check In Complete");
                 }
                 else
                 {
                     MessageBox.Show("Check In was canceled. No data was recorded.");
-                    foreach (Relationship r in this.SelectedProperty.Relationships)
+                    foreach (Relationship r in Relationships)
                     {
                         r.IsPool = false;
                         r.IsGolf = false;
@@ -920,6 +895,43 @@ namespace HVCC.Shell.ViewModels
 
 
         /// <summary>
+        /// Drop Command
+        /// </summary>
+        private ICommand _validateRowCommand;
+        public ICommand ValidateRowCommand
+        {
+            get
+            {
+                return _validateRowCommand ?? (_validateRowCommand = new CommandHandlerWparm((object parameter) => ValidateRowAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// ImageEdit (drag &)drop event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ValidateRowAction(object parameter)
+        {
+            GridRowValidationEventArgs e = parameter as GridRowValidationEventArgs;
+            try
+            {
+                if (e.IsValid)
+                {
+                    Helper.AddRelationship(dc, SelectedProperty.Owner, e.Row as Relationship);
+                    if (IsDirty)
+                    {
+                        CanSaveExecute = true;
+                        RaisePropertyChanged("DataChanged");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error processing image file. " + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// AddRelationship Command
         /// </summary>
         private ICommand _addRelationshipCommand;
@@ -960,8 +972,9 @@ namespace HVCC.Shell.ViewModels
         public void RemoveRelationshipAction(object parameter)
         {
             Relationship r = parameter as Relationship;
-            Helper.RemoveRelationship(this.dc, this.SelectedProperty, r);
+            Helper.RemoveRelationship(this.dc, r);
             this.Relationships.Remove(r);
+            CanSaveExecute = IsDirty;
         }
 
         private bool _canViewParcel = true;
@@ -1040,12 +1053,11 @@ namespace HVCC.Shell.ViewModels
             StringBuilder message = new StringBuilder();
 
             if (
-                   !String.IsNullOrEmpty(SelectedProperty.OwnerFName)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerLName)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerAddress)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerCity)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerState)
-                && !String.IsNullOrEmpty(SelectedProperty.OwnerZip)
+                   !String.IsNullOrEmpty(SelectedProperty.Owner.MailTo)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.Address)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.City)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.State)
+                && !String.IsNullOrEmpty(SelectedProperty.Owner.Zip)
                 )
             {
                 return true;
@@ -1065,12 +1077,11 @@ namespace HVCC.Shell.ViewModels
 
                 //// The following properties must contain data in order to pass basic validation
                 error =
-                      iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerState)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip)];
+                      iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.City)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.State)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip)];
 
                 if (!string.IsNullOrEmpty(error))
                 {
@@ -1090,39 +1101,34 @@ namespace HVCC.Shell.ViewModels
         string IDataErrorInfo.this[string columnName]
         {
             get
-            { // is hit...
+            {
                 // If invoked, will throw validation error if property is null/blank
 
                 StringBuilder errorMsg = new StringBuilder();
 
-                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerFName))
+                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerFName", SelectedProperty.OwnerFName));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "MailTo", SelectedProperty.Owner.MailTo));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerLName))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerLName", SelectedProperty.OwnerLName));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Address", SelectedProperty.Owner.Address));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerAddress))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.City))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerAddress", SelectedProperty.OwnerAddress));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "City", SelectedProperty.Owner.City));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerCity))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.State))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerCity", SelectedProperty.OwnerCity));
+                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "State", SelectedProperty.Owner.State));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerState))
+                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip))
                 {
-                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "OwnerState", SelectedProperty.OwnerState));
-                    return errorMsg.ToString();
-                }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.OwnerZip))
-                {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "OwnerZip", SelectedProperty.OwnerZip));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Zip", SelectedProperty.Owner.Zip));
                     return errorMsg.ToString();
                 }
                 //// No errors found......

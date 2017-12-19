@@ -88,35 +88,35 @@
             e.Handled = true;
         }
 
-        /// <summary>
-        /// Validates a grid row 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tableViewDetail_ValidateRow(object sender, DevExpress.Xpf.Grid.GridRowValidationEventArgs e)
-        {
-            Relationship row = e.Row as Relationship;
+        ///// <summary>
+        ///// Validates a grid row 
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void tableViewDetail_ValidateRow(object sender, DevExpress.Xpf.Grid.GridRowValidationEventArgs e)
+        //{
+        //    Relationship row = e.Row as Relationship;
 
-            try
-            {
-                if (null != row)
-                {
-                    // TO-DO:  <?> Add validation rules for Relationships
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Row Error: " + ex.Message);
-            }
-            finally
-            {
-                if (e.IsValid)
-                {
-                    // TO-DO:  ?
-                }
-                e.Handled = true;
-            }
-        }
+        //    try
+        //    {
+        //        if (null != row)
+        //        {
+        //            // TO-DO:  <?> Add validation rules for Relationships
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Row Error: " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (e.IsValid)
+        //        {
+        //            // TO-DO:  ?
+        //        }
+        //        e.Handled = true;
+        //    }
+        //}
 
         /// <summary>
         /// Cancels addition of new row
