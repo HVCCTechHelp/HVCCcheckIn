@@ -38,7 +38,7 @@
         <elementListCompartment Id="e1d373ff-8ac1-4efb-8759-8fd907ad5341" absoluteBounds="8.39, 11.085, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(9.375 : 10.625); (9.375 : 7.3862939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(9.375 : 10.625); (9.375 : 7.3862939453125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/WaterWell/WaterWell_WellXProperty" />
       <nodes>
         <classShapeMoniker Id="6da73526-f397-41fe-9ba6-f2149b699093" />
@@ -51,7 +51,7 @@
         <elementListCompartment Id="dfb1bfe5-c7b0-4aa2-bc20-73e5cb897217" absoluteBounds="11.765, 11.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(10.375 : 11.4142976888021); (11.75 : 11.4142976888021)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(10.375 : 11.4142976888021); (11.75 : 11.4142976888021)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/WaterWell/WaterWell_WellMeterReading" />
       <nodes>
         <classShapeMoniker Id="6da73526-f397-41fe-9ba6-f2149b699093" />
@@ -82,35 +82,35 @@
         <elementListCompartment Id="5455628a-dd89-4d79-8c89-006032b669f3" absoluteBounds="10.015, 1.085, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(11.6875 : 4.8958154296875); (11.6875 : 5.875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(11.6875 : 4.8958154296875); (11.6875 : 5.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WaterMeterReading" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
         <classShapeMoniker Id="6fb54dac-ea2e-41f4-9b18-c097408448d6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 2.01044840494792); (13.625 : 2.01044840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 2.01044840494792); (13.625 : 2.01044840494792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_Note" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
         <classShapeMoniker Id="a3e5f8f0-807e-41c4-9ce2-c0529ec7268f" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WellXProperty" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
         <classShapeMoniker Id="b3d51d79-5397-40ed-a1a9-f1e7e1c9d4eb" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 4.26040771484375); (13.625 : 4.26040771484375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 4.26040771484375); (13.625 : 4.26040771484375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_OwnershipChange" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
         <classShapeMoniker Id="d13b321d-abb2-48a7-8f91-97e3e6aa8f4c" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(3.5 : 2.96875); (10 : 2.96875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(3.5 : 2.96875); (10 : 2.96875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Property" />
       <nodes>
         <classShapeMoniker Id="3107d4a3-cea5-4da2-868e-03f1bf90c55f" />
@@ -123,7 +123,7 @@
         <elementListCompartment Id="23d73ca9-4e1e-4781-a566-480ddeb7adb9" absoluteBounds="5.39, 5.335, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(3.5 : 5.31330485026042); (5.375 : 5.31330485026042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(3.5 : 5.31330485026042); (5.375 : 5.31330485026042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="3107d4a3-cea5-4da2-868e-03f1bf90c55f" />
@@ -142,7 +142,7 @@
         <elementListCompartment Id="b0023d47-a09f-4a70-83f4-567f7ca6101c" absoluteBounds="1.5149999999999997, 7.5850000000000009, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.5 : 5.75160970052083); (2.5 : 7.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.5 : 5.75160970052083); (2.5 : 7.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="3107d4a3-cea5-4da2-868e-03f1bf90c55f" />
