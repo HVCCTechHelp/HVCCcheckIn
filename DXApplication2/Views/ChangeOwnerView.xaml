@@ -65,7 +65,7 @@
 
 
     <dxlc:LayoutControl>
-        <dxlc:LayoutGroup x:Name="grpboxPropertyInfo" View="GroupBox" Header="Property Relationships" 
+        <dxlc:LayoutGroup x:Name="grpboxPropertyInfo" View="GroupBox" Header="{Binding HeaderText}" 
                           VerticalAlignment="Top" 
                           IsCollapsible="False" 
                           Orientation="Vertical"
@@ -114,7 +114,7 @@
                               ValidateOnTextInput="False"
                               >
                             <dxe:TextEdit.EditValue>
-                                <Binding Path="SelectedProperty.Owner.MailTo" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                <Binding Path="NewOwner.MailTo" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
                                         <validation:RequiredValidationRule FieldName="MailTo"/>
                                     </Binding.ValidationRules>
@@ -133,7 +133,7 @@
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
                               >
                             <dxe:TextEdit.EditValue>
-                                <Binding Path="SelectedProperty.Owner.Address" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                <Binding Path="NewOwner.Address" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
                                         <validation:RequiredValidationRule FieldName="Address"/>
                                     </Binding.ValidationRules>
@@ -142,7 +142,7 @@
                         </dxe:TextEdit>
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem Label=" " Width="Auto">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.Owner.Address2}" Width="Auto" 
+                        <dxe:TextEdit Text="{Binding NewOwner.Address2}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
@@ -163,7 +163,7 @@
                               ValidateOnTextInput="False"
                               >
                             <dxe:TextEdit.EditValue>
-                                <Binding Path="SelectedProperty.Owner.City" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                <Binding Path="NewOwner.City" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
                                         <validation:RequiredValidationRule FieldName="City"/>
                                     </Binding.ValidationRules>
@@ -183,7 +183,7 @@
                               ValidateOnTextInput="False"
                               >
                             <dxe:TextEdit.EditValue>
-                                <Binding Path="SelectedProperty.Owner.State" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True" >
+                                <Binding Path="NewOwner.State" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True" >
                                     <Binding.ValidationRules>
                                         <validation:RequiredValidationRule FieldName="State"/>
                                     </Binding.ValidationRules>
@@ -202,7 +202,7 @@
                               ValidateOnTextInput="False"
                               >
                             <dxe:TextEdit.EditValue>
-                                <Binding Path="SelectedProperty.Owner.Zip" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                <Binding Path="NewOwner.Zip" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                     <Binding.ValidationRules>
                                         <validation:RequiredValidationRule FieldName="Zip"/>
                                     </Binding.ValidationRules>
@@ -216,14 +216,14 @@
                 <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Owner.PrimaryPhone}" Width="Auto" 
+                            <dxe:TextEdit Text="{Binding NewOwner.PrimaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
                                      />
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Owner.SecondaryPhone}" Width="Auto" 
+                            <dxe:TextEdit Text="{Binding NewOwner.SecondaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
@@ -232,7 +232,7 @@
                     </dxlc:LayoutGroup>
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Owner.Email}" Width="Auto" 
+                            <dxe:TextEdit Text="{Binding NewOwner.Email}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
@@ -242,7 +242,7 @@
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
                             <CheckBox Width="25"
-                                     IsChecked="{Binding SelectedProperty.Owner.IsSendByEmail, Mode=TwoWay}"
+                                     IsChecked="{Binding NewOwner.IsSendByEmail, Mode=TwoWay}"
                                      IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
                                      Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
@@ -255,7 +255,7 @@
 
             </dxlc:LayoutGroup>
 
-            <dxlc:LayoutGroup x:Name="grpboxChangeOwner" View="GroupBox" Header="Change Ownership" 
+            <dxlc:LayoutGroup x:Name="grpboxChangeOwner" View="GroupBox" Header="Owner Relationships" 
                               VerticalAlignment="Top" 
                               IsCollapsible="False" 
                               Orientation="Vertical"
@@ -263,8 +263,7 @@
                               >
 
                 <dxg:GridControl x:Name="relationshipGrid" 
-                                 ItemsSource="{Binding Relationships, Mode=TwoWay}" 
-                                 SelectedItems="{Binding RelationshipsToProcess, Mode=TwoWay}"
+                                 ItemsSource="{Binding RelationshipsToProcess, Mode=TwoWay}" 
                                  IsEnabled="True"
                                  Height="300"
                                  SelectionMode="MultipleRow" 
@@ -319,11 +318,11 @@
                     </dxg:GridControl.Columns>
 
                 </dxg:GridControl>
-                <Label x:Name="lblNotice" Content="Selected items (red highlight) will be deleted, all others (green highlight) will be retained or added as new relationships" 
+                <!--<Label x:Name="lblNotice" Content="Selected items (red highlight) will be deleted, all others (green highlight) will be retained or added as new relationships" 
                            FontStyle="Oblique" 
                            FontFamily="Segoe UI Black" 
                            HorizontalAlignment="Center"
-                           />
+                           />-->
 
             </dxlc:LayoutGroup>
         </dxlc:LayoutGroup>

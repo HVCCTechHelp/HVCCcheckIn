@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -233,7 +233,7 @@
     <Compile Include="ViewModels\t_GolfCartXOwnerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\t_OwnersViewModel.cs" />
+    <Compile Include="ViewModels\OwnersViewModel.cs" />
     <Compile Include="ViewModels\t_OwnerXRelationshipsViewModel.cs" />
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
@@ -251,8 +251,8 @@
     <Compile Include="Views\t_GolfCartXOwnerView.xaml.cs">
       <DependentUpon>t_GolfCartXOwnerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\t_OwnersView.xaml.cs">
-      <DependentUpon>t_OwnersView.xaml</DependentUpon>
+    <Compile Include="Views\OwnersView.xaml.cs">
+      <DependentUpon>OwnersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GolfCartView.xaml.cs">
       <DependentUpon>GolfCartView.xaml</DependentUpon>
@@ -308,7 +308,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\t_OwnersView.xaml">
+    <Page Include="Views\OwnersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

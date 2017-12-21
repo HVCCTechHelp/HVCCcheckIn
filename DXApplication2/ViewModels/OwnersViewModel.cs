@@ -1,20 +1,19 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
-    using System;
-    using System.Linq;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using DevExpress.Xpf.Docking;
-    using System.Data.Linq;
-    using HVCC.Shell.Common;
     using DevExpress.Mvvm;
-    using HVCC.Shell.Models;
     using DevExpress.Spreadsheet;
-    using System.Windows.Input;
-    using HVCC.Shell.Resources;
-    using HVCC.Shell.Common.ViewModels;
+    using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common;
     using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Models;
+    using HVCC.Shell.Resources;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Data.Linq;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Input;
 
     public partial class OwnersViewModel : CommonViewModel, ICommandSink
     {
@@ -31,6 +30,17 @@
             Host.PropertyChanged +=
                 new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
         }
+
+        #region Interfaces
+        //public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        //protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+        public enum ExportType { PDF, XLSX }
+        public enum PrintType { PREVIEW, PRINT }
+
+        #endregion
+
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
 
@@ -88,6 +98,42 @@
             }
         }
 
+        private Owner _selectedOwner = null;
+        public Owner SelectedOwner
+        {
+            get
+            {
+                return _selectedOwner;
+            }
+            set
+            {
+                // wrap the setting in a null check.  When the master row is expanded, and a detail row
+                // is selected, it causes this propertychanged event and sets the value to null, which we want to ignore.
+                if (null != value &&_selectedOwner != value)
+                {
+                    _selectedOwner = value;
+                    RaisePropertyChanged("SelectedOwner");
+                }
+            }
+        }
+
+        private Property _selectedProperty = null;
+        public Property SelectedProperty
+        {
+            get
+            {
+                return _selectedProperty;
+            }
+            set
+            {
+                if (_selectedProperty != value)
+                {
+                    _selectedProperty = value;
+                    RaisePropertyChanged("SelectedProperty");
+                }
+            }
+        }
+
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods
@@ -111,7 +157,7 @@
 
         #endregion
 
-        /* ------------------------------------ PRivate Methods -------------------------------------------- */
+        /* ------------------------------------ Private Methods -------------------------------------------- */
         #region Private Methods
 
         /// <summary>
@@ -136,7 +182,6 @@
         }
         #endregion
     }
-
 
     /*================================================================================================================================================*/
     /// <summary>
@@ -204,6 +249,94 @@
     /// </summary>
     public partial class OwnersViewModel : CommonViewModel, ICommandSink
     {
+
+        /// <summary>
+        /// RowDoubleClick Event to Command
+        /// </summary>
+        private ICommand _masterRowExpandedCommand;
+        public ICommand MasterRowExpandedCommand
+        {
+            get
+            {
+                return _masterRowExpandedCommand ?? (_masterRowExpandedCommand = new CommandHandlerWparm((object parameter) => MasterRowExpandedAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void MasterRowExpandedAction(object parameter)
+        {
+
+            RowEventArgs e = parameter as RowEventArgs;
+
+        }
+
+        /// <summary>
+        /// RowDoubleClick Command
+        /// </summary>
+        private ICommand _focusedRowChangedCommand;
+        public ICommand FocusedRowChangedCommand
+        {
+            get
+            {
+                return _focusedRowChangedCommand ?? (_focusedRowChangedCommand = new CommandHandlerWparm((object parameter) => FocusedRowChangedAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void FocusedRowChangedAction(object parameter)
+        {
+            DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e = parameter as DevExpress.Xpf.Grid.FocusedRowChangedEventArgs;
+            SelectedProperty = e.NewRow as Property;
+        }
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _changeOwnerCommand;
+        public ICommand ChangeOwnerCommand
+        {
+            get
+            {
+                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanChangeOwner));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ChangeOwnerAction(object parameter)
+        {
+            Property p = parameter as Property;
+            Host.Execute(HostVerb.Open, "ChangeOwner", p);
+        }
+
+        ///// <summary>
+        ///// Import Command
+        ///// </summary>
+        //private ICommand _importCommand;
+        //public ICommand ImportCommand
+        //{
+        //    get
+        //    {
+        //        return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Facility Usage by date range report
+        ///// </summary>
+        ///// <param name="type"></param>
+        //public void ImportAction(object parameter)
+        //{
+        //}
+
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -225,24 +358,24 @@
             string fn;
             try
             {
-                //Enum.TryParse(parameter.ToString(), out ExportType type);
+                Enum.TryParse(parameter.ToString(), out ExportType type);
 
-                //switch (type)
-                //{
-                //    case ExportType.PDF:
-                //        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                //        if (SaveFileDialogService.ShowDialog())
+                switch (type)
+                {
+                    case ExportType.PDF:
+                        SaveFileDialogService.Filter = "PDF files|*.pdf";
+                        if (SaveFileDialogService.ShowDialog())
 
-                //            fn = SaveFileDialogService.GetFullFileName();
+                            fn = SaveFileDialogService.GetFullFileName();
 
-                //        ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                //        break;
-                //    case ExportType.XLSX:
-                //        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                //        if (SaveFileDialogService.ShowDialog())
-                //            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                //        break;
-                //}
+                        ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                    case ExportType.XLSX:
+                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -274,17 +407,17 @@
         {
             try
             {
-                //Enum.TryParse(parameter.ToString(), out PrintType type);
+                Enum.TryParse(parameter.ToString(), out PrintType type);
 
-                //switch (type)
-                //{
-                //    case PrintType.PREVIEW:
-                //        ExportService.ShowPrintPreview(this.Table);
-                //        break;
-                //    case PrintType.PRINT:
-                //        ExportService.Print(this.Table);
-                //        break;
-                //}
+                switch (type)
+                {
+                    case PrintType.PREVIEW:
+                        ExportService.ShowPrintPreview(this.Table);
+                        break;
+                    case PrintType.PRINT:
+                        ExportService.Print(this.Table);
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -294,70 +427,6 @@
             {
                 //this.IsRibbonMinimized = true;
             }
-        }
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _rowDoubleClickCommand;
-        public ICommand RowDoubleClickCommand
-        {
-            get
-            {
-                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter)
-        {
-            //Owner p = parameter as Owner;
-            //Host.Execute(HostVerb.Open, "OwnerEdit", p);
-        }
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _changeOwnerCommand;
-        public ICommand ChangeOwnerCommand
-        {
-            get
-            {
-                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanChangeOwner));
-            }
-        }
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void ChangeOwnerAction(object parameter)
-        {
-            Property p = parameter as Property;
-            Host.Execute(HostVerb.Open, "ChangeOwner", p);
-        }
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _importCommand;
-        public ICommand ImportCommand
-        {
-            get
-            {
-                return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
-            }
-        }
-
-        /// <summary>
-        /// Facility Usage by date range report
-        /// </summary>
-        /// <param name="type"></param>
-        public void ImportAction(object parameter)
-        {
         }
     }
 

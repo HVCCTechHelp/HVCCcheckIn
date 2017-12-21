@@ -15,6 +15,7 @@
     using HVCC.Shell.Models;
     using HVCC.Shell.Common.Interfaces;
     using System.Data.Linq;
+    using System.Collections.ObjectModel;
 
     public class Helper
     {
@@ -201,51 +202,71 @@
         /// Check for valid Ownership Relationship to Property relationship
         /// </summary>
         /// <returns></returns>
-        public static bool CheckForOwner(IDataContext datacontext, Property selectedProperty)
+        public static bool CheckForOwner(ObservableCollection<Relationship> relationships)
         {
-            HVCCDataContext dc = datacontext as HVCCDataContext;
-
             try
             {
-                ChangeSet cs = dc.GetChangeSet();
-
-                Property dummyProperty = GetDummyPropertyID(dc);
-
-                // The first thing we need to do is make sure we have at lease one active Relationship
-                // that is also an Owner. New Relationship records will be added to the Selected.Relationship
-                // collection, but their Active status will be null. 
-                var addList = (from r in cs.Inserts
-                               where (r as Relationship).RelationToOwner == "Owner"
-                               select r);
-
-                // ? What if they keep an existing Owner record.... We may need to check SelectedProperty.Relationships
-                var updateList = (from r in cs.Updates
-                                  where (r as Relationship).RelationToOwner == "Owner"
-                                  select r);
-
-                // We use try/catch incase the results of the two queries return invalid results (exception). Otherwise
-                // the 'try' will update the count.
-                int ownerCount = 0;
-                try
+                foreach (Relationship r in relationships)
                 {
-                    ownerCount += addList.Count();
+                    if ("Owner" == r.RelationToOwner)
+                    {
+                        return true;
+                    }
                 }
-                catch
-                { }
-                try
-                {
-                    ownerCount += updateList.Count();
-                }
-                catch
-                { }
-                if (0 == ownerCount) { return false; }
-                else { return true; }
+                return false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Relationship error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        public static ObservableCollection<Relationship> GetOwnersFromMailTo(string mailTo)
+        {
+            // The Mailto string should be in one of three formats:
+            //    1). FirstName LastName
+            //    2). FirstName/FirstName Lastname  (Ex. Fred/Willma Flintstone)
+            //    3). FirstName LastName & FirstName LastName  (Fred Flintstone & Barney Rubble)
+            // All other formats are considered to be non-standard
+            string[] strings = null;
+            string[] substrings = null;
+            ObservableCollection<Relationship> rList = new ObservableCollection<Relationship>();
+
+            // Test for format-1:
+            strings = mailTo.Trim().Split(' ');
+            if (strings.Count() == 2
+                && !mailTo.Contains("/")
+                && !mailTo.Contains("&"))
+            {
+                rList.Add(new Relationship { FName = strings[0], LName = strings[1], RelationToOwner = "Owner" });
+            }
+
+            // Test for format-2:
+            strings = mailTo.Trim().Split('/');
+            if (strings.Count() == 2
+                && mailTo.Contains("/"))
+            {
+                substrings = strings[1].Trim().Split(' ');
+                if (substrings.Count() == 2)
+                {
+                    rList.Add(new Relationship { FName = strings[0], LName = substrings[1], RelationToOwner = "Owner" });
+                    rList.Add(new Relationship { FName = substrings[0], LName = substrings[1], RelationToOwner = "Owner" });
+                }
+            }
+
+            // Test for format-3:
+            strings = mailTo.Split('&');
+            if (strings.Count() == 2
+                && mailTo.Contains("&"))
+            {
+                substrings = strings[0].Trim().Split(' ');
+                rList.Add(new Relationship { FName = substrings[0], LName = substrings[1], RelationToOwner = "Owner" });
+                substrings = strings[1].Trim().Split(' ');
+                rList.Add(new Relationship { FName = substrings[0], LName = substrings[1], RelationToOwner = "Owner" });
+            }
+
+            return rList;
         }
 
         /// <summary>

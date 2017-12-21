@@ -237,7 +237,7 @@
             {
                 var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption == param).FirstOrDefault();
                 bool result = this.OpenMvvmBinders.Remove(r);
-                RaisePropertyChanged("Refresh");
+                //RaisePropertyChanged("Refresh");
             }
         }
 

@@ -25,20 +25,29 @@
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
+
+            // parameter is set at by the invocation: PropertyEditViewModel or ChangeOwnerViewModel
             Property p = parameter as Property;
             if (null != p)
             {
                 // Set the SelectedProperty, and make a clone copy of it for later reference.
                 SelectedProperty = GetProperty(p.PropertyID);
-                OriginalProperty = SelectedProperty.Clone() as Property;
-
-                // Get the relationship records related to this property.
-                Relationships = GetRelationships(p.OwnerID);
+                PreviousOwner.OwnerID = SelectedProperty.OwnerID;
+                PreviousBillTo = SelectedProperty.BillTo;
+            }
+            else
+            {
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             CanSaveExecute = false;
             this.RegisterCommands();
+
+            HeaderText = string.Format("Owner Information For Lot#: {0}", SelectedProperty.Customer);
+
+            NewOwner.PropertyChanged +=
+                 new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -96,38 +105,50 @@
                 }
             }
         }
-
-        #region Properties
-
-        public Owner Owner
+        private string _headerText = string.Empty;
+        public string HeaderText
         {
-            get
+            get { return _headerText; }
+            set
             {
-                Owner o = (from x in dc.Owners
-                           where x.OwnerID == SelectedProperty.OwnerID
-                           select x).FirstOrDefault();
-
-                return o as Owner;
+                if (_headerText != value)
+                {
+                    _headerText = value;
+                    RaisePropertyChanged("HeaderText");
+                }
             }
         }
 
+        #region Properties
 
+        public string PreviousBillTo { get; set; }
         /// <summary>
-        /// Original Property record reference passed in (selected property) from a property grid view
+        /// The Owner entity being acted upon
         /// </summary>
-        private Property _originalProperty = new Property();
-        public Property OriginalProperty
+        public Owner PreviousOwner
         {
             get
             {
-                return _originalProperty;
+                Owner _owner = (from x in dc.Owners
+                                where x.OwnerID == SelectedProperty.Owner.OwnerID
+                                select x).FirstOrDefault();
+                return _owner;
+            }
+        }
+
+        /// <summary>
+        /// The Owner entity being acted upon
+        /// </summary>
+        private Owner _newOwner = new Owner();
+        public Owner NewOwner
+        {
+            get
+            {
+                return _newOwner;
             }
             set
             {
-                if (value != this._originalProperty)
-                {
-                    this._originalProperty = value;
-                }
+                this._newOwner = value;
             }
         }
 
@@ -145,49 +166,28 @@
             {
                 if (value != this._selectedProperty)
                 {
-                    // When the selected property is change; a new selection is made, we unregister the previous PropertyChanged
-                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
-                    if (this._selectedProperty != null)
-                    {
-                        this._selectedProperty.PropertyChanged -= SelectedProperty_PropertyChanged;
-                    }
-
                     this._selectedProperty = value;
-
-                    _selectedProperty.Owner.MailTo = string.Empty;
-                    _selectedProperty.Owner.Address = string.Empty;
-                    _selectedProperty.Owner.Address2 = string.Empty;
-                    _selectedProperty.Owner.City = string.Empty;
-                    _selectedProperty.Owner.State = string.Empty;
-                    _selectedProperty.Owner.Zip = string.Empty;
-                    _selectedProperty.Owner.PrimaryPhone = string.Empty;
-                    _selectedProperty.Owner.SecondaryPhone = string.Empty;
-                    _selectedProperty.Owner.EmailAddress = string.Empty;
-                    _selectedProperty.Owner.IsSendByEmail = false;
-
-                    // Once the new value is assigned, we register a new PropertyChanged event listner.
-                    this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
+                    RaisePropertyChanged("SelectedProperty");
                 }
-                RaisePropertyChanged("SelectedProperty");
             }
         }
 
         /// <summary>
-        /// A collection of relationships to delete
+        /// A collection of properties owned by the current owner
         /// </summary>
-        private ObservableCollection<Relationship> _relationships = null;
-        public ObservableCollection<Relationship> Relationships
+        private ObservableCollection<Property> _properties = null;
+        public ObservableCollection<Property> Properties
         {
             get
             {
-                this._relationships.CollectionChanged += _relationshipsToProcess_CollectionChanged;
-                return this._relationships;
+                return _properties;
             }
             set
             {
-                if (_relationships != value)
+                if (_properties != value)
                 {
-                    _relationships = value;
+                    _properties = value;
+                    RaisePropertyChanged("Properties");
                 }
             }
         }
@@ -195,29 +195,47 @@
         /// <summary>
         /// A collection of relationships to delete
         /// </summary>
-        private ObservableCollection<Relationship> _relationshipsToProcess = new ObservableCollection<Relationship>();
+        private ObservableCollection<Relationship> _relationshipsToProcess = null;
         public ObservableCollection<Relationship> RelationshipsToProcess
         {
             get
             {
-                this._relationshipsToProcess.CollectionChanged += _relationshipsToProcess_CollectionChanged;
                 return this._relationshipsToProcess;
             }
             set
-            { }
+            {
+                if (value != _relationshipsToProcess)
+                {
+                    // When the collection changes; an item is added/removed, we unregister the previous CollectionChanged
+                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
+                    if (_relationshipsToProcess != null)
+                    {
+                        //_relationshipsToProcess.CollectionChanged -= _relationshipsToProcess_CollectionChanged;
+                    }
+                    _relationshipsToProcess = value;
+                    // Once the new value is assigned, we register a new PropertyChanged event listner.
+                    //this._relationshipsToProcess.CollectionChanged += _relationshipsToProcess_CollectionChanged;
+                    RaisePropertyChanged("RelationshipsToProcess");
+                }
+            }
         }
 
         /// <summary>
         /// Summary
-        ///     Raises a property changed event when the SelectedCart data is modified
+        ///     Raises a property changed event when the NewOwner data is modified
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Property_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (CkIsValid() && IsDirty)
+            if (e.PropertyName == "MailTo")
             {
-                CanSaveExecute = true;
+                RelationshipsToProcess = Helper.GetOwnersFromMailTo(NewOwner.MailTo);
+            }
+
+            if (CkIsValid())
+            {
+                CanSaveExecute = IsDirty;
                 RaisePropertyChanged("DataChanged");
             }
         }
@@ -261,12 +279,15 @@
                     }
                     break;
             }
-            ChangeSet cs = dc.GetChangeSet();
-            if (0 < cs.Inserts.Count() && IsValid) { CanSaveExecute = true; } else { CanSaveExecute = false; }
+            CanSaveExecute = CkIsValid();
             RaisePropertyChanged("DataChanged");
         }
 
         /* ====== Keep for reference ========= */
+        //
+        // Acts on a Collection:  When any property of a collection is changed, this will be invoked.
+        //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
         //{
         //    list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
@@ -302,7 +323,7 @@
         //        }
         //    }
         //}
-
+        //
         ///// <summary>
         ///// Listen for changes to a collection item property change
         ///// </summary>
@@ -310,8 +331,8 @@
         ///// <param name="e"></param>
         //private void ListItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         //{
-        //    CanSaveExecute = IsDirty;
-        //    RaisePropertyChanged("DataChanged");
+        //    //CanSaveExecute = IsDirty;
+        //    //RaisePropertyChanged("DataChanged");
         //}
 
         #endregion
@@ -328,32 +349,10 @@
             return p as Property;
         }
 
-        /// <summary>
-        /// Returns a collection of Relationships for a given Property
-        /// </summary>
-        /// <returns></returns>
-        private ObservableCollection<Relationship> GetRelationships(int oID)
-        {
-            try
-            {
-                var rList = (from x in dc.Relationships
-                             where x.OwnerID == SelectedProperty.OwnerID
-                             && x.Active == true
-                             select x);
-
-                return new ObservableCollection<Relationship>(rList);
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.ShowMessage("Can't retrieve property from database\n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
-                return null;
-            }
-        }
-
         #endregion
     }
 
-    /*================================================================================================================================================*/
+    /*==================================================== Command Sink Bindings ================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
@@ -387,18 +386,73 @@
         /// </summary>
         private void SaveExecute()
         {
-            if (Helper.CheckForOwner(this.dc, this.SelectedProperty) && IsValid)
+            if (Helper.CheckForOwner(RelationshipsToProcess) && IsValid)
             {
                 this.IsBusy = true;
                 RaisePropertyChanged("IsBusy");
 
+                int? newOwnerID = 0;
+                string billTo = string.Format("{0} {1} {2} {3} {4} {5}"
+                    , NewOwner.MailTo
+                    ,NewOwner.Address
+                    ,NewOwner.Address2
+                    ,NewOwner.City
+                    ,NewOwner.State
+                    ,NewOwner.Zip);
+
+                // Stop notifcations and write NewOwner to the database.
+                NewOwner.PropertyChanged -=
+                     new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+
+                NewOwner.Customer = SelectedProperty.Customer;
+                dc.usp_InsertOwner(
+                        NewOwner.Customer,
+                        NewOwner.MailTo,
+                        NewOwner.Address,
+                        NewOwner.Address2,
+                        NewOwner.City,
+                        NewOwner.State,
+                        NewOwner.Zip,
+                        NewOwner.PrimaryPhone,
+                        NewOwner.SecondaryPhone,
+                        NewOwner.EmailAddress,
+                        NewOwner.IsSendByEmail,
+                        true,
+                        NewOwner.Notes,
+                        ref newOwnerID);
+
+                NewOwner = (from x in dc.Owners
+                            where x.OwnerID == newOwnerID
+                            select x).FirstOrDefault();
+
+                // Insert the Relationship collection
+                foreach (Relationship r in RelationshipsToProcess)
+                {
+                    r.Owner = NewOwner;
+                    r.Active = true;
+                    r.Photo = ApplDefault.Photo;
+                }
+                dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
+
+                // Create the OwnershipChange record
                 OwnershipChange oc = new OwnershipChange();
-                oc.NewOwner = SelectedProperty.BillTo;
-                oc.PreviousOwner = OriginalProperty.BillTo;
+                oc.PropertyID = SelectedProperty.PropertyID;
+                oc.PreviousOwnerID = PreviousOwner.OwnerID;
+                oc.PreviousOwner = PreviousBillTo;
+                oc.NewOwnerID = NewOwner.OwnerID;
+                oc.NewOwner = billTo;
                 dc.OwnershipChanges.InsertOnSubmit(oc);
 
+                // Set the previous owner inactive
+                PreviousOwner.IsCurrentOwner = false;
+
+                // Change the Property Owner to the NewOwner
+                SelectedProperty.Owner = NewOwner;
+                SelectedProperty.BillTo = billTo;
+
+
                 ChangeSet cs = dc.GetChangeSet();
-                this.dc.SubmitChanges();    
+                this.dc.SubmitChanges();
                 this.IsBusy = false;
                 RaisePropertyChanged("IsNotBusy");
                 Host.Execute(HostVerb.Close, this.Caption);
@@ -427,7 +481,7 @@
 
     }
 
-    /*================================================================================================================================================*/
+    /*==================================================== ViewModel Commands ===================================================================*/
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
 
@@ -518,30 +572,6 @@
                 //this.IsRibbonMinimized = true;
             }
         }
-
-        /// <summary>
-        /// RowDoubleClick Command
-        /// </summary>
-        //private ICommand _rowDoubleClickCommand;
-        //public ICommand RowDoubleClickCommand
-        //{
-        //    get
-        //    {
-        //        return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-        //    }
-        //}
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        //public void RowDoubleClickAction(object parameter)
-        //{
-        //    object o = parameter;
-        //    Host.Parameter = this.SelectedProperty;
-        //    Host.Execute(HostVerb.Open, "Edit");
-
-        //}
     }
 
     /*======================================================= Validation ==============================================================================*/
@@ -556,16 +586,16 @@
             StringBuilder message = new StringBuilder();
 
             if (
-                   !String.IsNullOrEmpty(SelectedProperty.Owner.MailTo)
-                && !String.IsNullOrEmpty(SelectedProperty.Owner.Address)
-                && !String.IsNullOrEmpty(SelectedProperty.Owner.City)
-                && !String.IsNullOrEmpty(SelectedProperty.Owner.State)
-                && !String.IsNullOrEmpty(SelectedProperty.Owner.Zip)
+                   !String.IsNullOrEmpty(NewOwner.MailTo)
+                && !String.IsNullOrEmpty(NewOwner.Address)
+                && !String.IsNullOrEmpty(NewOwner.City)
+                && !String.IsNullOrEmpty(NewOwner.State)
+                && !String.IsNullOrEmpty(NewOwner.Zip)
                 )
             {
                 return true;
             }
-            return false; 
+            return false;
         }
 
         /// <summary>
@@ -582,11 +612,11 @@
 
                 //// The following properties must contain data in order to pass basic validation
                 error =
-                    iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.City)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.State)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip)];
+                    iDataErrorInfo[BindableBase.GetPropertyName(() => NewOwner.MailTo)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => NewOwner.Address)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => NewOwner.City)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => NewOwner.State)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => NewOwner.Zip)];
 
                 if (!string.IsNullOrEmpty(error))
                 {
@@ -610,29 +640,29 @@
 
                 StringBuilder errorMsg = new StringBuilder();
 
-                if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.MailTo))
+                if (columnName == BindableBase.GetPropertyName(() => NewOwner.MailTo))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "MailTo", SelectedProperty.Owner.MailTo));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "MailTo", NewOwner.MailTo));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Address))
+                else if (columnName == BindableBase.GetPropertyName(() => NewOwner.Address))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Address", SelectedProperty.Owner.Address));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Address", NewOwner.Address));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.City))
+                else if (columnName == BindableBase.GetPropertyName(() => NewOwner.City))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "City", SelectedProperty.Owner.City));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "City", NewOwner.City));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.State))
+                else if (columnName == BindableBase.GetPropertyName(() => NewOwner.State))
                 {
-                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "State", SelectedProperty.Owner.State));
+                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "State", NewOwner.State));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => SelectedProperty.Owner.Zip))
+                else if (columnName == BindableBase.GetPropertyName(() => NewOwner.Zip))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Zip", SelectedProperty.Owner.Zip));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "Zip", NewOwner.Zip));
                     return errorMsg.ToString();
                 }
                 //// No errors found......
@@ -640,11 +670,11 @@
             }
         }
         #region IsValid
-        ///// <summary>
-        ///// Runs validation on the view model
-        ///// </summary>
-        ///// <returns></returns>
-        //public string IsValid()
+        /// <summary>
+        /// Runs validation on the view model
+        /// </summary>
+        /// <returns></returns>
+        //public bool IsValid()
         //{
         //    StringBuilder message = new StringBuilder();
 
@@ -656,7 +686,11 @@
         //        message.Append(RequiredValidationRule.CheckNullInput(SelectedProperty.OwnerFName, SelectedProperty.OwnerFName));
         //    }
 
-        //    return message.ToString();
+        //    if (!string.IsNullOrEmpty(message.ToString()))
+        //    {
+        //        return false;
+        //    }
+        //    return true;
         //}
         #endregion
 

@@ -43,7 +43,7 @@
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage x:Name="propertyActions" Caption="Actions">
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
@@ -69,19 +69,19 @@
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
-                        
+
                         <dxr:RibbonPageGroup Caption="Owner Action">
-                            <!--<dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
+                            <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
                                                Glyph="/Images/Icons/Ownership_16x16.png" 
-                                               LargeGlyph="/Images/Icons/Ownership_32x32.png" />-->
-                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
+                                               LargeGlyph="/Images/Icons/Ownership_32x32.png" />
+                            <!--<dxb:BarButtonItem x:Name="bbImport" Content="Update" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Financal-16x16.png" 
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
-                                               ToolTip="Bulk update dues balance information" />
+                                               ToolTip="Bulk update dues balance information" />-->
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 
@@ -99,6 +99,7 @@
                                  Width="Auto"
                                  Height="700"
                                  HorizontalAlignment="Left"
+                                 MasterRowExpanded="ownerGrid_MasterRowExpanded"
                                  >
                             <dxg:GridControl.View>
                                 <dxg:TableView x:Name="tableViewOwners" 
@@ -124,19 +125,37 @@
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="City" Header="City" Width="50" />
-                                <dxg:GridColumn FieldName="State" Header="State" Width="25"/>
-                                <dxg:GridColumn FieldName="Zip" Header="Zip" Width="30" />
-                                <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" />
-                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" />
-                                <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" />
-                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" />
+                                <dxg:GridColumn FieldName="City" Header="City" Width="50" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="State" Header="State" Width="25" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="Zip" Header="Zip" Width="30" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" />
                             </dxg:GridControl.Columns>
-
                             <dxg:GridControl.TotalSummary>
                                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
                             </dxg:GridControl.TotalSummary>
 
+                            <dxg:GridControl.DetailDescriptor>
+                                <dxg:DataControlDetailDescriptor ItemsSourcePath="Properties" ShowHeader="False">
+                                    <dxg:GridControl x:Name="detailGrid" Tag="Properties">
+                                        <dxg:GridControl.Columns>
+                                            <dxg:GridColumn Header="pID" FieldName="PropertyID" MinWidth="21" />
+                                            <dxg:GridColumn Header="Lot Number" FieldName="Customer" MinWidth="20"/>
+                                            <!-- More columns here -->
+                                        </dxg:GridControl.Columns>
+                                        <dxg:GridControl.View>
+                                            <dxg:TableView ShowGroupPanel="False" NavigationStyle="Row" FocusedRow="{Binding SelectedProperty, Mode=TwoWay}">
+                                                <dxmvvm:Interaction.Behaviors>
+                                                    <dxmvvm:EventToCommand EventName="FocusedRowChanged" 
+                                                        Command="{Binding FocusedRowChangedCommand}" PassEventArgsToCommand="True"/>
+                                                </dxmvvm:Interaction.Behaviors>
+                                            </dxg:TableView>
+                                        </dxg:GridControl.View>
+                                    </dxg:GridControl>
+                                </dxg:DataControlDetailDescriptor>
+                            </dxg:GridControl.DetailDescriptor>
                         </dxg:GridControl>
                     </dxlc:LayoutItem>
 
