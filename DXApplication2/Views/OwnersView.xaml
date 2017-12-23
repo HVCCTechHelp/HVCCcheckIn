@@ -108,7 +108,8 @@
                                        AllowGrouping="False"
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
-                                       AutoWidth="True" 
+                                       AutoWidth="True"
+                                       NavigationStyle="Row"
                                        SearchPanelNullText="Search"
                                        ShowSearchPanelMode="Always"
                                        ShowSearchPanelFindButton="True"
@@ -116,12 +117,15 @@
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
                                        >
-
+                                    <dxmvvm:Interaction.Behaviors>
+                                        <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                                                        Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedOwner}" />
+                                    </dxmvvm:Interaction.Behaviors>
                                 </dxg:TableView>
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Lot" Width="75" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="Customer" Header="Customer" Width="75" Visible="False" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
@@ -141,8 +145,9 @@
                                 <dxg:DataControlDetailDescriptor ItemsSourcePath="Properties" ShowHeader="False">
                                     <dxg:GridControl x:Name="detailGrid" Tag="Properties">
                                         <dxg:GridControl.Columns>
-                                            <dxg:GridColumn Header="pID" FieldName="PropertyID" MinWidth="21" />
                                             <dxg:GridColumn Header="Lot Number" FieldName="Customer" MinWidth="20"/>
+                                            <dxg:GridColumn Header="pID" FieldName="PropertyID" MinWidth="10" />
+                                            <dxg:GridColumn Header="oID" FieldName="OwnerID" MinWidth="10" />
                                             <!-- More columns here -->
                                         </dxg:GridControl.Columns>
                                         <dxg:GridControl.View>

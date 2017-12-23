@@ -47,7 +47,6 @@
 
             NewOwner.PropertyChanged +=
                  new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
-
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -149,6 +148,20 @@
             set
             {
                 this._newOwner = value;
+            }
+        }
+
+        private string _newNote = string.Empty;
+        public string NewNote
+        {
+            get { return _newNote; }
+            set
+            {
+                if (_newNote != value)
+                {
+                    _newNote = value;
+                    RaisePropertyChanged("NewNote");
+                }
             }
         }
 
@@ -418,7 +431,6 @@
                         NewOwner.EmailAddress,
                         NewOwner.IsSendByEmail,
                         true,
-                        NewOwner.Notes,
                         ref newOwnerID);
 
                 NewOwner = (from x in dc.Owners

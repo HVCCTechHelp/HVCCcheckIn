@@ -270,6 +270,9 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
+        /// <summary>
+        /// The currently selected Owner record to be acted upon.
+        /// </summary>
         private Owner _owner = null;
         public Owner Owner
         {
@@ -303,7 +306,7 @@ namespace HVCC.Shell.ViewModels
 
         #endregion
 
-        #region Property_Changed
+        #region Property/Colelction Changed EventHandlers
         /// <summary>
         /// Summary
         ///     Raises a property changed event when the SelectedCart data is modified
@@ -320,7 +323,8 @@ namespace HVCC.Shell.ViewModels
         }
 
         /// <summary>
-        /// Relationship PropertyChanged event handler
+        /// Relationship PropertyChanged event handler.  When a property of the SelectedRelationship is
+        /// changed, the PropertyChanged event is fired, and processed by this handler.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -577,6 +581,7 @@ namespace HVCC.Shell.ViewModels
         }
         #endregion
     }
+
     /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
@@ -613,9 +618,10 @@ namespace HVCC.Shell.ViewModels
             ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();             
             this.IsBusy = false;
-            RaisePropertyChanged("Refresh");
             RaisePropertyChanged("IsNotBusy");
-            Host.Execute(HostVerb.Close, this.Caption);
+            RaisePropertyChanged("DataChanged");
+
+            //Host.Execute(HostVerb.Close, this.Caption);
         }
 
         private CommandSink _sink = new CommandSink();
@@ -636,7 +642,7 @@ namespace HVCC.Shell.ViewModels
 
     /*================================================================================================================================================*/
     /// <summary>
-    /// 
+    /// ViewModel Commands
     /// </summary>
     public partial class PropertyEditViewModel
     {

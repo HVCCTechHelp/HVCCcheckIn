@@ -174,7 +174,7 @@
                     }
                 }
                 // If this is an Ownership Change, we just make the relationship inactive
-                else if (action.Contains("ChangeOwner"))
+                else if (null != action && action.Contains("ChangeOwner"))
                 {
                     relationship.Active = false;
                 }

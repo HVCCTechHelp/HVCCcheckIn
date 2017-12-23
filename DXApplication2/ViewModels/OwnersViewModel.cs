@@ -112,6 +112,10 @@
                 if (null != value &&_selectedOwner != value)
                 {
                     _selectedOwner = value;
+
+                    // To ensure there is a focused row selected in the detail (Properties) grid,
+                    // set the SelectedProperty to the first item.
+                    SelectedProperty = _selectedOwner.Properties[0];
                     RaisePropertyChanged("SelectedOwner");
                 }
             }
@@ -148,6 +152,7 @@
             switch (e.PropertyName)
             {
                 case "Refresh":
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
                     //OwnersList = FetchOwners();
                     break;
                 default:
@@ -172,6 +177,7 @@
                 this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
                 var list = (from a in this.dc.Owners
                             select a);
+
                 return new ObservableCollection<Owner>(list);
             }
             catch (Exception ex)
@@ -207,10 +213,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return true;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -220,6 +224,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
@@ -253,12 +258,12 @@
         /// <summary>
         /// RowDoubleClick Event to Command
         /// </summary>
-        private ICommand _masterRowExpandedCommand;
-        public ICommand MasterRowExpandedCommand
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
         {
             get
             {
-                return _masterRowExpandedCommand ?? (_masterRowExpandedCommand = new CommandHandlerWparm((object parameter) => MasterRowExpandedAction(parameter), true));
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
             }
         }
 
@@ -266,11 +271,10 @@
         /// Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
-        public void MasterRowExpandedAction(object parameter)
+        public void RowDoubleClickAction(object parameter)
         {
-
-            RowEventArgs e = parameter as RowEventArgs;
-
+            Owner p = parameter as Owner;
+            Host.Execute(HostVerb.Open, "EditOwner", p);
         }
 
         /// <summary>
@@ -335,6 +339,20 @@
         ///// <param name="type"></param>
         //public void ImportAction(object parameter)
         //{
+        //    ObservableCollection<Note> notes = new ObservableCollection<Note>();
+
+        //    var list = (from x in dc.Notes
+        //                 select x);
+
+        //    foreach (Note n in list)
+        //    {
+        //        Property property = (from p in dc.Properties
+        //                   where p.PropertyID == n.PropertyID
+        //                   select p).FirstOrDefault();
+
+        //        n.OwnerID = property.OwnerID;
+        //    }
+        //    CanSaveExecute = IsDirty;
         //}
 
         /// <summary>

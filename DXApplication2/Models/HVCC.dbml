@@ -22,28 +22,6 @@
       <Argument Parameter="rowId" Member="RowID" />
     </DeleteFunction>
   </Table>
-  <Table Name="dbo.Notes" Member="Notes">
-    <Type Name="Note">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Comment" Type="System.String" DbType="VarChar(250) NOT NULL" CanBeNull="false" />
-      <Column Name="EnteredBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
-      <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Association Name="Property_Note" Member="Property" ThisKey="PropertyID" OtherKey="PropertyID" Type="Property" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId3">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="comment" Member="Comment" />
-      <Argument Parameter="rowID" Member="RowID" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId4">
-      <Argument Parameter="propertyId" Member="PropertyID" />
-      <Argument Parameter="comment" Member="Comment" />
-    </UpdateFunction>
-    <DeleteFunction FunctionId="FunctionId5">
-      <Argument Parameter="rowId" Member="RowID" />
-    </DeleteFunction>
-  </Table>
   <Table Name="dbo.ApplicationDefaults" Member="ApplicationDefaults">
     <Type Name="ApplicationDefault">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -107,7 +85,7 @@
       <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="WaterWell_WellMeterReading" Member="WaterWell" ThisKey="WellNumber" OtherKey="WellNumber" Type="WaterWell" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId6">
+    <InsertFunction FunctionId="FunctionId3">
       <Argument Parameter="wellNumber" Member="WellNumber" />
       <Argument Parameter="meterReadingDate" Member="MeterReadingDate" />
       <Argument Parameter="meterReading" Member="MeterReading" />
@@ -137,11 +115,10 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Property_WaterMeterReading" Member="WaterMeterReadings" ThisKey="PropertyID" OtherKey="PropertyID" Type="WaterMeterReading" />
-      <Association Name="Property_Note" Member="Notes" ThisKey="PropertyID" OtherKey="PropertyID" Type="Note" />
       <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
       <Association Name="Owner_Property" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <UpdateFunction FunctionId="FunctionId7">
+    <UpdateFunction FunctionId="FunctionId4">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -204,61 +181,6 @@
       <Association Name="Owner_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Owners" Member="Owners">
-    <Type Name="Owner">
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="State" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
-      <Column Name="Zip" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="EmailAddress" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
-      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="Notes" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
-      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
-      <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId8">
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="mailTo" Member="MailTo" />
-      <Argument Parameter="address" Member="Address" />
-      <Argument Parameter="address2" Member="Address2" />
-      <Argument Parameter="city" Member="City" />
-      <Argument Parameter="state" Member="State" />
-      <Argument Parameter="zip" Member="Zip" />
-      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
-      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
-      <Argument Parameter="emailAddress" Member="EmailAddress" />
-      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
-      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
-      <Argument Parameter="notes" Member="Notes" />
-      <Argument Parameter="ownerID" Member="OwnerID" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId9">
-      <Argument Parameter="ownerID" Member="OwnerID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="mailTo" Member="MailTo" />
-      <Argument Parameter="address" Member="Address" />
-      <Argument Parameter="address2" Member="Address2" />
-      <Argument Parameter="city" Member="City" />
-      <Argument Parameter="state" Member="State" />
-      <Argument Parameter="zip" Member="Zip" />
-      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
-      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
-      <Argument Parameter="emailAddress" Member="EmailAddress" />
-      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
-      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
-      <Argument Parameter="notes" Member="Notes" />
-    </UpdateFunction>
-  </Table>
   <Table Name="dbo.OwnershipChanges" Member="OwnershipChanges">
     <Type Name="OwnershipChange">
       <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -270,7 +192,7 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId10">
+    <InsertFunction FunctionId="FunctionId5">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="previousOwnerID" Member="PreviousOwnerID" />
       <Argument Parameter="previousOwner" Member="PreviousOwner" />
@@ -288,6 +210,70 @@
       <Column Name="CartFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Owners" Member="Owners">
+    <Type Name="Owner">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EmailAddress" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
+      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
+      <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
+      <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId6">
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="mailTo" Member="MailTo" />
+      <Argument Parameter="address" Member="Address" />
+      <Argument Parameter="address2" Member="Address2" />
+      <Argument Parameter="city" Member="City" />
+      <Argument Parameter="state" Member="State" />
+      <Argument Parameter="zip" Member="Zip" />
+      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
+      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
+      <Argument Parameter="emailAddress" Member="EmailAddress" />
+      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
+      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
+      <Argument Parameter="ownerID" Member="OwnerID" />
+    </InsertFunction>
+    <UpdateFunction FunctionId="FunctionId7">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="mailTo" Member="MailTo" />
+      <Argument Parameter="address" Member="Address" />
+      <Argument Parameter="address2" Member="Address2" />
+      <Argument Parameter="city" Member="City" />
+      <Argument Parameter="state" Member="State" />
+      <Argument Parameter="zip" Member="Zip" />
+      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
+      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
+      <Argument Parameter="emailAddress" Member="EmailAddress" />
+      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
+      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
+    </UpdateFunction>
+  </Table>
+  <Table Name="dbo.Notes" Member="Notes">
+    <Type Name="Note">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="VarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="EnteredBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
+      <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Owner_Note" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
@@ -346,19 +332,14 @@
     <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId5" Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
+  <Function Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId3" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
+  <Function Name="dbo.usp_InsertNote" Method="usp_InsertNote">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId4" Name="dbo.usp_UdateNote" Method="usp_UdateNote">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.fn_IsMember" Method="fn_IsMember" IsComposable="true">
@@ -398,7 +379,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Id="FunctionId6" Name="dbo.usp_InsertWellMeterReading" Method="usp_InsertWellMeterReading">
+  <Function Id="FunctionId3" Name="dbo.usp_InsertWellMeterReading" Method="usp_InsertWellMeterReading">
     <Parameter Name="WellNumber" Parameter="wellNumber" Type="System.Int32" DbType="Int" />
     <Parameter Name="MeterReadingDate" Parameter="meterReadingDate" Type="System.DateTime" DbType="DateTime" />
     <Parameter Name="MeterReading" Parameter="meterReading" Type="System.Int64" DbType="BigInt" />
@@ -443,7 +424,7 @@
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId7" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
+  <Function Id="FunctionId4" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -492,24 +473,16 @@
     <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId8" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
-    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="Notes" Parameter="notes" Type="System.String" DbType="VarChar(250)" />
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
+  <Function Id="FunctionId5" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
+    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PreviousOwnerID" Parameter="previousOwnerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PreviousOwner" Parameter="previousOwner" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="NewOwnerID" Parameter="newOwnerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="NewOwner" Parameter="newOwner" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
+  <Function Id="FunctionId7" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
@@ -526,13 +499,25 @@
     <Parameter Name="Notes" Parameter="notes" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId10" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
+  <Function Id="FunctionId6" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
+    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
+    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_UdateNote" Method="usp_UdateNote">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PreviousOwnerID" Parameter="previousOwnerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PreviousOwner" Parameter="previousOwner" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="NewOwnerID" Parameter="newOwnerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="NewOwner" Parameter="newOwner" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

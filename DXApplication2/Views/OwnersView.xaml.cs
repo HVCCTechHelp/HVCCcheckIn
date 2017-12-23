@@ -62,17 +62,25 @@
         /// <param name="e"></param>
         private void ownerGrid_MasterRowExpanded(object sender, RowEventArgs e)
         {
-            if (0 < expandedRow)
+            try
             {
-                ownerGrid.CollapseMasterRow(expandedRow);
-            }
+                if (0 < expandedRow)
+                {
+                    ownerGrid.CollapseMasterRow(expandedRow);
+                }
 
-            // Set focus on the first row (after the 'click to add new row') of the detail grid
-            expandedRow = e.RowHandle;
-            tableViewOwners.FocusedRowHandle = expandedRow;
-            var detailGridControl = ownerGrid.GetDetail(e.RowHandle) as GridControl;
-            var rowHandle = detailGridControl.GetRowHandleByVisibleIndex(0);
-            detailGridControl.View.FocusedRowHandle = rowHandle;
+                // Set focus on the first row (after the 'click to add new row') of the detail grid
+                expandedRow = e.RowHandle;
+                tableViewOwners.FocusedRowHandle = expandedRow;
+                var detailGridControl = ownerGrid.GetDetail(e.RowHandle) as GridControl;
+                var rowHandle = detailGridControl.GetRowHandleByVisibleIndex(0);
+                detailGridControl.View.FocusedRowHandle = rowHandle;
+            }
+            catch
+            {
+                // Happens when use expanded, collapses, expands the same row...
+                expandedRow = 0;
+            }
         }
     }
 }
