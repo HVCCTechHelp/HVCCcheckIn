@@ -223,6 +223,7 @@
                 if (_newNote != value)
                 {
                     _newNote = value;
+                    RaisePropertyChanged("NewNote");
                 }
             }
         }
@@ -272,8 +273,10 @@
                 // history of all note entries.
                 foreach (Note n in notes)
                 {
+                    //n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count());
+
                     sb.Append(n.Entered.ToShortDateString()).Append(" ");
-                    sb.Append(n.EnteredBy).Append(" - ");
+                    sb.Append(n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count())).Append(" - ");
                     sb.Append(n.Comment);
                     sb.AppendLine();
                 }
@@ -353,6 +356,7 @@
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
         }
+
         #endregion
 
         /* ----------------------------------- Style Propertes ---------------------------------------- */
@@ -490,9 +494,13 @@
         {
             this.IsBusy = true;
             this.dc.SubmitChanges();
-            RaisePropertyChanged("DataChanged");
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Notes);
+            AllNotes = GetOwnerNotes();
+            NewNote = string.Empty;
             this.IsBusy = false;
-            Host.Execute(HostVerb.Close, this.Caption);
+            RaisePropertyChanged("DataChanged");
+            CanSaveExecute = IsDirty;
+            //Host.Execute(HostVerb.Close, this.Caption);
         }
 
         #region ICommandSink Implementation
@@ -567,7 +575,7 @@
         }
 
         /// <summary>
-        /// AddRelationship Command
+        /// TextEdit LostFocus Event to Command
         /// </summary>
         private ICommand _teLostFocusCommand;
         public ICommand TELostFocusCommand
@@ -579,7 +587,7 @@
         }
 
         /// <summary>
-        /// AddRelationshipCommand Action
+        ///TextEdit LostFocus Event Action
         /// </summary>
         /// <param name="parameter"></param>
         public void TELostFocusAction(object parameter)
@@ -588,6 +596,7 @@
             n.Owner = SelectedOwner;
             n.Comment = NewNote;
             dc.Notes.InsertOnSubmit(n);
+            CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
         }
 

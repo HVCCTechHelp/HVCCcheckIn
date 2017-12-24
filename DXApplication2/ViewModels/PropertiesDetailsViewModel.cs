@@ -206,8 +206,6 @@
                         this._selectedProperty = value;
                         // Once the new value is assigned, we register a new PropertyChanged event listner.
                         this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
-
-                        this._selectedProperty.PropertyComments = GetPropertyNotes();
                     }
 
                     // Once a property has been selected, we enable the ChangeOwner ribbon button if appropriate
@@ -392,41 +390,6 @@
             }
         }
 
-        /// <summary>
-        /// Builds a history of property notes
-        /// </summary>
-        /// <returns></returns>
-        private string GetPropertyNotes()
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                var notes = (from n in this.dc.Notes
-                             where n.PropertyID == this.SelectedProperty.PropertyID
-                             orderby n.Entered descending
-                             select n);
-
-                NoteCount = notes.Count();
-
-                // Iterate through the notes collection and build a string of the notes in 
-                // decending order.  This string will be reflected in the UI as a read-only
-                // history of all note entries.
-                foreach (Note n in notes)
-                {
-                    sb.Append(n.Entered.ToShortDateString()).Append(" ");
-                    sb.Append(n.EnteredBy).Append(" - ");
-                    sb.Append(n.Comment);
-                    sb.AppendLine();
-                }
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving Property Note data : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
         #endregion
 
         /* ------------------------------------ Public Methods -------------------------------------------- */

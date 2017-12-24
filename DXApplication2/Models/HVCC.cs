@@ -112,40 +112,6 @@ namespace HVCC.Shell.Models
             }
         }
 
-        private string _propertyComments = string.Empty;
-        public string PropertyComments
-        {
-            get
-            {
-                return this._propertyComments;
-            }
-            set
-            {
-                if (value != this._propertyComments)
-                {
-                    this._propertyComments = value;
-                }
-                RaisePropertyChanged("PropertyComments");
-            }
-        }
-
-        private string _newComment = string.Empty;
-        public string NewComment
-        {
-            get
-            {
-                return this._newComment;
-            }
-            set
-            {
-                if (value != this._newComment)
-                {
-                    this._newComment = value;
-                }
-                RaisePropertyChanged("NewComment");
-            }
-        }
-
         private decimal _previousBalance = 0;
         public decimal PreviousBalance
         {

@@ -55,14 +55,13 @@ namespace HVCC.Shell.Models
     partial void DeleteRelationship(Relationship instance);
     partial void UpdateOwnershipChange(OwnershipChange instance);
     partial void DeleteOwnershipChange(OwnershipChange instance);
+    partial void UpdateOwner(Owner instance);
     partial void DeleteOwner(Owner instance);
-    partial void InsertNote(Note instance);
-    partial void UpdateNote(Note instance);
     partial void DeleteNote(Note instance);
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -239,9 +238,16 @@ namespace HVCC.Shell.Models
 			obj.OwnerID = p1.GetValueOrDefault();
 		}
 		
-		private void UpdateOwner(Owner obj)
+		private void InsertNote(Note obj)
 		{
-			this.usp_UpdateOwner(((System.Nullable<int>)(obj.OwnerID)), obj.Customer, obj.MailTo, obj.Address, obj.Address2, obj.City, obj.State, obj.Zip, obj.PrimaryPhone, obj.SecondaryPhone, obj.EmailAddress, ((System.Nullable<bool>)(obj.IsSendByEmail)), ((System.Nullable<bool>)(obj.IsCurrentOwner)), default(string));
+			System.Nullable<int> p1 = obj.RowID;
+			this.usp_InsertNote(((System.Nullable<int>)(obj.OwnerID)), obj.Comment, ref p1);
+			obj.RowID = p1.GetValueOrDefault();
+		}
+		
+		private void UpdateNote(Note obj)
+		{
+			this.usp_UpdateOwner(((System.Nullable<int>)(obj.OwnerID)), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(System.Nullable<bool>), default(System.Nullable<bool>));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -283,14 +289,6 @@ namespace HVCC.Shell.Models
 		public int usp_DeleteNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertNote")]
-		public int usp_InsertNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(250)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, comment, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(2)));
 			return ((int)(result.ReturnValue));
 		}
 		
@@ -419,13 +417,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateOwner")]
-		public int usp_UpdateOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Notes", DbType="VarChar(250)")] string notes)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, notes);
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertOwner")]
 		public int usp_InsertOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] ref System.Nullable<int> ownerID)
 		{
@@ -438,6 +429,21 @@ namespace HVCC.Shell.Models
 		public int usp_UdateNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(250)")] string comment)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, comment);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertNote")]
+		public int usp_InsertNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(250)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, comment, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(2)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateOwner")]
+		public int usp_UpdateOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -4199,9 +4205,9 @@ namespace HVCC.Shell.Models
 		
 		private int _RowID;
 		
-		private int _PropertyID;
+		private System.Nullable<int> _PropertyID;
 		
-		private System.Nullable<int> _OwnerID;
+		private int _OwnerID;
 		
 		private string _Comment;
 		
@@ -4217,9 +4223,9 @@ namespace HVCC.Shell.Models
     partial void OnCreated();
     partial void OnRowIDChanging(int value);
     partial void OnRowIDChanged();
-    partial void OnPropertyIDChanging(int value);
+    partial void OnPropertyIDChanging(System.Nullable<int> value);
     partial void OnPropertyIDChanged();
-    partial void OnOwnerIDChanging(System.Nullable<int> value);
+    partial void OnOwnerIDChanging(int value);
     partial void OnOwnerIDChanged();
     partial void OnCommentChanging(string value);
     partial void OnCommentChanged();
@@ -4255,8 +4261,8 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
-		public int PropertyID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int")]
+		public System.Nullable<int> PropertyID
 		{
 			get
 			{
@@ -4275,8 +4281,8 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int")]
-		public System.Nullable<int> OwnerID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
 		{
 			get
 			{
@@ -4386,7 +4392,7 @@ namespace HVCC.Shell.Models
 					}
 					else
 					{
-						this._OwnerID = default(Nullable<int>);
+						this._OwnerID = default(int);
 					}
 					this.SendPropertyChanged("Owner");
 				}

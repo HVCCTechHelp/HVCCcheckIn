@@ -122,24 +122,24 @@
         <classShapeMoniker Id="46b6cb30-81a7-4ee0-b2cf-954bc961918e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.25 : 4.1098046875); (2.53125 : 4.1098046875); (2.53125 : 5.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.25 : 4.0473046875); (3.15625 : 4.0473046875); (3.15625 : 5.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
         <classShapeMoniker Id="bc038fc0-9f9c-4b67-bc25-deb6d23913df" />
       </nodes>
     </associationConnector>
-    <classShape Id="8bc0fafc-7115-4348-a39b-af406db428f1" absoluteBounds="1.25, 1.375, 2, 1.9631982421875">
+    <classShape Id="382b4c1b-b026-4ce0-bc0e-a7a2e1b029c8" absoluteBounds="0.5, 1.5, 2, 1.9631982421875">
       <DataClassMoniker Name="/HVCCDataContext/Note" />
       <nestedChildShapes>
-        <elementListCompartment Id="cc58ce7e-2e17-44de-9b4d-faba2bd2bd74" absoluteBounds="1.2650000000000001, 1.835, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="85d83370-ff75-4cf4-97b8-91454c11146a" absoluteBounds="0.51500000000000012, 1.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.25 : 2.35659912109375); (3.25 : 2.35659912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.25 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
-        <classShapeMoniker Id="8bc0fafc-7115-4348-a39b-af406db428f1" />
+        <classShapeMoniker Id="382b4c1b-b026-4ce0-bc0e-a7a2e1b029c8" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

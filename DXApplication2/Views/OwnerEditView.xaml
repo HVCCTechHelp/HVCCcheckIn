@@ -255,7 +255,7 @@
                               >
                 <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}">
                     <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                               HorizontalAlignment="Left"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"
                                   Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
                                   Style="{Binding TeStyle}"
                                   Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"

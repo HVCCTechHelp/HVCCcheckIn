@@ -444,7 +444,7 @@
                     </dxlc:LayoutGroup>
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding Owner.Email}" Width="Auto" 
+                            <dxe:TextEdit Text="{Binding Owner.EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
@@ -467,29 +467,33 @@
 
             </dxlc:LayoutGroup>
 
-            <dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="HVCC Notes"
+            <dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
                               Width="800" Height="Auto" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
                               IsCollapsed="True"
                               IsCollapsible="True"
                               Orientation="Vertical"
                               >
                 <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}">
-                    <dxe:TextEdit Text="{Binding SelectedProperty.NewComment}"  
-                                  HorizontalAlignment="Left"
+                    <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"
                                   Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
                                   Style="{Binding TeStyle}"
                                   Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
                                   IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
-                                  AcceptsReturn="True"
-                                  Height="25" Width="700"
-                                  />
+                                AcceptsReturn="True"
+                                  Height="50" Width="700"
+                                  >
+                        <dxmvvm:Interaction.Behaviors>
+                            <dxmvvm:EventToCommand EventName="LostFocus" Command="{Binding TELostFocusCommand}" PassEventArgsToCommand="True"/>
+                        </dxmvvm:Interaction.Behaviors>
+                    </dxe:TextEdit>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem Width="Auto">
                     <ScrollViewer Height="60" VerticalAlignment="Top">
-                        <TextBlock Text="{Binding SelectedProperty.PropertyComments}"  
+                        <TextBlock Text="{Binding AllNotes}"  
                                   Height="200" Width="700"
                                   />
                     </ScrollViewer>

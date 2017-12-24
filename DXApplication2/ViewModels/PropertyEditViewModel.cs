@@ -36,7 +36,7 @@ namespace HVCC.Shell.ViewModels
             if (null != p)
             {
                 SelectedProperty = GetProperty(p.PropertyID);
-                Owner = SelectedProperty.Owner;
+                Owner = SelectedProperty.Owner;  // The View is bound to this element
 
                 Relationships = GetRelationships();
                 if (0 < Relationships.Count())
@@ -48,6 +48,8 @@ namespace HVCC.Shell.ViewModels
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             CanSaveExecute = false;
             this.RegisterCommands();
+
+            NotesHeader = string.Format("HVCC Notes [{0}]", NoteCount);
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */
@@ -154,25 +156,6 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
-        /// <summary>
-        /// An integer representing the count of notes associated to the selected property
-        /// </summary>
-        private int _noteCount = 0;
-        public int NoteCount
-        {
-            get
-            {
-                return this._noteCount;
-            }
-            set
-            {
-                if (this._noteCount != value)
-                {
-                    this._noteCount = value;
-                }
-            }
-        }
-
         #region Properties
 
         /// <summary>
@@ -203,10 +186,10 @@ namespace HVCC.Shell.ViewModels
                         }
 
                         this._selectedProperty = value;
+                        AllNotes = GetOwnerNotes();
+
                         // Once the new value is assigned, we register a new PropertyChanged event listner.
                         this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
-
-                        this._selectedProperty.PropertyComments = GetPropertyNotes();
                     }
                     RaisePropertyChanged("SelectedProperty");
                 }
@@ -301,6 +284,76 @@ namespace HVCC.Shell.ViewModels
                         RaisePropertyChanged("Owner");
                     }
                 }
+            }
+        }
+
+
+        private string _notesHeader = string.Empty;
+        public string NotesHeader
+        {
+            get
+            {
+                return _notesHeader;
+            }
+            set
+            {
+                if (_notesHeader != value)
+                {
+                    _notesHeader = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// An integer representing the count of notes associated to the selected property
+        /// </summary>
+        private int _noteCount = 0;
+        public int NoteCount
+        {
+            get
+            {
+                return this._noteCount;
+            }
+            set
+            {
+                if (this._noteCount != value)
+                {
+                    this._noteCount = value;
+                }
+            }
+        }
+
+        private string _newNote = null;
+        public string NewNote
+        {
+            get
+            {
+                return _newNote;
+            }
+            set
+            {
+                if (_newNote != value)
+                {
+                    _newNote = value;
+                    RaisePropertyChanged("NewNote");
+                }
+            }
+        }
+
+        private string _allNotes = string.Empty;
+        public string AllNotes
+        {
+            get
+            {
+                return this._allNotes;
+            }
+            set
+            {
+                if (value != this._allNotes)
+                {
+                    this._allNotes = value;
+                }
+                RaisePropertyChanged("AllNotes");
             }
         }
 
@@ -522,29 +575,32 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
+
         /// <summary>
-        /// Returns the Notes for a given Property
+        /// Builds a history of property notes
         /// </summary>
         /// <returns></returns>
-        private string GetPropertyNotes()
+        private string GetOwnerNotes()
         {
             StringBuilder sb = new StringBuilder();
             try
             {
                 var notes = (from n in this.dc.Notes
-                             where n.PropertyID == this.SelectedProperty.PropertyID
+                             where n.OwnerID == this.SelectedProperty.Owner.OwnerID
                              orderby n.Entered descending
                              select n);
 
-                this._noteCount = notes.Count();
+                NoteCount = notes.Count();
 
                 // Iterate through the notes collection and build a string of the notes in 
                 // decending order.  This string will be reflected in the UI as a read-only
                 // history of all note entries.
                 foreach (Note n in notes)
                 {
+                    //n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count());
+
                     sb.Append(n.Entered.ToShortDateString()).Append(" ");
-                    sb.Append(n.EnteredBy).Append(" - ");
+                    sb.Append(n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count())).Append(" - ");
                     sb.Append(n.Comment);
                     sb.AppendLine();
                 }
@@ -553,6 +609,7 @@ namespace HVCC.Shell.ViewModels
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
@@ -616,7 +673,12 @@ namespace HVCC.Shell.ViewModels
             this.IsBusy = true;
             RaisePropertyChanged("IsBusy");
             ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();             
+            this.dc.SubmitChanges();
+
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Notes);
+            AllNotes = GetOwnerNotes();
+            NewNote = string.Empty;
+
             this.IsBusy = false;
             RaisePropertyChanged("IsNotBusy");
             RaisePropertyChanged("DataChanged");
@@ -897,6 +959,32 @@ namespace HVCC.Shell.ViewModels
             {
                 MessageBox.Show("Error processing image file. " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// TextEdit LostFocus Event to Command
+        /// </summary>
+        private ICommand _teLostFocusCommand;
+        public ICommand TELostFocusCommand
+        {
+            get
+            {
+                return _teLostFocusCommand ?? (_teLostFocusCommand = new CommandHandlerWparm((object parameter) => TELostFocusAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// TextEdit LostFocus Event Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void TELostFocusAction(object parameter)
+        {
+            Note n = new Note();
+            n.Owner = SelectedProperty.Owner;
+            n.Comment = NewNote;
+            dc.Notes.InsertOnSubmit(n);
+            CanSaveExecute = IsDirty;
+            RaisePropertyChanged("DataChanged");
         }
 
 
