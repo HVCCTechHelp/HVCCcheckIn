@@ -65,7 +65,7 @@
         <classShapeMoniker Id="6fb54dac-ea2e-41f4-9b18-c097408448d6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WellXProperty" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
@@ -90,12 +90,6 @@
         <elementListCompartment Id="b0023d47-a09f-4a70-83f4-567f7ca6101c" absoluteBounds="1.7649999999999997, 6.2100000000000009, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="f7552aca-7695-4f3f-a64a-92e0b276d1ab" absoluteBounds="7, 1.625, 2, 2.3478011067708335">
-      <DataClassMoniker Name="/HVCCDataContext/OwnershipChange" />
-      <nestedChildShapes>
-        <elementListCompartment Id="78c7b454-7221-4d37-aee2-7b0166127e3b" absoluteBounds="7.015, 2.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="805f6944-e175-4518-b0c0-f64814741d68" absoluteBounds="16.125, 1.125, 2, 2.1554996744791666">
       <DataClassMoniker Name="/HVCCDataContext/Season" />
       <nestedChildShapes>
@@ -115,14 +109,14 @@
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.9375 : 4.5689111328125); (5.9375 : 5.5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.9375 : 4.5689111328125); (5.9375 : 5.5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
         <classShapeMoniker Id="46b6cb30-81a7-4ee0-b2cf-954bc961918e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.25 : 4.0473046875); (3.15625 : 4.0473046875); (3.15625 : 5.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.25 : 4.0473046875); (3.15625 : 4.0473046875); (3.15625 : 5.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -142,5 +136,11 @@
         <classShapeMoniker Id="382b4c1b-b026-4ce0-bc0e-a7a2e1b029c8" />
       </nodes>
     </associationConnector>
+    <classShape Id="d127ad45-182a-46b9-be84-ee0e94b441f2" absoluteBounds="7.125, 1.625, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/HVCCDataContext/OwnershipChange" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3800173c-476e-4fe5-a181-89c071b471a6" absoluteBounds="7.14, 2.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

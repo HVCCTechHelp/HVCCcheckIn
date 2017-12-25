@@ -53,11 +53,11 @@ namespace HVCC.Shell.Models
     partial void InsertRelationship(Relationship instance);
     partial void UpdateRelationship(Relationship instance);
     partial void DeleteRelationship(Relationship instance);
-    partial void UpdateOwnershipChange(OwnershipChange instance);
-    partial void DeleteOwnershipChange(OwnershipChange instance);
     partial void UpdateOwner(Owner instance);
     partial void DeleteOwner(Owner instance);
     partial void DeleteNote(Note instance);
+    partial void UpdateOwnershipChange(OwnershipChange instance);
+    partial void DeleteOwnershipChange(OwnershipChange instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -170,14 +170,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<OwnershipChange> OwnershipChanges
-		{
-			get
-			{
-				return this.GetTable<OwnershipChange>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Season> Seasons
 		{
 			get
@@ -199,6 +191,14 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<Note>();
+			}
+		}
+		
+		public System.Data.Linq.Table<OwnershipChange> OwnershipChanges
+		{
+			get
+			{
+				return this.GetTable<OwnershipChange>();
 			}
 		}
 		
@@ -224,13 +224,6 @@ namespace HVCC.Shell.Models
 			this.usp_UpdateProperty(((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.OwnerID)), obj.Customer, ((System.Nullable<int>)(obj.Section)), ((System.Nullable<int>)(obj.Block)), ((System.Nullable<int>)(obj.Lot)), obj.SubLot, obj.BillTo, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<bool>)(obj.IsInGoodStanding)), obj.Parcel, obj.PhysicalAddress, obj.Status, obj.CommonNotes, ((System.Nullable<int>)(obj.MeterNumber)), obj.WaterSystemNotes);
 		}
 		
-		private void InsertOwnershipChange(OwnershipChange obj)
-		{
-			System.Nullable<int> p1 = obj.RowId;
-			this.usp_InsertOwnershipChange(((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.PreviousOwnerID)), obj.PreviousOwner, ((System.Nullable<int>)(obj.NewOwnerID)), obj.NewOwner, ref p1);
-			obj.RowId = p1.GetValueOrDefault();
-		}
-		
 		private void InsertOwner(Owner obj)
 		{
 			System.Nullable<int> p1 = obj.OwnerID;
@@ -248,6 +241,13 @@ namespace HVCC.Shell.Models
 		private void UpdateNote(Note obj)
 		{
 			this.usp_UpdateOwner(((System.Nullable<int>)(obj.OwnerID)), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(string), default(System.Nullable<bool>), default(System.Nullable<bool>));
+		}
+		
+		private void InsertOwnershipChange(OwnershipChange obj)
+		{
+			System.Nullable<int> p1 = obj.RowId;
+			this.usp_InsertOwnershipChange(((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.PreviousOwnerID)), obj.PreviousOwner, ((System.Nullable<int>)(obj.NewOwnerID)), obj.NewOwner, ref p1);
+			obj.RowId = p1.GetValueOrDefault();
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -409,14 +409,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertOwnershipChange")]
-		public int usp_InsertOwnershipChange([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousOwnerID", DbType="Int")] System.Nullable<int> previousOwnerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousOwner", DbType="VarChar(100)")] string previousOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewOwnerID", DbType="Int")] System.Nullable<int> newOwnerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewOwner", DbType="VarChar(100)")] string newOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, previousOwnerID, previousOwner, newOwnerID, newOwner, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(5)));
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertOwner")]
 		public int usp_InsertOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] ref System.Nullable<int> ownerID)
 		{
@@ -444,6 +436,14 @@ namespace HVCC.Shell.Models
 		public int usp_UpdateOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertOwnershipChange")]
+		public int usp_InsertOwnershipChange([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousOwnerID", DbType="Int")] System.Nullable<int> previousOwnerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousOwner", DbType="VarChar(200)")] string previousOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewOwnerID", DbType="Int")] System.Nullable<int> newOwnerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewOwner", DbType="VarChar(200)")] string newOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, previousOwnerID, previousOwner, newOwnerID, newOwner, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(5)));
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -3322,236 +3322,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.OwnershipChanges")]
-	public partial class OwnershipChange : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RowId;
-		
-		private int _PropertyID;
-		
-		private int _NewOwnerID;
-		
-		private string _NewOwner;
-		
-		private int _PreviousOwnerID;
-		
-		private string _PreviousOwner;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRowIdChanging(int value);
-    partial void OnRowIdChanged();
-    partial void OnPropertyIDChanging(int value);
-    partial void OnPropertyIDChanged();
-    partial void OnNewOwnerIDChanging(int value);
-    partial void OnNewOwnerIDChanged();
-    partial void OnNewOwnerChanging(string value);
-    partial void OnNewOwnerChanged();
-    partial void OnPreviousOwnerIDChanging(int value);
-    partial void OnPreviousOwnerIDChanged();
-    partial void OnPreviousOwnerChanging(string value);
-    partial void OnPreviousOwnerChanged();
-    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastModifiedChanged();
-    partial void OnLastModifiedByChanging(string value);
-    partial void OnLastModifiedByChanged();
-    #endregion
-		
-		public OwnershipChange()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RowId
-		{
-			get
-			{
-				return this._RowId;
-			}
-			set
-			{
-				if ((this._RowId != value))
-				{
-					this.OnRowIdChanging(value);
-					this.SendPropertyChanging();
-					this._RowId = value;
-					this.SendPropertyChanged("RowId");
-					this.OnRowIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
-		public int PropertyID
-		{
-			get
-			{
-				return this._PropertyID;
-			}
-			set
-			{
-				if ((this._PropertyID != value))
-				{
-					this.OnPropertyIDChanging(value);
-					this.SendPropertyChanging();
-					this._PropertyID = value;
-					this.SendPropertyChanged("PropertyID");
-					this.OnPropertyIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwnerID", DbType="Int NOT NULL")]
-		public int NewOwnerID
-		{
-			get
-			{
-				return this._NewOwnerID;
-			}
-			set
-			{
-				if ((this._NewOwnerID != value))
-				{
-					this.OnNewOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._NewOwnerID = value;
-					this.SendPropertyChanged("NewOwnerID");
-					this.OnNewOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwner", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string NewOwner
-		{
-			get
-			{
-				return this._NewOwner;
-			}
-			set
-			{
-				if ((this._NewOwner != value))
-				{
-					this.OnNewOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._NewOwner = value;
-					this.SendPropertyChanged("NewOwner");
-					this.OnNewOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwnerID", DbType="Int NOT NULL")]
-		public int PreviousOwnerID
-		{
-			get
-			{
-				return this._PreviousOwnerID;
-			}
-			set
-			{
-				if ((this._PreviousOwnerID != value))
-				{
-					this.OnPreviousOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._PreviousOwnerID = value;
-					this.SendPropertyChanged("PreviousOwnerID");
-					this.OnPreviousOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwner", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string PreviousOwner
-		{
-			get
-			{
-				return this._PreviousOwner;
-			}
-			set
-			{
-				if ((this._PreviousOwner != value))
-				{
-					this.OnPreviousOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._PreviousOwner = value;
-					this.SendPropertyChanged("PreviousOwner");
-					this.OnPreviousOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this.OnLastModifiedChanging(value);
-					this.SendPropertyChanging();
-					this._LastModified = value;
-					this.SendPropertyChanged("LastModified");
-					this.OnLastModifiedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this.OnLastModifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._LastModifiedBy = value;
-					this.SendPropertyChanged("LastModifiedBy");
-					this.OnLastModifiedByChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Seasons")]
 	public partial class Season
 	{
@@ -4395,6 +4165,236 @@ namespace HVCC.Shell.Models
 						this._OwnerID = default(int);
 					}
 					this.SendPropertyChanged("Owner");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.OwnershipChanges")]
+	public partial class OwnershipChange : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowId;
+		
+		private int _PropertyID;
+		
+		private int _NewOwnerID;
+		
+		private string _NewOwner;
+		
+		private int _PreviousOwnerID;
+		
+		private string _PreviousOwner;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIdChanging(int value);
+    partial void OnRowIdChanged();
+    partial void OnPropertyIDChanging(int value);
+    partial void OnPropertyIDChanged();
+    partial void OnNewOwnerIDChanging(int value);
+    partial void OnNewOwnerIDChanged();
+    partial void OnNewOwnerChanging(string value);
+    partial void OnNewOwnerChanged();
+    partial void OnPreviousOwnerIDChanging(int value);
+    partial void OnPreviousOwnerIDChanged();
+    partial void OnPreviousOwnerChanging(string value);
+    partial void OnPreviousOwnerChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public OwnershipChange()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowId
+		{
+			get
+			{
+				return this._RowId;
+			}
+			set
+			{
+				if ((this._RowId != value))
+				{
+					this.OnRowIdChanging(value);
+					this.SendPropertyChanging();
+					this._RowId = value;
+					this.SendPropertyChanged("RowId");
+					this.OnRowIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					this.OnPropertyIDChanging(value);
+					this.SendPropertyChanging();
+					this._PropertyID = value;
+					this.SendPropertyChanged("PropertyID");
+					this.OnPropertyIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwnerID", DbType="Int NOT NULL")]
+		public int NewOwnerID
+		{
+			get
+			{
+				return this._NewOwnerID;
+			}
+			set
+			{
+				if ((this._NewOwnerID != value))
+				{
+					this.OnNewOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._NewOwnerID = value;
+					this.SendPropertyChanged("NewOwnerID");
+					this.OnNewOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwner", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
+		public string NewOwner
+		{
+			get
+			{
+				return this._NewOwner;
+			}
+			set
+			{
+				if ((this._NewOwner != value))
+				{
+					this.OnNewOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._NewOwner = value;
+					this.SendPropertyChanged("NewOwner");
+					this.OnNewOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwnerID", DbType="Int NOT NULL")]
+		public int PreviousOwnerID
+		{
+			get
+			{
+				return this._PreviousOwnerID;
+			}
+			set
+			{
+				if ((this._PreviousOwnerID != value))
+				{
+					this.OnPreviousOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._PreviousOwnerID = value;
+					this.SendPropertyChanged("PreviousOwnerID");
+					this.OnPreviousOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwner", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
+		public string PreviousOwner
+		{
+			get
+			{
+				return this._PreviousOwner;
+			}
+			set
+			{
+				if ((this._PreviousOwner != value))
+				{
+					this.OnPreviousOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._PreviousOwner = value;
+					this.SendPropertyChanged("PreviousOwner");
+					this.OnPreviousOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
 				}
 			}
 		}

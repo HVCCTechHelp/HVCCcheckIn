@@ -18,6 +18,7 @@
     using System.Text;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     public partial class OwnerEditViewModel : CommonViewModel, ICommandSink
     {
@@ -35,6 +36,15 @@
                                  where x.OwnerID == p.OwnerID
                                  select x).FirstOrDefault();
 
+                var pList = (from x in this.dc.Properties
+                             where x.OwnerID == SelectedOwner.OwnerID
+                             select x);
+
+                Properties = new ObservableCollection<Property>(pList);
+                // Set the focused row in the Relationships grid to the first item in the Owner's
+                // Relationship collection.
+                SelectedProperty = Properties[0];
+
                 var rList = (from x in this.dc.Relationships
                             where x.OwnerID == SelectedOwner.OwnerID
                             select x);
@@ -43,8 +53,6 @@
                 // Set the focused row in the Relationships grid to the first item in the Owner's
                 // Relationship collection.
                 SelectedRelationship = Relationships[0];
-
-                HeaderText = string.Format("HVCC Notes [{0}]", NoteCount);
             }
             catch (Exception ex)
             {
@@ -109,19 +117,11 @@
             }
         }
 
-        private string _headerText = string.Empty;
         public string HeaderText
         {
             get
             {
-                return _headerText;
-            }
-            set
-            {
-                if (_headerText != value)
-                {
-                    _headerText = value;
-                }
+                return string.Format("Edit Owner #{0}", SelectedOwner.OwnerID); 
             }
         }
 
@@ -141,6 +141,41 @@
                     _selectedOwner = value;
                     AllNotes = GetOwnerNotes();
                     RaisePropertyChanged("SelectedOwner");
+                }
+            }
+        }
+
+        private Property _selectedProperty = null;
+        public Property SelectedProperty
+        {
+            get
+            {
+                return _selectedProperty;
+            }
+            set
+            {
+                if (value != _selectedProperty)
+                {
+                    _selectedProperty = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A collection of properties 
+        /// </summary>
+        private ObservableCollection<Property> _properties = null;
+        public ObservableCollection<Property> Properties
+        {
+            get
+            {
+                return _properties;
+            }
+            set
+            {
+                if (_properties != value)
+                {
+                    _properties = value;
                 }
             }
         }
@@ -191,6 +226,14 @@
             }
         }
 
+        public string NotesHeader
+        {
+            get
+            {
+                return string.Format("HVCC Notes [{0}]", NoteCount);
+            }
+        }
+
         /// <summary>
         /// An integer representing the count of notes associated to the selected property
         /// </summary>
@@ -209,7 +252,6 @@
                 }
             }
         }
-
 
         private string _newNote = null;
         public string NewNote
@@ -244,6 +286,44 @@
                 RaisePropertyChanged("AllNotes");
             }
         }
+
+        public string BalanceDue
+        {
+            get
+            {
+                string due = string.Empty;
+                decimal? balanceDue = 0;
+                foreach (Property p in Properties)
+                {
+                    balanceDue += p.Balance as decimal?;
+                }
+
+                if (balanceDue > 0)
+                {
+                    TextColor = new SolidColorBrush(Colors.DarkRed);
+                    return string.Format("${0:#.00}", balanceDue);
+                }
+                return string.Format("${0:#.00}", balanceDue);
+            }
+        }
+
+        private SolidColorBrush _textColor = new SolidColorBrush(Colors.Black);
+        public SolidColorBrush TextColor
+        {
+            get
+            {
+                return _textColor;
+            }
+            set
+            {
+                if (_textColor != value)
+                {
+                    _textColor = value;
+                    RaisePropertyChanged("TextColor");
+                }
+            }
+        }
+
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods
@@ -598,6 +678,28 @@
             dc.Notes.InsertOnSubmit(n);
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
+        }
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
+        {
+            get
+            {
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RowDoubleClickAction(object parameter)
+        {
+            Property p = parameter as Property;
+            Host.Execute(HostVerb.Open, "PropertyEdit", p);
         }
 
         ///// <summary>

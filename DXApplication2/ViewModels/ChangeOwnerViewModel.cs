@@ -18,6 +18,7 @@
     using HVCC.Shell.Validation;
     using System.Collections.Generic;
     using System.Text;
+    using DevExpress.Xpf.Grid;
 
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
@@ -121,6 +122,17 @@
         #region Properties
 
         public string PreviousBillTo { get; set; }
+
+        public ObservableCollection<Owner> OwnerList
+        {
+            get
+            {
+                var list = (from x in dc.Owners
+                            select x);
+                return new ObservableCollection<Owner>(list);
+            }
+        }
+
         /// <summary>
         /// The Owner entity being acted upon
         /// </summary>
@@ -148,6 +160,24 @@
             set
             {
                 this._newOwner = value;
+                RaisePropertyChanged("NewOwner");
+            }
+        }
+
+        /// <summary>
+        /// The Owner entity being acted upon
+        /// </summary>
+        private Owner _selectedOwner = null;
+        public Owner SelecctedOwner
+        {
+            get
+            {
+                return _selectedOwner;
+            }
+            set
+            {
+                this._selectedOwner = value;
+                RaisePropertyChanged("SelecctedOwner");
             }
         }
 
@@ -399,80 +429,94 @@
         /// </summary>
         private void SaveExecute()
         {
-            if (Helper.CheckForOwner(RelationshipsToProcess) && IsValid)
+
+            if (0 == NewOwner.OwnerID)
             {
-                this.IsBusy = true;
-                RaisePropertyChanged("IsBusy");
-
-                int? newOwnerID = 0;
-                string billTo = string.Format("{0} {1} {2} {3} {4} {5}"
-                    , NewOwner.MailTo
-                    ,NewOwner.Address
-                    ,NewOwner.Address2
-                    ,NewOwner.City
-                    ,NewOwner.State
-                    ,NewOwner.Zip);
-
-                // Stop notifcations and write NewOwner to the database.
-                NewOwner.PropertyChanged -=
-                     new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
-
-                NewOwner.Customer = SelectedProperty.Customer;
-                dc.usp_InsertOwner(
-                        NewOwner.Customer,
-                        NewOwner.MailTo,
-                        NewOwner.Address,
-                        NewOwner.Address2,
-                        NewOwner.City,
-                        NewOwner.State,
-                        NewOwner.Zip,
-                        NewOwner.PrimaryPhone,
-                        NewOwner.SecondaryPhone,
-                        NewOwner.EmailAddress,
-                        NewOwner.IsSendByEmail,
-                        true,
-                        ref newOwnerID);
-
-                NewOwner = (from x in dc.Owners
-                            where x.OwnerID == newOwnerID
-                            select x).FirstOrDefault();
-
-                // Insert the Relationship collection
-                foreach (Relationship r in RelationshipsToProcess)
+                if (Helper.CheckForOwner(RelationshipsToProcess) && IsValid)
                 {
-                    r.Owner = NewOwner;
-                    r.Active = true;
-                    r.Photo = ApplDefault.Photo;
+                    this.IsBusy = true;
+                    RaisePropertyChanged("IsBusy");
+
+                    int? newOwnerID = 0;
+
+                    // Stop notifcations and write NewOwner to the database.
+                    NewOwner.PropertyChanged -=
+                         new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+
+                    NewOwner.Customer = SelectedProperty.Customer;
+                    dc.usp_InsertOwner(
+                            NewOwner.Customer,
+                            NewOwner.MailTo,
+                            NewOwner.Address,
+                            NewOwner.Address2,
+                            NewOwner.City,
+                            NewOwner.State,
+                            NewOwner.Zip,
+                            NewOwner.PrimaryPhone,
+                            NewOwner.SecondaryPhone,
+                            NewOwner.EmailAddress,
+                            NewOwner.IsSendByEmail,
+                            true,
+                            ref newOwnerID);
+
+                    NewOwner = (from x in dc.Owners
+                                where x.OwnerID == newOwnerID
+                                select x).FirstOrDefault();
+
+                    // Insert the Relationship collection
+                    foreach (Relationship r in RelationshipsToProcess)
+                    {
+                        r.Owner = NewOwner;
+                        r.Active = true;
+                        r.Photo = ApplDefault.Photo;
+                    }
+                    dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
                 }
-                dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
-
-                // Create the OwnershipChange record
-                OwnershipChange oc = new OwnershipChange();
-                oc.PropertyID = SelectedProperty.PropertyID;
-                oc.PreviousOwnerID = PreviousOwner.OwnerID;
-                oc.PreviousOwner = PreviousBillTo;
-                oc.NewOwnerID = NewOwner.OwnerID;
-                oc.NewOwner = billTo;
-                dc.OwnershipChanges.InsertOnSubmit(oc);
-
-                // Set the previous owner inactive
-                PreviousOwner.IsCurrentOwner = false;
-
-                // Change the Property Owner to the NewOwner
-                SelectedProperty.Owner = NewOwner;
-                SelectedProperty.BillTo = billTo;
-
-
-                ChangeSet cs = dc.GetChangeSet();
-                this.dc.SubmitChanges();
-                this.IsBusy = false;
-                RaisePropertyChanged("IsNotBusy");
-                Host.Execute(HostVerb.Close, this.Caption);
+                else
+                {
+                    MessageBoxService.ShowMessage("You must have at lease one owner.", "Warning", MessageButton.OK, MessageIcon.Warning);
+                }
             }
-            else
-            {
-                MessageBoxService.ShowMessage("You must have at lease one owner.", "Warning", MessageButton.OK, MessageIcon.Warning);
-            }
+
+            string billTo = string.Format("{0} {1} {2} {3} {4} {5}"
+                   , NewOwner.MailTo
+                   , NewOwner.Address
+                   , NewOwner.Address2
+                   , NewOwner.City
+                   , NewOwner.State
+                   , NewOwner.Zip);
+            SelectedProperty.BillTo = billTo;
+
+            // Create the OwnershipChange record
+            OwnershipChange oc = new OwnershipChange();
+            oc.PropertyID = SelectedProperty.PropertyID;
+            oc.PreviousOwnerID = PreviousOwner.OwnerID;
+            oc.PreviousOwner = PreviousBillTo;
+            oc.NewOwnerID = NewOwner.OwnerID;
+            oc.NewOwner = billTo;
+            dc.OwnershipChanges.InsertOnSubmit(oc);
+
+            //int? rowId = 0;
+            //dc.usp_InsertOwnershipChange(
+            //    oc.PropertyID,
+            //    oc.PreviousOwnerID,
+            //    oc.PreviousOwner,
+            //    oc.NewOwnerID,
+            //    oc.NewOwner,
+            //    ref rowId);
+
+            // Set the previous owner inactive
+            PreviousOwner.IsCurrentOwner = false;
+
+            // Change the Property Owner to the NewOwner
+            SelectedProperty.Owner = NewOwner;
+
+
+            ChangeSet cs = dc.GetChangeSet();
+            this.dc.SubmitChanges();
+            this.IsBusy = false;
+            RaisePropertyChanged("IsNotBusy");
+            Host.Execute(HostVerb.Close, this.Caption);
         }
 
         #region ICommandSink Implementation
@@ -496,6 +540,36 @@
     /*==================================================== ViewModel Commands ===================================================================*/
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
+        /// <summary>
+        /// RowDoubleClick Event to Command
+        /// </summary>
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
+        {
+            get
+            {
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RowDoubleClickAction(object parameter)
+        {
+            RowDoubleClickEventArgs p = parameter as RowDoubleClickEventArgs;
+            object x = p.Source;
+            NewOwner= p.Source.FocusedRow as Owner;
+
+            ApplPermissions.CanEditOwnerInfo = false;
+            ApplPermissions.CanAddRelationship = false;
+            RaisePropertyChanged("ApplPermissions");
+
+            CanSaveExecute = IsDirty;
+            RaisePropertyChanged("DataChanged");
+
+        }
 
         /// <summary>
         /// Add Cart Command

@@ -70,19 +70,19 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
-                        <dxr:RibbonPageGroup Caption="Owner Action">
+                        <!--<dxr:RibbonPageGroup Caption="Owner Action">
                             <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
                                                Glyph="/Images/Icons/Ownership_16x16.png" 
                                                LargeGlyph="/Images/Icons/Ownership_32x32.png" />
-                            <!--<dxb:BarButtonItem x:Name="bbImport" Content="Update" 
+                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Financal-16x16.png" 
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
-                                               ToolTip="Bulk update dues balance information" />-->
-                        </dxr:RibbonPageGroup>
+                                               ToolTip="Bulk update dues balance information" />
+                        </dxr:RibbonPageGroup>-->
                     </dxr:RibbonPage>
 
                 </dxr:RibbonDefaultPageCategory>

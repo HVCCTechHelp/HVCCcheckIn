@@ -89,7 +89,7 @@
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new PropertyEditViewModel(dc, arg) { Caption = "Property Edit" };
+            IViewModel vm = new PropertyEditViewModel(dc, arg) { Caption = "Edit Property" };
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
@@ -250,7 +250,7 @@
             {
                 var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption == param).FirstOrDefault();
                 bool result = this.OpenMvvmBinders.Remove(r);
-                RaisePropertyChanged("Refresh");
+                //RaisePropertyChanged("Refresh");
             }
         }
 
