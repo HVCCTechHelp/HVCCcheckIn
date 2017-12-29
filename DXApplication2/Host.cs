@@ -93,26 +93,6 @@
             IView v = new HVCC.Shell.Views.PropertyEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-
-
-        //public static IMvvmBinder GetNewOwnerXRelationshipsView(object arg)
-        //{
-        //    ////IDataContext dc = new UnitTextConnectionDataContext();
-        //    IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-        //    IViewModel vm = new OwnerXRelationshipsViewModel(dc) { Caption = "OwnerXRelationships" };
-        //    IView v = new HVCC.Shell.Views.OwnerXRelationshipsView(vm);
-        //    return new MvvmBinder(dc, v, vm);
-        //}
-        //public static IMvvmBinder GetNewGolfCartXOwnerView(object arg)
-        //{
-        //    ////IDataContext dc = new UnitTextConnectionDataContext();
-        //    IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-        //    IViewModel vm = new GolfCartXOwnerViewModel(dc) { Caption = "GolfCartsXOwner" };
-        //    IView v = new HVCC.Shell.Views.GolfCartXOwnerView(vm);
-        //    return new MvvmBinder(dc, v, vm);
-        //}
-
-
         public static IMvvmBinder GetNewChangeOwnerView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -181,6 +161,7 @@
         {
             if (verb == HostVerb.Open)
             {
+                // REQUIRED:  The Caption strings must match the x:Name string of the View
                 if (param.ToString() == "Properties")
                 {
                     var binder = GetNewPropertyDetailView(arg);
@@ -196,20 +177,6 @@
                     var binder = GetNewOwnersView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
-
-
-                //else if (param.ToString() == "OwnerXRelationships")
-                //{
-                //    var binder = GetNewOwnerXRelationshipsView(arg);
-                //    this.OpenMvvmBinders.Add(binder);
-                //}
-                //else if (param.ToString() == "GolfCartXOwner")
-                //{
-                //    var binder = GetNewGolfCartXOwnerView(arg);
-                //    this.OpenMvvmBinders.Add(binder);
-                //}
-
-
                 else if (param.ToString() == "ChangeOwner")
                 {
                     var binder = GetNewChangeOwnerView(arg);
@@ -248,9 +215,23 @@
             }
             else if (verb == HostVerb.Close)
             {
-                var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption == param).FirstOrDefault();
-                bool result = this.OpenMvvmBinders.Remove(r);
-                //RaisePropertyChanged("Refresh");
+                string parameter = param as String;
+                try
+                {
+                    var r = this.OpenMvvmBinders.Where(x => x.ViewModel.Caption.Replace(" ", "") == parameter.Replace(" ", "")).FirstOrDefault();
+                    bool result = this.OpenMvvmBinders.Remove(r);
+
+                    // If we are closing one of the Edit forms, raise a refresh PropertyChanged event to let the 
+                    // detail view(s) know that data may have changed.
+                    if (parameter.Contains("Edit"))
+                    {
+                        RaisePropertyChanged("Refresh");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Host Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.WaterMeterView"
+﻿<UserControl x:Class="HVCC.Shell.Views.WaterMeterView" x:Name="WaterMeterReadings"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 

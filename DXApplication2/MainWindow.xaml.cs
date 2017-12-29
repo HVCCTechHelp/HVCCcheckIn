@@ -184,28 +184,6 @@
         }
 
         /// <summary>
-        /// Creates or Focuses the Owners DocumentPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void OnClicked_OwnerXRelationships(object sender, MouseButtonEventArgs e)
-        //{
-        //    // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-        //    Host.Instance.Execute(HostVerb.Open, "OwnerXRelationships");
-        //}
-
-        /// <summary>
-        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void OnClicked_GolfCartXOwner(object sender, MouseButtonEventArgs e)
-        //{
-        //    // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
-        //    Host.Instance.Execute(HostVerb.Open, "GolfCartXOwner");
-        //}
-
-        /// <summary>
         /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
         /// </summary>
         /// <param name="sender"></param>
@@ -286,7 +264,7 @@
             // Set the previous DockPanel as the active panel
             int count = this.primaryDocumentGroup.Items.Count();
             primaryDocumentGroup.SelectedTabIndex = primaryDocumentGroup.Items.Count - 1;
-            if (primaryDocumentGroup.SelectedTabIndex > 0)
+            if (primaryDocumentGroup.SelectedTabIndex >= 0)
             {
                 this.dockLayoutManager.Activate(primaryDocumentGroup.Items[primaryDocumentGroup.SelectedTabIndex]);
             }
@@ -299,10 +277,6 @@
                 this.layoutGroupMain.IsHitTestVisible = false;
             }
 
-            //if (caption.Contains("Detail") || caption.Contains("Change"))
-            //{
-            //    RaisePropertyChanged("Refresh");
-            //}
             e.Handled = true;
         }
 
@@ -322,12 +296,6 @@
             try
             {
                 UserControl uc = ((ContentItem)e.Item).Content as UserControl;
-
-                if (null != uc)
-                {
-                    // Invoke the Host Instance to execute the close() method on the user control
-                    Host.Instance.Execute(HostVerb.Close, uc);
-                }
             }
             catch (Exception ex)
             {
@@ -475,11 +443,14 @@
             {
                 var docGroupMembers = this.primaryDocumentGroup.GetItems();
                 DocumentPanel dp = GetDocumentPanelByView(v);
-                this.primaryDocumentGroup.Remove(dp);
+                if (null != dp)
+                {
+                    this.primaryDocumentGroup.Remove(dp);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("DocItem Close Error: " + ex.Message);
+                MessageBox.Show("Close DockPanel Error: " + ex.Message);
             }
         }
 

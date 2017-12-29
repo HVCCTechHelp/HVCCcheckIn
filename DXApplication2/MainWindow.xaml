@@ -93,7 +93,7 @@
                                                    Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}"
                                                        ToolTip="Save Changes"/>
                                 <!--<dxb:BarButtonItem Content="Refresh" 
-                                                       IsEnabled="False"
+                                                       IsEnabled="True"
                                                        Command="{Binding RefreshCommand}"
                                                        Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
                                                        LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"

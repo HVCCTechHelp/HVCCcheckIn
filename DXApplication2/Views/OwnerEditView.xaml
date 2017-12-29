@@ -4,7 +4,7 @@
         is passed as the ElementName in the Command for the grid's BarButton item commands.
 -->
 
-<UserControl x:Class="HVCC.Shell.Views.OwnerEditView" x:Name="OwnerEdit"
+<UserControl x:Class="HVCC.Shell.Views.OwnerEditView" x:Name="EditOwner"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

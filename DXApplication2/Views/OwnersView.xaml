@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.OwnersView"
+﻿<UserControl x:Class="HVCC.Shell.Views.OwnersView" x:Name="Owners"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 

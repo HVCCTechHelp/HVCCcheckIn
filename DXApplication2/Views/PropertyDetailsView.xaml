@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.PropertyDetailsView" x:Name="propertyView"
+﻿<UserControl x:Class="HVCC.Shell.Views.PropertyDetailsView" x:Name="Properties"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
@@ -56,6 +56,22 @@
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage Caption="Actions" >
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                            <!--<dxb:BarButtonItem Content="Undo" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding UndoCommand}"
+                                                       Glyph="{dx:DXImage Image=Reset2_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
+                                                       ToolTip="Discard All Changes"/>-->
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
                     <dxr:RibbonPage x:Name="propertyActions" Caption="Actions">
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
@@ -156,7 +172,7 @@
 
                         <dxlc:LayoutItem VerticalAlignment="Stretch" IsRequired="True">
                             <dxg:GridControl x:Name="propertyGrid" 
-                             ItemsSource="{Binding PropertiesList, Mode=OneWay}" 
+                             ItemsSource="{Binding PropertiesList}" 
                              SelectedItem="{Binding SelectedProperty, Mode=TwoWay}"
                              IsEnabled="True" 
                              MaxHeight="800"
@@ -202,27 +218,35 @@
                                             ReadOnly="True"
                                             Visible="False" 
                                             />
-                                    <dxg:GridColumn FieldName="Section" Header="Sect" Width="10"
+                                    <dxg:GridColumn FieldName="Customer" Header="Customer" Width="20" 
+                                            Visible="True"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             SortOrder="Ascending" SortIndex="0"
                                             />
+                                    <dxg:GridColumn FieldName="Section" Header="Sect" Width="10"
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
+                                            />
                                     <dxg:GridColumn FieldName="Block" Header="Blk " Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
-                                            />
-                                    <dxg:GridColumn FieldName="Customer" Header="Customer" Width="2" 
-                                            Visible="True"
-                                            AllowEditing="False" 
-                                            ReadOnly="True"
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="Owner.MailTo" Header="Owner" Width="50"  
                                             AllowEditing="False" 
@@ -250,9 +274,10 @@
                                             ReadOnly="True"
                                             />
                                     <dxg:GridColumn FieldName="Status" Header="Status" Width="20"
-                                            Visible="False" 
                                             AllowEditing="False" 
                                             ReadOnly="True"
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="PhysicalAddress" Header="Address" Width="20"
                                             Visible="False" 
@@ -261,7 +286,8 @@
                                             ShowInColumnChooser="True"
                                             />
                                     <dxg:GridColumn FieldName="Parcel" Header="Parcel" Width="20"
-                                            Visible="False" 
+                                            Visible="False"
+                                            ShowInColumnChooser="True"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             />

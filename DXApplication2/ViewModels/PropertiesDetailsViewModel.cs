@@ -37,6 +37,8 @@
 
             Host.PropertyChanged +=
                 new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
+
+            PropertiesList = GetPropertiesList();
         }
         /* -------------------------------- Interfaces ------------------------------------------------ */
         #region Interfaces
@@ -134,7 +136,7 @@
         {
             get
             {
-                return FetchProperties();
+                return _propertiesList;
             }
             set
             {
@@ -269,6 +271,23 @@
         #region Boolean Properties
 
         /// <summary>
+        /// Controls enable/disbale state of the Refresh ribbion action button
+        /// </summary>
+        private bool _isRefreshEnabled = true; // Default: false
+        public bool IsRefreshEnabled
+        {
+            get { return _isRefreshEnabled; }
+            set
+            {
+                if (value != _isRefreshEnabled)
+                {
+                    _isRefreshEnabled = value;
+                    RaisePropertyChanged("IsRefreshEnabled");
+                }
+            }
+        }
+
+        /// <summary>
         /// Controls enable/disbale state of the Add Relationship ribbion action button
         /// </summary>
         private bool _isEnabledChangeOwner = false; // Default: false
@@ -373,12 +392,10 @@
         /// Queries the database to get the current list of property records
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Property> FetchProperties()
+        private ObservableCollection<Property> GetPropertiesList()
         {
             try
             {
-                //// Force a refresh of the datacontext, then get the list of "Properties" from the database
-                this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Properties);
                 var list = (from a in this.dc.Properties
                             select a);
                 return new ObservableCollection<Property>(list);
@@ -405,7 +422,9 @@
             switch (e.PropertyName)
             {
                 case "Refresh":
-                    PropertiesList = FetchProperties();
+                    IsRefreshEnabled = true;
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Properties);
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
                     break;
                 default:
                     break;
@@ -479,8 +498,33 @@
     /// <summary>
     /// ViewModel Commands
     /// </summary>
-    public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
+    public partial class PropertiesDetailsViewModel /*: CommonViewModel, ICommandSink*/
     {
+        /// <summary>
+        /// Refresh Command
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new CommandHandlerWparm((object parameter) => RefreshAction(parameter), IsRefreshEnabled));
+            }
+        }
+
+        /// <summary>
+        /// Refresh data sources
+        /// </summary>
+        /// <param name="type"></param>
+        public void RefreshAction(object parameter) 
+        {
+            RaisePropertyChanged("IsBusy");
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Properties);
+            PropertiesList = GetPropertiesList();
+            IsRefreshEnabled = false;
+            RaisePropertyChanged("IsNotBusy");
+        }
+
         /// <summary>
         /// Add Cart Command
         /// </summary>

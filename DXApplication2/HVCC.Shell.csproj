@@ -231,11 +231,9 @@
     <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
     <Compile Include="ViewModels\OwnerEditViewModel.cs" />
-    <Compile Include="ViewModels\t_GolfCartXOwnerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OwnersViewModel.cs" />
-    <Compile Include="ViewModels\t_OwnerXRelationshipsViewModel.cs" />
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
@@ -252,17 +250,11 @@
     <Compile Include="Views\OwnerEditView.xaml.cs">
       <DependentUpon>OwnerEditView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\t_GolfCartXOwnerView.xaml.cs">
-      <DependentUpon>t_GolfCartXOwnerView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\OwnersView.xaml.cs">
       <DependentUpon>OwnersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GolfCartView.xaml.cs">
       <DependentUpon>GolfCartView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\t_OwnerXRelationshipsView.xaml.cs">
-      <DependentUpon>t_OwnerXRelationshipsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertiesUpdatedView.xaml.cs">
       <DependentUpon>PropertiesUpdatedView.xaml</DependentUpon>
@@ -312,19 +304,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\t_GolfCartXOwnerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\OwnersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GolfCartView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\t_OwnerXRelationshipsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
