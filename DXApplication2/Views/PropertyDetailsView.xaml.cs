@@ -83,7 +83,6 @@
 
 
         #region Report Button Events
-        Dictionary<int, int> daysInMonth;
         private Dictionary<int, int> PopulateDates()
         {
             Dictionary<int, int> daysInMonth = new Dictionary<int, int>();
@@ -145,15 +144,6 @@
         {
             Reports.BalancesDueReport report = new Reports.BalancesDueReport();
             PrintHelper.ShowPrintPreview(this, report);
-        }
-
-        private void bb_AnnualInvoiceReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-            report.Parameters["selectedProperty"].Value = (this.propertyGrid.SelectedItem as Property).PropertyID;
-            PrintHelper.ShowPrintPreview(this, report);
-            //report.CreateDocument();
-            //report.ExportToPdf(@"D:\Invoices\Invoice.PDF");
         }
         #endregion
     }

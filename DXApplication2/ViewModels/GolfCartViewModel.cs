@@ -1,22 +1,20 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
+    using DevExpress.Spreadsheet;
+    using DevExpress.Xpf.Docking;
+    using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Models;
+    using HVCC.Shell.Resources;
     using System;
-    using System.Linq;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using DevExpress.Xpf.Docking;
     using System.Data.Linq;
-    using HVCC.Shell.Common;
-    using DevExpress.Mvvm;
-    using HVCC.Shell.Models;
-    using DevExpress.Spreadsheet;
-    using System.Windows.Input;
-    using HVCC.Shell.Resources;
-    using HVCC.Shell.Common.ViewModels;
-    using HVCC.Shell.Common.Interfaces;
-    using System.Data.Linq.SqlClient;
+    using System.Linq;
     using System.Windows;
-    using System.Collections.Generic;
+    using System.Windows.Input;
 
     public partial class GolfCartViewModel : CommonViewModel, ICommandSink
     {

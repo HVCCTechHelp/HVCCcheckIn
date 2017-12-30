@@ -65,7 +65,7 @@
         <classShapeMoniker Id="6fb54dac-ea2e-41f4-9b18-c097408448d6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(10.1875 : 4.8958154296875); (10.1875 : 6)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WellXProperty" />
       <nodes>
         <classShapeMoniker Id="de498a32-03fe-490a-8428-f7f42dd7df8c" />
@@ -102,7 +102,7 @@
         <elementListCompartment Id="474f2eab-ed85-4b1d-b9eb-83908bfcafd9" absoluteBounds="4.265, 1.335, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(6.25 : 1.21875); (10 : 1.21875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(6.25 : 1.21875); (10 : 1.21875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Property" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -140,6 +140,12 @@
       <DataClassMoniker Name="/HVCCDataContext/OwnershipChange" />
       <nestedChildShapes>
         <elementListCompartment Id="3800173c-476e-4fe5-a181-89c071b471a6" absoluteBounds="7.14, 2.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a7ba3529-cc30-4f9a-ad6e-b29cb5f86f4d" absoluteBounds="15.75, 7.25, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/HVCCDataContext/v_ChangeOfOwnership" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a5747807-748c-413b-974f-0d6eb2b39a82" absoluteBounds="15.765, 7.7100000000000009, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

@@ -6,6 +6,7 @@
     using HVCC.Shell.Common;
     using HVCC.Shell.Common.Interfaces;
     using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Common.Commands;
     using HVCC.Shell.Models;
     using HVCC.Shell.Resources;
     using System;
@@ -30,16 +31,6 @@
             Host.PropertyChanged +=
                 new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
         }
-
-        #region Interfaces
-        //public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
-        //protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
-
-        #endregion
 
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
@@ -252,9 +243,8 @@
     /// <summary>
     /// ViewModel Commands
     /// </summary>
-    public partial class OwnersViewModel : CommonViewModel, ICommandSink
+    public partial class OwnersViewModel
     {
-
         /// <summary>
         /// RowDoubleClick Event to Command
         /// </summary>
@@ -321,6 +311,59 @@
             Host.Execute(HostVerb.Open, "ChangeOwner", p);
         }
 
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _ownershipHistoryCommand;
+        public ICommand OwnershipHistoryCommand
+        {
+            get
+            {
+                return _ownershipHistoryCommand ?? (_ownershipHistoryCommand = new CommandHandler(() => OwnershipHistoryAction(), ApplPermissions.CanViewPropertyNotes));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void OwnershipHistoryAction()
+        {
+            Host.Execute(HostVerb.Open, "OwnershipHistory");
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _generateAnnualInvoicesCommand;
+        public ICommand GenerateAnnualInvoicesCommand
+        {
+            get
+            {
+                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), ApplPermissions.CanViewPropertyNotes));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void GenerateAnnualInvoicesAction()
+        {
+            string fileName = string.Empty;
+
+            RaisePropertyChanged("IsBusy");
+            foreach (Owner o in OwnersList)
+            {
+                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                report.Parameters["selectedOwner"].Value = o.OwnerID;
+                report.CreateDocument();
+                report.ExportToPdf(fileName);
+            }
+            RaisePropertyChanged("IsNotBusy");
+        }
+
         ///// <summary>
         ///// Import Command
         ///// </summary>
@@ -363,45 +406,8 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            string fn;
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-
-                            fn = SaveFileDialogService.GetFullFileName();
-
-                        ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
             }
         }
 
@@ -413,37 +419,8 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
             }
         }
     }

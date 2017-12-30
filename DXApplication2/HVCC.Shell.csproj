@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -233,6 +233,7 @@
     <Compile Include="ViewModels\OwnerEditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\OwnershipHistoryViewModel.cs" />
     <Compile Include="ViewModels\OwnersViewModel.cs" />
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
@@ -249,6 +250,9 @@
     </Compile>
     <Compile Include="Views\OwnerEditView.xaml.cs">
       <DependentUpon>OwnerEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OwnershipHistoryView.xaml.cs">
+      <DependentUpon>OwnershipHistoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OwnersView.xaml.cs">
       <DependentUpon>OwnersView.xaml</DependentUpon>
@@ -301,6 +305,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OwnerEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OwnershipHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

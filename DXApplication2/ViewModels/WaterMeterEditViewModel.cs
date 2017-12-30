@@ -59,7 +59,6 @@
 
         public override bool IsValid { get { return true; } }
 
-        private bool _isDirty = false;
         public override bool IsDirty
         {
             get

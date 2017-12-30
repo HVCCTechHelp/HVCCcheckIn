@@ -109,6 +109,14 @@
             IView v = new HVCC.Shell.Views.OwnerEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewOwnershipHistoryView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new OwnershipHistoryViewModel(dc) { Caption = "Owner History" };
+            IView v = new HVCC.Shell.Views.OwnershipHistoryView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         public static IMvvmBinder GetNewPropertiesUpdatedView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
@@ -180,6 +188,11 @@
                 else if (param.ToString() == "ChangeOwner")
                 {
                     var binder = GetNewChangeOwnerView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "OwnershipHistory")
+                {
+                    var binder = GetNewOwnershipHistoryView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "EditOwner")

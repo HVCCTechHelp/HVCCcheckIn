@@ -387,7 +387,6 @@
                                 switch (cellData)
                                 {
                                     case "Customer":
-                                        Visibility v = Visibility.Hidden;
                                         colArray[(int)Column.Customer] = cell;
                                         break;
                                     case "Bill to":

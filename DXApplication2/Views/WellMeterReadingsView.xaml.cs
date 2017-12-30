@@ -98,7 +98,6 @@
 
         // DO-DO: Converto to ViewModel Commands......
         #region Report Button Events
-        Dictionary<int, int> daysInMonth;
         private Dictionary<int, int> PopulateDates()
         {
             Dictionary<int, int> daysInMonth = new Dictionary<int, int>();

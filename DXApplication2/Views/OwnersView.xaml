@@ -84,6 +84,47 @@
                                                ToolTip="Bulk update dues balance information" />
                         </dxr:RibbonPageGroup>-->
                     </dxr:RibbonPage>
+                    <dxr:RibbonPage x:Name="ownerReports" Caption="Reports">
+
+                        <!--<dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>-->
+
+                        <dxr:RibbonPageGroup Caption="Owner Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
+                            <dxb:BarButtonItem Content="Daily Usage"
+                                                   ItemClick="bb_DailyReportClick"
+                                                   IsVisible="True" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                            <dxb:BarButtonItem Content="Property Notes"
+                                                   ItemClick="bb_NotesReportClick"
+                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                            <dxb:BarButtonItem Content="Balances Due"
+                                                   ItemClick="bb_BalanceReportClick"
+                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                            <dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="OwnershipHistory" 
+                                                   Command="{Binding OwnershipHistoryCommand}" CommandParameter=""
+                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Ownership_16x16.png" 
+                                                   LargeGlyph="/Images/Icons/Ownership_32x32.png" />
+                            <dxb:BarButtonItem Content="Generate Invoices"
+                                                   Command="{Binding GenerateAnnualInvoicesCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanChangeOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                        </dxr:RibbonPageGroup>
+
+                    </dxr:RibbonPage>
 
                 </dxr:RibbonDefaultPageCategory>
 

@@ -146,12 +146,12 @@
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Annual Invoices"
+                            <!--<dxb:BarButtonItem Content="Annual Invoices"
                                                    ItemClick="bb_AnnualInvoiceReportClick"
                                                    IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
+                                                   ToolTip="Run Report" />-->
                         </dxr:RibbonPageGroup>
 
                     </dxr:RibbonPage>

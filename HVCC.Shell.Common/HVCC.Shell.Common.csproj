@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandSinkBinding.cs" />
+    <Compile Include="Commands\CommandActions.cs" />
     <Compile Include="Commands\CustomCommands.cs" />
     <Compile Include="Converters\BalanceValueToTypeConverter.cs" />
     <Compile Include="Converters\BooleanToVisibility.cs" />

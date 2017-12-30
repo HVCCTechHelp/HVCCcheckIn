@@ -9,135 +9,61 @@
     using HVCC.Shell.Resources;
     using System;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.Data.Linq;
     using System.Linq;
     using System.Windows.Input;
 
-    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
+    public partial class OwnershipHistoryViewModel : CommonViewModel, ICommandSink
     {
-
-        public WaterMeterViewModel(IDataContext dc)
+        public OwnershipHistoryViewModel(IDataContext dc)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
+            ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             this.RegisterCommands();
         }
 
-        public override bool IsValid { get { return true; } }
+        public ApplicationPermission ApplPermissions { get; set; }
+
+        public override bool IsValid => throw new NotImplementedException();
 
         public override bool IsDirty
         {
             get
             {
-                string[] caption = Caption.ToString().Split('*');
-                ChangeSet cs = dc.GetChangeSet();
-                if (0 == cs.Updates.Count &&
-                    0 == cs.Inserts.Count &&
-                    0 == cs.Deletes.Count)
-                {
-                    Caption = caption[0].TrimEnd(' ');
-                    return false;
-                }
-                Caption = caption[0].TrimEnd(' ') + "* ";
-                return true;
+                return false;
             }
             set { }
         }
 
-        private bool _isBusy = false;
         public override bool IsBusy
         {
             get
-            { return _isBusy; }
-            set
-            {
-                if (value != _isBusy)
-                {
-                    _isBusy = value;
-                    if (_isBusy) { RaisePropertyChanged("IsBusy"); }
-                    else { RaisePropertyChanged("IsNotBusy"); }
-                }
-            }
+            { return false; }
+            set { }
         }
 
-        #region Properties
+
         /// <summary>
-        /// Collection of properties
+        /// The Owner record for the selected property
         /// </summary>
-        private ObservableCollection<Property> _propertiesList = null;
-        public ObservableCollection<Property> PropertiesList
+        public ObservableCollection<v_ChangeOfOwnership> OwnershipHistories
         {
             get
             {
-                if (this._propertiesList == null)
-                {
-                    //// Get the list of "Properties" from the database
-                    var list = (from a in this.dc.Properties
-                                select a);
+                var list = (from x in dc.v_ChangeOfOwnerships
+                            select x);
 
-                    this._propertiesList = new ObservableCollection<Property>(list);
-                }
-                return this._propertiesList;
-            }
-            set
-            {
-                if (this._propertiesList != value)
-                {
-                    this._propertiesList = value;
-                    RaisePropertyChanged("PropertiesList");
-                }
+                return new ObservableCollection<v_ChangeOfOwnership>(list);
             }
         }
-
-        /// <summary>
-        /// Currently selected property from a property grid view
-        /// </summary>
-        private Property _selectedProperty = null;
-        public Property SelectedProperty
-        {
-            get
-            {
-                return _selectedProperty;
-            }
-            set
-            {
-                //// wrap the setter with a check for a null value.  This condition happens when
-                //// a Relationship is selected from the Relationship grid. Therefore, when
-                //// a Relationship is selected we won't null out the SelectedProperty.
-                if (value != _selectedProperty)
-                {
-                    _selectedProperty = value;
-                    RaisePropertyChanged("SelectedProperty");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Summary
-        ///     Raises a property changed event when the SelectedCart data is modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _selectedCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged("DataChanged");
-        }
-
-        #endregion
-
-
-        /* ---------------------------------- Public/Private Methods ------------------------------------------ */
-        #region Methods
-
-        #endregion
     }
 
     /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
-    public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
+    public partial class OwnershipHistoryViewModel : CommonViewModel, ICommandSink
     {
         public void RegisterCommands()
         {
@@ -157,10 +83,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return false;  // TO-DO : since WaterMeterUpdate is where edits are made, this may be OK
-            }
+            get { return false; } 
+            set { }
         }
 
         /// <summary>
@@ -170,6 +94,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
@@ -194,10 +119,13 @@
     }
 
     /*================================================================================================================================================*/
-    public partial class WaterMeterViewModel
+    /// <summary>
+    /// ViewModel Commands
+    /// </summary>
+    public partial class OwnershipHistoryViewModel 
     {
         /// <summary>
-        /// Add Cart Command
+        /// Export grid Command
         /// </summary>
         private ICommand _exportCommand;
         public ICommand ExportCommand
@@ -221,38 +149,17 @@
                 return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
             }
         }
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _rowDoubleClickCommand;
-        public ICommand RowDoubleClickCommand
-        {
-            get
-            {
-                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void RowDoubleClickAction(object parameter)
-        {
-            Property p = parameter as Property;
-            Host.Execute(HostVerb.Open, "WaterMeterEdit", p);
-        }
     }
+
     /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......
     /// </summary>
-    #region public partial class WaterMeterViewModel : IDisposable
-    public partial class WaterMeterViewModel : IDisposable
+    #region public partial class PropertiesViewModel : IDisposable
+    public partial class OwnershipHistoryViewModel : IDisposable
     {
         // Resources that must be disposed:
-        public HVCCDataContext dc = null;
+        private HVCCDataContext dc = null;
 
         private bool disposed = false;
 
@@ -303,12 +210,13 @@
 
         protected virtual void DisposeManagedResources()
         {
+            // No op.
         }
 
         /// <summary>
         /// Finalizes an instance of the <see cref="TableForm"/> class.  (a.k.a. destructor)
         /// </summary>
-        ~WaterMeterViewModel()
+        ~OwnershipHistoryViewModel()
         {
             // call Dispose with false.  Since we're in the
             // destructor call, the managed resources will be
@@ -317,4 +225,6 @@
         }
     }
     #endregion
+
+
 }

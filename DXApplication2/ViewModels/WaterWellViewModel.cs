@@ -1,23 +1,23 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
+    using DevExpress.Mvvm.DataAnnotations;
+    using DevExpress.Spreadsheet;
+    using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Common.Commands;
+    using HVCC.Shell.Models;
+    using Resources;
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data.Linq;
-    using DevExpress.Mvvm;
-    using DevExpress.Mvvm.DataAnnotations;
-    using HVCC.Shell.Models;
-    using DevExpress.Spreadsheet;
-    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Input;
-    using Resources;
-    using System.Globalization;
-    using HVCC.Shell.Common.ViewModels;
-    using HVCC.Shell.Common.Interfaces;
-    using HVCC.Shell.Common;
-    using System.Collections.Specialized;
 
     [POCOViewModel]
     public partial class WaterWellViewModel : CommonViewModel, INotifyPropertyChanged
@@ -33,18 +33,6 @@
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
         }
-
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
-        #endregion // Interfaces
-
-        #region Enumberables 
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
-        #endregion //enums
 
         public override bool IsValid => throw new NotImplementedException();
 
@@ -374,7 +362,7 @@
 
                 if (null == lastReading)
                 {
-                    MessageBoxService.ShowMessage("No previous readings, please enter the gallons output mannually.");
+                    MessageBox.Show("No previous readings, please enter the gallons output mannually.");
                     return 0;
                 }
                 else
@@ -394,7 +382,7 @@
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowMessage("No previous readings, please enter the gallons output mannually.");
+                MessageBox.Show("No previous readings, please enter the gallons output mannually.");
                 return 0;
             }
         }
@@ -438,147 +426,9 @@
 
         #endregion
 
-        /* ------------------------------------------------ Commands ------------------------------------------------ */
-        #region Commands
-
-        /// <summary>
-        /// Save Command
-        /// </summary>
-        private ICommand _saveCommand;
-        public ICommand SaveCommand
-        {
-            get
-            {
-                string error = String.Empty; return _saveCommand ?? (_saveCommand = new CommandHandler(() => SaveAction(), this.IsEnabledSave));
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void SaveAction()
-        {
-            // Not the best implementation....  Run validation on the data entered before
-            // trying to commit it to the database.
-            if (String.IsNullOrEmpty(this.IsMeterReadingsValid))
-            {
-                foreach (WellMeterReading wmr in this.WellMeterReadings)
-                {
-                    this.dc.WellMeterReadings.InsertOnSubmit(wmr);
-                }
-
-                //ChangeSet cs = dc.GetChangeSet();  // <Info This is only for debugging.......
-                this.dc.SubmitChanges();
-
-                // After saving the reading entries, we clear the collections and raise a property changed event
-                // on the history collection so it will reflect the update in the UI
-                this.WellMeterReadings.Clear();
-                this.WellMeterReadingHistory.Clear();
-                this.IsEnabledSave = false;
-                RaisePropertyChanged("WellMeterReadingHistory");
-            }
-            else
-            {
-                string msg = String.Format("Input not valid: {0}", this.IsMeterReadingsValid);
-                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        #endregion // commands
-
-
-        /// <summary>
-        /// Add Cart Command
-        /// </summary>
-        private ICommand _exportCommand;
-        public ICommand ExportCommand
-        {
-            get
-            {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
-
-        /// <summary>
-        /// Add Cart Command
-        /// </summary>
-        private ICommand _printCommand;
-        public ICommand PrintCommand
-        {
-            get
-            {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
     }
 
     /*================================================================================================================================================*/
-
     /// <summary>
     /// Command sink bindings......
     /// </summary>
@@ -637,8 +487,38 @@
         #endregion
 
     }
-    /*================================================================================================================================================*/
 
+    /*================================================================================================================================================*/
+    public partial class WaterWellViewModel
+    {
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _exportCommand;
+        public ICommand ExportCommand
+        {
+            get
+            {
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
+            }
+        }
+
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _printCommand;
+        public ICommand PrintCommand
+        {
+            get
+            {
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
+            }
+        }
+    }
+
+    /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......
     /// </summary>

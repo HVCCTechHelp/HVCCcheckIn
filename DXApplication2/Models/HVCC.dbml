@@ -269,6 +269,15 @@
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
   </Table>
+  <Table Name="dbo.v_ChangeOfOwnership" Member="v_ChangeOfOwnerships">
+    <Type Name="v_ChangeOfOwnership">
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="NewOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="PreviousOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
     <ElementType Name="usp_GetPropertyByIdResult">

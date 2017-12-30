@@ -123,6 +123,7 @@
             this.DetailReport = new DevExpress.XtraReports.UI.DetailReportBand();
             this.Detail1 = new DevExpress.XtraReports.UI.DetailBand();
             this.xrLine14 = new DevExpress.XtraReports.UI.XRLine();
+            this.BorderRule = new DevExpress.XtraReports.UI.FormattingRule();
             this.xrLine3 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel22 = new DevExpress.XtraReports.UI.XRLabel();
             this.GolfCartRule = new DevExpress.XtraReports.UI.FormattingRule();
@@ -135,8 +136,11 @@
             this.xrLine45 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLine46 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.PastDue1Rule = new DevExpress.XtraReports.UI.FormattingRule();
+            this.HideRateRule = new DevExpress.XtraReports.UI.FormattingRule();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
+            this.PastDue2Rule = new DevExpress.XtraReports.UI.FormattingRule();
             this.GroupHeader1 = new DevExpress.XtraReports.UI.GroupHeaderBand();
             this.xrLine34 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLine12 = new DevExpress.XtraReports.UI.XRLine();
@@ -151,10 +155,6 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText1 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
-            this.PastDue1Rule = new DevExpress.XtraReports.UI.FormattingRule();
-            this.HideRateRule = new DevExpress.XtraReports.UI.FormattingRule();
-            this.BorderRule = new DevExpress.XtraReports.UI.FormattingRule();
-            this.PastDue2Rule = new DevExpress.XtraReports.UI.FormattingRule();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
@@ -469,7 +469,7 @@
             // 
             this.xrLabel7.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel7.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.Customer")});
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.OwnerID")});
             this.xrLabel7.Font = new System.Drawing.Font("Times New Roman", 10F);
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(532.6436F, 26.54165F);
             this.xrLabel7.Name = "xrLabel7";
@@ -1041,7 +1041,7 @@
             this.xrLabel16});
             this.Detail1.FormattingRules.Add(this.PastDue1Rule);
             this.Detail1.FormattingRules.Add(this.PastDue2Rule);
-            this.Detail1.HeightF = 28.26128F;
+            this.Detail1.HeightF = 28.26129F;
             this.Detail1.Name = "Detail1";
             // 
             // xrLine14
@@ -1053,6 +1053,14 @@
             this.xrLine14.Name = "xrLine14";
             this.xrLine14.SizeF = new System.Drawing.SizeF(2.619934F, 27.26122F);
             this.xrLine14.StylePriority.UseBorderWidth = false;
+            // 
+            // BorderRule
+            // 
+            this.BorderRule.Condition = "[Total] > 0";
+            this.BorderRule.DataMember = "Invoice";
+            this.BorderRule.Formatting.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.BorderRule.Formatting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.BorderRule.Name = "BorderRule";
             // 
             // xrLine3
             // 
@@ -1069,7 +1077,7 @@
             this.xrLabel22.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
             new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.AssessmentAmount", "{0:$0.00}")});
             this.xrLabel22.FormattingRules.Add(this.GolfCartRule);
-            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(498.0359F, 5.130573F);
+            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(499.8122F, 5.261294F);
             this.xrLabel22.Name = "xrLabel22";
             this.xrLabel22.SizeF = new System.Drawing.SizeF(64.97061F, 23F);
             this.xrLabel22.StylePriority.UseTextAlignment = false;
@@ -1175,10 +1183,27 @@
             this.xrLabel18.Text = "xrLabel18";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             // 
+            // PastDue1Rule
+            // 
+            this.PastDue1Rule.Condition = "Contains([Item], \'Account\')  And  [Total] > 0";
+            this.PastDue1Rule.DataMember = "Invoice";
+            this.PastDue1Rule.Formatting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PastDue1Rule.Formatting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.PastDue1Rule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.True;
+            this.PastDue1Rule.Name = "PastDue1Rule";
+            // 
+            // HideRateRule
+            // 
+            this.HideRateRule.Condition = "[Rate] == 0";
+            this.HideRateRule.DataMember = "Invoice";
+            this.HideRateRule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
+            this.HideRateRule.Name = "HideRateRule";
+            // 
             // xrLabel17
             // 
             this.xrLabel17.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
             new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.Total", "{0:$0.00}")});
+            this.xrLabel17.FormattingRules.Add(this.PastDue1Rule);
             this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(600.2536F, 5.130573F);
             this.xrLabel17.Name = "xrLabel17";
             this.xrLabel17.SizeF = new System.Drawing.SizeF(88.86945F, 23F);
@@ -1194,6 +1219,13 @@
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel16.SizeF = new System.Drawing.SizeF(149.8896F, 23F);
             this.xrLabel16.Text = "xrLabel16";
+            // 
+            // PastDue2Rule
+            // 
+            this.PastDue2Rule.Condition = "[Balance] == 0  And  [Rate] == 0";
+            this.PastDue2Rule.DataMember = "Invoice";
+            this.PastDue2Rule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
+            this.PastDue2Rule.Name = "PastDue2Rule";
             // 
             // GroupHeader1
             // 
@@ -1355,37 +1387,6 @@
             this.xrLabel1.SizeF = new System.Drawing.SizeF(209.0903F, 23F);
             this.xrLabel1.StylePriority.UseFont = false;
             this.xrLabel1.Text = "Past Due Notice Information";
-            // 
-            // PastDue1Rule
-            // 
-            this.PastDue1Rule.Condition = "[Rate]  == 0  And  [Balance] > 0";
-            this.PastDue1Rule.DataMember = "Invoice";
-            this.PastDue1Rule.Formatting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PastDue1Rule.Formatting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.PastDue1Rule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.True;
-            this.PastDue1Rule.Name = "PastDue1Rule";
-            // 
-            // HideRateRule
-            // 
-            this.HideRateRule.Condition = "[Rate] == 0";
-            this.HideRateRule.DataMember = "Invoice";
-            this.HideRateRule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
-            this.HideRateRule.Name = "HideRateRule";
-            // 
-            // BorderRule
-            // 
-            this.BorderRule.Condition = "[Total] > 0";
-            this.BorderRule.DataMember = "Invoice";
-            this.BorderRule.Formatting.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.BorderRule.Formatting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.BorderRule.Name = "BorderRule";
-            // 
-            // PastDue2Rule
-            // 
-            this.PastDue2Rule.Condition = "[Balance] == 0  And  [Rate] == 0";
-            this.PastDue2Rule.DataMember = "Invoice";
-            this.PastDue2Rule.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
-            this.PastDue2Rule.Name = "PastDue2Rule";
             // 
             // AnnuaInvoices
             // 

@@ -202,6 +202,14 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<v_ChangeOfOwnership> v_ChangeOfOwnerships
+		{
+			get
+			{
+				return this.GetTable<v_ChangeOfOwnership>();
+			}
+		}
+		
 		private void UpdateWaterMeterReading(WaterMeterReading obj)
 		{
 			this.usp_UpdateWaterMeterReading(((System.Nullable<int>)(obj.RowID)), ((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.MeterReading)), ((System.Nullable<int>)(obj.Consumption)), ((System.Nullable<System.DateTime>)(obj.ReadingDate)));
@@ -4416,6 +4424,105 @@ namespace HVCC.Shell.Models
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_ChangeOfOwnership")]
+	public partial class v_ChangeOfOwnership
+	{
+		
+		private int _PropertyID;
+		
+		private string _Customer;
+		
+		private string _NewOwner;
+		
+		private string _PreviousOwner;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		public v_ChangeOfOwnership()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					this._PropertyID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewOwner", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
+		public string NewOwner
+		{
+			get
+			{
+				return this._NewOwner;
+			}
+			set
+			{
+				if ((this._NewOwner != value))
+				{
+					this._NewOwner = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousOwner", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
+		public string PreviousOwner
+		{
+			get
+			{
+				return this._PreviousOwner;
+			}
+			set
+			{
+				if ((this._PreviousOwner != value))
+				{
+					this._PreviousOwner = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this._LastModified = value;
+				}
 			}
 		}
 	}

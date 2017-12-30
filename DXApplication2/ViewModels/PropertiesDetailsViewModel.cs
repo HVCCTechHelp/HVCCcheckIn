@@ -1,28 +1,19 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Spreadsheet;
+    using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Commands;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Models;
+    using Resources;
     using System;
-    using System.Linq;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.IO;
-    using DevExpress.Xpf.Docking;
     using System.Data.Linq;
-    using HVCC.Shell.Common;
-    using DevExpress.Mvvm;
-    using DevExpress.Mvvm.DataAnnotations;
-    using HVCC.Shell.Models;
-    using DevExpress.Xpf.Grid;
-    using HVCC.Shell.Helpers;
-    using DevExpress.Spreadsheet;
-    using DevExpress.Xpf.Spreadsheet;
-    using DevExpress.Xpf.Printing;
-    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
-    using System.Text;
     using System.Windows.Input;
-    using Resources;
-    using HVCC.Shell.Common.ViewModels;
-    using HVCC.Shell.Common.Interfaces;
 
     public partial class PropertiesDetailsViewModel : CommonViewModel, ICommandSink
     {
@@ -40,16 +31,6 @@
 
             PropertiesList = GetPropertiesList();
         }
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
-        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
-
-        #endregion
 
         /* ------------------------------ Common ViewModel Properties  --------------------------------------- */
         public ApplicationPermission ApplPermissions { get; set; }
@@ -519,7 +500,6 @@
         public void RefreshAction(object parameter) 
         {
             RaisePropertyChanged("IsBusy");
-            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Properties);
             PropertiesList = GetPropertiesList();
             IsRefreshEnabled = false;
             RaisePropertyChanged("IsNotBusy");
@@ -533,45 +513,8 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            string fn;
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-
-                            fn = SaveFileDialogService.GetFullFileName();
-
-                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
             }
         }
 
@@ -583,37 +526,8 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
             }
         }
 
