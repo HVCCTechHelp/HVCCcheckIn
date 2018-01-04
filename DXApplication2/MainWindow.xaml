@@ -116,13 +116,14 @@
                             AllowDocumentSelector="False"
                             DockItemActivated="DockLayoutManager_DockItemActivated"
                             DockItemClosing="DockLayoutManager_DockItemClosing"
-                        DockItemClosed="DockLayoutManager_DockItemClosed"
+                            DockItemClosed="DockLayoutManager_DockItemClosed"
                             ClosingBehavior="ImmediatelyRemove" 
                            >
                         <dxd:LayoutGroup x:Name="layoutGroupMain" IsHitTestVisible="False">
                             <dxd:LayoutGroup Orientation="Vertical" >
                                 <dxd:DocumentGroup ItemWidth="*"
                                         x:Name="primaryDocumentGroup"
+                                        ClosePageButtonShowMode="InAllTabPageHeaders"
                                         DestroyOnClosingChildren="True"
                                         />
                             </dxd:LayoutGroup>
@@ -140,11 +141,8 @@
                                             <dxd:LabelItem>
                                                 <Label Content="Features" Foreground="#FF0352FB" FontSize="16"/>
                                             </dxd:LabelItem>
-                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
-                                                <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
-                                            </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/person_Icon.png" MouseLeftButtonDown="OnClicked_Owners" Width="100" Height="100" ToolTip="Look up Owner Info"/>
+                                                <Image  Source="Images/Icons/membership.jpg" MouseLeftButtonDown="OnClicked_Owners" Width="100" Height="100" ToolTip="Look up Owner Info"/>
                                             </dxd:LayoutControlItem>
 
 
@@ -163,6 +161,9 @@
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="100" Height="100" ToolTip="Look up Water Well Records"/>
+                                            </dxd:LayoutControlItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
+                                                <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
                                             </dxd:LayoutControlItem>
                                             <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="100" Height="100" ToolTip="View Permissions"/>

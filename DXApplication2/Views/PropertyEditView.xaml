@@ -19,8 +19,6 @@
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              d:DesignHeight="850" d:DesignWidth="1024"
-             Loaded="PropertyEdit_Loaded"
-             Unloaded="PropertyDialog_Unloaded"
              >
 
     <UserControl.Resources>
@@ -30,7 +28,7 @@
             <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
             <converters:BitmapToByteArrayConverter x:Key="BitmapToByteArray"/>
             <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
-            <DataTemplate x:Key="cmbTmp">
+            <!--<DataTemplate x:Key="cmbTmp">
                 <dxe:ComboBoxEdit Name="PART_Editor" 
                                   EditValue="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
                                   Text="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
@@ -48,14 +46,14 @@
                     </dxe:ComboBoxEdit.Items>
                 </dxe:ComboBoxEdit>
             </DataTemplate>
-            <!-- Creates a TextBox template for when the RelationshipToOwner has a value -->
+            --><!-- Creates a TextBox template for when the RelationshipToOwner has a value --><!--
             <DataTemplate x:Key="txtTmp">
                 <dxe:TextEdit Name="PART_Editor"/>
             </DataTemplate>
             <resources:RowTemplateSelector x:Key="rowTemplateSelector"
                                CmbTemplate="{StaticResource cmbTmp}"
                                TxtTemplate="{StaticResource txtTmp}"
-                               />
+                               />-->
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
@@ -81,7 +79,7 @@
                               IsCollapsible="False" 
                               IsCollapsed="True" 
                               >
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                    <!--<dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Width="12" Label=" " />
                         <dxlc:LayoutItem Label="Balance: " Width="Auto">
                             <dxe:TextEdit Text="{Binding SelectedProperty.Balance, StringFormat=C}" Width="150" 
@@ -154,7 +152,7 @@
                                 </ItemsControl>
                             </dxlc:LayoutItem>
                         </dxlc:LayoutGroup>
-                    </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>-->
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Physical Address:" Width="450" >
                             <dxe:TextEdit Text="{Binding SelectedProperty.PhysicalAddress}" Width="Auto" 
@@ -175,20 +173,20 @@
                             <Button x:Name="btnMapLink" Height="25" Width="50"                             
                                 IsEnabled="{Binding ApplPermissions.CanViewMap, Mode=TwoWay}" 
                                 Command="{Binding ViewMapCommand}"
-                                CommandParameter="{Binding ElementName=PropertyDialog}"
+                                CommandParameter="{Binding ElementName=EditProperty}"
                                 >Map</Button>
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Width="50">
                             <Button x:Name="btnParcelLink" Height="25" Width="50"                             
                                 IsEnabled="{Binding ApplPermissions.CanViewParcel, Mode=TwoWay}" 
                                 Command="{Binding ViewParcelCommand}"
-                                CommandParameter="{Binding ElementName=PropertyDialog}"
+                                CommandParameter="{Binding ElementName=EditProperty}"
                                 >Tax</Button>
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                         <dxlc:LayoutItem Label="Bill To: " BorderThickness="2">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.BillTo}" Width="Auto" 
+                            <dxe:TextEdit Text="{Binding SelectedProperty.Owner.MailTo}" Width="Auto" 
                                      IsReadOnly="True"
                                      Focusable="False"
                                      Style="{StaticResource TextEditDisplayStyle}"
@@ -216,7 +214,7 @@
                     </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
 
-                <dxlc:LayoutGroup View="GroupBox" Header="Check-In" x:Name="lgCheckIn"
+                <!--<dxlc:LayoutGroup View="GroupBox" Header="Check-In" x:Name="lgCheckIn"
                               Visibility="{Binding ApplPermissions.CanCheckIn, Mode=OneWay, Converter={StaticResource BoolToVis}}"
                               VerticalAlignment="Top" 
                               Orientation="Vertical"
@@ -302,7 +300,7 @@
                             >Check-In</Button>
                     </dxlc:LayoutItem>
 
-                </dxlc:LayoutGroup>
+                </dxlc:LayoutGroup>-->
             </dxlc:LayoutGroup>
 
             <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
@@ -428,7 +426,7 @@
 
             </dxlc:LayoutGroup>
 
-            <dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
+            <!--<dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
                               Width="800" Height="Auto" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
@@ -459,7 +457,7 @@
                                   />
                     </ScrollViewer>
                 </dxlc:LayoutItem>
-            </dxlc:LayoutGroup>
+            </dxlc:LayoutGroup>-->
 
 
             <dxlc:LayoutGroup View="GroupBox" Header="Relationships" Width="1100" 
@@ -477,7 +475,7 @@
                                      >
                         <dxg:GridControl.View>
                             <dxg:TableView x:Name="tableViewDetail"  
-                                           AllowEditing="{Binding ApplPermissions.CanUpdateRelationship}"
+                                           AllowEditing="False"
                                            AllowColumnFiltering="True" 
                                            AllowGrouping="False"
                                            ShowGroupPanel="False"
@@ -489,94 +487,23 @@
                                            AutoWidth="True" 
                                            Width="650"
                                            Height="275"
-                                           RowCanceled="tableViewDetail_RowCanceled"
-                                           CellValueChanging="tableViewDetail_CellValueChanging"
-                                           NavigationStyle="{Binding NavigationStyle}" 
-                                           NewItemRowPosition="{Binding NewItemPosition}" 
-                                           >
+                                           NavigationStyle="Row" 
+                                           />
 
-                                <dxmvvm:Interaction.Behaviors>
-                                    <dxmvvm:EventToCommand EventName="ValidateRow" Command="{Binding ValidateRowCommand}" PassEventArgsToCommand="True"/>
-                                </dxmvvm:Interaction.Behaviors>
-
-
-                                <dxg:TableView.RowCellMenuCustomizations>
-                                    <dxb:BarButtonItem x:Name="addRowItem"
-                                                       Content="Add"
-                                                       Glyph="{dx:DXImage Image=Apply_16x16.png}"
-                                                       IsVisible="{Binding DataContext.ApplPermissions.CanAddRelationship, Mode=TwoWay}"
-                                                       Command="{Binding DataContext.AddRelationshipCommand, ElementName=PropertyEdit}"
-                                                       CommandParameter="{Binding DataContext.SelectedRelationship, ElementName=PropertyEdit}"
-                                        />
-                                    <dxb:BarButtonItem x:Name="removeRowItem"
-                                                       Content="Remove"
-                                                       Glyph="{dx:DXImage Image=Delete_16x16.png}"
-                                                       IsVisible="{Binding DataContext.ApplPermissions.CanDeleteRelationship}"
-                                                       Command="{Binding DataContext.RemoveRelationshipCommand, ElementName=PropertyEdit}"
-                                                       CommandParameter="{Binding DataContext.SelectedRelationship, ElementName=PropertyEdit}"
-                                        />
-                                </dxg:TableView.RowCellMenuCustomizations>
-                            </dxg:TableView>
                         </dxg:GridControl.View>
                         <!-- columns of the detail grid -->
                         <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="RelationshipID" Header="rID" 
-                                            Width="25" 
-                                            />
-                            <dxg:GridColumn FieldName="FName" Header="First Name" 
-                                            Width="75" 
-                                            SortOrder="Descending" 
-                                            SortIndex="0" 
-                                            IsEnabled="True"
-                                            />
-                            <dxg:GridColumn FieldName="LName" Header="Last Name" 
-                                            Width="75" 
-                                            />
-                            <dxg:GridColumn FieldName="RelationToOwner" 
-                                            x:Name="txtRelationship"
-                                             Header="Relationship"
-                                             Width="75"
-                                             AutoFilterCondition="Default" 
-                                             CellTemplateSelector="{StaticResource rowTemplateSelector}"
-                                             />
-                            <dxg:GridColumn FieldName="IsGolf" Header="Golf" x:Name="ceIsGolf" Fixed="Right"
-                                        FixedWidth="True" Width="50" AllowResizing="False"
-                                        ShowInColumnChooser="False" AllowFocus="True"
-                                        AllowEditing="True" HorizontalHeaderContentAlignment="Center"
-                                        >
-                                <dxg:GridColumn.EditTemplate>
-                                    <ControlTemplate>
-                                        <dxe:CheckEdit Name="PART_Editor"
-                                                       EditValue="{Binding Path=EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                       RelativeSource={RelativeSource TemplatedParent}}" 
-                                                       HorizontalAlignment="Center"
-                                                       />
-                                    </ControlTemplate>
-                                </dxg:GridColumn.EditTemplate>
-                            </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="IsPool" Header="Pool" x:Name="ceIsPool" Fixed="Right"
-                                        FixedWidth="True" Width="50" AllowResizing="False"
-                                        ShowInColumnChooser="False" AllowFocus="True"
-                                        AllowEditing="True" HorizontalHeaderContentAlignment="Center"
-                                        >
-                                <dxg:GridColumn.EditTemplate>
-                                    <ControlTemplate>
-                                        <dxe:CheckEdit Name="PART_Editor"
-                                                       EditValue="{Binding Path=EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                       RelativeSource={RelativeSource TemplatedParent}}"
-                                                       HorizontalAlignment="Center"
-                                                       />
-                                    </ControlTemplate>
-                                </dxg:GridColumn.EditTemplate>
-                            </dxg:GridColumn>
-
+                            <dxg:GridColumn FieldName="RelationshipID" Header="rID"  Width="25"  />
+                            <dxg:GridColumn FieldName="FName" Header="First Name"  Width="75" SortOrder="Descending"  SortIndex="0"  IsEnabled="False" />
+                            <dxg:GridColumn FieldName="LName" Header="Last Name" Width="75"  />
+                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship" Width="75"/>
                         </dxg:GridControl.Columns>
                     </dxg:GridControl>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem Width="425">
                     <dxe:ImageEdit x:Name="imgEdit"
                                    Source="{Binding  SelectedRelationship.Photo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BitmapToByteArray}}"
-                                   IsEnabled="{Binding  ApplPermissions.CanUpdateRelationship}"
+                                   IsEnabled="False"
                                    Height="275" Width="367"
                                    ShowBorder="True"
                                    ShowLoadDialogOnClickMode="Always"
@@ -584,25 +511,6 @@
                                    ShowMenu="True"
                                    Validate="editform_Validate"
                                    >
-                        <!--Drop="imgEdit_Drop"-->
-                        <!--EditValueChanged="editform_ValueChanged"-->
-                        <dxe:ImageEdit.MenuTemplate>
-                            <ControlTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <dxe:ImageEditTakePictureButton />
-                                    <dxe:ImageEditToolSeparator />
-                                    <dxe:ImageEditLoadToolButton />
-                                    <dxe:ImageEditPasteToolButton />
-                                    <dxe:ImageEditToolSeparator />
-                                    <dxe:ImageEditClearToolButton />
-                                </StackPanel>
-                            </ControlTemplate>
-                        </dxe:ImageEdit.MenuTemplate>
-
-                        <dxmvvm:Interaction.Behaviors>
-                            <dxmvvm:EventToCommand EventName="Drop" Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
-                        </dxmvvm:Interaction.Behaviors>
-
                     </dxe:ImageEdit>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>

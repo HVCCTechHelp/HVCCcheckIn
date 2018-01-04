@@ -110,7 +110,7 @@
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
-                            <dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="OwnershipHistory" 
+                            <dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="Ownership History" 
                                                    Command="{Binding OwnershipHistoryCommand}" CommandParameter=""
                                                    IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
@@ -166,7 +166,7 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Customer" Width="75" Visible="False" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="25" Visible="False" IsEnabled="False" ShowInColumnChooser="True" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />

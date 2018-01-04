@@ -19,6 +19,101 @@ namespace HVCC.Shell.Models
     using System.ComponentModel;
     using System.Collections.Specialized;
 
+    #region Extend Owner Model
+
+    public partial class Owner : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private int _poolMembers = 0;
+        public int PoolMembers
+        {
+            get
+            {
+                return this._poolMembers;
+            }
+            set
+            {
+                if (value != _poolMembers)
+                {
+                    _poolMembers = value;
+                }
+                RaisePropertyChanged("PoolMembers");
+            }
+        }
+
+        private int _poolGuests = 0;
+        public int PoolGuests
+        {
+            get
+            {
+                return this._poolGuests;
+            }
+            set
+            {
+                if (value != _poolGuests)
+                {
+                    _poolGuests = value;
+                }
+                RaisePropertyChanged("PoolGuests");
+            }
+        }
+
+        private int _golfMembers = 0;
+        public int GolfMembers
+        {
+            get
+            {
+                return this._golfMembers;
+            }
+            set
+            {
+                if (value != this._golfMembers)
+                {
+                    this._golfMembers = value;
+                }
+                RaisePropertyChanged("GolfMembers");
+            }
+        }
+
+        private int _golfGuests = 0;
+        public int GolfGuests
+        {
+            get
+            {
+                return this._golfGuests;
+            }
+            set
+            {
+                if (value != this._golfGuests)
+                {
+                    this._golfGuests = value;
+                }
+                RaisePropertyChanged("GolfGuests");
+            }
+        }
+
+
+        /* --------------------------- INotify Property Change Implementation ----------------------------- */
+        /// <summary>
+        /// INotifyPropertyChanged Implementation
+        /// </summary>
+        #region INotifyPropertyChagned implementaiton
+        /// <summary>
+        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property being changed</param>
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
+
+    }
+    #endregion
+
     #region Extend Property Model
     public partial class Property : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
     {
@@ -146,7 +241,7 @@ namespace HVCC.Shell.Models
         #endregion
     }
 
-    public partial class Property: ICloneable
+    public partial class Property : ICloneable
     {
         public object Clone()
         {

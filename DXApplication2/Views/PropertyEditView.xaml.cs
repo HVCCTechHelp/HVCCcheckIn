@@ -74,85 +74,19 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Te_Validate(object sender, ValidationEventArgs e)
-        {
-            string input = e.Value as string;
-            if (string.IsNullOrEmpty(input))
-            {
-                e.IsValid = false;
-            }
-            else
-            {
-                e.IsValid = true;
-            }
-            e.Handled = true;
-        }
-
-        ///// <summary>
-        ///// Validates a grid row 
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void tableViewDetail_ValidateRow(object sender, DevExpress.Xpf.Grid.GridRowValidationEventArgs e)
+        //private void Te_Validate(object sender, ValidationEventArgs e)
         //{
-        //    Relationship row = e.Row as Relationship;
-
-        //    try
+        //    string input = e.Value as string;
+        //    if (string.IsNullOrEmpty(input))
         //    {
-        //        if (null != row)
-        //        {
-        //            // TO-DO:  <?> Add validation rules for Relationships
-        //        }
+        //        e.IsValid = false;
         //    }
-        //    catch (Exception ex)
+        //    else
         //    {
-        //        MessageBox.Show("Row Error: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (e.IsValid)
-        //        {
-        //            // TO-DO:  ?
-        //        }
-        //        e.Handled = true;
-        //    }
-        //}
-
-        /// <summary>
-        /// Cancels addition of new row
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tableViewDetail_RowCanceled(object sender, RowEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        /// <summary>
-        /// Grid row updated event handler
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void tableViewDetail_RowUpdated(object sender, RowEventArgs e)
-        //{
-        //    Relationship row = e.Row as Relationship;
-        //    if (null == row.Active)
-        //    {
-        //        // TO-DO: make assignments here.....
-        //        //vm.AssignDefaultValues(row);
+        //        e.IsValid = true;
         //    }
         //    e.Handled = true;
         //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tableViewDetail_CellValueChanging(object sender, CellValueChangedEventArgs e)
-        {
-            this.tableViewDetail.PostEditor();
-        }
 
         /// <summary>
         /// 
@@ -194,32 +128,6 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckIn_Clicked(object sender, RoutedEventArgs e)
-        {
-            // TO-DO : convert to a setable property in the ViewModel....
-            this.lgCheckIn.Visibility = Visibility.Hidden;
-        }
-
-        private void checkin_EditValueChanged(object sender, EditValueChangedEventArgs e)
-        {
-            if (this.sePoolMembers.Value > 0 ||
-                this.sePoolGuests.Value > 0 ||
-                this.seGolfMembers.Value > 0 ||
-                this.seGolfGuests.Value > 0)
-            {
-                this.btnCheckIn.IsEnabled = true;
-            }
-            else
-            {
-                this.btnCheckIn.IsEnabled = false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void teParcel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //// It is plusuable to assume that the parcel number may get entered incorrectly, or
@@ -231,50 +139,6 @@
             //    this.teParcel.Style = (Style)resource;
             //    this.teParcel.IsReadOnly = false;
             //}
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PropertyDialog_Unloaded(object sender, RoutedEventArgs e)
-        {
-            // TO-DO : This may no longer been necessary since the DockPanel close also disposes of the VM and other view states...
-
-            this.btnCheckIn.IsEnabled = true; // set true before the window closes, otherwise the 'false' state is retained
-
-            // TO-DO: disposition will now be handled through the MvvmBinder interface
-            //try
-            //{
-            //    IDisposable disp = this.DataContext as IDisposable;
-            //    if (null != disp)
-            //    {
-            //        disp.Dispose();
-            //    };
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Dispose Error: " + ex.Message);
-            //}
-
-        }
-
-        /// <summary>
-        /// Executed when the View is loaded
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PropertyEdit_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Force an update on the controls that require validation.  This will force
-            // them to be invalid if data is missing.
-            //teOwnerMailTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            ////teOwnerLName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerAddress.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerCity.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerState.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerZip.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
         }
     }
 }

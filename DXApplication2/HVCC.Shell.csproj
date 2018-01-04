@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -235,6 +235,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OwnershipHistoryViewModel.cs" />
     <Compile Include="ViewModels\OwnersViewModel.cs" />
+    <Compile Include="ViewModels\FinancialTransactionViewModel.cs" />
     <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
@@ -259,6 +260,9 @@
     </Compile>
     <Compile Include="Views\GolfCartView.xaml.cs">
       <DependentUpon>GolfCartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FinancialTransactionView.xaml.cs">
+      <DependentUpon>FinancialTransactionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertiesUpdatedView.xaml.cs">
       <DependentUpon>PropertiesUpdatedView.xaml</DependentUpon>
@@ -317,6 +321,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GolfCartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FinancialTransactionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -506,6 +514,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\Financal-32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\payment_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Membership.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC_DEV" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC_DEV;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionStringDEV" Provider="System.Data.SqlClient" />
   <Table Name="dbo.WaterMeterReadings" Member="WaterMeterReadings">
     <Type Name="WaterMeterReading">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -213,6 +213,7 @@
       <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
       <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
       <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
+      <Association Name="Owner_FinancialTransaction" Member="FinancialTransactions" ThisKey="OwnerID" OtherKey="OwnerID" Type="FinancialTransaction" />
     </Type>
     <InsertFunction FunctionId="FunctionId5">
       <Argument Parameter="customer" Member="Customer" />
@@ -277,6 +278,33 @@
       <Column Name="PreviousOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
     </Type>
+  </Table>
+  <Table Name="dbo.FinancialTransactions" Member="FinancialTransactions">
+    <Type Name="FinancialTransaction">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Balance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="CreditAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="DebitAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="TransactionDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="TransactionMethod" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="TransactionAppliesTo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastMOdifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_FinancialTransaction" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId9">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="balance" Member="Balance" />
+      <Argument Parameter="creditAmount" Member="CreditAmount" />
+      <Argument Parameter="debitAmount" Member="DebitAmount" />
+      <Argument Parameter="transactionDate" Member="TransactionDate" />
+      <Argument Parameter="transactionMethod" Member="TransactionMethod" />
+      <Argument Parameter="transactionAppliesTo" Member="TransactionAppliesTo" />
+      <Argument Parameter="comment" Member="Comment" />
+      <Argument Parameter="rowID" Member="RowId" />
+    </InsertFunction>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
@@ -518,6 +546,18 @@
     <Parameter Name="PreviousOwner" Parameter="previousOwner" Type="System.String" DbType="VarChar(200)" />
     <Parameter Name="NewOwnerID" Parameter="newOwnerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="NewOwner" Parameter="newOwner" Type="System.String" DbType="VarChar(200)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId9" Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="CreditAmount" Parameter="creditAmount" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="DebitAmount" Parameter="debitAmount" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="TransactionDate" Parameter="transactionDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="TransactionMethod" Parameter="transactionMethod" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="TransactionAppliesTo" Parameter="transactionAppliesTo" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>

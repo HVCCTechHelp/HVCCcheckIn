@@ -2,28 +2,27 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
+    using DevExpress.Spreadsheet;
+    using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Helpers;
+    using HVCC.Shell.Models;
+    using HVCC.Shell.Resources;
+    using HVCC.Shell.Validation;
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data.Linq;
-    using HVCC.Shell.Common;
-    using DevExpress.Mvvm;
-    using HVCC.Shell.Models;
-    using DevExpress.Spreadsheet;
-    using System.Windows.Input;
-    using HVCC.Shell.Common.ViewModels;
-    using HVCC.Shell.Common.Interfaces;
-    using HVCC.Shell.Helpers;
-    using HVCC.Shell.Resources;
-    using DevExpress.Xpf.Editors;
-    using System.Windows;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.IO;
-    using DevExpress.Xpf.Grid;
     using System.Diagnostics;
-    using HVCC.Shell.Validation;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Input;
 
     public partial class PropertyEditViewModel : CommonViewModel, ICommandSink
     {
@@ -51,16 +50,6 @@ namespace HVCC.Shell.ViewModels
 
             NotesHeader = string.Format("HVCC Notes [{0}]", NoteCount);
         }
-
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
-        #endregion
-
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
 
         /* ------------------------------------- Properties --------------------------- */
         public ApplicationPermission ApplPermissions { get; set; }
@@ -99,26 +88,6 @@ namespace HVCC.Shell.ViewModels
                     _isBusy = value;
                     if (_isBusy) { RaisePropertyChanged("IsBusy"); }
                     else { RaisePropertyChanged("IsNotBusy"); }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Should the Check-In button be enabled/disabled
-        /// </summary>
-        private bool _isCheckinEnabled = false;
-        public bool IsCheckinEnabled
-        {
-            get
-            {
-                return _isCheckinEnabled;
-            }
-            set
-            {
-                if (value != _isCheckinEnabled)
-                {
-                    this._isCheckinEnabled = value;
-                    RaisePropertyChanged("IsCheckinEnabled");
                 }
             }
         }
@@ -207,28 +176,8 @@ namespace HVCC.Shell.ViewModels
             {
                 if (value != this._selectedRelationship)
                 {
-                    // When the selected relationship is change; a new selection is made, we unregister the previous PropertyChanged
-                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
-                    // We use this PropertyChanged trigger to handle Image changes, and to manage the Golf/Pool check ins.
-                    if (this._selectedRelationship != null)
-                    {
-                        this._selectedRelationship.PropertyChanged -= SelectedRelation_PropertyChanged;
-                    }
-
                     this._selectedRelationship = value;
-                    if (null != this._selectedRelationship)
-                    {
-                        // Once the new value is assigned, we register a new PropertyChanged event listner.
-                        this._selectedRelationship.PropertyChanged += SelectedRelation_PropertyChanged;
-
-                        //// The database stores the raw binary data of the image.  Before it can be
-                        //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
-                        if (null == this._selectedRelationship.Photo && null != ApplDefault)
-                        {
-                            this._selectedRelationship.Photo = this.ApplDefault.Photo;
-                        }
-                        RaisePropertyChanged("SelectedRelationship");
-                    }
+                    RaisePropertyChanged("SelectedRelationship");
                 }
             }
         }
@@ -241,7 +190,6 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                this._relationships.CollectionChanged += _relationshipsToProcess_CollectionChanged;
                 return this._relationships;
             }
             set
@@ -286,7 +234,6 @@ namespace HVCC.Shell.ViewModels
                 }
             }
         }
-
 
         private string _notesHeader = string.Empty;
         public string NotesHeader
@@ -373,87 +320,6 @@ namespace HVCC.Shell.ViewModels
                 CanSaveExecute = true;
                 RaisePropertyChanged("DataChanged");
             }
-        }
-
-        /// <summary>
-        /// Relationship PropertyChanged event handler.  When a property of the SelectedRelationship is
-        /// changed, the PropertyChanged event is fired, and processed by this handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SelectedRelation_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var x = e.PropertyName;
-
-            // We listen for changes to the IsGolf/IsPool value of the SelectedProperty so we can update the 
-            // Check-In counts for the property.
-
-            if (e.PropertyName == "IsGolf" || e.PropertyName == "IsPool")
-            {
-                // Initialize the Check-In property counters to zero. Then iterate over the collection to
-                // get current counts.
-                this.SelectedProperty.GolfMembers = 0;
-                this.SelectedProperty.PoolMembers = 0;
-
-                foreach (Relationship r in this.Relationships)
-                {
-                    if (r.IsGolf) { this.SelectedProperty.GolfMembers += 1; }
-                    if (r.IsPool) { this.SelectedProperty.PoolMembers += 1; }
-                }
-            }
-            RaisePropertyChanged("DataChanged");
-        }
-
-        /// <summary>
-        /// Executes when the RelationsToProcess collection changes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _relationshipsToProcess_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            string action = e.Action.ToString();
-
-            switch (action)
-            {
-                case "Reset":
-                    break;
-
-                // When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
-                // When new names are added to the Relationships collection, they too result in an "Add" action.
-                // Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
-                case "Add":
-                    var newItems = e.NewItems;
-                    foreach (Relationship r in newItems)
-                    {
-                        if (0 != r.RelationshipID)
-                        {
-                            bool result = Helper.RemoveRelationship(this.dc, r);
-                        }
-                        else
-                        {
-                            // If the FName string is empty, than we landed here as a result of an 'Add' to the 
-                            // Relationship collection firing on a collection change event.  We can ignore this
-                            // request for now.
-                            if (!string.IsNullOrEmpty(r.FName)
-                                && !string.IsNullOrEmpty(r.LName)
-                                && !string.IsNullOrEmpty(r.RelationToOwner))
-                            {
-                                bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
-                            }
-                        }
-                    }
-                    break;
-                case "Remove":
-                    var oldItems = e.OldItems;
-                    foreach (Relationship r in oldItems)
-                    {
-                        bool result = Helper.AddRelationship(this.dc, SelectedProperty.Owner, r);
-                    }
-                    break;
-            }
-            //if (0 < _relationshipsToProcess.Count()) { CanSaveExecute = true; } else { CanSaveExecute = false; }
-            CanSaveExecute = IsDirty;
-            RaisePropertyChanged("DataChanged");
         }
 
         #endregion
@@ -570,7 +436,7 @@ namespace HVCC.Shell.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowMessage("Can't retrieve property from database\n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                MessageBox.Show("Can't retrieve property from database\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
@@ -632,7 +498,7 @@ namespace HVCC.Shell.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowMessage("Can't retrieve property from database\n" + ex.Message, "Error", MessageButton.OK, MessageIcon.Error);
+                MessageBox.Show("Can't retrieve property from database\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
@@ -708,369 +574,6 @@ namespace HVCC.Shell.ViewModels
     /// </summary>
     public partial class PropertyEditViewModel
     {
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _checkInCommand;
-        public ICommand CheckInCommand
-        {
-            get
-            {
-                return _checkInCommand ?? (_checkInCommand = new CommandHandler(() => CheckInAction(), true));
-            }
-        }
-
-        /// <summary>
-        /// Check-In button click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void CheckInAction()
-        {
-            try
-            {
-                MessageBoxResult results = MessageBoxResult.Cancel;
-
-                if (!this.SelectedProperty.IsInGoodStanding)
-                {
-                    results = MessageBox.Show("This member is not is good standing.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
-                        , "Warning"
-                        , MessageBoxButton.OKCancel
-                        , MessageBoxImage.Exclamation
-                        );
-                }
-                else
-                {
-                    results = MessageBox.Show("Proceed with Check In?"
-                        , "Proceed"
-                        , MessageBoxButton.OKCancel
-                        , MessageBoxImage.Question
-                        );
-                    //results = MessageResult.OK;
-                }
-
-                // If the property is in good standing, or staff allows member to check in, then proceed
-                if (MessageBoxResult.OK == results)
-                {
-                    string activity = string.Empty;
-
-                    //using (dc)
-                    //{
-                    List<FacilityUsage> usages = new List<FacilityUsage>();
-
-                    // Register the members what are checking in.
-                    foreach (Relationship r in Relationships)
-                    {
-                        if (r.IsGolf || r.IsPool)
-                        {
-                            FacilityUsage usage = new FacilityUsage();
-
-                            usage.PropertyID = SelectedProperty.PropertyID;
-                            usage.RelationshipId = r.RelationshipID;
-                            usage.Date = DateTime.Now;
-                            if (r.IsGolf)
-                            {
-                                usage.GolfRoundsMember = 1;
-                                activity = "Golf";
-                            }
-                            else
-                            {
-                                usage.GolfRoundsMember = 0;
-                            }
-                            if (r.IsPool)
-                            {
-                                usage.PoolMember = 1;
-                                activity = "the Pool";
-                            }
-                            else
-                            {
-                                usage.PoolMember = 0;
-                            }
-                            usage.GolfRoundsGuest = 0;
-                            usage.PoolGuest = 0;
-
-                            // Before committing the data, we check to make sure the member(s)
-                            // have not already been checked in for the day.
-                            // 
-                            DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
-                            DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
-
-                            var z = (from p in dc.FacilityUsages
-                                     where p.RelationshipId == r.RelationshipID
-                                     && p.GolfRoundsMember == usage.GolfRoundsMember
-                                     && p.PoolMember == usage.PoolMember
-                                     && (p.Date >= dt1 && p.Date <= dt2)
-                                     select p).FirstOrDefault();
-
-                            if (null == z)
-                            {
-                                dc.FacilityUsages.InsertOnSubmit(usage);
-                            }
-                            else
-                            {
-                                string msg = String.Format("Member {0} {1} has already checked in for {2} today.", r.FName, r.LName, activity);
-                                MessageBoxService.ShowMessage(msg, "Warning", MessageButton.OK, MessageIcon.Information, MessageResult.OK);
-                            }
-
-                            // Flip the Golf & Pool bits so they aren't left in a true state
-                            r.IsPool = false;
-                            r.IsGolf = false;
-                        }
-
-                        // If there are guests of the members, add them last.
-                        if (0 < this.SelectedProperty.PoolGuests || 0 < this.SelectedProperty.GolfGuests)
-                        {
-                            Relationship guest = (from q in this.dc.Relationships
-                                                  where q.RelationToOwner == "Guest"
-                                                  select q).FirstOrDefault();
-
-                            FacilityUsage gUsage = new FacilityUsage();
-                            gUsage.PropertyID = SelectedProperty.PropertyID;
-                            gUsage.RelationshipId = guest.RelationshipID;
-                            gUsage.Date = DateTime.Now;
-                            gUsage.GolfRoundsMember = 0;
-                            gUsage.PoolMember = 0;
-                            gUsage.GolfRoundsGuest = SelectedProperty.GolfGuests;
-                            gUsage.PoolGuest = SelectedProperty.PoolGuests;
-
-                            dc.FacilityUsages.InsertOnSubmit(gUsage);
-                        }
-
-                    }
-                    ChangeSet cs = dc.GetChangeSet();
-                    dc.SubmitChanges();
-                    MessageBox.Show("Check In Complete");
-                }
-                else
-                {
-                    MessageBox.Show("Check In was canceled. No data was recorded.");
-                    foreach (Relationship r in Relationships)
-                    {
-                        r.IsPool = false;
-                        r.IsGolf = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Check in Error: " + ex.Message);
-            }
-            finally
-            {
-                IsCheckinEnabled = false;
-                this.SelectedProperty.PoolMembers = 0;
-                this.SelectedProperty.PoolGuests = 0;
-                this.SelectedProperty.GolfMembers = 0;
-                this.SelectedProperty.GolfGuests = 0;
-
-                Host.Execute(HostVerb.Close, this.Caption);
-            }
-        }
-
-        /// <summary>
-        /// Drop Command
-        /// </summary>
-        private ICommand _dropCommand;
-        public ICommand DropCommand
-        {
-            get
-            {
-                return _dropCommand ?? (_dropCommand = new CommandHandlerWparm((object parameter) => DropAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// ImageEdit (drag &)drop event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void DropAction(object parameter)
-        {
-            DragEventArgs e = parameter as DragEventArgs;
-            try
-            {
-                // Only supports file drag & drop
-                if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    return;
-                }
-
-                //Drag the file access
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                // Only supports single file drag & drop
-                if (1 < files.Count())
-                {
-                    MessageBox.Show("You can only drop a single image on this control");
-                    return;
-                }
-
-                //Note that, because the program supports both pulled also supports drag the past, then ListBox can receive its drag and drop files
-                //In order to prevent conflict mouse clicking and dragging, need to be shielded from the program itself to drag the file
-                //Here to determine whether a document from outside the program drag in, is to determine the image is in the working directory
-                if (files.Length > 0 && (e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
-                {
-                    e.Effects = DragDropEffects.Copy;
-                }
-                else
-                {
-                    e.Effects = DragDropEffects.None;
-                }
-
-                foreach (string file in files)
-                {
-                    try
-                    {
-                        //If the image is from the external drag in, make a backup copy of the file to the working directory
-                        ////string destFile = path + System.IO.Path.GetFileName(file);
-
-                        switch (e.Effects)
-                        {
-                            case DragDropEffects.Copy:
-                                ////File.Copy(file, destFile, false);
-                                if ((Path.GetExtension(file)).Contains(".png") ||
-                                    (Path.GetExtension(file)).Contains(".PNG") ||
-                                    (Path.GetExtension(file)).Contains(".jpg") ||
-                                    (Path.GetExtension(file)).Contains(".JPG") ||
-                                    (Path.GetExtension(file)).Contains(".jpeg") ||
-                                    (Path.GetExtension(file)).Contains(".JPEG") ||
-                                    (Path.GetExtension(file)).Contains(".gif") ||
-                                    (Path.GetExtension(file)).Contains(".GIF"))
-                                {
-                                    SelectedRelationship.Photo = this.ApplDefault.Photo; // Helper.LoadImage(file);
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Only JPG, GIF and PNG files are supported");
-                                    return;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Already exists in this file or import the non image files！");
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error processing image file. " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// TextEdit LostFocus Event to Command
-        /// </summary>
-        private ICommand _teLostFocusCommand;
-        public ICommand TELostFocusCommand
-        {
-            get
-            {
-                return _teLostFocusCommand ?? (_teLostFocusCommand = new CommandHandlerWparm((object parameter) => TELostFocusAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// TextEdit LostFocus Event Action
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void TELostFocusAction(object parameter)
-        {
-            Note n = new Note();
-            n.Owner = SelectedProperty.Owner;
-            n.Comment = NewNote;
-            dc.Notes.InsertOnSubmit(n);
-            CanSaveExecute = IsDirty;
-            RaisePropertyChanged("DataChanged");
-        }
-
-
-        /// <summary>
-        /// Drop Command
-        /// </summary>
-        private ICommand _validateRowCommand;
-        public ICommand ValidateRowCommand
-        {
-            get
-            {
-                return _validateRowCommand ?? (_validateRowCommand = new CommandHandlerWparm((object parameter) => ValidateRowAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// ImageEdit (drag &)drop event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void ValidateRowAction(object parameter)
-        {
-            GridRowValidationEventArgs e = parameter as GridRowValidationEventArgs;
-            try
-            {
-                if (e.IsValid)
-                {
-                    Helper.AddRelationship(dc, SelectedProperty.Owner, e.Row as Relationship);
-                    if (IsDirty)
-                    {
-                        CanSaveExecute = true;
-                        RaisePropertyChanged("DataChanged");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error processing image file. " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// AddRelationship Command
-        /// </summary>
-        private ICommand _addRelationshipCommand;
-        public ICommand AddRelationshipCommand
-        {
-            get
-            {
-                return _addRelationshipCommand ?? (_addRelationshipCommand = new CommandHandlerWparm((object parameter) => AddRelationshipAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// AddRelationshipCommand Action
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void AddRelationshipAction(object parameter)
-        {
-            NavigationStyle = GridViewNavigationStyle.Row;
-            NewItemPosition = NewItemRowPosition.Top;
-        }
-
-        /// <summary>
-        /// RemoveRelationship Command
-        /// </summary>
-        private ICommand _removeRelationshipCommand;
-        public ICommand RemoveRelationshipCommand
-        {
-            get
-            {
-                return _removeRelationshipCommand ?? (_removeRelationshipCommand = new CommandHandlerWparm((object parameter) => RemoveRelationshipAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// AddRelationshipCommand Action
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void RemoveRelationshipAction(object parameter)
-        {
-            Relationship r = parameter as Relationship;
-            Helper.RemoveRelationship(this.dc, r);
-            this.Relationships.Remove(r);
-            CanSaveExecute = IsDirty;
-        }
-
         private bool _canViewParcel = true;
         /// <summary>
         /// View Parcel Command
@@ -1093,7 +596,7 @@ namespace HVCC.Shell.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBoxService.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
@@ -1125,7 +628,7 @@ namespace HVCC.Shell.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBoxService.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
             {

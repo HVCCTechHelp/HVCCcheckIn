@@ -330,6 +330,27 @@
         public void OwnershipHistoryAction()
         {
             Host.Execute(HostVerb.Open, "OwnershipHistory");
+
+            //foreach (Owner o in dc.Owners)
+            //{
+            //    decimal balance = 0;
+            //    foreach (Property p in o.Properties)
+            //    {
+            //        balance += (decimal)p.Balance;
+            //    }
+            //    FinancialTransaction transaction = new FinancialTransaction();
+            //    transaction.OwnerID = o.OwnerID;
+            //    transaction.Balance = balance;
+            //    transaction.CreditAmount = 0;
+            //    transaction.DebitAmount = 0;
+            //    transaction.TransactionMethod = "Machine Generated";
+            //    transaction.TransactionAppliesTo = "Opening Balance";
+            //    transaction.TransactionDate = DateTime.Now;
+            //    transaction.Comment = "Sum balance of all properties owned, based on current property balances in the database";
+
+            //    dc.FinancialTransactions.InsertOnSubmit(transaction);
+            //    dc.SubmitChanges();
+            //}
         }
 
         /// <summary>

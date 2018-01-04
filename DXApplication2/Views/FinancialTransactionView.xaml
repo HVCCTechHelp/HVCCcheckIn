@@ -1,0 +1,410 @@
+﻿<UserControl x:Class="HVCC.Shell.Views.FinancialTransactionView" x:Name="FinancialTransaction"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             xmlns:dxet="http://schemas.devexpress.com/winfx/2008/xaml/editors/themekeys"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+             xmlns:local="clr-namespace:HVCC.Shell.Views"
+             xmlns:helper="clr-namespace:HVCC.Shell.Helpers"
+             xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+             xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+             xmlns:validation="clr-namespace:HVCC.Shell.Validation"
+             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+             common:CommandSinkBinding.CommandSink="{Binding}" 
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="900"
+             Loaded="FinancialTransaction_Loaded"
+             >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibility x:Key="BoolToVis" />
+            <converters:InvertBoolean x:Key="Invert" />
+            <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
+            <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
+
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <!--<dxr:RibbonPage Caption="Actions" >
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                            <dxb:BarButtonItem Content="Undo" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding UndoCommand}"
+                                                       Glyph="{dx:DXImage Image=Reset2_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
+                                                       ToolTip="Discard All Changes"/>
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>-->
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+
+                        <!--<dxr:RibbonPageGroup Caption="Owner Action">
+
+                            <dxb:BarButtonItem x:Name="bbMakePayment" Content="Post Payment" 
+                                               Command="{Binding PostPaymentCommand}" CommandParameter="{Binding SelectedOwner}"
+                                               IsEnabled="{Binding IsEnabledChangeOwner}"
+                                               Glyph="/Images/Icons/payment_32x32.png" 
+                                               LargeGlyph="/Images/Icons/payment_32x32.png" />
+                        </dxr:RibbonPageGroup>-->
+                    </dxr:RibbonPage>
+
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+
+            <dxlc:LayoutControl Width="1000">
+                <dxlc:LayoutGroup x:Name="grpboxTransaction" View="GroupBox" Header="{Binding HeaderText, Mode=OneWay}" 
+                          VerticalAlignment="Top" 
+                          IsCollapsible="False" 
+                          Orientation="Vertical"
+                          Width="Auto">
+                    <dxlc:LayoutGroup Orientation="Horizontal" View="Group">
+
+                        <dxlc:LayoutGroup Orientation="Vertical">
+                            <dxlc:LayoutGroup View="Group" Orientation="Vertical"
+                              Width="850" 
+                              VerticalAlignment="Top"
+                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              IsCollapsible="False" 
+                              IsCollapsed="False" 
+                              >
+
+                                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="800" HorizontalAlignment="Left">
+
+                                    <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" HorizontalAlignment="Left" Header="Transaction Type" Margin="8,0,0,0">
+                                        <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="550" HorizontalAlignment="Left">
+                                            <dxlc:LayoutItem Label="Credit:" x:Name="lbCredit" Margin="50,0,0,10" HorizontalAlignment="Left">
+                                                <dxe:TextEdit x:Name="teCredit" HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="100" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="False"
+                                                      MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
+                                                      NullText="$0.00"
+                                                      ToolTip="Credits deduct from the balance" Foreground="#FF41B804" GotFocus="teCredit_GotFocus">
+                                                    <dxe:TextEdit.EditValue>
+                                                        <Binding Path="CreditAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                            <Binding.ValidationRules>
+                                                                <validation:RequiredValidationRule FieldName="CreditAmount"/>
+                                                            </Binding.ValidationRules>
+                                                        </Binding>
+                                                    </dxe:TextEdit.EditValue>
+                                                </dxe:TextEdit>
+                                            </dxlc:LayoutItem>
+
+                                            <dxlc:LayoutItem Label="-OR-" x:Name="lbOR" Margin="57,0,0,10" HorizontalAlignment="Left" FontWeight="Bold"/>
+
+                                            <dxlc:LayoutItem Label="Debit:" x:Name="lbDebit" Margin="57,0,0,10" HorizontalAlignment="Left">
+                                                    <dxe:TextEdit x:Name="teDebit"  HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="100" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
+                                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="False"
+                                                      MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
+                                                      NullText="$0.00"
+                                                      ToolTip="Debits add to the balance" Foreground="#FFFF2800"  GotFocus="teDebit_GotFocus">
+                                                        <dxe:TextEdit.EditValue>
+                                                            <Binding Path="DebitAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                                <Binding.ValidationRules>
+                                                                    <validation:RequiredValidationRule FieldName="DebitAmount"/>
+                                                                </Binding.ValidationRules>
+                                                            </Binding>
+                                                        </dxe:TextEdit.EditValue>
+                                                    </dxe:TextEdit>
+                                                </dxlc:LayoutItem>
+                                        </dxlc:LayoutGroup>
+                                        
+                                        <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="550" HorizontalAlignment="Left">
+                                            <dxlc:LayoutItem Label="Credit Method:" x:Name="lbCreditMethod"  Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                                            <dxlc:LayoutItem>
+                                                <dxe:ComboBoxEdit x:Name="ceCreditMethod" Width="150" HorizontalAlignment="Left"
+                                                                  Text="{Binding TransactionMethod}"
+                                                                  AutoComplete="True" 
+                                                                  AllowNullInput="False" IsTextEditable="False" 
+                                                                  ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
+                                                                  NullText="Select One"
+                                                                  >
+                                                    <dxe:TextEdit.EditValue>
+                                                        <Binding Path="TransactionMethod" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                                                            <Binding.ValidationRules>
+                                                                <validation:RequiredValidationRule FieldName="TransactionMethod"/>
+                                                            </Binding.ValidationRules>
+                                                        </Binding>
+                                                    </dxe:TextEdit.EditValue>
+                                                    <dxe:ComboBoxEdit.Items>
+                                                        <dxe:ComboBoxEditItem Content="Check" IsSelected="True"/>
+                                                        <dxe:ComboBoxEditItem Content="Cash" />
+                                                        <dxe:ComboBoxEditItem Content="Money Order" />
+                                                    </dxe:ComboBoxEdit.Items>
+                                                </dxe:ComboBoxEdit>
+                                            </dxlc:LayoutItem>
+                                            <dxlc:LayoutItem Label="Debit Method:" x:Name="lbDebitMethod" Margin="20,0,0,10" HorizontalAlignment="Left"/>
+                                            <dxlc:LayoutItem>
+                                                <dxe:ComboBoxEdit x:Name="ceDebitMethod" Width="150" HorizontalAlignment="Left" 
+                                                                  Text="{Binding TransactionMethod}"
+                                                                  AutoComplete="True" 
+                                                                  AllowNullInput="False" IsTextEditable="False"
+                                                                  ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
+                                                                  NullText="Select One"                                                         
+                                                                  >
+                                                    <dxe:TextEdit.EditValue>
+                                                        <Binding Path="TransactionMethod" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                                                            <Binding.ValidationRules>
+                                                                <validation:RequiredValidationRule FieldName="TransactionMethod"/>
+                                                            </Binding.ValidationRules>
+                                                        </Binding>
+                                                    </dxe:TextEdit.EditValue>
+                                                    <dxe:ComboBoxEdit.Items>
+                                                        <dxe:ComboBoxEditItem Content="Manual Post" IsSelected="True"/>
+                                                        <!--<dxe:ComboBoxEditItem Content="Machine Generated" />-->
+                                                    </dxe:ComboBoxEdit.Items>
+                                                </dxe:ComboBoxEdit>
+                                            </dxlc:LayoutItem>
+                                        </dxlc:LayoutGroup>
+                                    </dxlc:LayoutGroup>
+
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="450" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Transaction Date: "  Margin="0,0,0,10" Width="100" HorizontalAlignment="Left"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:DateEdit x:Name="deTransactionDate"
+                                                          Width="100"
+                                                          HorizontalAlignment="Left"
+                                                          AllowNullInput="False" 
+                                                          NullText="Date credit/debit was applied"
+                                                          >
+                                                <dxe:TextEdit.EditValue>
+                                                    <Binding Path="TransactionDate" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                        <Binding.ValidationRules>
+                                                            <validation:RequiredValidationRule FieldName="TransactionDate"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </dxe:TextEdit.EditValue>
+                                            </dxe:DateEdit>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Applies To:"   Margin="0,0,0,10" Width="100" HorizontalAlignment="Left"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Dues"   Margin="0,0,10,0" IsChecked="{Binding IsDues, Mode=TwoWay}" Unchecked="CheckBox_Click"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Late Fee"  Margin="0,0,10,0" IsChecked="{Binding IsLateFee, Mode=TwoWay}" Unchecked="CheckBox_Click"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Pool Assessment"  Margin="0,0,10,0" IsChecked="{Binding IsPoolAssessment, Mode=TwoWay}" Unchecked="CheckBox_Click"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Golf Cart" IsChecked="{Binding IsGolfCart, Mode=TwoWay}" Unchecked="CheckBox_Click"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem x:Name="lbAppliesTo" Margin="50,0,0,10" HorizontalAlignment="Left">
+                                            <dxe:TextEdit x:Name="teAppliesTo" HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="500" 
+                                                      Style="{StaticResource TextEditDisplayStyle}"
+                                                      Visibility="{Binding IsAppliesToVisable, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                                                      IsReadOnly="False" 
+                                                      Focusable="False"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="True"
+                                                      NullText="Select one or more checkboxes"
+                                                      >
+                                                <dxe:TextEdit.Foreground>
+                                                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}"/>
+                                                </dxe:TextEdit.Foreground>
+                                                <dxe:TextEdit.EditValue>
+                                                    <Binding Path="TransactionAppliesTo" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                        <Binding.ValidationRules>
+                                                            <validation:RequiredValidationRule FieldName="TransactionAppliesTo"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </dxe:TextEdit.EditValue>
+                                            </dxe:TextEdit>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label=" "   Margin="0,0,0,10" />
+                                        <!--<dxlc:LayoutItem>
+                                            <CheckBox Content="Title Transfer"  Margin="0,0,10,0" IsChecked="{Binding IsTitleTxf, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>-->
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Water Reconnect"  Margin="0,0,10,0" IsChecked="{Binding IsH2oReconnect, Mode=TwoWay}" Unchecked="CheckBox_Click"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem>
+                                            <dxe:CheckEdit Content="Other"  Margin="0,0,10,0" IsChecked="{Binding IsOther, Mode=TwoWay}" Unchecked="CheckBox_Click" />
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="800" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Comment: "  Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                                        <dxlc:LayoutItem Width="675">
+                                            <dxe:TextEdit x:Name="teComment"  
+                                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                      Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
+                                                      Style="{Binding TeStyle}"
+                                                      Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                                      IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                                      AcceptsReturn="False"
+                                                      Height="50" Width="650"
+                                                      MaxLength="100"
+                                                      NullText="Enter Check#, Receipt# and/or other identifing information to document this transaction"
+                                                      >
+                                                <dxe:TextEdit.EditValue>
+                                                    <Binding Path="TransactionComment" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                        <Binding.ValidationRules>
+                                                            <validation:RequiredValidationRule FieldName="TransactionComment"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </dxe:TextEdit.EditValue>
+                                            </dxe:TextEdit>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+
+                                </dxlc:LayoutGroup>
+
+                            </dxlc:LayoutGroup>
+
+                            <dxlc:LayoutGroup View="GroupBox" Header="Transaction History" 
+                              Height="400" Width="950" 
+                              Margin="0,10,0,0" 
+                              VerticalAlignment="Top" 
+                              HorizontalAlignment="Left"
+                              IsCollapsible="True" 
+                              IsCollapsed="False" 
+                              Orientation="Horizontal"
+                              >
+                                <dxlc:LayoutGroup Orientation="Vertical">
+                                    <dxlc:LayoutItem Label="Account Balance: " HorizontalAlignment="Left">
+                                        <dxe:TextEdit Text="{Binding AccountBalance, Mode=OneWay}" 
+                                          Margin="5,0,0,0"
+                                          HorizontalAlignment="Right"
+                                          FontWeight="Bold" 
+                                          Foreground="{Binding TextColor, Mode=Oneway}"
+                                          Style="{StaticResource TextEditDisplayStyle}"
+                                          IsReadOnly="True" 
+                                          Focusable="False"
+                                          MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"/>
+                                    </dxlc:LayoutItem>
+
+                                    <dxlc:LayoutItem>
+                                        <dxg:GridControl AutoPopulateColumns="False" x:Name="transactionGrid" 
+                                                         IsEnabled="True"
+                                                         ItemsSource="{Binding FinancialTransactions}"
+                                                         SelectedItem="{Binding SelectedTransaction}"
+                                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                         >
+                                            <dxg:GridControl.View>
+                                                <dxg:TableView x:Name="tableViewTransactions" 
+                                                               AllowEditing="False"
+                                                               AllowPerPixelScrolling="True" 
+                                                               AutoWidth="True" 
+                                                               Height="300"
+                                                               NavigationStyle="Row" 
+                                                               ShowGroupPanel="False"
+                                                               >
+                                                    <dxg:TableView.FormatConditions>
+                                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                                            <dxc:Format Foreground="Red" />
+                                                        </dxg:FormatCondition>
+                                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                                            <dxc:Format Foreground="Green" />
+                                                        </dxg:FormatCondition>
+                                                    </dxg:TableView.FormatConditions>
+                                                </dxg:TableView>
+                                            </dxg:GridControl.View>
+                                            <!-- columns of the detail grid -->
+                                            <dxg:GridControl.Columns>
+                                                <dxg:GridColumn FieldName="TransactionDate" Header="Date" 
+                                            Width="50" 
+                                            SortOrder="Descending" 
+                                            SortIndex="0" 
+                                            IsEnabled="True"
+                                            >
+                                                    <dxg:GridColumn.EditSettings>
+                                                        <dxe:DateEditSettings DisplayFormat="d" />
+                                                    </dxg:GridColumn.EditSettings>
+                                                </dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="CreditAmount" Header="Credit" 
+                                            Width="50" 
+                                            Visible="True"
+                                            >
+                                                    <dxg:GridColumn.EditSettings>
+                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                                        </dxe:TextEditSettings>
+                                                    </dxg:GridColumn.EditSettings>
+                                                </dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="DebitAmount" Header="Debit" 
+                                            Width="50" 
+                                            Visible="True"
+                                            >
+                                                    <dxg:GridColumn.EditSettings>
+                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                                        </dxe:TextEditSettings>
+                                                    </dxg:GridColumn.EditSettings>
+                                                </dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="Balance" Header="Balance" 
+                                            Width="75" 
+                                            IsEnabled="True"
+                                            >
+                                                    <dxg:GridColumn.EditSettings>
+                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                                        </dxe:TextEditSettings>
+                                                    </dxg:GridColumn.EditSettings>
+                                                </dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="TransactionMethod" Header="Method"></dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="TransactionAppliesTo" Header="For"></dxg:GridColumn>
+                                                <dxg:GridColumn FieldName="Comment" Header="Comment"></dxg:GridColumn>
+                                            </dxg:GridControl.Columns>
+                                        </dxg:GridControl>
+                                    </dxlc:LayoutItem >
+                                </dxlc:LayoutGroup>
+
+
+                            </dxlc:LayoutGroup >
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+</UserControl>

@@ -11,6 +11,7 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Validation;
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data.Linq;
@@ -36,18 +37,12 @@
                                  where x.OwnerID == p.OwnerID
                                  select x).FirstOrDefault();
 
-                var pList = (from x in this.dc.Properties
-                             where x.OwnerID == SelectedOwner.OwnerID
-                             select x);
-
-                Properties = new ObservableCollection<Property>(pList);
-                // Set the focused row in the Relationships grid to the first item in the Owner's
-                // Relationship collection.
+                //// Set the focused row in the Properties grid to the first item.
                 SelectedProperty = Properties[0];
 
                 var rList = (from x in this.dc.Relationships
-                            where x.OwnerID == SelectedOwner.OwnerID
-                            select x);
+                             where x.OwnerID == SelectedOwner.OwnerID
+                             select x);
 
                 Relationships = new ObservableCollection<Relationship>(rList);
                 // Set the focused row in the Relationships grid to the first item in the Owner's
@@ -66,16 +61,6 @@
             SelectedOwner.PropertyChanged +=
                  new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
         }
-
-        #region Interfaces
-        //public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        //public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
-        ////protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        //public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        //public enum ExportType { PDF, XLSX }
-        //public enum PrintType { PREVIEW, PRINT }
-
-        #endregion
 
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
@@ -113,6 +98,26 @@
                     _isBusy = value;
                     if (_isBusy) { RaisePropertyChanged("IsBusy"); }
                     else { RaisePropertyChanged("IsNotBusy"); }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should the Check-In button be enabled/disabled
+        /// </summary>
+        private bool _isCheckinEnabled = false;
+        public bool IsCheckinEnabled
+        {
+            get
+            {
+                return _isCheckinEnabled;
+            }
+            set
+            {
+                if (value != _isCheckinEnabled)
+                {
+                    this._isCheckinEnabled = value;
+                    RaisePropertyChanged("IsCheckinEnabled");
                 }
             }
         }
@@ -162,21 +167,28 @@
         }
 
         /// <summary>
-        /// A collection of properties 
+        /// A collection of Properties 
         /// </summary>
-        private ObservableCollection<Property> _properties = null;
         public ObservableCollection<Property> Properties
         {
             get
             {
-                return _properties;
+                var list = (from x in SelectedOwner.Properties
+                            select x);
+                return new ObservableCollection<Property>(list);
             }
-            set
+        }
+
+        /// <summary>
+        /// A collection of properties 
+        /// </summary>
+        public ObservableCollection<FinancialTransaction> FinancialTransactions
+        {
+            get
             {
-                if (_properties != value)
-                {
-                    _properties = value;
-                }
+                var list = (from x in SelectedOwner.FinancialTransactions
+                            select x);
+                return new ObservableCollection<FinancialTransaction>(list);
             }
         }
 
@@ -189,19 +201,27 @@
             }
             set
             {
+                // When the selected relationship is change; a new selection is made, we unregister the previous PropertyChanged
+                // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
+                // We use this PropertyChanged trigger to handle Image changes, and to manage the Golf/Pool check ins.
+                if (this._selectedRelationship != null)
+                {
+                    this._selectedRelationship.PropertyChanged -= SelectedRelation_PropertyChanged;
+                }
+
                 if (value != this._selectedRelationship)
                 {
                     this._selectedRelationship = value;
-                    if (null != this._selectedRelationship)
+                    // Once the new value is assigned, we register a new PropertyChanged event listner.
+                    this._selectedRelationship.PropertyChanged += SelectedRelation_PropertyChanged;
+
+                    //// The database stores the raw binary data of the image.  Before it can be
+                    //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
+                    if (null == this._selectedRelationship.Photo && null != ApplDefault)
                     {
-                        //// The database stores the raw binary data of the image.  Before it can be
-                        //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
-                        if (null == this._selectedRelationship.Photo && null != ApplDefault)
-                        {
-                            this._selectedRelationship.Photo = this.ApplDefault.Photo;
-                        }
-                        RaisePropertyChanged("SelectedRelationship");
+                        this._selectedRelationship.Photo = this.ApplDefault.Photo;
                     }
+                    RaisePropertyChanged("SelectedRelationship");
                 }
             }
         }
@@ -287,23 +307,25 @@
             }
         }
 
-        public string BalanceDue
+        public decimal? AccountBalance
         {
             get
             {
-                string due = string.Empty;
-                decimal? balanceDue = 0;
-                foreach (Property p in Properties)
+                try
                 {
-                    balanceDue += p.Balance as decimal?;
-                }
+                    var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
 
-                if (balanceDue > 0)
-                {
-                    TextColor = new SolidColorBrush(Colors.DarkRed);
-                    return string.Format("${0:#.00}", balanceDue);
+                    if (b.Balance > 0)
+                    {
+                        TextColor = new SolidColorBrush(Colors.DarkRed);
+                    }
+                    return b.Balance;
                 }
-                return string.Format("${0:#.00}", balanceDue);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
             }
         }
 
@@ -324,7 +346,58 @@
             }
         }
 
+        public bool IsInGoodStanding
+        {
+            get
+            {
+                if (AccountBalance <= 0) return true;
+                else return false;
+            }
+        }
 
+        public GolfCart GolfCart
+        {
+            get
+            {
+                try
+                {
+                    // Using the PropertyXOwner Xref to get the OwnerID, we can
+                    // then query the GolfCartXOwner to see if the owner owns a golf cart.
+                    var cart = (from a in SelectedOwner.GolfCarts
+                                where a.OwnerID == SelectedOwner.OwnerID
+                                select a).LastOrDefault();
+                    if (null != cart)
+                    {
+                        return cart;
+                    }
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error Getting Cart Info: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+            }
+        }
+
+        /// </summary>
+        public bool HasRegisteredCart
+        {
+            get
+            {
+                if (null == GolfCart) { return false; }
+                else { return true; }
+            }
+        }
+
+        public string CartImage
+        {
+            get
+            {
+                string _image = @"/Images/Icons/GolfCart_Icon.png";
+                return _image;
+            }
+        }
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods
         #endregion
@@ -382,6 +455,38 @@
             if (CkIsValid())
             {
                 this.CanSaveExecute = IsDirty;
+                RaisePropertyChanged("DataChanged");
+            }
+        }
+
+        /// <summary>
+        /// Relationship PropertyChanged event handler.  When a property of the SelectedRelationship is
+        /// changed, the PropertyChanged event is fired, and processed by this handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SelectedRelation_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var x = e.PropertyName;
+
+            // We listen for changes to the IsGolf/IsPool value of the SelectedProperty so we can update the 
+            // Check-In counts for the property.
+
+            if (e.PropertyName == "IsGolf" || e.PropertyName == "IsPool")
+            {
+                // Initialize the Check-In property counters to zero. Then iterate over the collection to
+                // get current counts.
+                SelectedOwner.GolfMembers = 0;
+                SelectedOwner.PoolMembers = 0;
+
+                foreach (Relationship r in this.Relationships)
+                {
+                    if (r.IsGolf) { SelectedOwner.GolfMembers += 1; }
+                    if (r.IsPool) { SelectedOwner.PoolMembers += 1; }
+                }
+            }
+            else
+            {
                 RaisePropertyChanged("DataChanged");
             }
         }
@@ -609,6 +714,164 @@
     {
 
         /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _checkInCommand;
+        public ICommand CheckInCommand
+        {
+            get
+            {
+                return _checkInCommand ?? (_checkInCommand = new CommandHandler(() => CheckInAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// Check-In button click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void CheckInAction()
+        {
+            try
+            {
+                MessageBoxResult results = MessageBoxResult.Cancel;
+
+                if (!this.SelectedProperty.IsInGoodStanding)
+                {
+                    results = MessageBox.Show("This member is not is good standing.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
+                        , "Warning"
+                        , MessageBoxButton.OKCancel
+                        , MessageBoxImage.Exclamation
+                        );
+                }
+                else
+                {
+                    results = MessageBox.Show("Proceed with Check In?"
+                        , "Proceed"
+                        , MessageBoxButton.OKCancel
+                        , MessageBoxImage.Question
+                        );
+                    //results = MessageResult.OK;
+                }
+
+                // If the property is in good standing, or staff allows member to check in, then proceed
+                if (MessageBoxResult.OK == results)
+                {
+                    string activity = string.Empty;
+
+                    //using (dc)
+                    //{
+                    List<FacilityUsage> usages = new List<FacilityUsage>();
+
+                    // Register the members what are checking in.
+                    foreach (Relationship r in Relationships)
+                    {
+                        if (r.IsGolf || r.IsPool)
+                        {
+                            FacilityUsage usage = new FacilityUsage();
+
+                            usage.PropertyID = SelectedProperty.PropertyID;
+                            usage.RelationshipId = r.RelationshipID;
+                            usage.Date = DateTime.Now;
+                            if (r.IsGolf)
+                            {
+                                usage.GolfRoundsMember = 1;
+                                activity = "Golf";
+                            }
+                            else
+                            {
+                                usage.GolfRoundsMember = 0;
+                            }
+                            if (r.IsPool)
+                            {
+                                usage.PoolMember = 1;
+                                activity = "the Pool";
+                            }
+                            else
+                            {
+                                usage.PoolMember = 0;
+                            }
+                            usage.GolfRoundsGuest = 0;
+                            usage.PoolGuest = 0;
+
+                            // Before committing the data, we check to make sure the member(s)
+                            // have not already been checked in for the day.
+                            // 
+                            DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
+                            DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
+
+                            var z = (from p in dc.FacilityUsages
+                                     where p.RelationshipId == r.RelationshipID
+                                     && p.GolfRoundsMember == usage.GolfRoundsMember
+                                     && p.PoolMember == usage.PoolMember
+                                     && (p.Date >= dt1 && p.Date <= dt2)
+                                     select p).FirstOrDefault();
+
+                            if (null == z)
+                            {
+                                dc.FacilityUsages.InsertOnSubmit(usage);
+                            }
+                            else
+                            {
+                                string msg = String.Format("Member {0} {1} has already checked in for {2} today.", r.FName, r.LName, activity);
+                                MessageBox.Show(msg, "Warning", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+                            }
+
+                            // Flip the Golf & Pool bits so they aren't left in a true state
+                            r.IsPool = false;
+                            r.IsGolf = false;
+                        }
+
+                        // If there are guests of the members, add them last.
+                        if (0 < this.SelectedProperty.PoolGuests || 0 < this.SelectedProperty.GolfGuests)
+                        {
+                            Relationship guest = (from q in this.dc.Relationships
+                                                  where q.RelationToOwner == "Guest"
+                                                  select q).FirstOrDefault();
+
+                            FacilityUsage gUsage = new FacilityUsage();
+                            gUsage.PropertyID = SelectedProperty.PropertyID;
+                            gUsage.RelationshipId = guest.RelationshipID;
+                            gUsage.Date = DateTime.Now;
+                            gUsage.GolfRoundsMember = 0;
+                            gUsage.PoolMember = 0;
+                            gUsage.GolfRoundsGuest = SelectedProperty.GolfGuests;
+                            gUsage.PoolGuest = SelectedProperty.PoolGuests;
+
+                            dc.FacilityUsages.InsertOnSubmit(gUsage);
+                        }
+
+                    }
+                    ChangeSet cs = dc.GetChangeSet();
+                    dc.SubmitChanges();
+                    MessageBox.Show("Check In Complete");
+                }
+                else
+                {
+                    MessageBox.Show("Check In was canceled. No data was recorded.");
+                    foreach (Relationship r in Relationships)
+                    {
+                        r.IsPool = false;
+                        r.IsGolf = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Check in Error: " + ex.Message);
+            }
+            finally
+            {
+                IsCheckinEnabled = false;
+                this.SelectedProperty.PoolMembers = 0;
+                this.SelectedProperty.PoolGuests = 0;
+                this.SelectedProperty.GolfMembers = 0;
+                this.SelectedProperty.GolfGuests = 0;
+
+                Host.Execute(HostVerb.Close, this.Caption);
+            }
+        }
+
+        /// <summary>
         /// AddRelationship Command
         /// </summary>
         private ICommand _addRelationshipCommand;
@@ -700,6 +963,28 @@
         {
             Property p = parameter as Property;
             Host.Execute(HostVerb.Open, "PropertyEdit", p);
+        }
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _financialTransactionCommand;
+        public ICommand FinancialTransactionCommand
+        {
+            get
+            {
+                return _financialTransactionCommand ?? (_financialTransactionCommand = new CommandHandlerWparm((object parameter) => FinancialTransactionAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void FinancialTransactionAction(object parameter)
+        {
+            Owner p = parameter as Owner;
+            Host.Execute(HostVerb.Open, "FinancialTransaction", p);
         }
 
         ///// <summary>
@@ -850,6 +1135,7 @@
 
 
     }
+
     /*================================================================================================================================================*/
     /// <summary>
     /// Disposition.......

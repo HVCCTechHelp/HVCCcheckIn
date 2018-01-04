@@ -7,25 +7,24 @@
     using System.Windows;
     using System.Windows.Controls;
 
-
     /// <summary>
-    /// Interaction logic for PropertyEditDialogView.xaml
+    /// Interaction logic for PostPaymentViw.xaml
     /// </summary>
-    public partial class OwnerEditView : UserControl, IView
+    public partial class FinancialTransactionView : UserControl, IView
     {
-        //ApplicationPermission appPermissions;
+        ApplicationPermission appPermissions;
         public IViewModel ViewModel
         {
             get { return this.DataContext as IViewModel; }
             set { this.DataContext = value; }
         }
 
-        public OwnerEditView(IViewModel vm)
+        public FinancialTransactionView(IViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
             //this.Loaded += OnLoaded;
-            //appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
         }
         public object SaveState()
         {
@@ -71,7 +70,7 @@
         /// <param name="e"></param>
         private void tableViewDetail_CellValueChanging(object sender, CellValueChangedEventArgs e)
         {
-            this.tableViewDetail.PostEditor();
+            this.tableViewTransactions.PostEditor();
         }
 
         /// <summary>
@@ -109,51 +108,52 @@
             e.Handled = true;
         }
 
-
         /// <summary>
-        /// 
+        /// Executed when the View is loaded. Force an update on the controls that require validation.  
+        /// This will force them to fail validateion if data is missing or invalid.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckIn_Clicked(object sender, RoutedEventArgs e)
-        {
-            // TO-DO : convert to a setable property in the ViewModel....
-            this.lgCheckIn.IsCollapsed = true;
-            this.lgCheckIn.Visibility = Visibility.Hidden;
-        }
-
-        private void checkin_EditValueChanged(object sender, EditValueChangedEventArgs e)
-        {
-            if (this.sePoolMembers.Value > 0 ||
-                this.sePoolGuests.Value > 0 ||
-                this.seGolfMembers.Value > 0 ||
-                this.seGolfGuests.Value > 0)
-            {
-                this.btnCheckIn.IsEnabled = true;
-            }
-            else
-            {
-                this.btnCheckIn.IsEnabled = false;
-            }
-        }
-
-            /// <summary>
-            /// Executed when the View is loaded
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            private void EditOwner_Loaded(object sender, RoutedEventArgs e)
+        private void FinancialTransaction_Loaded(object sender, RoutedEventArgs e)
         {
             // Force an update on the controls that require validation.  This will force
             // them to be invalid if data is missing.
-            //teOwnerMailTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            ////teOwnerLName.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerAddress.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerCity.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerState.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            //teOwnerZip.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teCredit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teDebit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            deTransactionDate.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            ceCreditMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            ceDebitMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teComment.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
         }
 
+        private void teCredit_GotFocus(object sender, RoutedEventArgs e)
+        {
+            teDebit.NullText = "0.00";
+            teDebit.Visibility = Visibility.Hidden;
+            lbDebit.Visibility = Visibility.Hidden;
+            lbDebitMethod.Visibility = Visibility.Hidden;
+            ceDebitMethod.Visibility = Visibility.Hidden;
+            lbOR.Visibility = Visibility.Hidden;
+        }
+        private void teDebit_GotFocus(object sender, RoutedEventArgs e)
+        {
+            teCredit.NullText = "0.00";
+            teCredit.Visibility = Visibility.Hidden;
+            lbCredit.Visibility = Visibility.Hidden;
+            lbCreditMethod.Visibility = Visibility.Hidden;
+            ceCreditMethod.Visibility = Visibility.Hidden;
+            lbOR.Visibility = Visibility.Hidden;
+        }
+
+        /// <summary>
+        /// When a CheckBox is unchecked, force a EditValueProperty UpdateSource event to trigger validation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+        }
     }
 }
-
