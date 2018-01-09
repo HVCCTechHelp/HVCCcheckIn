@@ -140,8 +140,8 @@
                               Width="850" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Converter={StaticResource BoolToVis}}"
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}"
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               IsCollapsible="True" 
                               IsCollapsed="False" 
                               Orientation="Vertical">
@@ -152,8 +152,8 @@
                               IsEnabled="True"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -173,8 +173,8 @@
                         <dxe:TextEdit x:Name="teOwnerAddress"
                                       Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                               >
                             <dxe:TextEdit.EditValue>
                                 <Binding Path="NewOwner.Address" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -188,8 +188,8 @@
                     <dxlc:LayoutItem Label=" " Width="Auto">
                         <dxe:TextEdit Text="{Binding NewOwner.Address2}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
@@ -201,8 +201,8 @@
                               IsEnabled="True"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -221,8 +221,8 @@
                               Width="50" 
                               Style="{Binding TeStyle}"
                               MaskType="RegEx" Mask="(\p{Lu}|\W)+"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -240,8 +240,8 @@
                               IsEnabled="True"
                               Width="125" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -262,15 +262,15 @@
                         <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
                             <dxe:TextEdit Text="{Binding NewOwner.PrimaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                         </dxlc:LayoutItem>
                         <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
                             <dxe:TextEdit Text="{Binding NewOwner.SecondaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
@@ -278,8 +278,8 @@
                         <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
                             <dxe:TextEdit Text="{Binding NewOwner.Email}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
@@ -356,7 +356,7 @@
                                         x:Name="txtRelationship"
                                         Header="Relationship"
                                         Width="50" 
-                                        AllowEditing="{Binding CanChangeOwner}"
+                                        AllowEditing="{Binding CanEditOwner}"
                                         AutoFilterCondition="Default" 
                                         CellTemplateSelector="{StaticResource rowTemplateSelector}"
                                         />

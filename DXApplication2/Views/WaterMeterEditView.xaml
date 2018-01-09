@@ -124,7 +124,7 @@
             <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
                               Width="Auto" 
                               VerticalAlignment="Top" 
-                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewOwner, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                               IsCollapsible="True" 
                               IsCollapsed="True" 
                               Orientation="Vertical">

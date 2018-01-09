@@ -120,11 +120,14 @@
             // them to be invalid if data is missing.
             teCredit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teDebit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            ceFiscalYear.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             deTransactionDate.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             ceCreditMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             ceDebitMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teTotal.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teComment.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+
+            deTransactionDate.Focus();
         }
 
         private void teCredit_GotFocus(object sender, RoutedEventArgs e)
@@ -144,6 +147,10 @@
             lbCreditMethod.Visibility = Visibility.Hidden;
             ceCreditMethod.Visibility = Visibility.Hidden;
             lbOR.Visibility = Visibility.Hidden;
+            //ceGolfCart.Visibility = Visibility.Hidden;
+            //ceWaterReconnect.Visibility = Visibility.Hidden;
+            //cePoolAssessment.Visibility = Visibility.Hidden;
+            //ceWaterReconnect.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -153,7 +160,7 @@
         /// <param name="e"></param>
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
-            teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            //teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
         }
     }
 }

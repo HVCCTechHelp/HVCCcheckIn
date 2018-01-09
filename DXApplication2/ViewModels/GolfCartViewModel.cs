@@ -4,6 +4,7 @@
     using DevExpress.Spreadsheet;
     using DevExpress.Xpf.Docking;
     using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Commands;
     using HVCC.Shell.Common.Interfaces;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Models;
@@ -24,16 +25,6 @@
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
         }
-
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
-        #endregion
-
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
 
         /* ------------------------------------- Golf Cart Properties and Commands --------------------------- */
 
@@ -382,30 +373,31 @@
             }
             catch (Exception ex)
             {
-                MessageBoxService.Show("Search Error: " + ex.Message);
+                MessageBox.Show("Search Error: " + ex.Message);
             }
         }
 
-        /// <summary>
-        /// Add Cart Command
-        /// </summary>
-        private ICommand _addCartCommand;
-        public ICommand AddCartCommand
-        {
-            get
-            {
-                return _addCartCommand ?? (_addCartCommand = new CommandHandler(() => AddCartAction(), true));
-            }
-        }
+        ///// <summary>
+        ///// Add Cart Command
+        ///// </summary>
+        //private ICommand _addCartCommand;
+        //public ICommand AddCartCommand
+        //{
+        //    get
+        //    {
+        //        return _addCartCommand ?? (_addCartCommand = new CommandHandler(() => AddCartAction(), true));
+        //    }
+        //}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void AddCartAction()
-        {
-            MessageBox.Show("Not Implemented", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //public void AddCartAction()
+        //{
+        //    MessageBox.Show("Not Implemented", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        //}
 
+        public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -414,44 +406,12 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
             }
         }
 
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
+        public bool CanPrint = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -460,37 +420,8 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
             }
         }
     }

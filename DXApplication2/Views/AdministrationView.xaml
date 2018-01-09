@@ -25,11 +25,11 @@
                 <CheckBox IsChecked="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay}" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Can Edit Owner Info: " HorizontalAlignment="Left">
-                <CheckBox IsChecked="{Binding ApplPermissions.CanEditOwnerInfo, Mode=TwoWay}" />
+                <CheckBox IsChecked="{Binding ApplPermissions.CanEditOwner, Mode=TwoWay}" />
             </dxlc:LayoutItem>
-            <dxlc:LayoutItem Label="Can Change Ower: " HorizontalAlignment="Left">
+            <!--<dxlc:LayoutItem Label="Can Change Ower: " HorizontalAlignment="Left">
                 <CheckBox IsChecked="{Binding ApplPermissions.CanChangeOwner, Mode=TwoWay}" />
-            </dxlc:LayoutItem>
+            </dxlc:LayoutItem>-->
             <dxlc:LayoutItem Label="Can Check In: " HorizontalAlignment="Left">
                 <CheckBox IsChecked="{Binding ApplPermissions.CanCheckIn, Mode=TwoWay}" />
             </dxlc:LayoutItem>
@@ -40,10 +40,10 @@
                 <CheckBox IsChecked="{Binding ApplPermissions.CanAddRelationship}" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Can Update Relationship: " HorizontalAlignment="Left">
-                <CheckBox IsChecked="{Binding ApplPermissions.CanUpdateRelationship}" />
+                <CheckBox IsChecked="{Binding ApplPermissions.CanEditRelationship}" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Can Delete Relationship: " HorizontalAlignment="Left">
-                <CheckBox IsChecked="{Binding ApplPermissions.CanDeleteRelationship}" />
+                <CheckBox IsChecked="{Binding ApplPermissions.CanEditRelationship}" />
             </dxlc:LayoutItem>
         </dxlc:LayoutGroup>
 

@@ -12,6 +12,7 @@
     using System.IO;
     using HVCC.Shell.Common.Interfaces;
     using System.Windows.Media.Imaging;
+    using System.Windows.Input;
 
 
     /// <summary>
@@ -139,6 +140,11 @@
             //    this.teParcel.Style = (Style)resource;
             //    this.teParcel.IsReadOnly = false;
             //}
+        }
+
+        private void EditProperty_Loaded(object sender, RoutedEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
     }
 }

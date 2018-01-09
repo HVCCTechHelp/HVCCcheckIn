@@ -31,17 +31,11 @@ namespace HVCC.Shell.ViewModels
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            Property p = parameter as Property;
+            v_PropertyDetail p = parameter as v_PropertyDetail;
             if (null != p)
             {
                 SelectedProperty = GetProperty(p.PropertyID);
                 Owner = SelectedProperty.Owner;  // The View is bound to this element
-
-                Relationships = GetRelationships();
-                if (0 < Relationships.Count())
-                {
-                    SelectedRelationship = Relationships[0];
-                }
             }
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
@@ -92,23 +86,6 @@ namespace HVCC.Shell.ViewModels
             }
         }
 
-        /// <summary>
-        /// Returns boolean value to indicate if the selected property has a registered golf cart
-        /// </summary>
-        public bool HasRegisteredCart
-        {
-            get
-            {
-                // Using the PropertyXOwner Xref to get the OwnerID, we can
-                // then query the GolfCartXOwner to see if the owner owns a golf cart.
-                var cart = (from a in this.dc.GolfCarts
-                           where a.OwnerID == SelectedProperty.Owner.OwnerID
-                           select a).FirstOrDefault();
-                if (null == cart) { return false; }
-                else { return true; }
-            }
-        }
-
         private string _headerText = string.Empty;
         public string HeaderText
         {
@@ -135,7 +112,8 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                _headerText = String.Format("Lot# {0}", _selectedProperty.Customer);
+                HeaderText = String.Format("Lot# {0}", _selectedProperty.Customer);
+                IsBusy = false;
                 return _selectedProperty;
             }
             set
@@ -147,56 +125,10 @@ namespace HVCC.Shell.ViewModels
                 {
                     if (value != this._selectedProperty)
                     {
-                        // When the selected property is change; a new selection is made, we unregister the previous PropertyChanged
-                        // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
-                        if (this._selectedProperty != null)
-                        {
-                            this._selectedProperty.PropertyChanged -= SelectedProperty_PropertyChanged;
-                        }
-
                         this._selectedProperty = value;
                         AllNotes = GetOwnerNotes();
-
-                        // Once the new value is assigned, we register a new PropertyChanged event listner.
-                        this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
                     }
                     RaisePropertyChanged("SelectedProperty");
-                }
-            }
-        }
-
-        private Relationship _selectedRelationship = null;
-        public Relationship SelectedRelationship
-        {
-            get
-            {
-                return this._selectedRelationship;
-            }
-            set
-            {
-                if (value != this._selectedRelationship)
-                {
-                    this._selectedRelationship = value;
-                    RaisePropertyChanged("SelectedRelationship");
-                }
-            }
-        }
-
-        /// <summary>
-        /// A collection of relationships to delete
-        /// </summary>
-        private ObservableCollection<Relationship> _relationships = null;
-        public ObservableCollection<Relationship> Relationships
-        {
-            get
-            {
-                return this._relationships;
-            }
-            set
-            {
-                if (_relationships != value)
-                {
-                    _relationships = value;
                 }
             }
         }
@@ -215,22 +147,8 @@ namespace HVCC.Shell.ViewModels
             {
                 if (value != _owner)
                 {
-                    // When the selected relationship is change; a new selection is made, we unregister the previous PropertyChanged
-                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
-                    // We use this PropertyChanged trigger to handle Image changes, and to manage the Golf/Pool check ins.
-                    if (_owner != null)
-                    {
-                        _owner.PropertyChanged -= SelectedProperty_PropertyChanged;
-                    }
-
                     _owner = value;
-                    if (null != _owner)
-                    {
-                        // Once the new value is assigned, we register a new PropertyChanged event listner.
-                        _owner.PropertyChanged += SelectedProperty_PropertyChanged;
-
-                        RaisePropertyChanged("Owner");
-                    }
+                    RaisePropertyChanged("Owner");
                 }
             }
         }
@@ -305,25 +223,6 @@ namespace HVCC.Shell.ViewModels
         }
 
         #endregion
-
-        #region Property/Colelction Changed EventHandlers
-        /// <summary>
-        /// Summary
-        ///     Raises a property changed event when the SelectedCart data is modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {            
-            if (CkIsValid() && IsDirty)
-            {
-                CanSaveExecute = true;
-                RaisePropertyChanged("DataChanged");
-            }
-        }
-
-        #endregion
-
 
         /* ----------------------------------- Style Properteis ---------------------------------------- */
         #region Style Properties
@@ -476,29 +375,6 @@ namespace HVCC.Shell.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Returns a collection of Relationships for a given Property
-        /// </summary>
-        /// <returns></returns>
-        private ObservableCollection<Relationship> GetRelationships ()
-        {
-            try
-            {
-                // Get the list of Relationships for the Property owner using the OxP xref
-                var list = (from x in dc.Relationships
-                                        where x.OwnerID == SelectedProperty.OwnerID
-                                        && x.Active == true
-                                        select x);
-
-                return new ObservableCollection<Relationship>(list);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Can't retrieve property from database\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }

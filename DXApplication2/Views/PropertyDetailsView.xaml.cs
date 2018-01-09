@@ -8,6 +8,7 @@
     using System.Collections.Generic;
     using System;
     using DevExpress.Xpf.Printing;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for PropertyDetailView.xaml
@@ -146,5 +147,10 @@
             PrintHelper.ShowPrintPreview(this, report);
         }
         #endregion
+
+        private void Properties_Loaded(object sender, RoutedEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
     }
 }

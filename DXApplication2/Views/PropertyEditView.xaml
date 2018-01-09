@@ -19,6 +19,7 @@
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              d:DesignHeight="850" d:DesignWidth="1024"
+             Loaded="EditProperty_Loaded"
              >
 
     <UserControl.Resources>
@@ -27,33 +28,6 @@
             <converters:InvertBoolean x:Key="Invert" />
             <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
             <converters:BitmapToByteArrayConverter x:Key="BitmapToByteArray"/>
-            <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
-            <!--<DataTemplate x:Key="cmbTmp">
-                <dxe:ComboBoxEdit Name="PART_Editor" 
-                                  EditValue="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
-                                  Text="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
-                                  AutoComplete="True" 
-                                  AllowNullInput="False"
-                                  >
-                    <dxe:ComboBoxEdit.Items>
-                        <dxe:ComboBoxEditItem Content="Owner" />
-                        <dxe:ComboBoxEditItem Content="Spouse/Partner" />
-                        <dxe:ComboBoxEditItem Content="Child" />
-                        <dxe:ComboBoxEditItem Content="In-Law" />
-                        <dxe:ComboBoxEditItem Content="Parent" />
-                        <dxe:ComboBoxEditItem Content="Grandchild" />
-                        <dxe:ComboBoxEditItem Content="Grandparent" />
-                    </dxe:ComboBoxEdit.Items>
-                </dxe:ComboBoxEdit>
-            </DataTemplate>
-            --><!-- Creates a TextBox template for when the RelationshipToOwner has a value --><!--
-            <DataTemplate x:Key="txtTmp">
-                <dxe:TextEdit Name="PART_Editor"/>
-            </DataTemplate>
-            <resources:RowTemplateSelector x:Key="rowTemplateSelector"
-                               CmbTemplate="{StaticResource cmbTmp}"
-                               TxtTemplate="{StaticResource txtTmp}"
-                               />-->
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
@@ -79,80 +53,6 @@
                               IsCollapsible="False" 
                               IsCollapsed="True" 
                               >
-                    <!--<dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Width="12" Label=" " />
-                        <dxlc:LayoutItem Label="Balance: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Balance, StringFormat=C}" Width="150" 
-                                      IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}" 
-                                     >
-                                <dxe:TextEdit.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ApplPermissions.CanEditPropertyInfo}" Value="False">
-                                                <Setter Property="dxe:TextEdit.OverridesDefaultStyle" Value="False" />
-                                                <Setter Property="dxe:TextEdit.Opacity" Value="100" />
-                                                <Setter Property="dxe:TextEdit.BorderBrush" Value="Transparent" />
-                                                <Setter Property="dxe:TextEdit.Background" Value="Transparent" />
-                                                <Setter Property="dxe:TextEdit.ShowBorder" Value="False" />
-                                                <Setter Property="dxe:TextEdit.FontWeight" Value="SemiBold" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ApplPermissions.CanEditPropertyInfo}" Value="True">
-                                                <Setter Property="dxe:TextEdit.BorderBrush" Value="LightGray" />
-                                                <Setter Property="dxe:TextEdit.Background" Value="White" />
-                                                <Setter Property="dxe:TextEdit.FontWeight" Value="SemiBold" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedProperty.Balance, Converter={StaticResource BalanceValueToType}}" Value="Negative">
-                                                <Setter Property="dxe:TextEdit.Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedProperty.Balance, Converter={StaticResource BalanceValueToType}}" Value="Positive">
-                                                <Setter Property="dxe:TextEdit.Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedProperty.Balance, Converter={StaticResource BalanceValueToType}}" Value="Zero">
-                                                <Setter Property="dxe:TextEdit.Foreground" Value="Black"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </dxe:TextEdit.Style>
-                            </dxe:TextEdit>
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="In Good Standing: "                              
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
-                                     Width="Auto" Margin="10,0,0,0">
-                            <CheckBox 
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
-                                     IsChecked="{Binding SelectedProperty.IsInGoodStanding}"
-                                     IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Margin="0,-5,0,0"
-                                     />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="Status:" 
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
-                                     >
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Status}" Width="Auto" 
-                                      Style="{Binding TeStyle}"
-                                      Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}" 
-                                      />
-                        </dxlc:LayoutItem>
-
-                        <dxlc:LayoutGroup View="Group" Orientation="Vertical" Margin="10,-5,0,0">
-                            <dxlc:LayoutItem HorizontalAlignment="Left">
-                                <ItemsControl>
-                                    <RadioButton Content="Green" Style="{StaticResource Flag}" BorderBrush="Green" Width="20" Height="20" Margin="0,3,0,0"
-                                         IsChecked="{Binding SelectedProperty.IsInGoodStanding, Mode=OneWay}"
-                                         IsEnabled="False"
-                                         Focusable="False"/>
-                                    <RadioButton Content="Red" Style="{StaticResource Flag}" BorderBrush="Red" Width="20" Height="20" Margin="0,5,0,0"
-                                         IsChecked="{Binding SelectedProperty.IsInGoodStanding, Mode=OneWay, Converter={StaticResource Invert}}"
-                                         IsEnabled="False"
-                                         Focusable="False"/>
-                                </ItemsControl>
-                            </dxlc:LayoutItem>
-                        </dxlc:LayoutGroup>
-                    </dxlc:LayoutGroup>-->
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Physical Address:" Width="450" >
                             <dxe:TextEdit Text="{Binding SelectedProperty.PhysicalAddress}" Width="Auto" 
@@ -206,108 +106,16 @@
                                       />
                         </dxlc:LayoutItem>
 
-                        <dxlc:LayoutItem >
-                            <Image Source="/Images/Icons/GolfCart_Icon.png" Height="64" Width="64"
-                               Visibility="{Binding HasRegisteredCart, Converter={StaticResource BoolToVis}}">
-                            </Image>
-                        </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
 
-                <!--<dxlc:LayoutGroup View="GroupBox" Header="Check-In" x:Name="lgCheckIn"
-                              Visibility="{Binding ApplPermissions.CanCheckIn, Mode=OneWay, Converter={StaticResource BoolToVis}}"
-                              VerticalAlignment="Top" 
-                              Orientation="Vertical"
-                              HorizontalAlignment="Center"
-                              >
-
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-
-                        <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                                <dxlc:LayoutItem Label="Pool Members: " Width="100" Height="25"/>
-                                <dxlc:LayoutItem Label="Pool Guests: " Width="100" Height="25"/>
-                            </dxlc:LayoutGroup>
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                                <dxlc:LayoutItem Label="Golf Members: " Width="100" Height="25"/>
-                                <dxlc:LayoutItem Label="Golf Guests: " Width="100" Height="25"/>
-                            </dxlc:LayoutGroup>
-                        </dxlc:LayoutGroup>
-
-                        <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                                <dxlc:LayoutItem  Width="50" Height="25">
-                                    <dxe:SpinEdit x:Name="sePoolMembers" 
-                                      EditValue="{Binding SelectedProperty.PoolMembers, Mode=OneWay}" 
-                                      Width="50"
-                                      MinValue="0"
-                                      MaxValue="100"
-                                      IsFloatValue="False"
-                                      AllowSpinOnMouseWheel="True"
-                                      IsReadOnly="True"
-                                      Focusable="False"
-                                      EditValueChanged="checkin_EditValueChanged"
-                        >
-                                    </dxe:SpinEdit>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Width="50" Height="25">
-                                    <dxe:SpinEdit x:Name="sePoolGuests" Value="{Binding SelectedProperty.PoolGuests, Mode=TwoWay}" Width="50"
-                                      MinValue="0"
-                                      MaxValue="100"
-                                      IsFloatValue="False"
-                                      AllowSpinOnMouseWheel="True"
-                                      IsReadOnly="False"
-                                      Focusable="True"
-                                      EditValueChanged="checkin_EditValueChanged"
-                        >
-                                    </dxe:SpinEdit>
-                                </dxlc:LayoutItem>
-                            </dxlc:LayoutGroup>
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                                <dxlc:LayoutItem Width="50" Height="25">
-                                    <dxe:SpinEdit x:Name="seGolfMembers" Value="{Binding SelectedProperty.GolfMembers, Mode=OneWay}" Width="50"
-                                      MinValue="0"
-                                      MaxValue="100"
-                                      IsFloatValue="False"
-                                      AllowSpinOnMouseWheel="True"
-                                      IsReadOnly="True"
-                                      Focusable="False"
-                                      EditValueChanged="checkin_EditValueChanged"
-                        >
-                                    </dxe:SpinEdit>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Width="50" Height="25">
-                                    <dxe:SpinEdit x:Name="seGolfGuests" Value="{Binding SelectedProperty.GolfGuests, Mode=TwoWay}" Width="50"
-                                      MinValue="0"
-                                      MaxValue="100"
-                                      IsFloatValue="False"
-                                      AllowSpinOnMouseWheel="True"
-                                      IsReadOnly="False"
-                                      Focusable="True"
-                                      EditValueChanged="checkin_EditValueChanged"
-                        >
-                                    </dxe:SpinEdit>
-                                </dxlc:LayoutItem>
-                            </dxlc:LayoutGroup>
-                        </dxlc:LayoutGroup>
-                    </dxlc:LayoutGroup>
-
-                    <dxlc:LayoutItem HorizontalAlignment="Center">
-                        <Button x:Name="btnCheckIn" Width="100" Height="50" Margin="0,10,0,0"
-                            Command="{Binding CheckInCommand}"
-                            CommandParameter="{Binding ElementName=PropertyDialog}"
-                            Click="CheckIn_Clicked"
-                            >Check-In</Button>
-                    </dxlc:LayoutItem>
-
-                </dxlc:LayoutGroup>-->
             </dxlc:LayoutGroup>
 
             <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
                               Width="800" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewOwner, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                               IsCollapsible="True" 
                               IsCollapsed="False" 
                               Orientation="Vertical">
@@ -458,62 +266,6 @@
                     </ScrollViewer>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>-->
-
-
-            <dxlc:LayoutGroup View="GroupBox" Header="Relationships" Width="1100" 
-                              VerticalAlignment="Top" 
-                              HorizontalAlignment="Left"
-                              IsCollapsible="True" 
-                              IsCollapsed="False" 
-                              Orientation="Horizontal"
-                              >
-                <dxlc:LayoutItem>
-                    <dxg:GridControl AutoPopulateColumns="False" x:Name="relationshipsGrid" 
-                                     IsEnabled="True"
-                                     ItemsSource="{Binding Relationships, Mode=TwoWay}"
-                                     SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}"
-                                     >
-                        <dxg:GridControl.View>
-                            <dxg:TableView x:Name="tableViewDetail"  
-                                           AllowEditing="False"
-                                           AllowColumnFiltering="True" 
-                                           AllowGrouping="False"
-                                           ShowGroupPanel="False"
-                                           SearchPanelNullText="Search"
-                                           ShowSearchPanelMode="Always"
-                                           ShowSearchPanelFindButton="True"
-                                           SearchPanelClearOnClose="False"
-                                           AllowPerPixelScrolling="True" 
-                                           AutoWidth="True" 
-                                           Width="650"
-                                           Height="275"
-                                           NavigationStyle="Row" 
-                                           />
-
-                        </dxg:GridControl.View>
-                        <!-- columns of the detail grid -->
-                        <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="RelationshipID" Header="rID"  Width="25"  />
-                            <dxg:GridColumn FieldName="FName" Header="First Name"  Width="75" SortOrder="Descending"  SortIndex="0"  IsEnabled="False" />
-                            <dxg:GridColumn FieldName="LName" Header="Last Name" Width="75"  />
-                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship" Width="75"/>
-                        </dxg:GridControl.Columns>
-                    </dxg:GridControl>
-                </dxlc:LayoutItem>
-                <dxlc:LayoutItem Width="425">
-                    <dxe:ImageEdit x:Name="imgEdit"
-                                   Source="{Binding  SelectedRelationship.Photo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BitmapToByteArray}}"
-                                   IsEnabled="False"
-                                   Height="275" Width="367"
-                                   ShowBorder="True"
-                                   ShowLoadDialogOnClickMode="Always"
-                                   AllowDrop="True"
-                                   ShowMenu="True"
-                                   Validate="editform_Validate"
-                                   >
-                    </dxe:ImageEdit>
-                </dxlc:LayoutItem>
-            </dxlc:LayoutGroup>
 
         </dxlc:LayoutGroup>
     </dxlc:LayoutControl>

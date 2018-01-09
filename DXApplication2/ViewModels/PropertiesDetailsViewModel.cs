@@ -75,8 +75,6 @@
 
         /* ------------------------------ Public Variables and Types ----------------------------------------- */
         #region Public Variables
-        int RowNum;
-
         public enum Column : int
         {
             Customer = 0,
@@ -88,32 +86,11 @@
         /* ----------------------------------View Model Properties ------------------------------------ */
         #region ViewModel Entities
 
-
-        /// <summary>
-        /// Facility usage collection
-        /// </summary>
-        private ObservableCollection<FacilityUsage> _usageList = null;
-        public ObservableCollection<FacilityUsage> UsagesList
-        {
-            get
-            {
-                return this._usageList;
-            }
-            set
-            {
-                if (this._usageList != value)
-                {
-                    this._usageList = value;
-                }
-            }
-        }
-
-        #region Property entities
         /// <summary>
         /// Collection of properties
         /// </summary>
-        private ObservableCollection<Property> _propertiesList = null;
-        public ObservableCollection<Property> PropertiesList
+        private ObservableCollection<v_PropertyDetail> _propertiesList = null;
+        public ObservableCollection<v_PropertyDetail> PropertiesList
         {
             get
             {
@@ -131,40 +108,10 @@
         }
 
         /// <summary>
-        /// Register for Property Changes to the ViewModel's SelectedProperty entity
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SelectedProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // We listen for changes to the Balance value of the SelectedProperty.  The 'IsInGoodStading' flag is bound to
-            // the value of Balance.  When a balance is owed, we consider the member to not be in good standing.  Therefore
-            // we toggle the IsInGoodStanding flag based on Balance value.   Also keep in mind a positive balance means there
-            // is a balance owed.
-            if (e.PropertyName == "Balance")
-            {
-                if (this.SelectedProperty.Balance > 0)
-                {
-                    this.SelectedProperty.IsInGoodStanding = false;
-                }
-                else
-                {
-                    this.SelectedProperty.IsInGoodStanding = true;
-                }
-            }
-
-            if (e.PropertyName == "IsGolf" || e.PropertyName == "IsPool")
-            {
-                int foo = 0;
-                foo++;
-            }
-        }
-
-        /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
-        private Property _selectedProperty = null;
-        public Property SelectedProperty
+        private v_PropertyDetail _selectedProperty = null;
+        public v_PropertyDetail SelectedProperty
         {
             get
             {
@@ -179,20 +126,11 @@
                 {
                     if (value != this._selectedProperty)
                     {
-                        // When the selected property is change; a new selection is made, we unregister the previous PropertyChanged
-                        // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
-                        if (this._selectedProperty != null)
-                        {
-                            this._selectedProperty.PropertyChanged -= SelectedProperty_PropertyChanged;
-                        }
-
                         this._selectedProperty = value;
-                        // Once the new value is assigned, we register a new PropertyChanged event listner.
-                        this._selectedProperty.PropertyChanged += SelectedProperty_PropertyChanged;
                     }
 
                     // Once a property has been selected, we enable the ChangeOwner ribbon button if appropriate
-                    if (this.ApplPermissions.CanChangeOwner)
+                    if (this.ApplPermissions.CanEditOwner)
                     {
                         this.IsEnabledChangeOwner = true;
                     }
@@ -200,52 +138,12 @@
                     {
                         this.IsEnabledChangeOwner = false;
                     }
-
-                    // If appropriate, enable the Add Relationship ribbon button
-                    if (this.ApplPermissions.CanAddRelationship)
-                    {
-                        this.IsEnabledAddRelationship = true;
-                    }
-                    else
-                    {
-                        this.IsEnabledAddRelationship = false;
-
-                    }
-
                     RaisePropertyChanged("SelectedProperty");
                 }
             }
         }
 
-        /// <summary>
-        /// Currently selected relationship
-        /// </summary>
-        private Relationship _selectedRelation = new Relationship();
-        public Relationship SelectedRelation
-        {
-            get
-            {
-                return this._selectedRelation;
-            }
-            set
-            {
-                if (value != this._selectedRelation)
-                {
-                    this._selectedRelation = value;
-                    //// The database stores the raw binary data of the image.  Before it can be
-                    //// displayed in the ImageEdit control, it must be encoded into a BitmapImage
-                    if (null == this.SelectedRelation.Photo)
-                    {
-                        this.SelectedRelation.Photo = this.ApplDefault.Photo; //DefaultBitmapImage; 
-                    }
-                    RaisePropertyChanged("SelectedRelation");
-                }
-            }
-        }
-
-        public int NoteCount { get; set; }
-        #endregion
-
+        //public int NoteCount { get; set; }
         #endregion
 
         /* ----------------------------------- Boolean Properties ----------------------------------------- */
@@ -373,13 +271,13 @@
         /// Queries the database to get the current list of property records
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Property> GetPropertiesList()
+        private ObservableCollection<v_PropertyDetail> GetPropertiesList()
         {
             try
             {
-                var list = (from a in this.dc.Properties
+                var list = (from a in this.dc.v_PropertyDetails
                             select a);
-                return new ObservableCollection<Property>(list);
+                return new ObservableCollection<v_PropertyDetail>(list);
             }
             catch (Exception ex)
             {
@@ -405,7 +303,7 @@
                 case "Refresh":
                     IsRefreshEnabled = true;
                     dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Properties);
-                    dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
+                    //dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
                     break;
                 default:
                     break;
@@ -505,6 +403,7 @@
             RaisePropertyChanged("IsNotBusy");
         }
 
+        public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -514,10 +413,11 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
             }
         }
 
+        public bool CanPrint = true;
         /// <summary>
         /// Print Command
         /// </summary>
@@ -527,7 +427,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
             }
         }
 
@@ -549,7 +449,8 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Property p = parameter as Property;
+            v_PropertyDetail p = parameter as v_PropertyDetail;
+            IsBusy = true;
             Host.Execute(HostVerb.Open, "PropertyEdit", p);
         }
 
@@ -561,7 +462,7 @@
         {
             get
             {
-                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanChangeOwner));
+                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanEditOwner));
             }
         }
 

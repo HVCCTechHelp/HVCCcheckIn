@@ -28,12 +28,13 @@
                 case "City":
                 case "Zip":
                 case "TransactionMethod":
-                case "TransactionAppliesTo":
                 case "TransactionComment":
+                case "FiscalYear":
                     error = CheckNullInput(FieldName, value);
                     break;
                 case "CreditAmount":
                 case "DebitAmount":
+                case "TotalAmount":
                     error = CheckDecimalInput(FieldName, value);
                     break;
                 case "State":

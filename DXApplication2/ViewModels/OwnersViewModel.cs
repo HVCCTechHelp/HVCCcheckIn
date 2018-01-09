@@ -167,6 +167,7 @@
                 //// Force a refresh of the datacontext, then get the list of "Properties" from the database
                 this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
                 var list = (from a in this.dc.Owners
+                            where a.IsCurrentOwner == true
                             select a);
 
                 return new ObservableCollection<Owner>(list);
@@ -264,6 +265,7 @@
         public void RowDoubleClickAction(object parameter)
         {
             Owner p = parameter as Owner;
+            IsBusy = true;
             Host.Execute(HostVerb.Open, "EditOwner", p);
         }
 
@@ -297,7 +299,7 @@
         {
             get
             {
-                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanChangeOwner));
+                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanEditOwner));
             }
         }
 
@@ -419,6 +421,7 @@
         //    CanSaveExecute = IsDirty;
         //}
 
+        public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -428,10 +431,11 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
             }
         }
 
+        public bool CanPrint = true;
         /// <summary>
         /// Print Command
         /// </summary>
@@ -441,7 +445,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
             }
         }
     }

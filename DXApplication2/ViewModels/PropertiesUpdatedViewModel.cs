@@ -230,6 +230,7 @@
         /* ---------------------------------- Commands & Actions --------------------------------------- */
         #region Commands
 
+        public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -238,7 +239,7 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), true));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), CanExport));
             }
         }
 
@@ -276,6 +277,7 @@
             }
         }
 
+        public bool CanPrint = true;
         /// <summary>
         /// Print Command
         /// </summary>
@@ -284,7 +286,7 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), true));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), CanPrint));
             }
         }
 
@@ -414,7 +416,7 @@
                             string customer = cellRange[colArray[(int)Column.Customer]].Value.ToString();
                             Property importProperty = Helper.ConvertCustomerToProperty(customer);
                             importProperty.Customer = customer;
-                            importProperty.BillTo = cellRange[colArray[(int)Column.BillTo]].Value.ToString();
+                            //importProperty.BillTo = cellRange[colArray[(int)Column.BillTo]].Value.ToString();
                             importProperty.Balance = Decimal.Parse(cellRange[colArray[(int)Column.Balance]].Value.ToString());
 
                             // Look up PropertyID. If it is not-null then update the property record with the new value(s).
@@ -446,12 +448,12 @@
                                     foundProperty.Balance = importProperty.Balance;
                                     if (foundProperty.Balance > 0)
                                     {
-                                        foundProperty.IsInGoodStanding = false;
+                                        //foundProperty.IsInGoodStanding = false;
                                         foundProperty.Status = "Past Due";
                                     }
                                     else
                                     {
-                                        foundProperty.IsInGoodStanding = true;
+                                        //foundProperty.IsInGoodStanding = true;
                                         foundProperty.Status = String.Empty;
                                     }
                                     this.PropertiesUpdated.Add(foundProperty);

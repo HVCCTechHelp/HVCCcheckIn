@@ -34,7 +34,6 @@
                 // Set the SelectedProperty, and make a clone copy of it for later reference.
                 SelectedProperty = GetProperty(p.PropertyID);
                 PreviousOwner.OwnerID = SelectedProperty.OwnerID;
-                PreviousBillTo = SelectedProperty.BillTo;
             }
             else
             {
@@ -120,8 +119,6 @@
         }
 
         #region Properties
-
-        public string PreviousBillTo { get; set; }
 
         public ObservableCollection<Owner> OwnerList
         {
@@ -485,13 +482,13 @@
                    , NewOwner.City
                    , NewOwner.State
                    , NewOwner.Zip);
-            SelectedProperty.BillTo = billTo;
+            //SelectedProperty.BillTo = billTo;
 
             // Create the OwnershipChange record
             OwnershipChange oc = new OwnershipChange();
             oc.PropertyID = SelectedProperty.PropertyID;
             oc.PreviousOwnerID = PreviousOwner.OwnerID;
-            oc.PreviousOwner = PreviousBillTo;
+            oc.PreviousOwner = PreviousOwner.MailTo;
             oc.NewOwnerID = NewOwner.OwnerID;
             oc.NewOwner = billTo;
             dc.OwnershipChanges.InsertOnSubmit(oc);
@@ -562,7 +559,7 @@
             object x = p.Source;
             NewOwner= p.Source.FocusedRow as Owner;
 
-            ApplPermissions.CanEditOwnerInfo = false;
+            ApplPermissions.CanEditOwner = false;
             ApplPermissions.CanAddRelationship = false;
             RaisePropertyChanged("ApplPermissions");
 

@@ -66,8 +66,9 @@
 
                     <!-- These are the Quick Access buttons -->
                     <dxr:RibbonControl.ToolbarItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="saveBtn" IsEnabled="{Binding IsEnabledSave, Mode=TwoWay}"/>
-                        <dxb:BarButtonItemLink BarItemName="xlsxBtn" IsEnabled="{Binding IsEnabledExport}"/>
+                        <dxb:BarButtonItemLink BarItemName="saveBtn" />
+                        <!--IsEnabled="{Binding IsEnabledSave, Mode=TwoWay}"-->
+                        <!--<dxb:BarButtonItemLink BarItemName="xlsxBtn" IsEnabled="{Binding IsEnabledExport}"/>-->
                     </dxr:RibbonControl.ToolbarItemLinks>
 
                     <!-- Add the About Button to the righthand of the doc panel -->
@@ -141,12 +142,12 @@
                                             <dxd:LabelItem>
                                                 <Label Content="Features" Foreground="#FF0352FB" FontSize="16"/>
                                             </dxd:LabelItem>
-                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Converter={StaticResource BoolToVis}}">
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/membership.jpg" MouseLeftButtonDown="OnClicked_Owners" Width="100" Height="100" ToolTip="Look up Owner Info"/>
                                             </dxd:LayoutControlItem>
 
 
-                                            <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Converter={StaticResource BoolToVis}}">
+                                            <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/person_Icon.png" MouseLeftButtonDown="OnClicked_OwnerXRelationships" Width="100" Height="100" ToolTip="Look up Owner Relationships"/>
                                             </dxd:LayoutControlItem>-->
                                             <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewGolfCart, Converter={StaticResource BoolToVis}}">

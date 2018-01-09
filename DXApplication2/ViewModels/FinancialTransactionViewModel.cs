@@ -96,6 +96,67 @@
             }
         }
 
+        public ObservableCollection<Season> Seasons
+        {
+            get
+            {
+                var list = (from x in dc.Seasons
+                            select x);
+                return new ObservableCollection<Season>(list);
+            }
+        }
+
+        public ObservableCollection<string> FiscalYears
+        {
+            get
+            {
+                var list = (from x in Seasons
+                            where x.IsVisible == true
+                            select x.TimePeriod);
+                return new ObservableCollection<string>(list);
+            }
+
+        }
+
+        private string _fiscalYear = String.Empty;
+        public string FiscalYear
+        {
+            get
+            {
+                return _fiscalYear;
+            }
+            set
+            {
+                if (_fiscalYear != value)
+                {
+                    _fiscalYear = value;
+                    SelectedFiscalYear = (from x in Seasons
+                                          where x.TimePeriod == _fiscalYear
+                                          select x).FirstOrDefault();
+
+                    RaisePropertyChanged("FiscalYear");
+                }
+            }
+        }
+
+        private Season _selectedFiscalYear = null;
+        public Season SelectedFiscalYear
+        {
+            get
+            {
+                return _selectedFiscalYear;
+            }
+            set
+            {
+                if (_selectedFiscalYear != value)
+                {
+                    _selectedFiscalYear = value;
+                    FiscalYear = _selectedFiscalYear.TimePeriod;
+                    RaisePropertyChanged("SelectedFiscalYear");
+                }
+            }
+        }
+
         private Owner _selectedOwner = null;
         public Owner SelectedOwner
         {
@@ -266,8 +327,8 @@
             }
         }
 
-        private string _transactionAppliesTo = String.Empty;
-        public string TransactionAppliesTo
+        private StringBuilder _transactionAppliesTo = new StringBuilder();
+        public StringBuilder TransactionAppliesTo
         {
             get
             {
@@ -277,33 +338,8 @@
             {
                 if (_transactionAppliesTo != value)
                 {
-                    _transactionAppliesTo = value.Trim();
-                    if (String.IsNullOrEmpty(_transactionAppliesTo))
-                    {
-                        IsAppliesToVisable = true;
-                    }
-                    else
-                    {
-                        IsAppliesToVisable = false;
-                    }
+                    _transactionAppliesTo = value;
                     RaisePropertyChanged("TransactionAppliesTo");
-                }
-            }
-        }
-
-        private bool _isAppliesToVisable = true;
-        public bool IsAppliesToVisable
-        {
-            get
-            {
-                return _isAppliesToVisable;
-            }
-            set
-            {
-                if (_isAppliesToVisable != value)
-                {
-                    _isAppliesToVisable = value;
-                    RaisePropertyChanged("IsAppliesToVisable");
                 }
             }
         }
@@ -325,158 +361,172 @@
             }
         }
 
-        private bool _isDues = false;
-        public bool IsDues
+        private decimal? _duesAmount = null;
+        public decimal? DuesAmount
         {
             get
             {
-                return _isDues;
+                return _duesAmount;
             }
             set
             {
-                if (_isDues != value)
+                if (_duesAmount != value)
                 {
-                    _isDues = value;
-                }
-                if (_isDues && !TransactionAppliesTo.Contains("Dues"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Dues ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
-                }
-                else
-                {
-                    string tmpString = TransactionAppliesTo.Replace("Dues", "");
-                    TransactionAppliesTo = tmpString.Trim();
+                    string tmp = string.Format("Dues:{0:c} ", value);
+                    if (_duesAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
+                    _duesAmount = value;
+                    TotalAmount += (decimal)_duesAmount;
                 }
             }
         }
 
-        private bool _isLateFee = false;
-        public bool IsLateFee
+        private int? _golfCartQuanity = null;
+        public int? GolfCartQuanity
         {
             get
             {
-                return _isLateFee;
+                return _golfCartQuanity;
             }
             set
             {
-                if (_isLateFee != value)
+                if (_golfCartQuanity != value)
                 {
-                    _isLateFee = value;
-                }
-                if (_isLateFee && !TransactionAppliesTo.Contains("Late Fee"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Late Fee ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
-                }
-                else
-                {
-                    string tmpString = TransactionAppliesTo.Replace("Late Fee ", "");
-                    TransactionAppliesTo = tmpString;
+                    _golfCartQuanity = value;
+                    CartAmount = _golfCartQuanity * SelectedFiscalYear.CartFee;
                 }
             }
         }
 
-        private bool _isPoolAssessment = false;
-        public bool IsPoolAssessment
+        private decimal? _cartAmount = null;
+        public decimal? CartAmount
         {
             get
             {
-                return _isPoolAssessment;
+                return _cartAmount;
             }
             set
             {
-                if (_isPoolAssessment != value)
+                string tmp = string.Format("CartFee:{0:c} ", value);
+                if (_duesAmount != 0)
                 {
-                    _isPoolAssessment = value;
-                }
-                if (_isPoolAssessment && !TransactionAppliesTo.Contains("Pool Assessment"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Pool Assessment ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
+                    TransactionAppliesTo.Append(tmp);
                 }
                 else
                 {
-                    string tmpString = TransactionAppliesTo.Replace("Pool Assessment", "");
-                    TransactionAppliesTo = tmpString.Trim();
+                    TransactionAppliesTo.Replace(tmp, "");
+                }
+
+                if (_cartAmount != value)
+                {
+                    _cartAmount = value;
+                    RaisePropertyChanged("CartAmount");
+                    TotalAmount += (decimal)_cartAmount;
                 }
             }
         }
 
-        private bool _isGolfCart = false;
-        public bool IsGolfCart
+        private decimal? _assessmentAmount = null;
+        public decimal? AssessmentAmount
         {
             get
             {
-                return _isGolfCart;
+                return _assessmentAmount;
             }
             set
             {
-                if (_isGolfCart != value)
+                string tmp = string.Format("Assessment:{0:c} ", value);
+                if (_duesAmount != 0)
                 {
-                    _isGolfCart = value;
-                }
-                if (_isGolfCart && !TransactionAppliesTo.Contains("Golf Cart"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Golf Cart ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
+                    TransactionAppliesTo.Append(tmp);
                 }
                 else
                 {
-                    string tmpString = TransactionAppliesTo.Replace("Golf Cart", "");
-                    TransactionAppliesTo = tmpString.Trim();
+                    TransactionAppliesTo.Replace(tmp, "");
+                }
+
+                if (_assessmentAmount != value)
+                {
+                    _assessmentAmount = value;
+                    TotalAmount += (decimal)_assessmentAmount;
                 }
             }
         }
 
-        private bool _isH2oReconnect = false;
-        public bool IsH2oReconnect
+        private decimal? _reconnectAmount = null;
+        public decimal? ReconnectAmount
         {
             get
             {
-                return _isH2oReconnect;
+                return _reconnectAmount;
             }
             set
             {
-                if (_isH2oReconnect != value)
+                string tmp = string.Format("Reconnect:{0:c} ", value);
+                if (_duesAmount != 0)
                 {
-                    _isH2oReconnect = value;
-                }
-                if (_isH2oReconnect && !TransactionAppliesTo.Contains("Water Reconnect"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Water Reconnect ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
+                    TransactionAppliesTo.Append(tmp);
                 }
                 else
                 {
-                    string tmpString = TransactionAppliesTo.Replace("Water Reconnect", "");
-                    TransactionAppliesTo = tmpString.Trim();
+                    TransactionAppliesTo.Replace(tmp, "");
+                }
+
+                if (_reconnectAmount != value)
+                {
+                    _reconnectAmount = value;
+                    TotalAmount += (decimal)_reconnectAmount;
                 }
             }
         }
 
-        private bool _isOther = false;
-        public bool IsOther
+        private decimal? _otherAmount = null;
+        public decimal? OtherAmount
         {
             get
             {
-                return _isOther;
+                return _otherAmount;
             }
             set
             {
-                if (_isOther != value)
+                string tmp = string.Format("Other:{0:c} ", value);
+                if (_duesAmount != 0)
                 {
-                    _isOther = value;
-                }
-                if (_isOther && !TransactionAppliesTo.Contains("Other"))
-                {
-                    string tmpString = String.Format("{0} {1}", "Other ", TransactionAppliesTo);
-                    TransactionAppliesTo = tmpString;
+                    TransactionAppliesTo.Append(tmp);
                 }
                 else
                 {
-                    string tmpString = TransactionAppliesTo.Replace("Other", "");
-                    TransactionAppliesTo = tmpString.Trim();
+                    TransactionAppliesTo.Replace(tmp, "");
+                }
+
+                if (_otherAmount != value)
+                {
+                    _otherAmount = value;
+                    TotalAmount += (decimal)_otherAmount;
+                }
+            }
+        }
+
+        private decimal _totalAmount = 0;
+        public decimal TotalAmount
+        {
+            get
+            {
+                return _totalAmount;
+            }
+            set
+            {
+                if (_totalAmount != value)
+                {
+                    _totalAmount = value;
+                    RaisePropertyChanged("TotalAmount");
                 }
             }
         }
@@ -546,7 +596,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditOwnerInfo)
+                if (this.ApplPermissions.CanEditOwner)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
@@ -642,7 +692,6 @@
                 this.IsBusy = true;
                 FinancialTransaction transaction = new FinancialTransaction();
 
-                transaction.OwnerID = SelectedOwner.OwnerID;
                 if (null != CreditAmount)
                 {
                     transaction.Balance = (decimal)AccountBalance - (decimal)CreditAmount;
@@ -652,14 +701,29 @@
                     transaction.Balance = (decimal)AccountBalance + (decimal)DebitAmount;
                 }
 
+                transaction.OwnerID = SelectedOwner.OwnerID;
+                transaction.FiscalYear = FiscalYear;
                 transaction.CreditAmount = CreditAmount;
                 transaction.DebitAmount = DebitAmount;
                 transaction.TransactionDate = TransactionDate;
                 transaction.TransactionMethod = TransactionMethod;
-                transaction.TransactionAppliesTo = TransactionAppliesTo;
+                transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
                 transaction.Comment = TransactionComment;
 
                 dc.FinancialTransactions.InsertOnSubmit(transaction);
+
+                if (0 < CartAmount)
+                {
+                    GolfCart golfCart = new GolfCart();
+                    golfCart.OwnerID = SelectedOwner.OwnerID;
+                    golfCart.Year = FiscalYear;
+                    golfCart.PaymentDate = TransactionDate;
+                    golfCart.Quanity = (int)GolfCartQuanity;
+                    golfCart.IsPaid = true;
+
+                    dc.GolfCarts.InsertOnSubmit(golfCart);
+                }
+
                 this.dc.SubmitChanges();
 
                 SelectedOwner.FinancialTransactions.Add(transaction);
@@ -762,9 +826,12 @@
             if (
                    ((CreditAmount > 0 && null == DebitAmount)
                 || (DebitAmount > 0 && null == CreditAmount))
+                && ((TotalAmount == CreditAmount)
+                || (TotalAmount == DebitAmount))
                 && (DateTime.Now > TransactionDate)
+                && !String.IsNullOrEmpty(FiscalYear)
                 && !String.IsNullOrEmpty(TransactionMethod)
-                && !String.IsNullOrEmpty(TransactionAppliesTo)
+                && !String.IsNullOrEmpty(FiscalYear)
                 && !String.IsNullOrEmpty(TransactionComment)
                )
             {
@@ -791,8 +858,10 @@
                     iDataErrorInfo[BindableBase.GetPropertyName(() => CreditAmount)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => DebitAmount)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => TransactionDate)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => FiscalYear)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => TransactionMethod)]
-                    + iDataErrorInfo[BindableBase.GetPropertyName(() => TransactionAppliesTo)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => TotalAmount)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => FiscalYear)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => TransactionComment)]
                     ;
 
@@ -834,14 +903,24 @@
                     errorMsg.Append(RequiredValidationRule.CheckDateInput(() => "TransactionDate", TransactionDate.ToShortDateString()));
                     return errorMsg.ToString();
                 }
+                else if (columnName == BindableBase.GetPropertyName(() => FiscalYear))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "FiscalYear", FiscalYear));
+                    return errorMsg.ToString();
+                }
                 else if (columnName == BindableBase.GetPropertyName(() => TransactionMethod))
                 {
                     errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "TransactionMethod", TransactionMethod));
                     return errorMsg.ToString();
                 }
-                else if (columnName == BindableBase.GetPropertyName(() => TransactionAppliesTo))
+                else if (columnName == BindableBase.GetPropertyName(() => TotalAmount))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "TransactionAppliesTo", TransactionAppliesTo));
+                    errorMsg.Append(RequiredValidationRule.CheckDecimalInput(() => "TotalAmount", TotalAmount));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => FiscalYear))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "FiscalYear", FiscalYear));
                     return errorMsg.ToString();
                 }
                 else if (columnName == BindableBase.GetPropertyName(() => TransactionComment))

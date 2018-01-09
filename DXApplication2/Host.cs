@@ -104,7 +104,7 @@
         public static IMvvmBinder GetNewOwnerEditView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() { Log = Console.Out } as IDataContext;
             IViewModel vm = new OwnerEditViewModel(dc, arg) { Caption = "Edit Owner" };
             IView v = new HVCC.Shell.Views.OwnerEditView(vm);
             return new MvvmBinder(dc, v, vm);
@@ -249,10 +249,10 @@
 
                     // If we are closing one of the Edit forms, raise a refresh PropertyChanged event to let the 
                     // detail view(s) know that data may have changed.
-                    if (parameter.Contains("Edit"))
-                    {
-                        RaisePropertyChanged("Refresh");
-                    }
+                    //if (parameter.Contains("Edit"))
+                    //{
+                    //    RaisePropertyChanged("Refresh");
+                    //}
                 }
                 catch(Exception ex)
                 {

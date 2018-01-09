@@ -196,6 +196,7 @@
     /*================================================================================================================================================*/
     public partial class WaterMeterViewModel
     {
+        public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
         /// </summary>
@@ -205,10 +206,11 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), true));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
             }
         }
 
+        public bool CanPrint = true;
         /// <summary>
         /// Print Command
         /// </summary>
@@ -218,7 +220,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), true));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
             }
         }
 

@@ -169,6 +169,7 @@
         private void OnClicked_Owners(object sender, MouseButtonEventArgs e)
         {
             // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Mouse.OverrideCursor = Cursors.Wait;
             Host.Instance.Execute(HostVerb.Open, "Owners");
         }
 
@@ -180,6 +181,7 @@
         private void OnClicked_Property(object sender, MouseButtonEventArgs e)
         {
             // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Mouse.OverrideCursor = Cursors.Wait;
             Host.Instance.Execute(HostVerb.Open, "Properties");
         }
 

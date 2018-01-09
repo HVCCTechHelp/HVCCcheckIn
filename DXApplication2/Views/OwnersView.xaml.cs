@@ -12,6 +12,7 @@
     using System.Collections.Generic;
     using System;
     using DevExpress.Xpf.Printing;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for ConvertOwners.xaml
@@ -158,5 +159,9 @@
         //}
         #endregion
 
+        private void Owners_Loaded(object sender, RoutedEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
     }
 }

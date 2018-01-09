@@ -28,6 +28,7 @@
              common:CommandSinkBinding.CommandSink="{Binding}" 
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="900"
+             Loaded="EditOwner_Loaded"
              >
 
     <UserControl.Resources>
@@ -109,7 +110,7 @@
 
                             <dxb:BarButtonItem x:Name="bbFinancialTransaction" Content="Financial Transaction" 
                                                Command="{Binding FinancialTransactionCommand}" CommandParameter="{Binding SelectedOwner}"
-                                               IsEnabled="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
                                                Glyph="/Images/Icons/payment_32x32.png" 
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
                         </dxr:RibbonPageGroup>
@@ -163,7 +164,7 @@
             </dxr:RibbonControl>
 
             <dxlc:LayoutControl>
-                <dxlc:LayoutGroup x:Name="grpboxOwnerInfo" View="GroupBox" Header="{Binding HeaderText, Mode=OneWay}" 
+                <dxlc:LayoutGroup x:Name="grpboxOwner" View="GroupBox" Header="{Binding HeaderText, Mode=OneWay}" 
                           VerticalAlignment="Top" 
                           IsCollapsible="False" 
                           Orientation="Vertical"
@@ -175,9 +176,9 @@
                               Width="800" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewOwnerInfo, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewOwner, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                               IsCollapsible="True" 
-                              IsCollapsed="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource InverseBoolToVis}}" 
+                              IsCollapsed="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource InverseBoolToVis}}" 
                               Orientation="Vertical">
                                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                                     <dxlc:LayoutItem Label="Owner: " Width="Auto">
@@ -185,8 +186,8 @@
                               IsEnabled="True"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               ToolTip="Enter Owner(s) names as: 'Fred Brown' or 'Fred/Betty Brown' or 'Fred Brown &amp; Martha White'">
@@ -206,8 +207,8 @@
                                         <dxe:TextEdit x:Name="teOwnerAddress"
                                       Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                               >
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="SelectedOwner.Address" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -221,8 +222,8 @@
                                     <dxlc:LayoutItem Label=" " Width="Auto">
                                         <dxe:TextEdit Text="{Binding SelectedOwner.Address2}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                                     </dxlc:LayoutItem>
                                 </dxlc:LayoutGroup>
@@ -233,8 +234,8 @@
                               IsEnabled="True"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -253,8 +254,8 @@
                               Width="50" 
                               Style="{Binding TeStyle}"
                               MaskType="RegEx" Mask="(\p{Lu}|\W)+"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -272,8 +273,8 @@
                               IsEnabled="True"
                               Width="125" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                              Focusable="{Binding ApplPermissions.CanEditOwner}"
                               ValidateOnEnterKeyPressed="True"
                               ValidateOnTextInput="False"
                               >
@@ -293,24 +294,24 @@
                                         <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
                                             <dxe:TextEdit Text="{Binding SelectedOwner.PrimaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
                                             <dxe:TextEdit Text="{Binding SelectedOwner.SecondaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                                         </dxlc:LayoutItem>
                                     </dxlc:LayoutGroup>
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                                         <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
-                                            <dxe:TextEdit Text="{Binding SelectedOwner.Email}" Width="Auto" 
+                                            <dxe:TextEdit Text="{Binding SelectedOwner.EmailAddress}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditOwnerInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
                                      />
                                         </dxlc:LayoutItem>
                                     </dxlc:LayoutGroup>
@@ -417,12 +418,12 @@
                               Height="200" Width="300" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource BoolToVis}}"
                               IsCollapsible="True" 
                               IsCollapsed="True"  
                               Orientation="Horizontal"
                               >
-                                <!--{Binding ApplPermissions.CanEditOwnerInfo, Converter={StaticResource InverseBoolToVis}}"-->
+                                <!--{Binding ApplPermissions.CanEditOwner, Converter={StaticResource InverseBoolToVis}}"-->
                                 <dxlc:LayoutGroup Orientation="Vertical">
                                     <dxlc:LayoutItem Label="Account Balance: " HorizontalAlignment="Right">
                                         <dxe:TextEdit Text="{Binding AccountBalance, Mode=OneWay}" 
@@ -650,7 +651,7 @@
                                      >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewDetail"  
-                                           AllowEditing="{Binding ApplPermissions.CanUpdateRelationship}"
+                                           AllowEditing="{Binding ApplPermissions.CanEditRelationship}"
                                            AllowColumnFiltering="True" 
                                            AllowGrouping="False"
                                            ShowGroupPanel="False"
@@ -683,7 +684,7 @@
                                             <dxb:BarButtonItem x:Name="removeRowItem"
                                                        Content="Remove"
                                                        Glyph="{dx:DXImage Image=Delete_16x16.png}"
-                                                       IsVisible="{Binding DataContext.ApplPermissions.CanDeleteRelationship}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanEditRelationship}"
                                                        Command="{Binding DataContext.RemoveRelationshipCommand, ElementName=EditOwner}"
                                                        CommandParameter="{Binding DataContext.SelectedRelationship, ElementName=EditOwner}"
                                         />
@@ -755,8 +756,14 @@
                                    ShowLoadDialogOnClickMode="Always"
                                    AllowDrop="True"
                                    ShowMenu="True"
-                                   Validate="editform_Validate"
+                                   Validate="editform_Validate" 
                                    >
+                                <!--Drop="imgEdit_Drop"-->
+
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand EventName="Drop" Command="{Binding DataContext.DropCommand}" PassEventArgsToCommand="True"/>
+                                </dxmvvm:Interaction.Behaviors>
+                                
                                 <dxe:ImageEdit.MenuTemplate>
                                     <ControlTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -769,10 +776,6 @@
                                         </StackPanel>
                                     </ControlTemplate>
                                 </dxe:ImageEdit.MenuTemplate>
-
-                                <dxmvvm:Interaction.Behaviors>
-                                    <dxmvvm:EventToCommand EventName="Drop" Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
-                                </dxmvvm:Interaction.Behaviors>
 
                             </dxe:ImageEdit>
                         </dxlc:LayoutItem>

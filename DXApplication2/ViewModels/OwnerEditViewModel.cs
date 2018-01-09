@@ -40,13 +40,13 @@
                 //// Set the focused row in the Properties grid to the first item.
                 SelectedProperty = Properties[0];
 
+                // Set the focused row in the Relationships grid to the first item in the Owner's
+                // Relationship collection.
                 var rList = (from x in this.dc.Relationships
                              where x.OwnerID == SelectedOwner.OwnerID
                              select x);
 
                 Relationships = new ObservableCollection<Relationship>(rList);
-                // Set the focused row in the Relationships grid to the first item in the Owner's
-                // Relationship collection.
                 SelectedRelationship = Relationships[0];
             }
             catch (Exception ex)
@@ -234,14 +234,19 @@
         {
             get
             {
-                this._relationships.CollectionChanged += _relationships_CollectionChanged;
+                //this._relationships.CollectionChanged += _relationships_CollectionChanged;
                 return this._relationships;
             }
             set
             {
                 if (_relationships != value)
                 {
+                    if (null != _relationships)
+                    {
+                        _relationships.CollectionChanged -= _relationships_CollectionChanged;
+                    }
                     _relationships = value;
+                    _relationships.CollectionChanged += _relationships_CollectionChanged;
                 }
             }
         }
@@ -414,12 +419,12 @@
             StringBuilder sb = new StringBuilder();
             try
             {
-                var notes = (from n in this.dc.Notes
+                var notes = (from n in SelectedOwner.Notes
                              where n.OwnerID == this.SelectedOwner.OwnerID
                              orderby n.Entered descending
                              select n);
 
-                NoteCount = notes.Count();
+                NoteCount = SelectedOwner.Notes.Count();
 
                 // Iterate through the notes collection and build a string of the notes in 
                 // decending order.  This string will be reflected in the UI as a read-only
@@ -735,7 +740,7 @@
             {
                 MessageBoxResult results = MessageBoxResult.Cancel;
 
-                if (!this.SelectedProperty.IsInGoodStanding)
+                if (AccountBalance > 0)
                 {
                     results = MessageBox.Show("This member is not is good standing.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
                         , "Warning"
@@ -962,6 +967,7 @@
         public void RowDoubleClickAction(object parameter)
         {
             Property p = parameter as Property;
+            IsBusy = true;
             Host.Execute(HostVerb.Open, "PropertyEdit", p);
         }
 
@@ -984,7 +990,36 @@
         public void FinancialTransactionAction(object parameter)
         {
             Owner p = parameter as Owner;
+            IsBusy = true;
             Host.Execute(HostVerb.Open, "FinancialTransaction", p);
+        }
+
+        /// <summary>
+        /// (ImageEdit) Drop Event to Command
+        /// </summary>
+        private ICommand _dropCommand;
+        public ICommand DropCommand
+        {
+            get
+            {
+                return _dropCommand ?? (_dropCommand = new CommandHandlerWparm((object parameter) => DropAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// ImageEdit Drop Event Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void DropAction(object parameter)
+        {
+            // Extract the data from the DataObject-Container into a string list
+            string[] FileList = null; // (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            // Do something with the data...
+
+            // For example add all files into a simple label control:
+            //foreach (string File in FileList)
+            //    this.label.Text += File + "\n";
         }
 
         ///// <summary>

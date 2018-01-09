@@ -6,6 +6,7 @@
     using Models;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
 
 
     /// <summary>
@@ -109,7 +110,6 @@
             e.Handled = true;
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -152,8 +152,14 @@
             //teOwnerCity.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             //teOwnerState.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             //teOwnerZip.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private void imgEdit_Drop(object sender, DragEventArgs e)
+        {
+
+        }
     }
 }
 
