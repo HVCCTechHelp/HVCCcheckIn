@@ -24,6 +24,8 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
+
+            IsBusy = false;
         }
 
         /* -------------------------------- Interfaces ------------------------------------------------ */

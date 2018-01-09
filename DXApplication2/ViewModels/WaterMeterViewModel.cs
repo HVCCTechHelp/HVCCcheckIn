@@ -142,6 +142,8 @@
         public void RegisterCommands()
         {
             this.RegisterSaveHandler();
+
+            IsBusy = false;
         }
 
         private void RegisterSaveHandler()

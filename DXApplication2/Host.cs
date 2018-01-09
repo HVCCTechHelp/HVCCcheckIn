@@ -104,7 +104,7 @@
         public static IMvvmBinder GetNewOwnerEditView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
-            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() { Log = Console.Out } as IDataContext;
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext; //{ Log = Console.Out } as IDataContext;
             IViewModel vm = new OwnerEditViewModel(dc, arg) { Caption = "Edit Owner" };
             IView v = new HVCC.Shell.Views.OwnerEditView(vm);
             return new MvvmBinder(dc, v, vm);

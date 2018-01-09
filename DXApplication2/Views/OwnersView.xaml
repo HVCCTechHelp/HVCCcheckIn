@@ -145,7 +145,7 @@
                                  >
                             <dxg:GridControl.View>
                                 <dxg:TableView x:Name="tableViewOwners" 
-                                       AllowEditing="{Binding ApplPermissions.CanEditOwner}"
+                                       AllowEditing="False"
                                        AllowColumnFiltering="True" 
                                        AllowGrouping="False"
                                        ShowGroupPanel="False"
@@ -159,6 +159,15 @@
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
                                        >
+                                    <dxg:TableView.FormatConditions>
+                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Red" />
+                                        </dxg:FormatCondition>
+                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Green" />
+                                        </dxg:FormatCondition>
+                                    </dxg:TableView.FormatConditions>
+                                    
                                     <dxmvvm:Interaction.Behaviors>
                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                         Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedOwner}" />
@@ -174,23 +183,28 @@
                                 <dxg:GridColumn FieldName="City" Header="City" Width="50" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="State" Header="State" Width="25" ReadOnly="True"/>
                                 <dxg:GridColumn FieldName="Zip" Header="Zip" Width="30" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="Balance" Header="Balance" Width="25" ReadOnly="True">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False"/>
+                                <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
+                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
                             </dxg:GridControl.Columns>
                             <dxg:GridControl.TotalSummary>
                                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
                             </dxg:GridControl.TotalSummary>
 
-                            <dxg:GridControl.DetailDescriptor>
+                            <!--<dxg:GridControl.DetailDescriptor>
                                 <dxg:DataControlDetailDescriptor ItemsSourcePath="Properties" ShowHeader="False">
                                     <dxg:GridControl x:Name="detailGrid" Tag="Properties">
                                         <dxg:GridControl.Columns>
                                             <dxg:GridColumn Header="Lot Number" FieldName="Customer" MinWidth="20"/>
                                             <dxg:GridColumn Header="pID" FieldName="PropertyID" MinWidth="10" />
                                             <dxg:GridColumn Header="oID" FieldName="OwnerID" MinWidth="10" />
-                                            <!-- More columns here -->
                                         </dxg:GridControl.Columns>
                                         <dxg:GridControl.View>
                                             <dxg:TableView ShowGroupPanel="False" NavigationStyle="Row" FocusedRow="{Binding SelectedProperty, Mode=TwoWay}">
@@ -202,7 +216,7 @@
                                         </dxg:GridControl.View>
                                     </dxg:GridControl>
                                 </dxg:DataControlDetailDescriptor>
-                            </dxg:GridControl.DetailDescriptor>
+                            </dxg:GridControl.DetailDescriptor>-->
                         </dxg:GridControl>
                     </dxlc:LayoutItem>
 

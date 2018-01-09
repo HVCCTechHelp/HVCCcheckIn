@@ -84,16 +84,16 @@
         <classShapeMoniker Id="382b4c1b-b026-4ce0-bc0e-a7a2e1b029c8" />
       </nodes>
     </associationConnector>
-    <classShape Id="d127ad45-182a-46b9-be84-ee0e94b441f2" absoluteBounds="15.5, 1, 2, 2.3478011067708335">
+    <classShape Id="d127ad45-182a-46b9-be84-ee0e94b441f2" absoluteBounds="18.125, 6.625, 2, 2.3478011067708335">
       <DataClassMoniker Name="/HVCCDataContext/OwnershipChange" />
       <nestedChildShapes>
-        <elementListCompartment Id="3800173c-476e-4fe5-a181-89c071b471a6" absoluteBounds="15.515, 1.46, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3800173c-476e-4fe5-a181-89c071b471a6" absoluteBounds="18.14, 7.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="a7ba3529-cc30-4f9a-ad6e-b29cb5f86f4d" absoluteBounds="15.5, 3.75, 2, 1.7708968098958331">
+    <classShape Id="a7ba3529-cc30-4f9a-ad6e-b29cb5f86f4d" absoluteBounds="15.5, 10.875, 2, 1.7708968098958331">
       <DataClassMoniker Name="/HVCCDataContext/v_ChangeOfOwnership" />
       <nestedChildShapes>
-        <elementListCompartment Id="a5747807-748c-413b-974f-0d6eb2b39a82" absoluteBounds="15.515, 4.2100000000000009, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="a5747807-748c-413b-974f-0d6eb2b39a82" absoluteBounds="15.515, 11.335, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="45642336-38aa-44da-8d9e-9f11973df702" absoluteBounds="3.75, 8.625, 2, 3.1170068359375">
@@ -155,16 +155,22 @@
         <classShapeMoniker Id="7695f9d0-5285-4bb0-8b2f-376bcd8720b9" />
       </nodes>
     </associationConnector>
-    <classShape Id="0a912fa0-1b28-4ba4-aaeb-244511b03304" absoluteBounds="15.5, 6.25, 2, 5.8092268880208326">
+    <classShape Id="0a912fa0-1b28-4ba4-aaeb-244511b03304" absoluteBounds="15.5, 4.625, 2, 5.8092268880208326">
       <DataClassMoniker Name="/HVCCDataContext/v_PropertyDetail" />
       <nestedChildShapes>
-        <elementListCompartment Id="f1a82382-47dc-4db3-b463-c08e88d8db71" absoluteBounds="15.515, 6.71, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="f1a82382-47dc-4db3-b463-c08e88d8db71" absoluteBounds="15.515, 5.0850000000000009, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="b4ca97f4-0a63-4935-ac1e-57b1420e0f8c" absoluteBounds="20.875, 2.875, 2, 4.6554182942708326">
+    <classShape Id="b4ca97f4-0a63-4935-ac1e-57b1420e0f8c" absoluteBounds="21, 2.75, 2, 4.6554182942708326">
       <DataClassMoniker Name="/HVCCDataContext/ApplicationPermission" />
       <nestedChildShapes>
-        <elementListCompartment Id="a190f991-b5ce-4f6e-b8b7-ffc02ae005c2" absoluteBounds="20.89, 3.335, 1.9700000000000002, 4.095418294270833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="a190f991-b5ce-4f6e-b8b7-ffc02ae005c2" absoluteBounds="21.015, 3.21, 1.9700000000000002, 4.095418294270833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="64db82c6-70a9-470d-87be-72037c4e497e" absoluteBounds="15.5, 0.875, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/HVCCDataContext/v_OwnerDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="46149dec-ae98-4e2a-a575-2f3ebf00e4f4" absoluteBounds="15.515, 1.335, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

@@ -27,7 +27,7 @@
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            Owner p = parameter as Owner;
+            v_OwnerDetail p = parameter as v_OwnerDetail;
 
             try
             {
@@ -60,6 +60,8 @@
 
             SelectedOwner.PropertyChanged +=
                  new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+
+            IsBusy = false;
         }
 
         public ApplicationPermission ApplPermissions { get; set; }

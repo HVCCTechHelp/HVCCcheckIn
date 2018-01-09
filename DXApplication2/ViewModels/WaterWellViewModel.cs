@@ -32,6 +32,8 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
+
+            IsBusy = false;
         }
 
         public override bool IsValid => throw new NotImplementedException();

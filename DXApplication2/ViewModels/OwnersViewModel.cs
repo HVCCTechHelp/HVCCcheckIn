@@ -72,8 +72,8 @@
             }
         }
 
-        private ObservableCollection<Owner> _ownersList = null;
-        public ObservableCollection<Owner> OwnersList
+        private ObservableCollection<v_OwnerDetail> _ownersList = null;
+        public ObservableCollection<v_OwnerDetail> OwnersList
         {
             get
             {
@@ -89,8 +89,8 @@
             }
         }
 
-        private Owner _selectedOwner = null;
-        public Owner SelectedOwner
+        private v_OwnerDetail _selectedOwner = null;
+        public v_OwnerDetail SelectedOwner
         {
             get
             {
@@ -106,28 +106,28 @@
 
                     // To ensure there is a focused row selected in the detail (Properties) grid,
                     // set the SelectedProperty to the first item.
-                    SelectedProperty = _selectedOwner.Properties[0];
+                    //SelectedProperty = _selectedOwner.Properties[0];
                     RaisePropertyChanged("SelectedOwner");
                 }
             }
         }
 
-        private Property _selectedProperty = null;
-        public Property SelectedProperty
-        {
-            get
-            {
-                return _selectedProperty;
-            }
-            set
-            {
-                if (_selectedProperty != value)
-                {
-                    _selectedProperty = value;
-                    RaisePropertyChanged("SelectedProperty");
-                }
-            }
-        }
+        //private Property _selectedProperty = null;
+        //public Property SelectedProperty
+        //{
+        //    get
+        //    {
+        //        return _selectedProperty;
+        //    }
+        //    set
+        //    {
+        //        if (_selectedProperty != value)
+        //        {
+        //            _selectedProperty = value;
+        //            RaisePropertyChanged("SelectedProperty");
+        //        }
+        //    }
+        //}
 
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
@@ -160,17 +160,16 @@
         /// Queries the database to get the current list of property records
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Owner> FetchOwners()
+        private ObservableCollection<v_OwnerDetail> FetchOwners()
         {
             try
             {
                 //// Force a refresh of the datacontext, then get the list of "Properties" from the database
-                this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
-                var list = (from a in this.dc.Owners
-                            where a.IsCurrentOwner == true
+                //this.dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Owners);
+                var list = (from a in this.dc.v_OwnerDetails
                             select a);
 
-                return new ObservableCollection<Owner>(list);
+                return new ObservableCollection<v_OwnerDetail>(list);
             }
             catch (Exception ex)
             {
@@ -264,32 +263,32 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Owner p = parameter as Owner;
+            v_OwnerDetail p = parameter as v_OwnerDetail;
             IsBusy = true;
             Host.Execute(HostVerb.Open, "EditOwner", p);
         }
 
-        /// <summary>
-        /// RowDoubleClick Command
-        /// </summary>
-        private ICommand _focusedRowChangedCommand;
-        public ICommand FocusedRowChangedCommand
-        {
-            get
-            {
-                return _focusedRowChangedCommand ?? (_focusedRowChangedCommand = new CommandHandlerWparm((object parameter) => FocusedRowChangedAction(parameter), true));
-            }
-        }
+        ///// <summary>
+        ///// RowDoubleClick Command
+        ///// </summary>
+        //private ICommand _focusedRowChangedCommand;
+        //public ICommand FocusedRowChangedCommand
+        //{
+        //    get
+        //    {
+        //        return _focusedRowChangedCommand ?? (_focusedRowChangedCommand = new CommandHandlerWparm((object parameter) => FocusedRowChangedAction(parameter), true));
+        //    }
+        //}
 
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void FocusedRowChangedAction(object parameter)
-        {
-            DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e = parameter as DevExpress.Xpf.Grid.FocusedRowChangedEventArgs;
-            SelectedProperty = e.NewRow as Property;
-        }
+        ///// <summary>
+        ///// Grid row double click event to command action
+        ///// </summary>
+        ///// <param name="type"></param>
+        //public void FocusedRowChangedAction(object parameter)
+        //{
+        //    DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e = parameter as DevExpress.Xpf.Grid.FocusedRowChangedEventArgs;
+        //    SelectedProperty = e.NewRow as Property;
+        //}
 
         /// <summary>
         /// Print Command
@@ -376,13 +375,13 @@
             string fileName = string.Empty;
 
             RaisePropertyChanged("IsBusy");
-            foreach (Owner o in OwnersList)
+            foreach (v_OwnerDetail o in OwnersList)
             {
-                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
-                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-                report.Parameters["selectedOwner"].Value = o.OwnerID;
-                report.CreateDocument();
-                report.ExportToPdf(fileName);
+                //fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                //Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                //report.Parameters["selectedOwner"].Value = o.OwnerID;
+                //report.CreateDocument();
+                //report.ExportToPdf(fileName);
             }
             RaisePropertyChanged("IsNotBusy");
         }

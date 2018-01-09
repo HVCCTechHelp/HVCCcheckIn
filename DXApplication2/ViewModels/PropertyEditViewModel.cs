@@ -31,12 +31,20 @@ namespace HVCC.Shell.ViewModels
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            v_PropertyDetail p = parameter as v_PropertyDetail;
-            if (null != p)
+            // The invocation of this VM can come from PropertyDetails or OwnerEdit.  The Detail view(s)
+            // are bound to database views, whereas Edit view(s) are bound to the database table. Therefore,
+            // we have to check the type of the 'parameter' being passed in.
+            if (parameter is Property)
             {
+                Property p = parameter as Property;
                 SelectedProperty = GetProperty(p.PropertyID);
-                Owner = SelectedProperty.Owner;  // The View is bound to this element
             }
+            else
+            {
+                v_PropertyDetail p = parameter as v_PropertyDetail;
+                SelectedProperty = GetProperty(p.PropertyID);
+            }
+            Owner = SelectedProperty.Owner;  // The View is bound to this element
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             CanSaveExecute = false;
