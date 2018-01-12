@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>10</ApplicationRevision>
+    <ApplicationRevision>12</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -242,6 +242,7 @@
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
+    <Compile Include="ViewModels\WaterShutoffViewModel.cs" />
     <Compile Include="ViewModels\WaterWellViewModel.cs" />
     <Compile Include="Views\AdministrationView.xaml.cs">
       <DependentUpon>AdministrationView.xaml</DependentUpon>
@@ -284,6 +285,9 @@
     </Compile>
     <Compile Include="Views\WaterMeterView.xaml.cs">
       <DependentUpon>WaterMeterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WaterShutoffView.xaml.cs">
+      <DependentUpon>WaterShutoffView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WellMeterReadingsView.xaml.cs">
       <DependentUpon>WellMeterReadingsView.xaml</DependentUpon>
@@ -353,6 +357,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WaterMeterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WaterShutoffView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -520,6 +528,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\Membership.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Water-Shut-Off-Notice.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

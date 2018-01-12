@@ -997,6 +997,29 @@
         }
 
         /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _waterShutoffCommand;
+        public ICommand WaterShutoffCommand
+        {
+            get
+            {
+                return _waterShutoffCommand ?? (_waterShutoffCommand = new CommandHandlerWparm((object parameter) => WaterShutoffAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void WaterShutoffAction(object parameter)
+        {
+            Owner p = parameter as Owner;
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "WaterShutoff", p);
+        }
+
+        /// <summary>
         /// (ImageEdit) Drop Event to Command
         /// </summary>
         private ICommand _dropCommand;

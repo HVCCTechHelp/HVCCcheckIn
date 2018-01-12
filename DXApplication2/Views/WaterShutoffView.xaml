@@ -1,0 +1,353 @@
+﻿<!--
+    Programmer Notes:
+        The UserControl need to have x:Name defined in order for the Commands to work (at all).  The x:Name reference
+        is passed as the ElementName in the Command for the grid's BarButton item commands.
+-->
+<UserControl x:Class="HVCC.Shell.Views.WaterShutoffView" x:Name="WaterShutoff"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             xmlns:dxet="http://schemas.devexpress.com/winfx/2008/xaml/editors/themekeys"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+             xmlns:local="clr-namespace:HVCC.Shell.Views"
+             xmlns:helper="clr-namespace:HVCC.Shell.Helpers"
+             xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+             xmlns:resources="clr-namespace:HVCC.Shell.Resources"
+             xmlns:validation="clr-namespace:HVCC.Shell.Validation"
+             xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+             common:CommandSinkBinding.CommandSink="{Binding}" 
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024"
+             Loaded="WaterShutoff_Loaded"
+             >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibility x:Key="BoolToVis" />
+            <converters:InverseBooleanToVisibility x:Key="InverseBoolToVis" />
+            <converters:InvertBoolean x:Key="Invert" />
+            <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
+            <converters:BitmapToByteArrayConverter x:Key="BitmapToByteArray"/>
+            <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <common:CommandSinkBinding Command="ApplicationCommands.Save" />
+    </UserControl.CommandBindings>
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage Caption="Actions" >
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                            <!--<dxb:BarButtonItem Content="Undo" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding UndoCommand}"
+                                                       Glyph="{dx:DXImage Image=Reset2_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
+                                                       ToolTip="Discard All Changes"/>-->
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+
+                        <!--<dxr:RibbonPageGroup Caption="Shutoff Action">
+                            <dxb:BarButtonItem x:Name="bbGenerateNotice" Content="Create Notice" 
+                                               Command="{Binding CreateNoticeCommand}" CommandParameter="{Binding WaterShutoff}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
+                                               Glyph="/Images/Icons/Water-Shut-Off-Notice.jpg" 
+                                               LargeGlyph="/Images/Icons/Water-Shut-Off-Notice.jpg" />
+                        </dxr:RibbonPageGroup>-->
+                    </dxr:RibbonPage>
+
+                    <dxr:RibbonPage x:Name="ownerReports" Caption="Reports">
+
+                        <!--<dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>-->
+
+                        <!--<dxr:RibbonPageGroup Caption="Owner Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
+                            <dxb:BarButtonItem Content="Period Usage"
+                                                   ItemClick="bb_PeriodReportClick"
+                                                   IsVisible="True" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                        </dxr:RibbonPageGroup>-->
+
+                    </dxr:RibbonPage>
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+
+            <dxlc:LayoutControl>
+                <dxlc:LayoutGroup x:Name="grpboxOwner" View="GroupBox" Header="{Binding HeaderText, Mode=OneWay}" 
+                          VerticalAlignment="Top" 
+                          IsCollapsible="False" 
+                          Orientation="Vertical"
+                          Width="Auto">
+
+                    <dxlc:LayoutGroup Orientation="Horizontal" View="Group" >
+                        <dxlc:LayoutGroup Orientation="Vertical">
+                            <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
+                              Width="800" 
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Visibility="{Binding ApplPermissions.CanViewOwner, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              IsCollapsible="True" 
+                              IsCollapsed="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource InverseBoolToVis}}" 
+                              Orientation="Vertical">
+                                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                    <dxlc:LayoutItem Label="Owner: " Width="Auto">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.MailTo}" x:Name="teOwnerMailTo"
+                                                      IsEnabled="True"
+                                                      Width="Auto" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False" 
+                                                      ShowBorder="False"/>
+                                    </dxlc:LayoutItem>
+                                </dxlc:LayoutGroup>
+
+                                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                                    <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.Address}" x:Name="teOwnerAddress"
+                                                      Width="Auto" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                    </dxlc:LayoutItem>
+                                    <dxlc:LayoutItem Label=" " Width="Auto">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.Address2}" Width="Auto" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                    </dxlc:LayoutItem>
+                                </dxlc:LayoutGroup>
+
+                                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                    <dxlc:LayoutItem Label="City: " HorizontalAlignment="Left" Width="400">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.City}" x:Name="teOwnerCity"
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                    </dxlc:LayoutItem>
+                                    <dxlc:LayoutItem Label="State: " HorizontalAlignment="Left" Width="Auto">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.State}" x:Name="teOwnerState"
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                    </dxlc:LayoutItem>
+                                    <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.Zip}" x:Name="teOwnerZip"
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                    </dxlc:LayoutItem>
+                                </dxlc:LayoutGroup>
+
+                                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                        <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
+                                            <dxe:TextEdit Text="{Binding SelectedOwner.PrimaryPhone}" Width="Auto" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
+                                            <dxe:TextEdit Text="{Binding SelectedOwner.SecondaryPhone}" Width="Auto" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="True" 
+                                                      Focusable="False"
+                                                      ShowBorder="False"
+                                                      />
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+                                </dxlc:LayoutGroup>
+                            </dxlc:LayoutGroup>
+
+                            <dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader, Mode=OneWay}"
+                              Width="800" Height="Auto" 
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              IsCollapsed="True"
+                              IsCollapsible="True"
+                              Orientation="Vertical"
+                              >
+                                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}">
+                                    <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"
+                                  Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
+                                  Style="{Binding TeStyle}"
+                                  Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                  IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                AcceptsReturn="True"
+                                  Height="50" Width="700"
+                                  >
+                                        <dxmvvm:Interaction.Behaviors>
+                                            <dxmvvm:EventToCommand EventName="LostFocus" Command="{Binding TELostFocusCommand}" PassEventArgsToCommand="True"/>
+                                        </dxmvvm:Interaction.Behaviors>
+                                    </dxe:TextEdit>
+
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Width="Auto">
+                                    <ScrollViewer Height="60" VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding AllNotes}"  
+                                  Height="200" Width="700"
+                                  />
+                                    </ScrollViewer>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+
+                    <dxlc:LayoutGroup Orientation="Vertical" View="GroupBox" Header="Shutoff Policy Status" Width="800">
+                        <dxlc:LayoutGroup Orientation="Horizontal">
+                            <dxlc:LayoutItem Width="250">
+                                <dxe:CheckEdit Content="Membership is Suspended"
+                                               HorizontalAlignment="Left" Width="200" Margin="0,0,0,0"
+                                               IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                               IsChecked="{Binding WaterShutoff.IsMemberSuspended, Mode=TwoWay}" />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date of Suspension: " Width="250">
+                                <dxe:TextEdit EditValue="{Binding WaterShutoff.SuspensionDate}"
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                        <Separator/>
+
+                        <dxlc:LayoutGroup Width="780" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem>
+                                <RadioButton  Content="30 Days Late"  IsChecked="{Binding WaterShutoff.IsLate30, Mode=OneWayToSource}" />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem>
+                                <RadioButton  Content="60 Days Late"  IsChecked="{Binding WaterShutoff.IsLate60, Mode=OneWayToSource}" />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem>
+                                <RadioButton  Content="90 Days or more"  IsChecked="{Binding WaterShutoff.IsLate90, Mode=OneWayToSource}" />
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+
+                        <dxlc:LayoutGroup Width="780" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem Label="Date of Notification: " Width="250">
+                                <dxe:TextEdit EditValue="{Binding WaterShutoff.FirstNotificationDate}" 
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date of Notification: " Width="250">
+                                <dxe:TextEdit Text="{Binding WaterShutoff.SecondNotificationDate}"
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date of Shutoff Notification: " Width="255">
+                                <dxe:TextEdit Text="{Binding WaterShutoff.ShutoffNoticeIssuedDate}"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                        <Separator/>
+
+                        <dxlc:LayoutGroup Width="780" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem>
+                                <dxe:CheckEdit Content="Meter is Locked" IsChecked="{Binding WaterShutoff.IsMeterLocked, Mode=TwoWay}" HorizontalAlignment="Left" Width="200" Margin="0,0,0,0"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+
+                    </dxlc:LayoutGroup>
+                    <!--shutoff policy-->
+
+
+                    <dxlc:LayoutGroup Orientation="Vertical" View="GroupBox" Header="Member Response" Width="800">
+                        <dxlc:LayoutGroup Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem>
+                                <dxe:CheckEdit Content="Member has requested hearing" IsChecked="{Binding WaterShutoff.IsRequestedHearing, Mode=TwoWay}" HorizontalAlignment="Left" Width="250" Margin="0,0,0,0"/>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date of Hearing: " Width="250">
+                                <dxe:DateEdit Text="{Binding WaterShutoff.HearingDate}"
+                                              Width="100" HorizontalAlignment="Left" 
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+                    <!-- Membership Response -->
+
+
+                    <dxlc:LayoutGroup Orientation="Vertical" View="GroupBox" Header="Collections Status" Width="800">
+                        <dxlc:LayoutGroup Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem>
+                                <dxe:CheckEdit Content="Sent to Collections" IsChecked="{Binding WaterShutoff.IsInCollections, Mode=TwoWay}" HorizontalAlignment="Left" Width="250" Margin="0,0,0,0"/>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date sent to Collections: " Width="250">
+                                <dxe:TextEdit Text="{Binding WaterShutoff.CollectionsDate}"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+                    <!-- Collections -->
+
+                    <dxlc:LayoutGroup Orientation="Vertical" View="GroupBox" Header="Lien Status" Width="800">
+                        <dxlc:LayoutGroup Orientation="Horizontal" HorizontalAlignment="Left">
+                            <dxlc:LayoutItem>
+                                <dxe:CheckEdit Content="Lien Filed" IsChecked="{Binding WaterShutoff.IsLienFiled, Mode=TwoWay}" HorizontalAlignment="Left" Width="250" Margin="0,0,0,0"/>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Date of Lien: " Width="250" >
+                                <dxe:TextEdit Text="{Binding WaterShutoff.LienFiledDate}"
+                                              Width="100" HorizontalAlignment="Left" ShowBorder="False"
+                                              IsReadOnly="True" Focusable="False" IsHitTestVisible="False"
+                                              MaskType="DateTime" Mask="d" MaskUseAsDisplayFormat="True"/>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutGroup>
+                    <!-- Collections -->
+
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+</UserControl>

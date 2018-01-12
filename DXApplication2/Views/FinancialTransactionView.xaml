@@ -365,6 +365,25 @@
                                             </dxe:TextEdit.EditValue>
                                         </dxe:TextEdit>
                                     </dxlc:LayoutItem>
+                                    <dxlc:LayoutItem Label="Lien Fee:" Margin="20,0,0,0">
+                                        <dxe:TextEdit x:Name="teLien"  HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="100" 
+                                                      Style="{Binding TeStyle}"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="False"
+                                                      MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
+                                                      NullText="$0.00"
+                                                      ToolTip="Amount">
+                                            <dxe:TextEdit.EditValue>
+                                                <Binding Path="LeinFeeAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                    <Binding.ValidationRules>
+                                                        <validation:RequiredValidationRule FieldName="LeinFeeAmount"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </dxe:TextEdit.EditValue>
+                                        </dxe:TextEdit>
+                                    </dxlc:LayoutItem>
                                     <dxlc:LayoutItem Label="Other:" Margin="20,0,0,0">
                                         <dxe:TextEdit x:Name="teOther"  HorizontalAlignment="Left"
                                                       IsEnabled="True"

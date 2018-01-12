@@ -113,6 +113,12 @@
                                                IsEnabled="{Binding ApplPermissions.CanEditOwner}"
                                                Glyph="/Images/Icons/payment_32x32.png" 
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
+
+                            <dxb:BarButtonItem x:Name="bbWaterShutoff" Content="Water Shutoff" 
+                                               Command="{Binding WaterShutoffCommand}" CommandParameter="{Binding SelectedOwner}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
+                                               Glyph="/Images/Icons/Water-Shut-Off-Notice.jpg" 
+                                               LargeGlyph="/Images/Icons/Water-Shut-Off-Notice.jpg" />
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 

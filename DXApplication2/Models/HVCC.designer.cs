@@ -59,10 +59,12 @@ namespace HVCC.Shell.Models
     partial void DeleteGolfCart(GolfCart instance);
     partial void InsertProperty(Property instance);
     partial void DeleteProperty(Property instance);
+    partial void UpdateWaterShutoff(WaterShutoff instance);
+    partial void DeleteWaterShutoff(WaterShutoff instance);
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -235,6 +237,14 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<WaterShutoff> WaterShutoffs
+		{
+			get
+			{
+				return this.GetTable<WaterShutoff>();
+			}
+		}
+		
 		private void UpdateWaterMeterReading(WaterMeterReading obj)
 		{
 			this.usp_UpdateWaterMeterReading(((System.Nullable<int>)(obj.RowID)), ((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.MeterReading)), ((System.Nullable<int>)(obj.Consumption)), ((System.Nullable<System.DateTime>)(obj.ReadingDate)));
@@ -295,6 +305,13 @@ namespace HVCC.Shell.Models
 		private void UpdateProperty(Property obj)
 		{
 			this.usp_UpdateProperty(((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.OwnerID)), obj.Customer, ((System.Nullable<int>)(obj.Section)), ((System.Nullable<int>)(obj.Block)), ((System.Nullable<int>)(obj.Lot)), obj.SubLot, ((System.Nullable<decimal>)(obj.Balance)), obj.Parcel, obj.PhysicalAddress, obj.Status, obj.CommonNotes, ((System.Nullable<int>)(obj.MeterNumber)), obj.WaterSystemNotes);
+		}
+		
+		private void InsertWaterShutoff(WaterShutoff obj)
+		{
+			System.Nullable<int> p1 = obj.RowID;
+			this.usp_InsertWaterShutoff(((System.Nullable<int>)(obj.OwnerID)), ((System.Nullable<bool>)(obj.IsMemberSuspended)), ((System.Nullable<bool>)(obj.IsLate30)), ((System.Nullable<System.DateTime>)(obj.FirstNotificationDate)), ((System.Nullable<bool>)(obj.IsLate60)), ((System.Nullable<System.DateTime>)(obj.SecondNotificationDate)), ((System.Nullable<bool>)(obj.IsLate90)), ((System.Nullable<bool>)(obj.IsShutoffNoticeIssued)), ((System.Nullable<System.DateTime>)(obj.ShutoffNoticeIssuedDate)), ((System.Nullable<bool>)(obj.IsMemberRequestedHearing)), ((System.Nullable<System.DateTime>)(obj.HearingDate)), ((System.Nullable<bool>)(obj.IsInCollections)), ((System.Nullable<System.DateTime>)(obj.CollectionsDate)), ((System.Nullable<bool>)(obj.IsMeterLocked)), ((System.Nullable<bool>)(obj.IsOnPaymentPlan)), obj.TermsOfPaymentPlan, ((System.Nullable<bool>)(obj.IsIntentToLien)), ((System.Nullable<bool>)(obj.IsLienFiled)), ((System.Nullable<System.DateTime>)(obj.LienFiledDate)), ref p1);
+			obj.RowID = p1.GetValueOrDefault();
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -462,6 +479,34 @@ namespace HVCC.Shell.Models
 		public int usp_UpdateProperty([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Section", DbType="Int")] System.Nullable<int> section, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Block", DbType="Int")] System.Nullable<int> block, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Lot", DbType="Int")] System.Nullable<int> lot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SubLot", DbType="VarChar(10)")] string subLot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Decimal(19,4)")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Parcel", DbType="VarChar(50)")] string parcel, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PhysicalAddress", DbType="VarChar(50)")] string physicalAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Status", DbType="VarChar(10)")] string status, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CommonNotes", DbType="VarChar(400)")] string commonNotes, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MeterNumber", DbType="Int")] System.Nullable<int> meterNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="WaterSystemNotes", DbType="VarChar(250)")] string waterSystemNotes)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, ownerID, customer, section, block, lot, subLot, balance, parcel, physicalAddress, status, commonNotes, meterNumber, waterSystemNotes);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertWaterShutoff")]
+		public int usp_InsertWaterShutoff(
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMemberSuspended", DbType="Bit")] System.Nullable<bool> isMemberSuspended, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate30", DbType="Bit")] System.Nullable<bool> isLate30, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="FirstNotificationDate", DbType="Date")] System.Nullable<System.DateTime> firstNotificationDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate60", DbType="Bit")] System.Nullable<bool> isLate60, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondNotificationDate", DbType="Date")] System.Nullable<System.DateTime> secondNotificationDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate90", DbType="Bit")] System.Nullable<bool> isLate90, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsShutoffNoticeIssued", DbType="Bit")] System.Nullable<bool> isShutoffNoticeIssued, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="ShutoffNoticeIssuedDate", DbType="Date")] System.Nullable<System.DateTime> shutoffNoticeIssuedDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMemberRequestedHearing", DbType="Bit")] System.Nullable<bool> isMemberRequestedHearing, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="HearingDate", DbType="Date")] System.Nullable<System.DateTime> hearingDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsInCollections", DbType="Bit")] System.Nullable<bool> isInCollections, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="CollectionsDate", DbType="Date")] System.Nullable<System.DateTime> collectionsDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMeterLocked", DbType="Bit")] System.Nullable<bool> isMeterLocked, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsOnPaymentPlan", DbType="Bit")] System.Nullable<bool> isOnPaymentPlan, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="TermsOfPaymentPlan", DbType="VarChar(250)")] string termsOfPaymentPlan, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsIntentToLien", DbType="Bit")] System.Nullable<bool> isIntentToLien, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLienFiled", DbType="Bit")] System.Nullable<bool> isLienFiled, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="LienFiledDate", DbType="Date")] System.Nullable<System.DateTime> lienFiledDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, isMemberSuspended, isLate30, firstNotificationDate, isLate60, secondNotificationDate, isLate90, isShutoffNoticeIssued, shutoffNoticeIssuedDate, isMemberRequestedHearing, hearingDate, isInCollections, collectionsDate, isMeterLocked, isOnPaymentPlan, termsOfPaymentPlan, isIntentToLien, isLienFiled, lienFiledDate, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(19)));
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -2071,6 +2116,8 @@ namespace HVCC.Shell.Models
 		
 		private EntitySet<Property> _Properties;
 		
+		private EntitySet<WaterShutoff> _WaterShutoffs;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2114,6 +2161,7 @@ namespace HVCC.Shell.Models
 			this._FinancialTransactions = new EntitySet<FinancialTransaction>(new Action<FinancialTransaction>(this.attach_FinancialTransactions), new Action<FinancialTransaction>(this.detach_FinancialTransactions));
 			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
 			this._Properties = new EntitySet<Property>(new Action<Property>(this.attach_Properties), new Action<Property>(this.detach_Properties));
+			this._WaterShutoffs = new EntitySet<WaterShutoff>(new Action<WaterShutoff>(this.attach_WaterShutoffs), new Action<WaterShutoff>(this.detach_WaterShutoffs));
 			OnCreated();
 		}
 		
@@ -2482,6 +2530,19 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_WaterShutoff", Storage="_WaterShutoffs", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<WaterShutoff> WaterShutoffs
+		{
+			get
+			{
+				return this._WaterShutoffs;
+			}
+			set
+			{
+				this._WaterShutoffs.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2557,6 +2618,18 @@ namespace HVCC.Shell.Models
 		}
 		
 		private void detach_Properties(Property entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_WaterShutoffs(WaterShutoff entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_WaterShutoffs(WaterShutoff entity)
 		{
 			this.SendPropertyChanging();
 			entity.Owner = null;
@@ -5534,6 +5607,637 @@ namespace HVCC.Shell.Models
 				{
 					this._IsSendByEmail = value;
 				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.WaterShutoffs")]
+	public partial class WaterShutoff : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowID;
+		
+		private int _OwnerID;
+		
+		private bool _IsMemberSuspended;
+		
+		private System.Nullable<System.DateTime> _SuspensionDate;
+		
+		private bool _IsLate30;
+		
+		private System.Nullable<System.DateTime> _FirstNotificationDate;
+		
+		private bool _IsLate60;
+		
+		private System.Nullable<System.DateTime> _SecondNotificationDate;
+		
+		private bool _IsLate90;
+		
+		private bool _IsShutoffNoticeIssued;
+		
+		private System.Nullable<System.DateTime> _ShutoffNoticeIssuedDate;
+		
+		private bool _IsMemberRequestedHearing;
+		
+		private System.Nullable<System.DateTime> _HearingDate;
+		
+		private bool _IsInCollections;
+		
+		private System.Nullable<System.DateTime> _CollectionsDate;
+		
+		private bool _IsMeterLocked;
+		
+		private bool _IsOnPaymentPlan;
+		
+		private string _TermsOfPaymentPlan;
+		
+		private bool _IsIntentToLien;
+		
+		private bool _IsLienFiled;
+		
+		private System.Nullable<System.DateTime> _LienFiledDate;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private EntityRef<Owner> _Owner;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIDChanging(int value);
+    partial void OnRowIDChanged();
+    partial void OnOwnerIDChanging(int value);
+    partial void OnOwnerIDChanged();
+    partial void OnIsMemberSuspendedChanging(bool value);
+    partial void OnIsMemberSuspendedChanged();
+    partial void OnSuspensionDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnSuspensionDateChanged();
+    partial void OnIsLate30Changing(bool value);
+    partial void OnIsLate30Changed();
+    partial void OnFirstNotificationDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnFirstNotificationDateChanged();
+    partial void OnIsLate60Changing(bool value);
+    partial void OnIsLate60Changed();
+    partial void OnSecondNotificationDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnSecondNotificationDateChanged();
+    partial void OnIsLate90Changing(bool value);
+    partial void OnIsLate90Changed();
+    partial void OnIsShutoffNoticeIssuedChanging(bool value);
+    partial void OnIsShutoffNoticeIssuedChanged();
+    partial void OnShutoffNoticeIssuedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnShutoffNoticeIssuedDateChanged();
+    partial void OnIsMemberRequestedHearingChanging(bool value);
+    partial void OnIsMemberRequestedHearingChanged();
+    partial void OnHearingDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnHearingDateChanged();
+    partial void OnIsInCollectionsChanging(bool value);
+    partial void OnIsInCollectionsChanged();
+    partial void OnCollectionsDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnCollectionsDateChanged();
+    partial void OnIsMeterLockedChanging(bool value);
+    partial void OnIsMeterLockedChanged();
+    partial void OnIsOnPaymentPlanChanging(bool value);
+    partial void OnIsOnPaymentPlanChanged();
+    partial void OnTermsOfPaymentPlanChanging(string value);
+    partial void OnTermsOfPaymentPlanChanged();
+    partial void OnIsIntentToLienChanging(bool value);
+    partial void OnIsIntentToLienChanged();
+    partial void OnIsLienFiledChanging(bool value);
+    partial void OnIsLienFiledChanged();
+    partial void OnLienFiledDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnLienFiledDateChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public WaterShutoff()
+		{
+			this._Owner = default(EntityRef<Owner>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this.OnRowIDChanging(value);
+					this.SendPropertyChanging();
+					this._RowID = value;
+					this.SendPropertyChanged("RowID");
+					this.OnRowIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					if (this._Owner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._OwnerID = value;
+					this.SendPropertyChanged("OwnerID");
+					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMemberSuspended", DbType="Bit NOT NULL")]
+		public bool IsMemberSuspended
+		{
+			get
+			{
+				return this._IsMemberSuspended;
+			}
+			set
+			{
+				if ((this._IsMemberSuspended != value))
+				{
+					this.OnIsMemberSuspendedChanging(value);
+					this.SendPropertyChanging();
+					this._IsMemberSuspended = value;
+					this.SendPropertyChanged("IsMemberSuspended");
+					this.OnIsMemberSuspendedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SuspensionDate", DbType="Date")]
+		public System.Nullable<System.DateTime> SuspensionDate
+		{
+			get
+			{
+				return this._SuspensionDate;
+			}
+			set
+			{
+				if ((this._SuspensionDate != value))
+				{
+					this.OnSuspensionDateChanging(value);
+					this.SendPropertyChanging();
+					this._SuspensionDate = value;
+					this.SendPropertyChanged("SuspensionDate");
+					this.OnSuspensionDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate30", DbType="Bit NOT NULL")]
+		public bool IsLate30
+		{
+			get
+			{
+				return this._IsLate30;
+			}
+			set
+			{
+				if ((this._IsLate30 != value))
+				{
+					this.OnIsLate30Changing(value);
+					this.SendPropertyChanging();
+					this._IsLate30 = value;
+					this.SendPropertyChanged("IsLate30");
+					this.OnIsLate30Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstNotificationDate", DbType="Date")]
+		public System.Nullable<System.DateTime> FirstNotificationDate
+		{
+			get
+			{
+				return this._FirstNotificationDate;
+			}
+			set
+			{
+				if ((this._FirstNotificationDate != value))
+				{
+					this.OnFirstNotificationDateChanging(value);
+					this.SendPropertyChanging();
+					this._FirstNotificationDate = value;
+					this.SendPropertyChanged("FirstNotificationDate");
+					this.OnFirstNotificationDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate60", DbType="Bit NOT NULL")]
+		public bool IsLate60
+		{
+			get
+			{
+				return this._IsLate60;
+			}
+			set
+			{
+				if ((this._IsLate60 != value))
+				{
+					this.OnIsLate60Changing(value);
+					this.SendPropertyChanging();
+					this._IsLate60 = value;
+					this.SendPropertyChanged("IsLate60");
+					this.OnIsLate60Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondNotificationDate", DbType="Date")]
+		public System.Nullable<System.DateTime> SecondNotificationDate
+		{
+			get
+			{
+				return this._SecondNotificationDate;
+			}
+			set
+			{
+				if ((this._SecondNotificationDate != value))
+				{
+					this.OnSecondNotificationDateChanging(value);
+					this.SendPropertyChanging();
+					this._SecondNotificationDate = value;
+					this.SendPropertyChanged("SecondNotificationDate");
+					this.OnSecondNotificationDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate90", DbType="Bit NOT NULL")]
+		public bool IsLate90
+		{
+			get
+			{
+				return this._IsLate90;
+			}
+			set
+			{
+				if ((this._IsLate90 != value))
+				{
+					this.OnIsLate90Changing(value);
+					this.SendPropertyChanging();
+					this._IsLate90 = value;
+					this.SendPropertyChanged("IsLate90");
+					this.OnIsLate90Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsShutoffNoticeIssued", DbType="Bit NOT NULL")]
+		public bool IsShutoffNoticeIssued
+		{
+			get
+			{
+				return this._IsShutoffNoticeIssued;
+			}
+			set
+			{
+				if ((this._IsShutoffNoticeIssued != value))
+				{
+					this.OnIsShutoffNoticeIssuedChanging(value);
+					this.SendPropertyChanging();
+					this._IsShutoffNoticeIssued = value;
+					this.SendPropertyChanged("IsShutoffNoticeIssued");
+					this.OnIsShutoffNoticeIssuedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ShutoffNoticeIssuedDate", DbType="Date")]
+		public System.Nullable<System.DateTime> ShutoffNoticeIssuedDate
+		{
+			get
+			{
+				return this._ShutoffNoticeIssuedDate;
+			}
+			set
+			{
+				if ((this._ShutoffNoticeIssuedDate != value))
+				{
+					this.OnShutoffNoticeIssuedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ShutoffNoticeIssuedDate = value;
+					this.SendPropertyChanged("ShutoffNoticeIssuedDate");
+					this.OnShutoffNoticeIssuedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMemberRequestedHearing", DbType="Bit NOT NULL")]
+		public bool IsMemberRequestedHearing
+		{
+			get
+			{
+				return this._IsMemberRequestedHearing;
+			}
+			set
+			{
+				if ((this._IsMemberRequestedHearing != value))
+				{
+					this.OnIsMemberRequestedHearingChanging(value);
+					this.SendPropertyChanging();
+					this._IsMemberRequestedHearing = value;
+					this.SendPropertyChanged("IsMemberRequestedHearing");
+					this.OnIsMemberRequestedHearingChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HearingDate", DbType="Date")]
+		public System.Nullable<System.DateTime> HearingDate
+		{
+			get
+			{
+				return this._HearingDate;
+			}
+			set
+			{
+				if ((this._HearingDate != value))
+				{
+					this.OnHearingDateChanging(value);
+					this.SendPropertyChanging();
+					this._HearingDate = value;
+					this.SendPropertyChanged("HearingDate");
+					this.OnHearingDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsInCollections", DbType="Bit NOT NULL")]
+		public bool IsInCollections
+		{
+			get
+			{
+				return this._IsInCollections;
+			}
+			set
+			{
+				if ((this._IsInCollections != value))
+				{
+					this.OnIsInCollectionsChanging(value);
+					this.SendPropertyChanging();
+					this._IsInCollections = value;
+					this.SendPropertyChanged("IsInCollections");
+					this.OnIsInCollectionsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CollectionsDate", DbType="Date")]
+		public System.Nullable<System.DateTime> CollectionsDate
+		{
+			get
+			{
+				return this._CollectionsDate;
+			}
+			set
+			{
+				if ((this._CollectionsDate != value))
+				{
+					this.OnCollectionsDateChanging(value);
+					this.SendPropertyChanging();
+					this._CollectionsDate = value;
+					this.SendPropertyChanged("CollectionsDate");
+					this.OnCollectionsDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMeterLocked", DbType="Bit NOT NULL")]
+		public bool IsMeterLocked
+		{
+			get
+			{
+				return this._IsMeterLocked;
+			}
+			set
+			{
+				if ((this._IsMeterLocked != value))
+				{
+					this.OnIsMeterLockedChanging(value);
+					this.SendPropertyChanging();
+					this._IsMeterLocked = value;
+					this.SendPropertyChanged("IsMeterLocked");
+					this.OnIsMeterLockedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsOnPaymentPlan", DbType="Bit NOT NULL")]
+		public bool IsOnPaymentPlan
+		{
+			get
+			{
+				return this._IsOnPaymentPlan;
+			}
+			set
+			{
+				if ((this._IsOnPaymentPlan != value))
+				{
+					this.OnIsOnPaymentPlanChanging(value);
+					this.SendPropertyChanging();
+					this._IsOnPaymentPlan = value;
+					this.SendPropertyChanged("IsOnPaymentPlan");
+					this.OnIsOnPaymentPlanChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TermsOfPaymentPlan", DbType="VarChar(250)")]
+		public string TermsOfPaymentPlan
+		{
+			get
+			{
+				return this._TermsOfPaymentPlan;
+			}
+			set
+			{
+				if ((this._TermsOfPaymentPlan != value))
+				{
+					this.OnTermsOfPaymentPlanChanging(value);
+					this.SendPropertyChanging();
+					this._TermsOfPaymentPlan = value;
+					this.SendPropertyChanged("TermsOfPaymentPlan");
+					this.OnTermsOfPaymentPlanChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsIntentToLien", DbType="Bit NOT NULL")]
+		public bool IsIntentToLien
+		{
+			get
+			{
+				return this._IsIntentToLien;
+			}
+			set
+			{
+				if ((this._IsIntentToLien != value))
+				{
+					this.OnIsIntentToLienChanging(value);
+					this.SendPropertyChanging();
+					this._IsIntentToLien = value;
+					this.SendPropertyChanged("IsIntentToLien");
+					this.OnIsIntentToLienChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLienFiled", DbType="Bit NOT NULL")]
+		public bool IsLienFiled
+		{
+			get
+			{
+				return this._IsLienFiled;
+			}
+			set
+			{
+				if ((this._IsLienFiled != value))
+				{
+					this.OnIsLienFiledChanging(value);
+					this.SendPropertyChanging();
+					this._IsLienFiled = value;
+					this.SendPropertyChanged("IsLienFiled");
+					this.OnIsLienFiledChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LienFiledDate", DbType="Date")]
+		public System.Nullable<System.DateTime> LienFiledDate
+		{
+			get
+			{
+				return this._LienFiledDate;
+			}
+			set
+			{
+				if ((this._LienFiledDate != value))
+				{
+					this.OnLienFiledDateChanging(value);
+					this.SendPropertyChanging();
+					this._LienFiledDate = value;
+					this.SendPropertyChanged("LienFiledDate");
+					this.OnLienFiledDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_WaterShutoff", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
+		public Owner Owner
+		{
+			get
+			{
+				return this._Owner.Entity;
+			}
+			set
+			{
+				Owner previousValue = this._Owner.Entity;
+				if (((previousValue != value) 
+							|| (this._Owner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Owner.Entity = null;
+						previousValue.WaterShutoffs.Remove(this);
+					}
+					this._Owner.Entity = value;
+					if ((value != null))
+					{
+						value.WaterShutoffs.Add(this);
+						this._OwnerID = value.OwnerID;
+					}
+					else
+					{
+						this._OwnerID = default(int);
+					}
+					this.SendPropertyChanged("Owner");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}

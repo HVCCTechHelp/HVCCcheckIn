@@ -415,7 +415,7 @@
             set
             {
                 string tmp = string.Format("CartFee:{0:c} ", value);
-                if (_duesAmount != 0)
+                if (_cartAmount != 0)
                 {
                     TransactionAppliesTo.Append(tmp);
                 }
@@ -442,18 +442,18 @@
             }
             set
             {
-                string tmp = string.Format("Assessment:{0:c} ", value);
-                if (_duesAmount != 0)
-                {
-                    TransactionAppliesTo.Append(tmp);
-                }
-                else
-                {
-                    TransactionAppliesTo.Replace(tmp, "");
-                }
-
                 if (_assessmentAmount != value)
                 {
+                    string tmp = string.Format("Assessment:{0:c} ", value);
+                    if (_assessmentAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
                     _assessmentAmount = value;
                     TotalAmount += (decimal)_assessmentAmount;
                 }
@@ -469,20 +469,47 @@
             }
             set
             {
-                string tmp = string.Format("Reconnect:{0:c} ", value);
-                if (_duesAmount != 0)
-                {
-                    TransactionAppliesTo.Append(tmp);
-                }
-                else
-                {
-                    TransactionAppliesTo.Replace(tmp, "");
-                }
-
                 if (_reconnectAmount != value)
                 {
+                    string tmp = string.Format("Reconnect:{0:c} ", value);
+                    if (_reconnectAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
                     _reconnectAmount = value;
                     TotalAmount += (decimal)_reconnectAmount;
+                }
+            }
+        }
+
+        private decimal? _lienFeeAmount = null;
+        public decimal? LienFeeAmount
+        {
+            get
+            {
+                return _lienFeeAmount;
+            }
+            set
+            {
+                if (_lienFeeAmount != value)
+                {
+                    string tmp = string.Format("LienFee:{0:c} ", value);
+                    if (_lienFeeAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
+                    _lienFeeAmount = value;
+                    TotalAmount += (decimal)_lienFeeAmount;
                 }
             }
         }
@@ -496,18 +523,18 @@
             }
             set
             {
-                string tmp = string.Format("Other:{0:c} ", value);
-                if (_duesAmount != 0)
-                {
-                    TransactionAppliesTo.Append(tmp);
-                }
-                else
-                {
-                    TransactionAppliesTo.Replace(tmp, "");
-                }
-
                 if (_otherAmount != value)
                 {
+                    string tmp = string.Format("Other:{0:c} ", value);
+                    if (_otherAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
                     _otherAmount = value;
                     TotalAmount += (decimal)_otherAmount;
                 }
@@ -691,16 +718,23 @@
             {
                 this.IsBusy = true;
                 FinancialTransaction transaction = new FinancialTransaction();
+                Note note = new Note();
+                StringBuilder sb = new StringBuilder();
 
                 if (null != CreditAmount)
                 {
                     transaction.Balance = (decimal)AccountBalance - (decimal)CreditAmount;
+                    sb.Append("Credit ");
+                    sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
                 else
                 {
                     transaction.Balance = (decimal)AccountBalance + (decimal)DebitAmount;
+                    sb.Append("Debit ");
+                    sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
 
+                // Add this transaction to the DC as an Insert....
                 transaction.OwnerID = SelectedOwner.OwnerID;
                 transaction.FiscalYear = FiscalYear;
                 transaction.CreditAmount = CreditAmount;
@@ -709,8 +743,15 @@
                 transaction.TransactionMethod = TransactionMethod;
                 transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
                 transaction.Comment = TransactionComment;
-
                 dc.FinancialTransactions.InsertOnSubmit(transaction);
+
+                // Add/Attach a comment to the Owner
+                sb.Append(" - ");
+                sb.Append(transaction.Comment);
+                sb.AppendLine();
+                note.OwnerID = transaction.OwnerID;
+                note.Comment = sb.ToString().Trim();
+                dc.Notes.InsertOnSubmit(note);
 
                 if (0 < CartAmount)
                 {

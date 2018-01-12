@@ -117,12 +117,20 @@
             IView v = new HVCC.Shell.Views.OwnershipHistoryView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewPostPaymentView(object arg)
+        public static IMvvmBinder GetNewFinancialTransactionView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
             IViewModel vm = new FinancialTransactionViewModel(dc, arg) { Caption = "Financial Transaction" };
             IView v = new HVCC.Shell.Views.FinancialTransactionView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewWaterShutoffView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterShutoffViewModel(dc, arg) { Caption = "Water Shutoff" };
+            IView v = new HVCC.Shell.Views.WaterShutoffView(vm);
             return new MvvmBinder(dc, v, vm);
         }
         public static IMvvmBinder GetNewPropertiesUpdatedView(object arg)
@@ -210,7 +218,12 @@
                 }
                 else if (param.ToString() == "FinancialTransaction")
                 {
-                    var binder = GetNewPostPaymentView(arg);
+                    var binder = GetNewFinancialTransactionView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "WaterShutoff")
+                {
+                    var binder = GetNewWaterShutoffView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "ImportBalances")

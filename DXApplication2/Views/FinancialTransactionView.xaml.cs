@@ -6,6 +6,7 @@
     using Models;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for PostPaymentViw.xaml
@@ -153,14 +154,9 @@
             //ceWaterReconnect.Visibility = Visibility.Hidden;
         }
 
-        /// <summary>
-        /// When a CheckBox is unchecked, force a EditValueProperty UpdateSource event to trigger validation.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        private void FinancialTransaction_Loaded(object sender, RoutedEventArgs e)
         {
-            //teAppliesTo.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
     }
 }

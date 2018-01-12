@@ -21,6 +21,8 @@
             this.Host = HVCC.Shell.Host.Instance;
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             this.RegisterCommands();
+
+            IsBusy = false;
         }
 
         public ApplicationPermission ApplPermissions { get; set; }
