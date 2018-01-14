@@ -129,6 +129,7 @@
             teComment.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
 
             deTransactionDate.Focus();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void teCredit_GotFocus(object sender, RoutedEventArgs e)
@@ -152,11 +153,6 @@
             //ceWaterReconnect.Visibility = Visibility.Hidden;
             //cePoolAssessment.Visibility = Visibility.Hidden;
             //ceWaterReconnect.Visibility = Visibility.Hidden;
-        }
-
-        private void FinancialTransaction_Loaded(object sender, RoutedEventArgs e)
-        {
-            Mouse.OverrideCursor = Cursors.Arrow;
         }
     }
 }

@@ -1,23 +1,17 @@
 ﻿namespace HVCC.Shell.Views
 {
+    using DevExpress.Xpf.Editors;
+    using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common.Interfaces;
+    using Models;
     using System.Windows;
     using System.Windows.Controls;
-    using HVCC.Shell.Helpers;
-    using HVCC.Shell.Models;
-    using HVCC.Shell.ViewModels;
-    using DevExpress.Mvvm;
-    using DevExpress.Xpf.Grid;
-    using DevExpress.Xpf.Docking;
-    using HVCC.Shell.Common.Interfaces;
-    using System.Collections.Generic;
-    using System;
-    using DevExpress.Xpf.Printing;
     using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for WaterShutoffView.xaml
     /// </summary>
-    public partial class WaterShutoffView : UserControl, IView
+    public partial class WaterShutoffEditView : UserControl, IView
     {
         public IViewModel ViewModel
         {
@@ -25,15 +19,13 @@
             set { this.DataContext = value; }
         }
 
-        public WaterShutoffView(IViewModel vm)
+        public WaterShutoffEditView(IViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
-            this.Loaded += OnLoaded;
-
-            this.ViewModel.Table = this.tableViewShutoffs;
+            //this.Loaded += OnLoaded;
+            //appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
         }
-
         public object SaveState()
         {
             //throw new NotImplementedException();
@@ -54,9 +46,31 @@
         {
         }
 
+        /// <summary>
+        /// Property Changed event handler for the view model
+        /// </summary>
+        /// <param name="sender">object invoking the method</param>
+        /// <param name="e">property change event arguments</param>
+        //protected void PropertyViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    switch (e.PropertyName)
+        //    {
+        //        case "<property>":
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        /// <summary>
+        /// Executed when the View is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WaterShutoff_Loaded(object sender, RoutedEventArgs e)
         {
             Mouse.OverrideCursor = Cursors.Arrow;
         }
+
     }
 }

@@ -190,6 +190,17 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void OnClicked_WaterShutoff(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "WaterShutoff");
+        }
+
+        /// <summary>
+        /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnClicked_GolfCart(object sender, MouseButtonEventArgs e)
         {
             // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface

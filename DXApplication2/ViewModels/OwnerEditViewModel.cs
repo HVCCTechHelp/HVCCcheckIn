@@ -27,14 +27,29 @@
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            v_OwnerDetail p = parameter as v_OwnerDetail;
+
+            int ownerID = 0;
+            if (parameter is v_OwnerDetail)
+            {
+                v_OwnerDetail p = parameter as v_OwnerDetail;
+                ownerID = p.OwnerID;
+            }
+            else if (parameter is Owner)
+            {
+                Owner p = parameter as Owner;
+                ownerID = p.OwnerID;
+            }
+            else
+            {
+                MessageBox.Show("No Owner information passed in to edit form");
+            }
 
             try
             {
                 // Fetch the Owner record and its Relationships from the database so the 
                 // datacontext will be scoped to this ViewModel.
                 SelectedOwner = (from x in this.dc.Owners
-                                 where x.OwnerID == p.OwnerID
+                                 where x.OwnerID == ownerID
                                  select x).FirstOrDefault();
 
                 //// Set the focused row in the Properties grid to the first item.
@@ -1016,7 +1031,7 @@
         {
             Owner p = parameter as Owner;
             IsBusy = true;
-            Host.Execute(HostVerb.Open, "WaterShutoff", p);
+            Host.Execute(HostVerb.Open, "WaterShutoffEdit", p);
         }
 
         /// <summary>

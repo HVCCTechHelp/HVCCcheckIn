@@ -361,6 +361,7 @@
     <Type Name="WaterShutoff">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsWaterShutoff" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsMemberSuspended" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="SuspensionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="IsLate30" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
@@ -378,15 +379,21 @@
       <Column Name="IsOnPaymentPlan" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="TermsOfPaymentPlan" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
       <Column Name="IsIntentToLien" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IntentToLienDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="IsLienFiled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LienFiledDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsResolved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ResolutionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Resolution" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_WaterShutoff" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
     <InsertFunction FunctionId="FunctionId11">
       <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
+      <Argument Parameter="suspensionDate" Member="SuspensionDate" />
       <Argument Parameter="isLate30" Member="IsLate30" />
       <Argument Parameter="firstNotificationDate" Member="FirstNotificationDate" />
       <Argument Parameter="isLate60" Member="IsLate60" />
@@ -402,10 +409,73 @@
       <Argument Parameter="isOnPaymentPlan" Member="IsOnPaymentPlan" />
       <Argument Parameter="termsOfPaymentPlan" Member="TermsOfPaymentPlan" />
       <Argument Parameter="isIntentToLien" Member="IsIntentToLien" />
+      <Argument Parameter="intentToLienDate" Member="IntentToLienDate" />
       <Argument Parameter="isLienFiled" Member="IsLienFiled" />
       <Argument Parameter="lienFiledDate" Member="LienFiledDate" />
+      <Argument Parameter="isResolved" Member="IsResolved" />
+      <Argument Parameter="resolutionDate" Member="ResolutionDate" />
+      <Argument Parameter="resolution" Member="Resolution" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
+    <UpdateFunction FunctionId="FunctionId12">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
+      <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
+      <Argument Parameter="suspensionDate" Member="SuspensionDate" />
+      <Argument Parameter="isLate30" Member="IsLate30" />
+      <Argument Parameter="firstNotificationDate" Member="FirstNotificationDate" />
+      <Argument Parameter="isLate60" Member="IsLate60" />
+      <Argument Parameter="secondNotificationDate" Member="SecondNotificationDate" />
+      <Argument Parameter="isLate90" Member="IsLate90" />
+      <Argument Parameter="isShutoffNoticeIssued" Member="IsShutoffNoticeIssued" />
+      <Argument Parameter="shutoffNoticeIssuedDate" Member="ShutoffNoticeIssuedDate" />
+      <Argument Parameter="isMemberRequestedHearing" Member="IsMemberRequestedHearing" />
+      <Argument Parameter="hearingDate" Member="HearingDate" />
+      <Argument Parameter="isInCollections" Member="IsInCollections" />
+      <Argument Parameter="collectionsDate" Member="CollectionsDate" />
+      <Argument Parameter="isMeterLocked" Member="IsMeterLocked" />
+      <Argument Parameter="isOnPaymentPlan" Member="IsOnPaymentPlan" />
+      <Argument Parameter="termsOfPaymentPlan" Member="TermsOfPaymentPlan" />
+      <Argument Parameter="isIntentToLien" Member="IsIntentToLien" />
+      <Argument Parameter="intentToLienDate" Member="IntentToLienDate" />
+      <Argument Parameter="isLienFiled" Member="IsLienFiled" />
+      <Argument Parameter="lienFiledDate" Member="LienFiledDate" />
+      <Argument Parameter="isResolved" Member="IsResolved" />
+      <Argument Parameter="resolutionDate" Member="ResolutionDate" />
+      <Argument Parameter="resolution" Member="Resolution" />
+    </UpdateFunction>
+  </Table>
+  <Table Name="dbo.v_WaterShutoffs" Member="v_WaterShutoffs">
+    <Type Name="v_WaterShutoff">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Balance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="SuspensionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsMeterLocked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate30" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate60" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate90" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsOnPaymentPlan" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsInCollections" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsIntentToLien" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLienFiled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="FirstNotificationDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="SecondNotificationDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="ShutoffNoticeIssuedDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="LienFiledDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsWaterShutoff" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsMemberSuspended" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsShutoffNoticeIssued" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsMemberRequestedHearing" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="HearingDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="CollectionsDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="TermsOfPaymentPlan" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="IntentToLienDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsResolved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ResolutionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Resolution" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
@@ -644,7 +714,9 @@
   </Function>
   <Function Id="FunctionId11" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="SuspensionDate" Parameter="suspensionDate" Type="System.DateTime" DbType="Date" />
     <Parameter Name="IsLate30" Parameter="isLate30" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="FirstNotificationDate" Parameter="firstNotificationDate" Type="System.DateTime" DbType="Date" />
     <Parameter Name="IsLate60" Parameter="isLate60" Type="System.Boolean" DbType="Bit" />
@@ -660,9 +732,41 @@
     <Parameter Name="IsOnPaymentPlan" Parameter="isOnPaymentPlan" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="TermsOfPaymentPlan" Parameter="termsOfPaymentPlan" Type="System.String" DbType="VarChar(250)" />
     <Parameter Name="IsIntentToLien" Parameter="isIntentToLien" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IntentToLienDate" Parameter="intentToLienDate" Type="System.DateTime" DbType="Date" />
     <Parameter Name="IsLienFiled" Parameter="isLienFiled" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="LienFiledDate" Parameter="lienFiledDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsResolved" Parameter="isResolved" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="ResolutionDate" Parameter="resolutionDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="Resolution" Parameter="resolution" Type="System.String" DbType="VarChar(500)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId12" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="SuspensionDate" Parameter="suspensionDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsLate30" Parameter="isLate30" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="FirstNotificationDate" Parameter="firstNotificationDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsLate60" Parameter="isLate60" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="SecondNotificationDate" Parameter="secondNotificationDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsLate90" Parameter="isLate90" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsShutoffNoticeIssued" Parameter="isShutoffNoticeIssued" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="ShutoffNoticeIssuedDate" Parameter="shutoffNoticeIssuedDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsMemberRequestedHearing" Parameter="isMemberRequestedHearing" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="HearingDate" Parameter="hearingDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsInCollections" Parameter="isInCollections" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="CollectionsDate" Parameter="collectionsDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsMeterLocked" Parameter="isMeterLocked" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsOnPaymentPlan" Parameter="isOnPaymentPlan" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="TermsOfPaymentPlan" Parameter="termsOfPaymentPlan" Type="System.String" DbType="VarChar(250)" />
+    <Parameter Name="IsIntentToLien" Parameter="isIntentToLien" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IntentToLienDate" Parameter="intentToLienDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsLienFiled" Parameter="isLienFiled" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="LienFiledDate" Parameter="lienFiledDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsResolved" Parameter="isResolved" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="ResolutionDate" Parameter="resolutionDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="Resolution" Parameter="resolution" Type="System.String" DbType="VarChar(500)" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

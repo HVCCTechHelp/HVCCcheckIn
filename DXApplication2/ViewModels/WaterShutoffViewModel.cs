@@ -20,14 +20,6 @@
 
     public partial class WaterShutoffViewModel : CommonViewModel, ICommandSink
     {
-        enum IsLate
-        {
-            Current,
-            ThirtyDays,
-            SixtyDays,
-            NintyDays
-        };
-
         // The WaterShutoffViewModel should only ever be created by an OwnerEdit Ribbon button event.
         // 'parameter' will be a reference to the SelectedOwner of the OwnerEditViewModel.
         /// <summary>
@@ -35,60 +27,36 @@
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="parameter"></param>
-        public WaterShutoffViewModel(IDataContext dc, object parameter, IDataContext pDC = null)
+        public WaterShutoffViewModel(IDataContext dc, IDataContext pDC = null)
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            SelectedOwner = parameter as Owner;
-            try
-            {
-                // datacontext is scoped to this ViewModel.
-                object trytofind = (from x in this.dc.WaterShutoffs
-                                    where x.OwnerID == SelectedOwner.OwnerID
-                                    select x).FirstOrDefault();
-
-                if (null == trytofind)
-                {
-                    WaterShutoff = new WaterShutoff();
-                }
-                else
-                {
-                    WaterShutoff = trytofind as WaterShutoff;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error with Owner: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
             this.RegisterCommands();
-
-            WaterShutoff.PropertyChanged +=
-                 new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
-            this.PropertyChanged +=
-                 new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
-
-            IsBusy = false;
         }
 
         public override bool IsValid { get { return true; } }
 
+        private bool _isDirty = false;
         public override bool IsDirty
         {
             get
             {
                 string[] caption = Caption.ToString().Split('*');
-                ChangeSet cs = dc.GetChangeSet();
-                if (0 == cs.Updates.Count &&
-                    0 == cs.Inserts.Count &&
-                    0 == cs.Deletes.Count)
+                if (_isDirty)
                 {
-                    Caption = caption[0].TrimEnd(' ');
-                    return false;
+                    Caption = caption[0].TrimEnd(' ') + "* ";
+                    return true;
                 }
-                Caption = caption[0].TrimEnd(' ') + "* ";
-                return true;
+                Caption = caption[0].TrimEnd(' ');
+                return false;
             }
-            set { }
+            set
+            {
+                if (_isDirty != value)
+                {
+                    _isDirty = value;
+                }
+            }
         }
 
         private bool _isBusy = false;
@@ -106,176 +74,36 @@
                 }
             }
         }
-        public string HeaderText
+
+        public ObservableCollection<v_WaterShutoff> WaterShutoffs
         {
             get
             {
-                return string.Format("Owner #{0}", SelectedOwner.OwnerID);
+                var waterShutoffs = (from x in dc.v_WaterShutoffs
+                                     select x);
+
+                return new ObservableCollection<v_WaterShutoff>(waterShutoffs);
             }
         }
 
-        /// <summary>
-        /// Currently selected property from a property grid view
-        /// </summary>
-        private Owner _selectedOwner = new Owner();
-        public Owner SelectedOwner
+        private v_WaterShutoff _selecctedRow = null;
+        public v_WaterShutoff SelectedRow
         {
             get
             {
-                return _selectedOwner;
+                return _selecctedRow;
             }
             set
             {
-                if (null != _selectedOwner)
+                if (_selecctedRow != value)
                 {
-                    _selectedOwner = value;
-                    AllNotes = GetOwnerNotes();
-                    RaisePropertyChanged("SelectedOwner");
+                    _selecctedRow = value;
                 }
             }
         }
-
-        private WaterShutoff _waterShutoff = null;
-        public WaterShutoff WaterShutoff
-        {
-            get
-            {
-                return _waterShutoff;
-            }
-            set
-            {
-                if (_waterShutoff != value)
-                {
-                    _waterShutoff = value;
-                }
-            }
-        }
-        public string NotesHeader
-        {
-            get
-            {
-                return string.Format("HVCC Notes [{0}]", SelectedOwner.Notes.Count());
-            }
-        }
-
-        private string _allNotes = string.Empty;
-        public string AllNotes
-        {
-            get
-            {
-                return this._allNotes;
-            }
-            set
-            {
-                if (value != this._allNotes)
-                {
-                    this._allNotes = value;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Builds a history of property notes
-        /// </summary>
-        /// <returns></returns>
-        private string GetOwnerNotes()
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                var notes = (from n in SelectedOwner.Notes
-                             where n.OwnerID == this.SelectedOwner.OwnerID
-                             orderby n.Entered descending
-                             select n);
-
-                // Iterate through the notes collection and build a string of the notes in 
-                // decending order.  This string will be reflected in the UI as a read-only
-                // history of all note entries.
-                foreach (Note n in notes)
-                {
-                    //n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count());
-
-                    sb.Append(n.Entered.ToShortDateString()).Append(" ");
-                    sb.Append(n.EnteredBy.Remove(0, "HIGHVALLEYCC\\".Count())).Append(" - ");
-                    sb.Append(n.Comment);
-                    sb.AppendLine();
-                }
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
-        /// <summary>
-        /// Summary
-        ///     Raises a property changed event when the NewOwner data is modified
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Property_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsMemberSuspended":
-                    if (WaterShutoff.IsMemberSuspended)
-                    {
-                        WaterShutoff.SuspensionDate = DateTime.Now;
-                    }
-                    break;
-                case "IsLate30":
-                    if (WaterShutoff.IsLate30)
-                    {
-                        WaterShutoff.IsMemberSuspended = true;
-                        WaterShutoff.FirstNotificationDate = DateTime.Now;
-                        //WaterShutoff.IsLate60 = false;
-                        //WaterShutoff.IsLate90 = false;
-                    }
-                    break;
-                case "IsLate60":
-                    if (WaterShutoff.IsLate60)
-                    {
-                        WaterShutoff.IsMemberSuspended = true;
-                        WaterShutoff.SecondNotificationDate = DateTime.Now;
-                    }
-                    break;
-                case "IsLate90":
-                    if (WaterShutoff.IsLate90)
-                    {
-                        WaterShutoff.IsMemberSuspended = true;
-                        WaterShutoff.ShutoffNoticeIssuedDate = DateTime.Now;
-                    }
-                    break;
-                case "IsRequestedHearing":
-                    if (WaterShutoff.IsLate90)
-                    {
-                        WaterShutoff.HearingDate = DateTime.Now;
-                    }
-                    break;
-                case "IsInCollections":
-                    if (WaterShutoff.IsLate90)
-                    {
-                        WaterShutoff.CollectionsDate = DateTime.Now;
-                    }
-                    break;
-                case "IsLienFiled":
-                    if (WaterShutoff.IsLate90)
-                    {
-                        WaterShutoff.LienFiledDate = DateTime.Now;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            //RaisePropertyChanged("DataChanged");
-        }
-
     }
-    /*================================================================================================================================================*/
 
+    /*================================================================================================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
@@ -302,7 +130,7 @@
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
@@ -313,7 +141,6 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
-            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
@@ -339,35 +166,29 @@
     public partial class WaterShutoffViewModel : CommonViewModel
     {
 
-        //private bool _canViewParcel = true;
-        ///// <summary>
-        ///// View Parcel Command
-        ///// </summary>
-        //private ICommand _viewParcelCommand;
-        //public ICommand ViewParcelCommand
-        //{
-        //    get
-        //    {
-        //        return _viewParcelCommand ?? (_viewParcelCommand = new CommandHandler(() => ViewParcelAction(), _canViewParcel));
-        //    }
-        //}
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _waterShutoffCommand;
+        public ICommand WaterShutoffCommand
+        {
+            get
+            {
+                return _waterShutoffCommand ?? (_waterShutoffCommand = new CommandHandlerWparm((object parameter) => WaterShutoffAction(parameter), true));
+            }
+        }
 
-        //public void ViewParcelAction()
-        //{
-        //    try
-        //    {
-        //        string absoluteUri = "http://parcels.lewiscountywa.gov/" + SelectedProperty.Parcel;
-        //        Process.Start(new ProcessStartInfo(absoluteUri));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //    }
-        //}
-
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void WaterShutoffAction(object parameter)
+        {
+            //v_WaterShutoff p = parameter as v_WaterShutoff; // TO-DO: i have not idea why the parameter isn't being passed...
+            v_WaterShutoff p = SelectedRow;
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "WaterShutoffEdit", p);
+        }
     }
 
     /*================================================================================================================================================*/

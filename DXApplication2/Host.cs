@@ -129,8 +129,16 @@
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new WaterShutoffViewModel(dc, arg) { Caption = "Water Shutoff" };
+            IViewModel vm = new WaterShutoffViewModel(dc) { Caption = "Water Shutoff" };
             IView v = new HVCC.Shell.Views.WaterShutoffView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewWaterShutoffEditView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new WaterShutoffEditViewModel(dc, arg) { Caption = "Water Shutoff Edit" };
+            IView v = new HVCC.Shell.Views.WaterShutoffEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
         public static IMvvmBinder GetNewPropertiesUpdatedView(object arg)
@@ -224,6 +232,11 @@
                 else if (param.ToString() == "WaterShutoff")
                 {
                     var binder = GetNewWaterShutoffView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "WaterShutoffEdit")
+                {
+                    var binder = GetNewWaterShutoffEditView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "ImportBalances")

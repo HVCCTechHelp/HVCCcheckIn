@@ -30,7 +30,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -179,6 +179,36 @@
     </Compile>
     <Compile Include="Models\WaterMeterException.cs" />
     <Compile Include="Models\WellMeterHistory.cs" />
+    <Compile Include="Reports\IntentToLienNotice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IntentToLienNotice.Designer.cs">
+      <DependentUpon>IntentToLienNotice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\CollectionsNotice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CollectionsNotice.Designer.cs">
+      <DependentUpon>CollectionsNotice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue90Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue90Days.Designer.cs">
+      <DependentUpon>PastDue90Days.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue60Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue60Days.Designer.cs">
+      <DependentUpon>PastDue60Days.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue30Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue30Days.Designer.cs">
+      <DependentUpon>PastDue30Days.cs</DependentUpon>
+    </Compile>
     <Compile Include="Reports\AnnuaInvoices.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -242,6 +272,7 @@
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
+    <Compile Include="ViewModels\WaterShutoffEditViewModel.cs" />
     <Compile Include="ViewModels\WaterShutoffViewModel.cs" />
     <Compile Include="ViewModels\WaterWellViewModel.cs" />
     <Compile Include="Views\AdministrationView.xaml.cs">
@@ -285,6 +316,9 @@
     </Compile>
     <Compile Include="Views\WaterMeterView.xaml.cs">
       <DependentUpon>WaterMeterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WaterShutoffEditView.xaml.cs">
+      <DependentUpon>WaterShutoffEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WaterShutoffView.xaml.cs">
       <DependentUpon>WaterShutoffView.xaml</DependentUpon>
@@ -360,6 +394,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\WaterShutoffEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WaterShutoffView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -386,6 +424,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Reports\IntentToLienNotice.resx">
+      <DependentUpon>IntentToLienNotice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CollectionsNotice.resx">
+      <DependentUpon>CollectionsNotice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue90Days.resx">
+      <DependentUpon>PastDue90Days.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue60Days.resx">
+      <DependentUpon>PastDue60Days.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue30Days.resx">
+      <DependentUpon>PastDue30Days.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\AnnuaInvoices.resx">
       <DependentUpon>AnnuaInvoices.cs</DependentUpon>
     </EmbeddedResource>
@@ -531,6 +584,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\Water-Shut-Off-Notice.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Shutdown-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

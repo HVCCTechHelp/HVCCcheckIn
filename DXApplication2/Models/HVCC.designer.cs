@@ -59,7 +59,6 @@ namespace HVCC.Shell.Models
     partial void DeleteGolfCart(GolfCart instance);
     partial void InsertProperty(Property instance);
     partial void DeleteProperty(Property instance);
-    partial void UpdateWaterShutoff(WaterShutoff instance);
     partial void DeleteWaterShutoff(WaterShutoff instance);
     #endregion
 		
@@ -245,6 +244,14 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<v_WaterShutoff> v_WaterShutoffs
+		{
+			get
+			{
+				return this.GetTable<v_WaterShutoff>();
+			}
+		}
+		
 		private void UpdateWaterMeterReading(WaterMeterReading obj)
 		{
 			this.usp_UpdateWaterMeterReading(((System.Nullable<int>)(obj.RowID)), ((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.MeterReading)), ((System.Nullable<int>)(obj.Consumption)), ((System.Nullable<System.DateTime>)(obj.ReadingDate)));
@@ -310,8 +317,13 @@ namespace HVCC.Shell.Models
 		private void InsertWaterShutoff(WaterShutoff obj)
 		{
 			System.Nullable<int> p1 = obj.RowID;
-			this.usp_InsertWaterShutoff(((System.Nullable<int>)(obj.OwnerID)), ((System.Nullable<bool>)(obj.IsMemberSuspended)), ((System.Nullable<bool>)(obj.IsLate30)), ((System.Nullable<System.DateTime>)(obj.FirstNotificationDate)), ((System.Nullable<bool>)(obj.IsLate60)), ((System.Nullable<System.DateTime>)(obj.SecondNotificationDate)), ((System.Nullable<bool>)(obj.IsLate90)), ((System.Nullable<bool>)(obj.IsShutoffNoticeIssued)), ((System.Nullable<System.DateTime>)(obj.ShutoffNoticeIssuedDate)), ((System.Nullable<bool>)(obj.IsMemberRequestedHearing)), ((System.Nullable<System.DateTime>)(obj.HearingDate)), ((System.Nullable<bool>)(obj.IsInCollections)), ((System.Nullable<System.DateTime>)(obj.CollectionsDate)), ((System.Nullable<bool>)(obj.IsMeterLocked)), ((System.Nullable<bool>)(obj.IsOnPaymentPlan)), obj.TermsOfPaymentPlan, ((System.Nullable<bool>)(obj.IsIntentToLien)), ((System.Nullable<bool>)(obj.IsLienFiled)), ((System.Nullable<System.DateTime>)(obj.LienFiledDate)), ref p1);
+			this.usp_InsertWaterShutoff(((System.Nullable<int>)(obj.OwnerID)), ((System.Nullable<bool>)(obj.IsWaterShutoff)), ((System.Nullable<bool>)(obj.IsMemberSuspended)), ((System.Nullable<System.DateTime>)(obj.SuspensionDate)), ((System.Nullable<bool>)(obj.IsLate30)), ((System.Nullable<System.DateTime>)(obj.FirstNotificationDate)), ((System.Nullable<bool>)(obj.IsLate60)), ((System.Nullable<System.DateTime>)(obj.SecondNotificationDate)), ((System.Nullable<bool>)(obj.IsLate90)), ((System.Nullable<bool>)(obj.IsShutoffNoticeIssued)), ((System.Nullable<System.DateTime>)(obj.ShutoffNoticeIssuedDate)), ((System.Nullable<bool>)(obj.IsMemberRequestedHearing)), ((System.Nullable<System.DateTime>)(obj.HearingDate)), ((System.Nullable<bool>)(obj.IsInCollections)), ((System.Nullable<System.DateTime>)(obj.CollectionsDate)), ((System.Nullable<bool>)(obj.IsMeterLocked)), ((System.Nullable<bool>)(obj.IsOnPaymentPlan)), obj.TermsOfPaymentPlan, ((System.Nullable<bool>)(obj.IsIntentToLien)), ((System.Nullable<System.DateTime>)(obj.IntentToLienDate)), ((System.Nullable<bool>)(obj.IsLienFiled)), ((System.Nullable<System.DateTime>)(obj.LienFiledDate)), ((System.Nullable<bool>)(obj.IsResolved)), ((System.Nullable<System.DateTime>)(obj.ResolutionDate)), obj.Resolution, ref p1);
 			obj.RowID = p1.GetValueOrDefault();
+		}
+		
+		private void UpdateWaterShutoff(WaterShutoff obj)
+		{
+			this.usp_UpdateWaterShutoff(((System.Nullable<int>)(obj.OwnerID)), ((System.Nullable<bool>)(obj.IsWaterShutoff)), ((System.Nullable<bool>)(obj.IsMemberSuspended)), ((System.Nullable<System.DateTime>)(obj.SuspensionDate)), ((System.Nullable<bool>)(obj.IsLate30)), ((System.Nullable<System.DateTime>)(obj.FirstNotificationDate)), ((System.Nullable<bool>)(obj.IsLate60)), ((System.Nullable<System.DateTime>)(obj.SecondNotificationDate)), ((System.Nullable<bool>)(obj.IsLate90)), ((System.Nullable<bool>)(obj.IsShutoffNoticeIssued)), ((System.Nullable<System.DateTime>)(obj.ShutoffNoticeIssuedDate)), ((System.Nullable<bool>)(obj.IsMemberRequestedHearing)), ((System.Nullable<System.DateTime>)(obj.HearingDate)), ((System.Nullable<bool>)(obj.IsInCollections)), ((System.Nullable<System.DateTime>)(obj.CollectionsDate)), ((System.Nullable<bool>)(obj.IsMeterLocked)), ((System.Nullable<bool>)(obj.IsOnPaymentPlan)), obj.TermsOfPaymentPlan, ((System.Nullable<bool>)(obj.IsIntentToLien)), ((System.Nullable<System.DateTime>)(obj.IntentToLienDate)), ((System.Nullable<bool>)(obj.IsLienFiled)), ((System.Nullable<System.DateTime>)(obj.LienFiledDate)), ((System.Nullable<bool>)(obj.IsResolved)), ((System.Nullable<System.DateTime>)(obj.ResolutionDate)), obj.Resolution);
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -485,7 +497,9 @@ namespace HVCC.Shell.Models
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertWaterShutoff")]
 		public int usp_InsertWaterShutoff(
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsWaterShutoff", DbType="Bit")] System.Nullable<bool> isWaterShutoff, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMemberSuspended", DbType="Bit")] System.Nullable<bool> isMemberSuspended, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="SuspensionDate", DbType="Date")] System.Nullable<System.DateTime> suspensionDate, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate30", DbType="Bit")] System.Nullable<bool> isLate30, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="FirstNotificationDate", DbType="Date")] System.Nullable<System.DateTime> firstNotificationDate, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate60", DbType="Bit")] System.Nullable<bool> isLate60, 
@@ -501,12 +515,48 @@ namespace HVCC.Shell.Models
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsOnPaymentPlan", DbType="Bit")] System.Nullable<bool> isOnPaymentPlan, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="TermsOfPaymentPlan", DbType="VarChar(250)")] string termsOfPaymentPlan, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsIntentToLien", DbType="Bit")] System.Nullable<bool> isIntentToLien, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IntentToLienDate", DbType="Date")] System.Nullable<System.DateTime> intentToLienDate, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLienFiled", DbType="Bit")] System.Nullable<bool> isLienFiled, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="LienFiledDate", DbType="Date")] System.Nullable<System.DateTime> lienFiledDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsResolved", DbType="Bit")] System.Nullable<bool> isResolved, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="ResolutionDate", DbType="Date")] System.Nullable<System.DateTime> resolutionDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Resolution", DbType="VarChar(500)")] string resolution, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, isMemberSuspended, isLate30, firstNotificationDate, isLate60, secondNotificationDate, isLate90, isShutoffNoticeIssued, shutoffNoticeIssuedDate, isMemberRequestedHearing, hearingDate, isInCollections, collectionsDate, isMeterLocked, isOnPaymentPlan, termsOfPaymentPlan, isIntentToLien, isLienFiled, lienFiledDate, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(19)));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, isWaterShutoff, isMemberSuspended, suspensionDate, isLate30, firstNotificationDate, isLate60, secondNotificationDate, isLate90, isShutoffNoticeIssued, shutoffNoticeIssuedDate, isMemberRequestedHearing, hearingDate, isInCollections, collectionsDate, isMeterLocked, isOnPaymentPlan, termsOfPaymentPlan, isIntentToLien, intentToLienDate, isLienFiled, lienFiledDate, isResolved, resolutionDate, resolution, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(25)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateWaterShutoff")]
+		public int usp_UpdateWaterShutoff(
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsWaterShutoff", DbType="Bit")] System.Nullable<bool> isWaterShutoff, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMemberSuspended", DbType="Bit")] System.Nullable<bool> isMemberSuspended, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="SuspensionDate", DbType="Date")] System.Nullable<System.DateTime> suspensionDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate30", DbType="Bit")] System.Nullable<bool> isLate30, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="FirstNotificationDate", DbType="Date")] System.Nullable<System.DateTime> firstNotificationDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate60", DbType="Bit")] System.Nullable<bool> isLate60, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondNotificationDate", DbType="Date")] System.Nullable<System.DateTime> secondNotificationDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLate90", DbType="Bit")] System.Nullable<bool> isLate90, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsShutoffNoticeIssued", DbType="Bit")] System.Nullable<bool> isShutoffNoticeIssued, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="ShutoffNoticeIssuedDate", DbType="Date")] System.Nullable<System.DateTime> shutoffNoticeIssuedDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMemberRequestedHearing", DbType="Bit")] System.Nullable<bool> isMemberRequestedHearing, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="HearingDate", DbType="Date")] System.Nullable<System.DateTime> hearingDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsInCollections", DbType="Bit")] System.Nullable<bool> isInCollections, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="CollectionsDate", DbType="Date")] System.Nullable<System.DateTime> collectionsDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsMeterLocked", DbType="Bit")] System.Nullable<bool> isMeterLocked, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsOnPaymentPlan", DbType="Bit")] System.Nullable<bool> isOnPaymentPlan, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="TermsOfPaymentPlan", DbType="VarChar(250)")] string termsOfPaymentPlan, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsIntentToLien", DbType="Bit")] System.Nullable<bool> isIntentToLien, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IntentToLienDate", DbType="Date")] System.Nullable<System.DateTime> intentToLienDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsLienFiled", DbType="Bit")] System.Nullable<bool> isLienFiled, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="LienFiledDate", DbType="Date")] System.Nullable<System.DateTime> lienFiledDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsResolved", DbType="Bit")] System.Nullable<bool> isResolved, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="ResolutionDate", DbType="Date")] System.Nullable<System.DateTime> resolutionDate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Resolution", DbType="VarChar(500)")] string resolution)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, isWaterShutoff, isMemberSuspended, suspensionDate, isLate30, firstNotificationDate, isLate60, secondNotificationDate, isLate90, isShutoffNoticeIssued, shutoffNoticeIssuedDate, isMemberRequestedHearing, hearingDate, isInCollections, collectionsDate, isMeterLocked, isOnPaymentPlan, termsOfPaymentPlan, isIntentToLien, intentToLienDate, isLienFiled, lienFiledDate, isResolved, resolutionDate, resolution);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -5621,6 +5671,8 @@ namespace HVCC.Shell.Models
 		
 		private int _OwnerID;
 		
+		private bool _IsWaterShutoff;
+		
 		private bool _IsMemberSuspended;
 		
 		private System.Nullable<System.DateTime> _SuspensionDate;
@@ -5655,9 +5707,17 @@ namespace HVCC.Shell.Models
 		
 		private bool _IsIntentToLien;
 		
+		private System.Nullable<System.DateTime> _IntentToLienDate;
+		
 		private bool _IsLienFiled;
 		
 		private System.Nullable<System.DateTime> _LienFiledDate;
+		
+		private bool _IsResolved;
+		
+		private System.Nullable<System.DateTime> _ResolutionDate;
+		
+		private string _Resolution;
 		
 		private System.Nullable<System.DateTime> _LastModified;
 		
@@ -5673,6 +5733,8 @@ namespace HVCC.Shell.Models
     partial void OnRowIDChanged();
     partial void OnOwnerIDChanging(int value);
     partial void OnOwnerIDChanged();
+    partial void OnIsWaterShutoffChanging(bool value);
+    partial void OnIsWaterShutoffChanged();
     partial void OnIsMemberSuspendedChanging(bool value);
     partial void OnIsMemberSuspendedChanged();
     partial void OnSuspensionDateChanging(System.Nullable<System.DateTime> value);
@@ -5707,10 +5769,18 @@ namespace HVCC.Shell.Models
     partial void OnTermsOfPaymentPlanChanged();
     partial void OnIsIntentToLienChanging(bool value);
     partial void OnIsIntentToLienChanged();
+    partial void OnIntentToLienDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnIntentToLienDateChanged();
     partial void OnIsLienFiledChanging(bool value);
     partial void OnIsLienFiledChanged();
     partial void OnLienFiledDateChanging(System.Nullable<System.DateTime> value);
     partial void OnLienFiledDateChanged();
+    partial void OnIsResolvedChanging(bool value);
+    partial void OnIsResolvedChanged();
+    partial void OnResolutionDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnResolutionDateChanged();
+    partial void OnResolutionChanging(string value);
+    partial void OnResolutionChanged();
     partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
     partial void OnLastModifiedChanged();
     partial void OnLastModifiedByChanging(string value);
@@ -5763,6 +5833,26 @@ namespace HVCC.Shell.Models
 					this._OwnerID = value;
 					this.SendPropertyChanged("OwnerID");
 					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWaterShutoff", DbType="Bit NOT NULL")]
+		public bool IsWaterShutoff
+		{
+			get
+			{
+				return this._IsWaterShutoff;
+			}
+			set
+			{
+				if ((this._IsWaterShutoff != value))
+				{
+					this.OnIsWaterShutoffChanging(value);
+					this.SendPropertyChanging();
+					this._IsWaterShutoff = value;
+					this.SendPropertyChanged("IsWaterShutoff");
+					this.OnIsWaterShutoffChanged();
 				}
 			}
 		}
@@ -6107,6 +6197,26 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IntentToLienDate", DbType="Date")]
+		public System.Nullable<System.DateTime> IntentToLienDate
+		{
+			get
+			{
+				return this._IntentToLienDate;
+			}
+			set
+			{
+				if ((this._IntentToLienDate != value))
+				{
+					this.OnIntentToLienDateChanging(value);
+					this.SendPropertyChanging();
+					this._IntentToLienDate = value;
+					this.SendPropertyChanged("IntentToLienDate");
+					this.OnIntentToLienDateChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLienFiled", DbType="Bit NOT NULL")]
 		public bool IsLienFiled
 		{
@@ -6143,6 +6253,66 @@ namespace HVCC.Shell.Models
 					this._LienFiledDate = value;
 					this.SendPropertyChanged("LienFiledDate");
 					this.OnLienFiledDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsResolved", DbType="Bit NOT NULL")]
+		public bool IsResolved
+		{
+			get
+			{
+				return this._IsResolved;
+			}
+			set
+			{
+				if ((this._IsResolved != value))
+				{
+					this.OnIsResolvedChanging(value);
+					this.SendPropertyChanging();
+					this._IsResolved = value;
+					this.SendPropertyChanged("IsResolved");
+					this.OnIsResolvedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ResolutionDate", DbType="Date")]
+		public System.Nullable<System.DateTime> ResolutionDate
+		{
+			get
+			{
+				return this._ResolutionDate;
+			}
+			set
+			{
+				if ((this._ResolutionDate != value))
+				{
+					this.OnResolutionDateChanging(value);
+					this.SendPropertyChanging();
+					this._ResolutionDate = value;
+					this.SendPropertyChanged("ResolutionDate");
+					this.OnResolutionDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Resolution", DbType="VarChar(500)")]
+		public string Resolution
+		{
+			get
+			{
+				return this._Resolution;
+			}
+			set
+			{
+				if ((this._Resolution != value))
+				{
+					this.OnResolutionChanging(value);
+					this.SendPropertyChanging();
+					this._Resolution = value;
+					this.SendPropertyChanged("Resolution");
+					this.OnResolutionChanged();
 				}
 			}
 		}
@@ -6238,6 +6408,519 @@ namespace HVCC.Shell.Models
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_WaterShutoffs")]
+	public partial class v_WaterShutoff
+	{
+		
+		private int _OwnerID;
+		
+		private decimal _Balance;
+		
+		private System.Nullable<System.DateTime> _SuspensionDate;
+		
+		private bool _IsMeterLocked;
+		
+		private bool _IsLate30;
+		
+		private bool _IsLate60;
+		
+		private bool _IsLate90;
+		
+		private bool _IsOnPaymentPlan;
+		
+		private bool _IsInCollections;
+		
+		private bool _IsIntentToLien;
+		
+		private bool _IsLienFiled;
+		
+		private System.Nullable<System.DateTime> _FirstNotificationDate;
+		
+		private System.Nullable<System.DateTime> _SecondNotificationDate;
+		
+		private System.Nullable<System.DateTime> _ShutoffNoticeIssuedDate;
+		
+		private System.Nullable<System.DateTime> _LienFiledDate;
+		
+		private bool _IsWaterShutoff;
+		
+		private bool _IsMemberSuspended;
+		
+		private bool _IsShutoffNoticeIssued;
+		
+		private bool _IsMemberRequestedHearing;
+		
+		private System.Nullable<System.DateTime> _HearingDate;
+		
+		private System.Nullable<System.DateTime> _CollectionsDate;
+		
+		private string _TermsOfPaymentPlan;
+		
+		private System.Nullable<System.DateTime> _IntentToLienDate;
+		
+		private bool _IsResolved;
+		
+		private System.Nullable<System.DateTime> _ResolutionDate;
+		
+		private string _Resolution;
+		
+		private string _MailTo;
+		
+		private string _Customer;
+		
+		public v_WaterShutoff()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money NOT NULL")]
+		public decimal Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+			set
+			{
+				if ((this._Balance != value))
+				{
+					this._Balance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SuspensionDate", DbType="Date")]
+		public System.Nullable<System.DateTime> SuspensionDate
+		{
+			get
+			{
+				return this._SuspensionDate;
+			}
+			set
+			{
+				if ((this._SuspensionDate != value))
+				{
+					this._SuspensionDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMeterLocked", DbType="Bit NOT NULL")]
+		public bool IsMeterLocked
+		{
+			get
+			{
+				return this._IsMeterLocked;
+			}
+			set
+			{
+				if ((this._IsMeterLocked != value))
+				{
+					this._IsMeterLocked = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate30", DbType="Bit NOT NULL")]
+		public bool IsLate30
+		{
+			get
+			{
+				return this._IsLate30;
+			}
+			set
+			{
+				if ((this._IsLate30 != value))
+				{
+					this._IsLate30 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate60", DbType="Bit NOT NULL")]
+		public bool IsLate60
+		{
+			get
+			{
+				return this._IsLate60;
+			}
+			set
+			{
+				if ((this._IsLate60 != value))
+				{
+					this._IsLate60 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate90", DbType="Bit NOT NULL")]
+		public bool IsLate90
+		{
+			get
+			{
+				return this._IsLate90;
+			}
+			set
+			{
+				if ((this._IsLate90 != value))
+				{
+					this._IsLate90 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsOnPaymentPlan", DbType="Bit NOT NULL")]
+		public bool IsOnPaymentPlan
+		{
+			get
+			{
+				return this._IsOnPaymentPlan;
+			}
+			set
+			{
+				if ((this._IsOnPaymentPlan != value))
+				{
+					this._IsOnPaymentPlan = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsInCollections", DbType="Bit NOT NULL")]
+		public bool IsInCollections
+		{
+			get
+			{
+				return this._IsInCollections;
+			}
+			set
+			{
+				if ((this._IsInCollections != value))
+				{
+					this._IsInCollections = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsIntentToLien", DbType="Bit NOT NULL")]
+		public bool IsIntentToLien
+		{
+			get
+			{
+				return this._IsIntentToLien;
+			}
+			set
+			{
+				if ((this._IsIntentToLien != value))
+				{
+					this._IsIntentToLien = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLienFiled", DbType="Bit NOT NULL")]
+		public bool IsLienFiled
+		{
+			get
+			{
+				return this._IsLienFiled;
+			}
+			set
+			{
+				if ((this._IsLienFiled != value))
+				{
+					this._IsLienFiled = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstNotificationDate", DbType="Date")]
+		public System.Nullable<System.DateTime> FirstNotificationDate
+		{
+			get
+			{
+				return this._FirstNotificationDate;
+			}
+			set
+			{
+				if ((this._FirstNotificationDate != value))
+				{
+					this._FirstNotificationDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondNotificationDate", DbType="Date")]
+		public System.Nullable<System.DateTime> SecondNotificationDate
+		{
+			get
+			{
+				return this._SecondNotificationDate;
+			}
+			set
+			{
+				if ((this._SecondNotificationDate != value))
+				{
+					this._SecondNotificationDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ShutoffNoticeIssuedDate", DbType="Date")]
+		public System.Nullable<System.DateTime> ShutoffNoticeIssuedDate
+		{
+			get
+			{
+				return this._ShutoffNoticeIssuedDate;
+			}
+			set
+			{
+				if ((this._ShutoffNoticeIssuedDate != value))
+				{
+					this._ShutoffNoticeIssuedDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LienFiledDate", DbType="Date")]
+		public System.Nullable<System.DateTime> LienFiledDate
+		{
+			get
+			{
+				return this._LienFiledDate;
+			}
+			set
+			{
+				if ((this._LienFiledDate != value))
+				{
+					this._LienFiledDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWaterShutoff", DbType="Bit NOT NULL")]
+		public bool IsWaterShutoff
+		{
+			get
+			{
+				return this._IsWaterShutoff;
+			}
+			set
+			{
+				if ((this._IsWaterShutoff != value))
+				{
+					this._IsWaterShutoff = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMemberSuspended", DbType="Bit NOT NULL")]
+		public bool IsMemberSuspended
+		{
+			get
+			{
+				return this._IsMemberSuspended;
+			}
+			set
+			{
+				if ((this._IsMemberSuspended != value))
+				{
+					this._IsMemberSuspended = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsShutoffNoticeIssued", DbType="Bit NOT NULL")]
+		public bool IsShutoffNoticeIssued
+		{
+			get
+			{
+				return this._IsShutoffNoticeIssued;
+			}
+			set
+			{
+				if ((this._IsShutoffNoticeIssued != value))
+				{
+					this._IsShutoffNoticeIssued = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMemberRequestedHearing", DbType="Bit NOT NULL")]
+		public bool IsMemberRequestedHearing
+		{
+			get
+			{
+				return this._IsMemberRequestedHearing;
+			}
+			set
+			{
+				if ((this._IsMemberRequestedHearing != value))
+				{
+					this._IsMemberRequestedHearing = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HearingDate", DbType="Date")]
+		public System.Nullable<System.DateTime> HearingDate
+		{
+			get
+			{
+				return this._HearingDate;
+			}
+			set
+			{
+				if ((this._HearingDate != value))
+				{
+					this._HearingDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CollectionsDate", DbType="Date")]
+		public System.Nullable<System.DateTime> CollectionsDate
+		{
+			get
+			{
+				return this._CollectionsDate;
+			}
+			set
+			{
+				if ((this._CollectionsDate != value))
+				{
+					this._CollectionsDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TermsOfPaymentPlan", DbType="VarChar(250)")]
+		public string TermsOfPaymentPlan
+		{
+			get
+			{
+				return this._TermsOfPaymentPlan;
+			}
+			set
+			{
+				if ((this._TermsOfPaymentPlan != value))
+				{
+					this._TermsOfPaymentPlan = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IntentToLienDate", DbType="Date")]
+		public System.Nullable<System.DateTime> IntentToLienDate
+		{
+			get
+			{
+				return this._IntentToLienDate;
+			}
+			set
+			{
+				if ((this._IntentToLienDate != value))
+				{
+					this._IntentToLienDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsResolved", DbType="Bit NOT NULL")]
+		public bool IsResolved
+		{
+			get
+			{
+				return this._IsResolved;
+			}
+			set
+			{
+				if ((this._IsResolved != value))
+				{
+					this._IsResolved = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ResolutionDate", DbType="Date")]
+		public System.Nullable<System.DateTime> ResolutionDate
+		{
+			get
+			{
+				return this._ResolutionDate;
+			}
+			set
+			{
+				if ((this._ResolutionDate != value))
+				{
+					this._ResolutionDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Resolution", DbType="VarChar(500)")]
+		public string Resolution
+		{
+			get
+			{
+				return this._Resolution;
+			}
+			set
+			{
+				if ((this._Resolution != value))
+				{
+					this._Resolution = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this._MailTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
 			}
 		}
 	}

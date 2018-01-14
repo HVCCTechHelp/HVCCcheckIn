@@ -389,12 +389,12 @@
                                      >
                                             <dxg:GridControl.View>
                                                 <dxg:TableView x:Name="tableViewProperties"  
-                                           AllowPerPixelScrolling="True" 
-                                           AutoWidth="True" 
-                                           Height="100"
-                                           NavigationStyle="Row" 
-                                           ShowGroupPanel="False"
-                                           >
+                                                           AllowPerPixelScrolling="True" 
+                                                           AutoWidth="True" 
+                                                           Height="100"
+                                                           NavigationStyle="Row" 
+                                                           ShowGroupPanel="False"
+                                                           >
                                                     <dxmvvm:Interaction.Behaviors>
                                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}" />

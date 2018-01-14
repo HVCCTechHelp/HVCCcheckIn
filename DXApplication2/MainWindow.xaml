@@ -148,11 +148,10 @@
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
                                                 <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
                                             </dxd:LayoutControlItem>
-
-
-                                            <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/person_Icon.png" MouseLeftButtonDown="OnClicked_OwnerXRelationships" Width="100" Height="100" ToolTip="Look up Owner Relationships"/>
-                                            </dxd:LayoutControlItem>-->
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/Shutdown-icon.png" MouseLeftButtonDown="OnClicked_WaterShutoff" Width="100" Height="100" ToolTip="Look up Water Shutoffs"/>
+                                            </dxd:LayoutControlItem>
+                                            
                                             <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewGolfCart, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCartXOwner" Width="100" Height="100" ToolTip="Look up Golf Cart Info"/>
                                             </dxd:LayoutControlItem>-->

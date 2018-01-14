@@ -11,6 +11,7 @@
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
              xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
              xmlns:model="clr-namespace:HVCC.Shell.Models"
              xmlns:resources="clr-namespace:HVCC.Shell.Resources"
@@ -40,11 +41,52 @@
         <common:CommandSinkBinding Command="ApplicationCommands.Save" />
     </UserControl.CommandBindings>
 
-    <dxlc:LayoutControl>
-        <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="{Binding HeaderText}" Width="Auto">
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
 
-            <dxlc:LayoutGroup Orientation="Horizontal">
-                <dxlc:LayoutGroup View="GroupBox" Header="Property Information" 
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage Caption="Actions" >
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Property Action">
+
+                            <dxb:BarButtonItem x:Name="bbOwner" Content="Owner" 
+                                               Command="{Binding ViewOwnerCommand}" CommandParameter="{Binding SelectedProperty.Owner}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
+                                               Glyph="/Images/Icons/person_icon.png" 
+                                               LargeGlyph="/Images/Icons/person_icon.png" />
+
+                            <!--<dxb:BarButtonItem x:Name="bbXXXXXXX" Content="XXXXXX" 
+                                               Command="{Binding XXXXXXCommand}" CommandParameter="{Binding XXXXXXX}"
+                                               IsEnabled="{Binding ApplPermissions.XXXXXXX}"
+                                               Glyph="/Images/Icons/XXXXXX.jpg" 
+                                               LargeGlyph="/Images/Icons/XXXXXXXX.jpg" />-->
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
+
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+
+            <dxlc:LayoutControl>
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="{Binding HeaderText}" Width="Auto">
+
+                    <dxlc:LayoutGroup Orientation="Horizontal">
+                        <dxlc:LayoutGroup View="GroupBox" Header="Property Information" 
                               Width="800" 
                               Orientation="Vertical" 
                               VerticalAlignment="Top" 
@@ -53,50 +95,50 @@
                               IsCollapsible="False" 
                               IsCollapsed="True" 
                               >
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Label="Physical Address:" Width="450" >
-                            <dxe:TextEdit Text="{Binding SelectedProperty.PhysicalAddress}" Width="Auto" 
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                <dxlc:LayoutItem Label="Physical Address:" Width="450" >
+                                    <dxe:TextEdit Text="{Binding SelectedProperty.PhysicalAddress}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                                       IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
                                       Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
                                      />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="Tax Parcel:" Width="Auto" >
-                            <dxe:TextEdit x:Name="teParcel" Text="{Binding SelectedProperty.Parcel}" Width="Auto" 
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Label="Tax Parcel:" Width="Auto" >
+                                    <dxe:TextEdit x:Name="teParcel" Text="{Binding SelectedProperty.Parcel}" Width="Auto" 
                                       Style="{StaticResource TextEditDisplayStyle}"
                                       IsReadOnly="true" 
                                       Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
                                       KeyDown="teParcel_KeyDown"
                                     />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Width="50">
-                            <Button x:Name="btnMapLink" Height="25" Width="50"                             
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Width="50">
+                                    <Button x:Name="btnMapLink" Height="25" Width="50"                             
                                 IsEnabled="{Binding ApplPermissions.CanViewMap, Mode=TwoWay}" 
                                 Command="{Binding ViewMapCommand}"
                                 CommandParameter="{Binding ElementName=EditProperty}"
                                 >Map</Button>
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Width="50">
-                            <Button x:Name="btnParcelLink" Height="25" Width="50"                             
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Width="50">
+                                    <Button x:Name="btnParcelLink" Height="25" Width="50"                             
                                 IsEnabled="{Binding ApplPermissions.CanViewParcel, Mode=TwoWay}" 
                                 Command="{Binding ViewParcelCommand}"
                                 CommandParameter="{Binding ElementName=EditProperty}"
                                 >Tax</Button>
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                        <dxlc:LayoutItem Label="Bill To: " BorderThickness="2">
-                            <dxe:TextEdit Text="{Binding SelectedProperty.Owner.MailTo}" Width="Auto" 
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                                <dxlc:LayoutItem Label="Bill To: " BorderThickness="2">
+                                    <dxe:TextEdit Text="{Binding SelectedProperty.Owner.MailTo}" Width="Auto" 
                                      IsReadOnly="True"
                                      Focusable="False"
                                      Style="{StaticResource TextEditDisplayStyle}"
                                      />
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
 
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                        <dxlc:LayoutItem Label="Notes: " Width="600" >
-                            <dxe:TextEdit Text="{Binding SelectedProperty.CommonNotes}" Width="Auto" 
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                                <dxlc:LayoutItem Label="Notes: " Width="600" >
+                                    <dxe:TextEdit Text="{Binding SelectedProperty.CommonNotes}" Width="Auto" 
                                       Height="75"
                                       AcceptsReturn="True"
                                       TextWrapping="Wrap"
@@ -104,14 +146,14 @@
                                       VerticalScrollBarVisibility="Auto"
                                       Style="{Binding TextEditEditStyle}"
                                       />
-                        </dxlc:LayoutItem>
+                                </dxlc:LayoutItem>
+
+                            </dxlc:LayoutGroup>
+                        </dxlc:LayoutGroup>
 
                     </dxlc:LayoutGroup>
-                </dxlc:LayoutGroup>
 
-            </dxlc:LayoutGroup>
-
-            <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
+                    <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
                               Width="800" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
@@ -120,9 +162,9 @@
                               IsCollapsed="False" 
                               Orientation="Vertical">
 
-                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                    <dxlc:LayoutItem Label="Owner: " Width="Auto">
-                        <dxe:TextEdit x:Name="teOwnerMailTo"
+                        <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                            <dxlc:LayoutItem Label="Owner: " Width="Auto">
+                                <dxe:TextEdit x:Name="teOwnerMailTo"
                               Text="{Binding Owner.MailTo}"
                               IsEnabled="False"
                               IsReadOnly="True"
@@ -130,12 +172,12 @@
                               Width="Auto" 
                               Style="{Binding TeStyle}"
                               />
-                    </dxlc:LayoutItem>
-                </dxlc:LayoutGroup>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
 
-                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
-                    <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
-                        <dxe:TextEdit x:Name="teOwnerAddress"
+                        <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                            <dxlc:LayoutItem Label="Mailing Address: " Width="Auto">
+                                <dxe:TextEdit x:Name="teOwnerAddress"
                               Text="{Binding Owner.Address}"
                               Width="Auto" 
                               IsEnabled="False"
@@ -143,22 +185,22 @@
                               Focusable="False"
                               Style="{Binding TeStyle}"
                               >
-                        </dxe:TextEdit>
-                    </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label=" " Width="Auto">
-                        <dxe:TextEdit Text="{Binding Owner.Address2}" Width="Auto" 
+                                </dxe:TextEdit>
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label=" " Width="Auto">
+                                <dxe:TextEdit Text="{Binding Owner.Address2}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                               IsEnabled="False"
                               IsReadOnly="True"
                               Focusable="False"
                                      />
-                    </dxlc:LayoutItem>
-                </dxlc:LayoutGroup>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
 
 
-                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                    <dxlc:LayoutItem Label="City: " HorizontalAlignment="Left" Width="400">
-                        <dxe:TextEdit x:Name="teOwnerCity"
+                        <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                            <dxlc:LayoutItem Label="City: " HorizontalAlignment="Left" Width="400">
+                                <dxe:TextEdit x:Name="teOwnerCity"
                               Text="{Binding Owner.City}"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
@@ -166,9 +208,9 @@
                               IsReadOnly="True"
                               Focusable="False"
                               />
-                    </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label="State: " HorizontalAlignment="Left" Width="Auto">
-                        <dxe:TextEdit x:Name="teOwnerState"
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="State: " HorizontalAlignment="Left" Width="Auto">
+                                <dxe:TextEdit x:Name="teOwnerState"
                               Text="{Binding Owner.State}"
                               Width="50" 
                               Style="{Binding TeStyle}"
@@ -176,9 +218,9 @@
                               IsReadOnly="True"
                               Focusable="False"
                               />
-                    </dxlc:LayoutItem>
-                    <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
-                        <dxe:TextEdit x:Name="teOwnerZip"
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="Zip: " HorizontalAlignment="Left" Width="Auto">
+                                <dxe:TextEdit x:Name="teOwnerZip"
                               Text="{Binding Owner.Zip}"
                               Width="125" 
                               Style="{Binding TeStyle}"
@@ -186,55 +228,55 @@
                               IsReadOnly="True"
                               Focusable="False"
                               />
-                    </dxlc:LayoutItem>
-                </dxlc:LayoutGroup>
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
 
 
-                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding Owner.PrimaryPhone}" Width="Auto" 
+                        <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                <dxlc:LayoutItem Label="Primary Phone: " Width="Auto">
+                                    <dxe:TextEdit Text="{Binding Owner.PrimaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                               IsEnabled="False"
                               IsReadOnly="True"
                               Focusable="False"
                                      />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding Owner.SecondaryPhone}" Width="Auto" 
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Label="Secondary Phone: " Width="Auto">
+                                    <dxe:TextEdit Text="{Binding Owner.SecondaryPhone}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                               IsEnabled="False"
                               IsReadOnly="True"
                               Focusable="False"
                                      />
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
-                            <dxe:TextEdit Text="{Binding Owner.EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" 
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                <dxlc:LayoutItem Label="Owner E-Mail: " Width="Auto">
+                                    <dxe:TextEdit Text="{Binding Owner.EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" 
                                       Style="{Binding TeStyle}"
                               IsEnabled="False"
                               IsReadOnly="True"
                               Focusable="False"
                                      />
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
-                            <CheckBox Width="25"
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
+                                    <CheckBox Width="25"
                                      IsChecked="{Binding Owner.IsSendByEmail, Mode=TwoWay}"
                                      IsEnabled="False"
                                      Focusable="False"
                                      Margin="0,-5,0,0"
                                      />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="(Owner has signed agreement on file agreeing to send HVCC communications via E-mail)" FontStyle="Italic" HorizontalAlignment="Left"/>
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Label="(Owner has signed agreement on file agreeing to send HVCC communications via E-mail)" FontStyle="Italic" HorizontalAlignment="Left"/>
+                            </dxlc:LayoutGroup>
+                        </dxlc:LayoutGroup>
+
                     </dxlc:LayoutGroup>
-                </dxlc:LayoutGroup>
 
-            </dxlc:LayoutGroup>
-
-            <!--<dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
+                    <!--<dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
                               Width="800" Height="Auto" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
@@ -267,6 +309,8 @@
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>-->
 
-        </dxlc:LayoutGroup>
-    </dxlc:LayoutControl>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
 </UserControl>

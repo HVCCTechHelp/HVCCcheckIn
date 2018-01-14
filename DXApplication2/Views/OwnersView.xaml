@@ -141,7 +141,6 @@
                                  Width="Auto"
                                  Height="700"
                                  HorizontalAlignment="Left"
-                                 MasterRowExpanded="ownerGrid_MasterRowExpanded"
                                  >
                             <dxg:GridControl.View>
                                 <dxg:TableView x:Name="tableViewOwners" 
@@ -176,7 +175,7 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="25" Visible="False" IsEnabled="False" ShowInColumnChooser="True" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="15" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
