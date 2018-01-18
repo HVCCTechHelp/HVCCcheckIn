@@ -182,6 +182,14 @@
             IView v = new HVCC.Shell.Views.WellMeterReadingsView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewAdministrationView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new AdministrationViewModel(dc) { Caption = "Administration" };
+            IView v = new HVCC.Shell.Views.AdministrationView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         //
 
         /// <summary>
@@ -194,7 +202,12 @@
             if (verb == HostVerb.Open)
             {
                 // REQUIRED:  The Caption strings must match the x:Name string of the View
-                if (param.ToString() == "Properties")
+                if (param.ToString() == "Administration")
+                {
+                    var binder = GetNewAdministrationView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "Properties")
                 {
                     var binder = GetNewPropertyDetailView(arg);
                     this.OpenMvvmBinders.Add(binder);

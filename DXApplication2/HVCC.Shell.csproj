@@ -256,6 +256,7 @@
     <Compile Include="Resources\RowTemplateSelector.cs" />
     <Compile Include="Validation\RequiredValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
+    <Compile Include="ViewModels\AdministrationViewModel.cs" />
     <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
     <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
     <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />

@@ -287,9 +287,9 @@
                         <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
                             <CheckBox Width="25"
                                      IsChecked="{Binding NewOwner.IsSendByEmail, Mode=TwoWay}"
-                                     IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
+                                     IsEnabled="{Binding ApplPermissions.CanEditProperty}"
+                                     Focusable="{Binding ApplPermissions.CanEditProperty}"
+                                     Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Converter={StaticResource BoolToVis}}"
                                      Margin="0,-5,0,0"
                                      />
                         </dxlc:LayoutItem>

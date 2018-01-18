@@ -144,20 +144,20 @@
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Property Notes"
                                                    ItemClick="bb_NotesReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Balances Due"
                                                    ItemClick="bb_BalanceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             -->
                         <!--<dxb:BarButtonItem Content="Annual Invoices"
                                                    ItemClick="bb_AnnualInvoiceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />-->
@@ -325,9 +325,9 @@
                                         <dxlc:LayoutItem Label="E-Mail Communications: " Width="AUto" HorizontalAlignment="Left">
                                             <CheckBox Width="25"
                                      IsChecked="{Binding SelectedOwner.IsSendByEmail, Mode=TwoWay}"
-                                     IsEnabled="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
-                                     Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
+                                     IsEnabled="{Binding ApplPermissions.CanEditProperty}"
+                                     Focusable="{Binding ApplPermissions.CanEditProperty}"
+                                     Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Converter={StaticResource BoolToVis}}"
                                      Margin="0,-5,0,0"
                                      />
                                         </dxlc:LayoutItem>
@@ -340,18 +340,18 @@
                               Width="800" Height="Auto" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
                               IsCollapsed="True"
                               IsCollapsible="True"
                               Orientation="Vertical"
                               >
-                                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}">
+                                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}">
                                     <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                HorizontalAlignment="Left" VerticalAlignment="Top"
-                                  Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
+                                  Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}" 
                                   Style="{Binding TeStyle}"
-                                  Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
-                                  IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                  Focusable="{Binding ApplPermissions.CanEditOwnerNotes}"
+                                  IsHitTestVisible="{Binding ApplPermissions.CanEditOwnerNotes}"
                                 AcceptsReturn="True"
                                   Height="50" Width="700"
                                   >

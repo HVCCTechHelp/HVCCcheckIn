@@ -99,15 +99,15 @@
                                 <dxlc:LayoutItem Label="Physical Address:" Width="450" >
                                     <dxe:TextEdit Text="{Binding SelectedProperty.PhysicalAddress}" Width="Auto" 
                                       Style="{Binding TeStyle}"
-                                      IsReadOnly="{Binding ApplPermissions.CanEditPropertyInfo, Converter={StaticResource Invert}}" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                      IsReadOnly="{Binding ApplPermissions.CanEditProperty, Converter={StaticResource Invert}}" 
+                                      Focusable="{Binding ApplPermissions.CanEditProperty}"
                                      />
                                 </dxlc:LayoutItem>
                                 <dxlc:LayoutItem Label="Tax Parcel:" Width="Auto" >
                                     <dxe:TextEdit x:Name="teParcel" Text="{Binding SelectedProperty.Parcel}" Width="Auto" 
                                       Style="{StaticResource TextEditDisplayStyle}"
                                       IsReadOnly="true" 
-                                      Focusable="{Binding ApplPermissions.CanEditPropertyInfo}"
+                                      Focusable="{Binding ApplPermissions.CanEditProperty}"
                                       KeyDown="teParcel_KeyDown"
                                     />
                                 </dxlc:LayoutItem>
@@ -280,18 +280,18 @@
                               Width="800" Height="Auto" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewPropertyNotes, Converter={StaticResource BoolToVis}}"
+                              Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Converter={StaticResource BoolToVis}}"
                               IsCollapsed="True"
                               IsCollapsible="True"
                               Orientation="Vertical"
                               >
-                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}">
+                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}">
                     <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                HorizontalAlignment="Left" VerticalAlignment="Top"
-                                  Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
+                                  Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}" 
                                   Style="{Binding TeStyle}"
-                                  Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
-                                  IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                  Focusable="{Binding ApplPermissions.CanEditOwnerNotes}"
+                                  IsHitTestVisible="{Binding ApplPermissions.CanEditOwnerNotes}"
                                 AcceptsReturn="True"
                                   Height="50" Width="700"
                                   >

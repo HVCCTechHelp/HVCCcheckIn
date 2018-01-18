@@ -277,7 +277,7 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
@@ -297,7 +297,7 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo || this.ApplPermissions.CanEditPropertyNotes)
+                if (this.ApplPermissions.CanEditProperty || this.ApplPermissions.CanEditOwnerNotes)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
@@ -317,7 +317,7 @@ namespace HVCC.Shell.ViewModels
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];

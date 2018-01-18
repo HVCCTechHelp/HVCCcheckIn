@@ -603,7 +603,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
@@ -643,7 +643,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];

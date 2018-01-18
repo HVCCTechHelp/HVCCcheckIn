@@ -137,19 +137,19 @@
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Property Notes"
                                                    ItemClick="bb_NotesReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Balances Due"
                                                    ItemClick="bb_BalanceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             <!--<dxb:BarButtonItem Content="Annual Invoices"
                                                    ItemClick="bb_AnnualInvoiceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />-->
@@ -221,7 +221,7 @@
                                     <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50" AllowEditing="False" ReadOnly="True" />
-                                    <!--<dxg:GridColumn FieldName="BillTo" Header="Bill To" Width="100" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="{Binding ApplPermissions.CanEditPropertyInfo}" />-->
+                                    <!--<dxg:GridColumn FieldName="BillTo" Header="Bill To" Width="100" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="{Binding ApplPermissions.CanEditProperty}" />-->
                                     <dxg:GridColumn FieldName="Balance" Header="BalanceDue" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True">
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
@@ -232,30 +232,30 @@
                                     <dxg:GridColumn FieldName="Status" Header="Status" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True"/>-->
                                     <dxg:GridColumn FieldName="PhysicalAddress" Header="Address" Width="20" Visible="False" AllowEditing="True" ReadOnly="True" ShowInColumnChooser="True"/>
                                     <dxg:GridColumn FieldName="Parcel" Header="Parcel" Width="20" Visible="False" ShowInColumnChooser="True" AllowEditing="False"  ReadOnly="True"  />
-                                    <dxg:GridColumn FieldName="Address" Header="Owner Address" Width="20" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" />
-                                    <dxg:GridColumn FieldName="Address2" Header="Owner Address2" Width="20" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" />
-                                    <dxg:GridColumn FieldName="City" Header="City" Width="20" Visible="False"  AllowEditing="False"  ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" ReadOnly="True" />
-                                    <dxg:GridColumn FieldName="State" Header="State" Width="5" Visible="False"  AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}">
+                                    <dxg:GridColumn FieldName="Address" Header="Owner Address" Width="20" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
+                                    <dxg:GridColumn FieldName="Address2" Header="Owner Address2" Width="20" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
+                                    <dxg:GridColumn FieldName="City" Header="City" Width="20" Visible="False"  AllowEditing="False"  ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" ReadOnly="True" />
+                                    <dxg:GridColumn FieldName="State" Header="State" Width="5" Visible="False"  AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}">
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="&gt;LL">
                                             </dxe:TextEditSettings>
                                         </dxg:GridColumn.EditSettings>
                                     </dxg:GridColumn>
-                                    <dxg:GridColumn FieldName="Zip" Header="Zipcode" Width="5"  Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" >
+                                    <dxg:GridColumn FieldName="Zip" Header="Zipcode" Width="5"  Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="00000">
                                             </dxe:TextEditSettings>
                                         </dxg:GridColumn.EditSettings>
                                     </dxg:GridColumn>
-                                    <dxg:GridColumn FieldName="PrimaryPhone" Header="Phone-1" Width="10" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" >
+                                    <dxg:GridColumn FieldName="PrimaryPhone" Header="Phone-1" Width="10" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Simple" MaskUseAsDisplayFormat="True" Mask="(999) 000-0000">
                                             </dxe:TextEditSettings>
                                         </dxg:GridColumn.EditSettings>
                                     </dxg:GridColumn>
-                                    <dxg:GridColumn FieldName="SecondaryPhone" Header="Phone-2" Width="10" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}"/>
-                                    <dxg:GridColumn FieldName="Email" Header="EMail" Width="10" Visible="False"  AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" />
-                                    <dxg:GridColumn FieldName="IsSendByEmail" Header="EMail" Width="10" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewPropertyNotes}" />
+                                    <dxg:GridColumn FieldName="SecondaryPhone" Header="Phone-2" Width="10" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}"/>
+                                    <dxg:GridColumn FieldName="Email" Header="EMail" Width="10" Visible="False"  AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
+                                    <dxg:GridColumn FieldName="IsSendByEmail" Header="EMail" Width="10" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
                                 </dxg:GridControl.Columns>
 
                                 <dxg:GridControl.TotalSummary>

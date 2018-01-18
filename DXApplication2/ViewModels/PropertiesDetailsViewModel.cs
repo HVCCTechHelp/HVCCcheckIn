@@ -211,7 +211,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextBoxEditStyle"];
@@ -231,7 +231,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["TextEditEditStyle"];
@@ -251,7 +251,7 @@
         {
             get
             {
-                if (this.ApplPermissions.CanEditPropertyInfo)
+                if (this.ApplPermissions.CanEditProperty)
                 {
                     System.Windows.Style st = (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
                     return (System.Windows.Style)App.Current.MainWindow.Resources["ComboBoxEditStyle"];
@@ -547,7 +547,7 @@
         {
             get
             {
-                return _propertyNotesReportCommand ?? (_propertyNotesReportCommand = new CommandHandlerWparm((object parameter) => PropertyNotesReportAction(parameter), ApplPermissions.CanViewPropertyNotes));
+                return _propertyNotesReportCommand ?? (_propertyNotesReportCommand = new CommandHandlerWparm((object parameter) => PropertyNotesReportAction(parameter), ApplPermissions.CanViewOwnerNotes));
             }
         }
 
@@ -568,7 +568,7 @@
         {
             get
             {
-                return _duesBalanceReportCommand ?? (_duesBalanceReportCommand = new CommandHandlerWparm((object parameter) => DuesBalanceReportAction(parameter), ApplPermissions.CanViewPropertyNotes));
+                return _duesBalanceReportCommand ?? (_duesBalanceReportCommand = new CommandHandlerWparm((object parameter) => DuesBalanceReportAction(parameter), ApplPermissions.CanViewOwnerNotes));
             }
         }
 

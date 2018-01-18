@@ -60,10 +60,16 @@ namespace HVCC.Shell.Models
     partial void InsertProperty(Property instance);
     partial void DeleteProperty(Property instance);
     partial void DeleteWaterShutoff(WaterShutoff instance);
+    partial void InsertApplicationPermission(ApplicationPermission instance);
+    partial void UpdateApplicationPermission(ApplicationPermission instance);
+    partial void DeleteApplicationPermission(ApplicationPermission instance);
+    partial void InsertSeason(Season instance);
+    partial void UpdateSeason(Season instance);
+    partial void DeleteSeason(Season instance);
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}
@@ -196,14 +202,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Season> Seasons
-		{
-			get
-			{
-				return this.GetTable<Season>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Property> Properties
 		{
 			get
@@ -217,14 +215,6 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<v_PropertyDetail>();
-			}
-		}
-		
-		public System.Data.Linq.Table<ApplicationPermission> ApplicationPermissions
-		{
-			get
-			{
-				return this.GetTable<ApplicationPermission>();
 			}
 		}
 		
@@ -249,6 +239,22 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<v_WaterShutoff>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ApplicationPermission> ApplicationPermissions
+		{
+			get
+			{
+				return this.GetTable<ApplicationPermission>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Season> Seasons
+		{
+			get
+			{
+				return this.GetTable<Season>();
 			}
 		}
 		
@@ -3900,159 +3906,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Seasons")]
-	public partial class Season
-	{
-		
-		private int _RowID;
-		
-		private string _TimePeriod;
-		
-		private bool _IsCurrent;
-		
-		private decimal _AnnualDues;
-		
-		private decimal _CartFee;
-		
-		private string _Assessment;
-		
-		private decimal _AssessmentAmount;
-		
-		private System.Nullable<bool> _IsVisible;
-		
-		public Season()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.Always, DbType="Int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int RowID
-		{
-			get
-			{
-				return this._RowID;
-			}
-			set
-			{
-				if ((this._RowID != value))
-				{
-					this._RowID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TimePeriod", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string TimePeriod
-		{
-			get
-			{
-				return this._TimePeriod;
-			}
-			set
-			{
-				if ((this._TimePeriod != value))
-				{
-					this._TimePeriod = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrent", DbType="Bit NOT NULL")]
-		public bool IsCurrent
-		{
-			get
-			{
-				return this._IsCurrent;
-			}
-			set
-			{
-				if ((this._IsCurrent != value))
-				{
-					this._IsCurrent = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AnnualDues", DbType="Money NOT NULL")]
-		public decimal AnnualDues
-		{
-			get
-			{
-				return this._AnnualDues;
-			}
-			set
-			{
-				if ((this._AnnualDues != value))
-				{
-					this._AnnualDues = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CartFee", DbType="Money NOT NULL")]
-		public decimal CartFee
-		{
-			get
-			{
-				return this._CartFee;
-			}
-			set
-			{
-				if ((this._CartFee != value))
-				{
-					this._CartFee = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Assessment", DbType="VarChar(50)")]
-		public string Assessment
-		{
-			get
-			{
-				return this._Assessment;
-			}
-			set
-			{
-				if ((this._Assessment != value))
-				{
-					this._Assessment = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssessmentAmount", DbType="Money NOT NULL")]
-		public decimal AssessmentAmount
-		{
-			get
-			{
-				return this._AssessmentAmount;
-			}
-			set
-			{
-				if ((this._AssessmentAmount != value))
-				{
-					this._AssessmentAmount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVisible", DbType="Bit")]
-		public System.Nullable<bool> IsVisible
-		{
-			get
-			{
-				return this._IsVisible;
-			}
-			set
-			{
-				if ((this._IsVisible != value))
-				{
-					this._IsVisible = value;
-				}
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Properties")]
 	public partial class Property : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -5044,375 +4897,6 @@ namespace HVCC.Shell.Models
 				if ((this._SecondaryPhone != value))
 				{
 					this._SecondaryPhone = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationPermissions")]
-	public partial class ApplicationPermission
-	{
-		
-		private int _RowId;
-		
-		private string _Role;
-		
-		private int _RoleIndex;
-		
-		private bool _CanViewProperty;
-		
-		private bool _CanEditPropertyInfo;
-		
-		private bool _CanViewPropertyNotes;
-		
-		private bool _CanEditPropertyNotes;
-		
-		private bool _CanViewOwner;
-		
-		private bool _CanEditOwner;
-		
-		private bool _CanAddRelationship;
-		
-		private bool _CanEditRelationship;
-		
-		private bool _CanCheckIn;
-		
-		private bool _CanViewWater;
-		
-		private bool _CanEditWater;
-		
-		private bool _CanViewGolfCart;
-		
-		private bool _CanEditGolfCart;
-		
-		private bool _CanImport;
-		
-		private bool _CanExport;
-		
-		private bool _CanPrint;
-		
-		private bool _CanViewAdministration;
-		
-		public ApplicationPermission()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.Always, DbType="Int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int RowId
-		{
-			get
-			{
-				return this._RowId;
-			}
-			set
-			{
-				if ((this._RowId != value))
-				{
-					this._RowId = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Role", DbType="VarChar(25) NOT NULL", CanBeNull=false)]
-		public string Role
-		{
-			get
-			{
-				return this._Role;
-			}
-			set
-			{
-				if ((this._Role != value))
-				{
-					this._Role = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoleIndex", DbType="Int NOT NULL")]
-		public int RoleIndex
-		{
-			get
-			{
-				return this._RoleIndex;
-			}
-			set
-			{
-				if ((this._RoleIndex != value))
-				{
-					this._RoleIndex = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewProperty", DbType="Bit NOT NULL")]
-		public bool CanViewProperty
-		{
-			get
-			{
-				return this._CanViewProperty;
-			}
-			set
-			{
-				if ((this._CanViewProperty != value))
-				{
-					this._CanViewProperty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditPropertyInfo", DbType="Bit NOT NULL")]
-		public bool CanEditPropertyInfo
-		{
-			get
-			{
-				return this._CanEditPropertyInfo;
-			}
-			set
-			{
-				if ((this._CanEditPropertyInfo != value))
-				{
-					this._CanEditPropertyInfo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewPropertyNotes", DbType="Bit NOT NULL")]
-		public bool CanViewPropertyNotes
-		{
-			get
-			{
-				return this._CanViewPropertyNotes;
-			}
-			set
-			{
-				if ((this._CanViewPropertyNotes != value))
-				{
-					this._CanViewPropertyNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditPropertyNotes", DbType="Bit NOT NULL")]
-		public bool CanEditPropertyNotes
-		{
-			get
-			{
-				return this._CanEditPropertyNotes;
-			}
-			set
-			{
-				if ((this._CanEditPropertyNotes != value))
-				{
-					this._CanEditPropertyNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewOwner", DbType="Bit NOT NULL")]
-		public bool CanViewOwner
-		{
-			get
-			{
-				return this._CanViewOwner;
-			}
-			set
-			{
-				if ((this._CanViewOwner != value))
-				{
-					this._CanViewOwner = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditOwner", DbType="Bit NOT NULL")]
-		public bool CanEditOwner
-		{
-			get
-			{
-				return this._CanEditOwner;
-			}
-			set
-			{
-				if ((this._CanEditOwner != value))
-				{
-					this._CanEditOwner = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanAddRelationship", DbType="Bit NOT NULL")]
-		public bool CanAddRelationship
-		{
-			get
-			{
-				return this._CanAddRelationship;
-			}
-			set
-			{
-				if ((this._CanAddRelationship != value))
-				{
-					this._CanAddRelationship = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditRelationship", DbType="Bit NOT NULL")]
-		public bool CanEditRelationship
-		{
-			get
-			{
-				return this._CanEditRelationship;
-			}
-			set
-			{
-				if ((this._CanEditRelationship != value))
-				{
-					this._CanEditRelationship = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanCheckIn", DbType="Bit NOT NULL")]
-		public bool CanCheckIn
-		{
-			get
-			{
-				return this._CanCheckIn;
-			}
-			set
-			{
-				if ((this._CanCheckIn != value))
-				{
-					this._CanCheckIn = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewWater", DbType="Bit NOT NULL")]
-		public bool CanViewWater
-		{
-			get
-			{
-				return this._CanViewWater;
-			}
-			set
-			{
-				if ((this._CanViewWater != value))
-				{
-					this._CanViewWater = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditWater", DbType="Bit NOT NULL")]
-		public bool CanEditWater
-		{
-			get
-			{
-				return this._CanEditWater;
-			}
-			set
-			{
-				if ((this._CanEditWater != value))
-				{
-					this._CanEditWater = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewGolfCart", DbType="Bit NOT NULL")]
-		public bool CanViewGolfCart
-		{
-			get
-			{
-				return this._CanViewGolfCart;
-			}
-			set
-			{
-				if ((this._CanViewGolfCart != value))
-				{
-					this._CanViewGolfCart = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditGolfCart", DbType="Bit NOT NULL")]
-		public bool CanEditGolfCart
-		{
-			get
-			{
-				return this._CanEditGolfCart;
-			}
-			set
-			{
-				if ((this._CanEditGolfCart != value))
-				{
-					this._CanEditGolfCart = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanImport", DbType="Bit NOT NULL")]
-		public bool CanImport
-		{
-			get
-			{
-				return this._CanImport;
-			}
-			set
-			{
-				if ((this._CanImport != value))
-				{
-					this._CanImport = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanExport", DbType="Bit NOT NULL")]
-		public bool CanExport
-		{
-			get
-			{
-				return this._CanExport;
-			}
-			set
-			{
-				if ((this._CanExport != value))
-				{
-					this._CanExport = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanPrint", DbType="Bit NOT NULL")]
-		public bool CanPrint
-		{
-			get
-			{
-				return this._CanPrint;
-			}
-			set
-			{
-				if ((this._CanPrint != value))
-				{
-					this._CanPrint = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewAdministration", DbType="Bit NOT NULL")]
-		public bool CanViewAdministration
-		{
-			get
-			{
-				return this._CanViewAdministration;
-			}
-			set
-			{
-				if ((this._CanViewAdministration != value))
-				{
-					this._CanViewAdministration = value;
 				}
 			}
 		}
@@ -6921,6 +6405,802 @@ namespace HVCC.Shell.Models
 				{
 					this._Customer = value;
 				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationPermissions")]
+	public partial class ApplicationPermission : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowId;
+		
+		private string _Role;
+		
+		private int _RoleIndex;
+		
+		private bool _CanViewProperty;
+		
+		private bool _CanEditProperty;
+		
+		private bool _CanViewOwner;
+		
+		private bool _CanEditOwner;
+		
+		private bool _CanViewOwnerNotes;
+		
+		private bool _CanEditOwnerNotes;
+		
+		private bool _CanAddRelationship;
+		
+		private bool _CanEditRelationship;
+		
+		private bool _CanCheckIn;
+		
+		private bool _CanViewWater;
+		
+		private bool _CanEditWater;
+		
+		private bool _CanImport;
+		
+		private bool _CanExport;
+		
+		private bool _CanPrint;
+		
+		private bool _CanViewAdministration;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIdChanging(int value);
+    partial void OnRowIdChanged();
+    partial void OnRoleChanging(string value);
+    partial void OnRoleChanged();
+    partial void OnRoleIndexChanging(int value);
+    partial void OnRoleIndexChanged();
+    partial void OnCanViewPropertyChanging(bool value);
+    partial void OnCanViewPropertyChanged();
+    partial void OnCanEditPropertyChanging(bool value);
+    partial void OnCanEditPropertyChanged();
+    partial void OnCanViewOwnerChanging(bool value);
+    partial void OnCanViewOwnerChanged();
+    partial void OnCanEditOwnerChanging(bool value);
+    partial void OnCanEditOwnerChanged();
+    partial void OnCanViewOwnerNotesChanging(bool value);
+    partial void OnCanViewOwnerNotesChanged();
+    partial void OnCanEditOwnerNotesChanging(bool value);
+    partial void OnCanEditOwnerNotesChanged();
+    partial void OnCanAddRelationshipChanging(bool value);
+    partial void OnCanAddRelationshipChanged();
+    partial void OnCanEditRelationshipChanging(bool value);
+    partial void OnCanEditRelationshipChanged();
+    partial void OnCanCheckInChanging(bool value);
+    partial void OnCanCheckInChanged();
+    partial void OnCanViewWaterChanging(bool value);
+    partial void OnCanViewWaterChanged();
+    partial void OnCanEditWaterChanging(bool value);
+    partial void OnCanEditWaterChanged();
+    partial void OnCanImportChanging(bool value);
+    partial void OnCanImportChanged();
+    partial void OnCanExportChanging(bool value);
+    partial void OnCanExportChanged();
+    partial void OnCanPrintChanging(bool value);
+    partial void OnCanPrintChanged();
+    partial void OnCanViewAdministrationChanging(bool value);
+    partial void OnCanViewAdministrationChanged();
+    #endregion
+		
+		public ApplicationPermission()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowId
+		{
+			get
+			{
+				return this._RowId;
+			}
+			set
+			{
+				if ((this._RowId != value))
+				{
+					this.OnRowIdChanging(value);
+					this.SendPropertyChanging();
+					this._RowId = value;
+					this.SendPropertyChanged("RowId");
+					this.OnRowIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Role", DbType="VarChar(25) NOT NULL", CanBeNull=false)]
+		public string Role
+		{
+			get
+			{
+				return this._Role;
+			}
+			set
+			{
+				if ((this._Role != value))
+				{
+					this.OnRoleChanging(value);
+					this.SendPropertyChanging();
+					this._Role = value;
+					this.SendPropertyChanged("Role");
+					this.OnRoleChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoleIndex", DbType="Int NOT NULL")]
+		public int RoleIndex
+		{
+			get
+			{
+				return this._RoleIndex;
+			}
+			set
+			{
+				if ((this._RoleIndex != value))
+				{
+					this.OnRoleIndexChanging(value);
+					this.SendPropertyChanging();
+					this._RoleIndex = value;
+					this.SendPropertyChanged("RoleIndex");
+					this.OnRoleIndexChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewProperty", DbType="Bit NOT NULL")]
+		public bool CanViewProperty
+		{
+			get
+			{
+				return this._CanViewProperty;
+			}
+			set
+			{
+				if ((this._CanViewProperty != value))
+				{
+					this.OnCanViewPropertyChanging(value);
+					this.SendPropertyChanging();
+					this._CanViewProperty = value;
+					this.SendPropertyChanged("CanViewProperty");
+					this.OnCanViewPropertyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditProperty", DbType="Bit NOT NULL")]
+		public bool CanEditProperty
+		{
+			get
+			{
+				return this._CanEditProperty;
+			}
+			set
+			{
+				if ((this._CanEditProperty != value))
+				{
+					this.OnCanEditPropertyChanging(value);
+					this.SendPropertyChanging();
+					this._CanEditProperty = value;
+					this.SendPropertyChanged("CanEditProperty");
+					this.OnCanEditPropertyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewOwner", DbType="Bit NOT NULL")]
+		public bool CanViewOwner
+		{
+			get
+			{
+				return this._CanViewOwner;
+			}
+			set
+			{
+				if ((this._CanViewOwner != value))
+				{
+					this.OnCanViewOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._CanViewOwner = value;
+					this.SendPropertyChanged("CanViewOwner");
+					this.OnCanViewOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditOwner", DbType="Bit NOT NULL")]
+		public bool CanEditOwner
+		{
+			get
+			{
+				return this._CanEditOwner;
+			}
+			set
+			{
+				if ((this._CanEditOwner != value))
+				{
+					this.OnCanEditOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._CanEditOwner = value;
+					this.SendPropertyChanged("CanEditOwner");
+					this.OnCanEditOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewOwnerNotes", DbType="Bit NOT NULL")]
+		public bool CanViewOwnerNotes
+		{
+			get
+			{
+				return this._CanViewOwnerNotes;
+			}
+			set
+			{
+				if ((this._CanViewOwnerNotes != value))
+				{
+					this.OnCanViewOwnerNotesChanging(value);
+					this.SendPropertyChanging();
+					this._CanViewOwnerNotes = value;
+					this.SendPropertyChanged("CanViewOwnerNotes");
+					this.OnCanViewOwnerNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditOwnerNotes", DbType="Bit NOT NULL")]
+		public bool CanEditOwnerNotes
+		{
+			get
+			{
+				return this._CanEditOwnerNotes;
+			}
+			set
+			{
+				if ((this._CanEditOwnerNotes != value))
+				{
+					this.OnCanEditOwnerNotesChanging(value);
+					this.SendPropertyChanging();
+					this._CanEditOwnerNotes = value;
+					this.SendPropertyChanged("CanEditOwnerNotes");
+					this.OnCanEditOwnerNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanAddRelationship", DbType="Bit NOT NULL")]
+		public bool CanAddRelationship
+		{
+			get
+			{
+				return this._CanAddRelationship;
+			}
+			set
+			{
+				if ((this._CanAddRelationship != value))
+				{
+					this.OnCanAddRelationshipChanging(value);
+					this.SendPropertyChanging();
+					this._CanAddRelationship = value;
+					this.SendPropertyChanged("CanAddRelationship");
+					this.OnCanAddRelationshipChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditRelationship", DbType="Bit NOT NULL")]
+		public bool CanEditRelationship
+		{
+			get
+			{
+				return this._CanEditRelationship;
+			}
+			set
+			{
+				if ((this._CanEditRelationship != value))
+				{
+					this.OnCanEditRelationshipChanging(value);
+					this.SendPropertyChanging();
+					this._CanEditRelationship = value;
+					this.SendPropertyChanged("CanEditRelationship");
+					this.OnCanEditRelationshipChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanCheckIn", DbType="Bit NOT NULL")]
+		public bool CanCheckIn
+		{
+			get
+			{
+				return this._CanCheckIn;
+			}
+			set
+			{
+				if ((this._CanCheckIn != value))
+				{
+					this.OnCanCheckInChanging(value);
+					this.SendPropertyChanging();
+					this._CanCheckIn = value;
+					this.SendPropertyChanged("CanCheckIn");
+					this.OnCanCheckInChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewWater", DbType="Bit NOT NULL")]
+		public bool CanViewWater
+		{
+			get
+			{
+				return this._CanViewWater;
+			}
+			set
+			{
+				if ((this._CanViewWater != value))
+				{
+					this.OnCanViewWaterChanging(value);
+					this.SendPropertyChanging();
+					this._CanViewWater = value;
+					this.SendPropertyChanged("CanViewWater");
+					this.OnCanViewWaterChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanEditWater", DbType="Bit NOT NULL")]
+		public bool CanEditWater
+		{
+			get
+			{
+				return this._CanEditWater;
+			}
+			set
+			{
+				if ((this._CanEditWater != value))
+				{
+					this.OnCanEditWaterChanging(value);
+					this.SendPropertyChanging();
+					this._CanEditWater = value;
+					this.SendPropertyChanged("CanEditWater");
+					this.OnCanEditWaterChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanImport", DbType="Bit NOT NULL")]
+		public bool CanImport
+		{
+			get
+			{
+				return this._CanImport;
+			}
+			set
+			{
+				if ((this._CanImport != value))
+				{
+					this.OnCanImportChanging(value);
+					this.SendPropertyChanging();
+					this._CanImport = value;
+					this.SendPropertyChanged("CanImport");
+					this.OnCanImportChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanExport", DbType="Bit NOT NULL")]
+		public bool CanExport
+		{
+			get
+			{
+				return this._CanExport;
+			}
+			set
+			{
+				if ((this._CanExport != value))
+				{
+					this.OnCanExportChanging(value);
+					this.SendPropertyChanging();
+					this._CanExport = value;
+					this.SendPropertyChanged("CanExport");
+					this.OnCanExportChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanPrint", DbType="Bit NOT NULL")]
+		public bool CanPrint
+		{
+			get
+			{
+				return this._CanPrint;
+			}
+			set
+			{
+				if ((this._CanPrint != value))
+				{
+					this.OnCanPrintChanging(value);
+					this.SendPropertyChanging();
+					this._CanPrint = value;
+					this.SendPropertyChanged("CanPrint");
+					this.OnCanPrintChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CanViewAdministration", DbType="Bit NOT NULL")]
+		public bool CanViewAdministration
+		{
+			get
+			{
+				return this._CanViewAdministration;
+			}
+			set
+			{
+				if ((this._CanViewAdministration != value))
+				{
+					this.OnCanViewAdministrationChanging(value);
+					this.SendPropertyChanging();
+					this._CanViewAdministration = value;
+					this.SendPropertyChanged("CanViewAdministration");
+					this.OnCanViewAdministrationChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Seasons")]
+	public partial class Season : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowID;
+		
+		private string _TimePeriod;
+		
+		private bool _IsCurrent;
+		
+		private decimal _AnnualDues;
+		
+		private decimal _CartFee;
+		
+		private string _Assessment;
+		
+		private System.Nullable<decimal> _AssessmentAmount;
+		
+		private bool _IsDuesApplied;
+		
+		private bool _IsLate30Applied;
+		
+		private bool _IsLate60Applied;
+		
+		private bool _IsLate90Applied;
+		
+		private System.Nullable<bool> _IsVisible;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIDChanging(int value);
+    partial void OnRowIDChanged();
+    partial void OnTimePeriodChanging(string value);
+    partial void OnTimePeriodChanged();
+    partial void OnIsCurrentChanging(bool value);
+    partial void OnIsCurrentChanged();
+    partial void OnAnnualDuesChanging(decimal value);
+    partial void OnAnnualDuesChanged();
+    partial void OnCartFeeChanging(decimal value);
+    partial void OnCartFeeChanged();
+    partial void OnAssessmentChanging(string value);
+    partial void OnAssessmentChanged();
+    partial void OnAssessmentAmountChanging(System.Nullable<decimal> value);
+    partial void OnAssessmentAmountChanged();
+    partial void OnIsDuesAppliedChanging(bool value);
+    partial void OnIsDuesAppliedChanged();
+    partial void OnIsLate30AppliedChanging(bool value);
+    partial void OnIsLate30AppliedChanged();
+    partial void OnIsLate60AppliedChanging(bool value);
+    partial void OnIsLate60AppliedChanged();
+    partial void OnIsLate90AppliedChanging(bool value);
+    partial void OnIsLate90AppliedChanged();
+    partial void OnIsVisibleChanging(System.Nullable<bool> value);
+    partial void OnIsVisibleChanged();
+    #endregion
+		
+		public Season()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this.OnRowIDChanging(value);
+					this.SendPropertyChanging();
+					this._RowID = value;
+					this.SendPropertyChanged("RowID");
+					this.OnRowIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TimePeriod", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string TimePeriod
+		{
+			get
+			{
+				return this._TimePeriod;
+			}
+			set
+			{
+				if ((this._TimePeriod != value))
+				{
+					this.OnTimePeriodChanging(value);
+					this.SendPropertyChanging();
+					this._TimePeriod = value;
+					this.SendPropertyChanged("TimePeriod");
+					this.OnTimePeriodChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrent", DbType="Bit NOT NULL")]
+		public bool IsCurrent
+		{
+			get
+			{
+				return this._IsCurrent;
+			}
+			set
+			{
+				if ((this._IsCurrent != value))
+				{
+					this.OnIsCurrentChanging(value);
+					this.SendPropertyChanging();
+					this._IsCurrent = value;
+					this.SendPropertyChanged("IsCurrent");
+					this.OnIsCurrentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AnnualDues", DbType="Money NOT NULL")]
+		public decimal AnnualDues
+		{
+			get
+			{
+				return this._AnnualDues;
+			}
+			set
+			{
+				if ((this._AnnualDues != value))
+				{
+					this.OnAnnualDuesChanging(value);
+					this.SendPropertyChanging();
+					this._AnnualDues = value;
+					this.SendPropertyChanged("AnnualDues");
+					this.OnAnnualDuesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CartFee", DbType="Money NOT NULL")]
+		public decimal CartFee
+		{
+			get
+			{
+				return this._CartFee;
+			}
+			set
+			{
+				if ((this._CartFee != value))
+				{
+					this.OnCartFeeChanging(value);
+					this.SendPropertyChanging();
+					this._CartFee = value;
+					this.SendPropertyChanged("CartFee");
+					this.OnCartFeeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Assessment", DbType="VarChar(50)")]
+		public string Assessment
+		{
+			get
+			{
+				return this._Assessment;
+			}
+			set
+			{
+				if ((this._Assessment != value))
+				{
+					this.OnAssessmentChanging(value);
+					this.SendPropertyChanging();
+					this._Assessment = value;
+					this.SendPropertyChanged("Assessment");
+					this.OnAssessmentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssessmentAmount", DbType="Money")]
+		public System.Nullable<decimal> AssessmentAmount
+		{
+			get
+			{
+				return this._AssessmentAmount;
+			}
+			set
+			{
+				if ((this._AssessmentAmount != value))
+				{
+					this.OnAssessmentAmountChanging(value);
+					this.SendPropertyChanging();
+					this._AssessmentAmount = value;
+					this.SendPropertyChanged("AssessmentAmount");
+					this.OnAssessmentAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDuesApplied", DbType="Bit NOT NULL")]
+		public bool IsDuesApplied
+		{
+			get
+			{
+				return this._IsDuesApplied;
+			}
+			set
+			{
+				if ((this._IsDuesApplied != value))
+				{
+					this.OnIsDuesAppliedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDuesApplied = value;
+					this.SendPropertyChanged("IsDuesApplied");
+					this.OnIsDuesAppliedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate30Applied", DbType="Bit NOT NULL")]
+		public bool IsLate30Applied
+		{
+			get
+			{
+				return this._IsLate30Applied;
+			}
+			set
+			{
+				if ((this._IsLate30Applied != value))
+				{
+					this.OnIsLate30AppliedChanging(value);
+					this.SendPropertyChanging();
+					this._IsLate30Applied = value;
+					this.SendPropertyChanged("IsLate30Applied");
+					this.OnIsLate30AppliedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate60Applied", DbType="Bit NOT NULL")]
+		public bool IsLate60Applied
+		{
+			get
+			{
+				return this._IsLate60Applied;
+			}
+			set
+			{
+				if ((this._IsLate60Applied != value))
+				{
+					this.OnIsLate60AppliedChanging(value);
+					this.SendPropertyChanging();
+					this._IsLate60Applied = value;
+					this.SendPropertyChanged("IsLate60Applied");
+					this.OnIsLate60AppliedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLate90Applied", DbType="Bit NOT NULL")]
+		public bool IsLate90Applied
+		{
+			get
+			{
+				return this._IsLate90Applied;
+			}
+			set
+			{
+				if ((this._IsLate90Applied != value))
+				{
+					this.OnIsLate90AppliedChanging(value);
+					this.SendPropertyChanging();
+					this._IsLate90Applied = value;
+					this.SendPropertyChanged("IsLate90Applied");
+					this.OnIsLate90AppliedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVisible", DbType="Bit")]
+		public System.Nullable<bool> IsVisible
+		{
+			get
+			{
+				return this._IsVisible;
+			}
+			set
+			{
+				if ((this._IsVisible != value))
+				{
+					this.OnIsVisibleChanging(value);
+					this.SendPropertyChanging();
+					this._IsVisible = value;
+					this.SendPropertyChanged("IsVisible");
+					this.OnIsVisibleChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}

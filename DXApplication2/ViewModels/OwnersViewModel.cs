@@ -320,7 +320,7 @@
         {
             get
             {
-                return _ownershipHistoryCommand ?? (_ownershipHistoryCommand = new CommandHandler(() => OwnershipHistoryAction(), ApplPermissions.CanViewPropertyNotes));
+                return _ownershipHistoryCommand ?? (_ownershipHistoryCommand = new CommandHandler(() => OwnershipHistoryAction(), ApplPermissions.CanViewOwnerNotes));
             }
         }
 
@@ -362,7 +362,7 @@
         {
             get
             {
-                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), ApplPermissions.CanViewPropertyNotes));
+                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), ApplPermissions.CanViewOwnerNotes));
             }
         }
 

@@ -3,20 +3,13 @@
     using System;
     using System.Linq;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using DevExpress.Xpf.Docking;
-    using System.Data.Linq;
     using HVCC.Shell.Common;
-    using DevExpress.Mvvm;
     using HVCC.Shell.Models;
     using DevExpress.Spreadsheet;
     using System.Windows.Input;
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
-    using System.Diagnostics;
-    using System.Windows;
-    using System.Text;
 
     public partial class WaterShutoffViewModel : CommonViewModel, ICommandSink
     {

@@ -184,7 +184,7 @@
             this.xrLabel15,
             this.xrRichText4});
             this.groupHeaderBand1.GroupUnion = DevExpress.XtraReports.UI.GroupUnion.WithFirstDetail;
-            this.groupHeaderBand1.HeightF = 896.9017F;
+            this.groupHeaderBand1.HeightF = 662.5267F;
             this.groupHeaderBand1.Name = "groupHeaderBand1";
             // 
             // xrLabel17

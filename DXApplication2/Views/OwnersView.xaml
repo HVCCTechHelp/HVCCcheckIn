@@ -101,19 +101,19 @@
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Property Notes"
                                                    ItemClick="bb_NotesReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem Content="Balances Due"
                                                    ItemClick="bb_BalanceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
                             <dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="Ownership History" 
                                                    Command="{Binding OwnershipHistoryCommand}" CommandParameter=""
-                                                   IsVisible="{Binding ApplPermissions.CanViewPropertyNotes, Mode=TwoWay}" 
+                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Ownership_16x16.png" 
                                                    LargeGlyph="/Images/Icons/Ownership_32x32.png" />

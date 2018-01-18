@@ -134,7 +134,7 @@
             //// It is plusuable to assume that the parcel number may get entered incorrectly, or
             //// need to be replaced at some point.  Therefore, I've put in a hot-key <LeftCtrl> that
             //// will enable editing of this control. Otherwise the control remains read-only.
-            //if (e.Key == System.Windows.Input.Key.LeftCtrl && Host.Instance.AppPermissions.CanEditPropertyInfo)
+            //if (e.Key == System.Windows.Input.Key.LeftCtrl && Host.Instance.AppPermissions.CanEditProperty)
             //{
             //    object resource = TryFindResource("TextEditEditStyle");
             //    this.teParcel.Style = (Style)resource;

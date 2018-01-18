@@ -433,10 +433,10 @@
                                     <dxlc:LayoutItem Width="675">
                                         <dxe:TextEdit x:Name="teComment"  
                                                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                                                      Visibility="{Binding ApplPermissions.CanEditPropertyNotes, Converter={StaticResource BoolToVis}}" 
+                                                      Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}" 
                                                       Style="{Binding TeStyle}"
-                                                      Focusable="{Binding ApplPermissions.CanEditPropertyNotes}"
-                                                      IsHitTestVisible="{Binding ApplPermissions.CanEditPropertyNotes}"
+                                                      Focusable="{Binding ApplPermissions.CanEditOwnerNotes}"
+                                                      IsHitTestVisible="{Binding ApplPermissions.CanEditOwnerNotes}"
                                                       AcceptsReturn="False"
                                                       Height="50" Width="650"
                                                       MaxLength="100"
