@@ -247,7 +247,7 @@
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
                                                       NullText="$0.00"
-                                                      ToolTip="Amount">
+                                                      ToolTip="Only enter dues payment. Subtracts from account balance">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="DuesAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                                     <Binding.ValidationRules>
@@ -267,7 +267,7 @@
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
                                                       NullText="$0.00"
-                                                      ToolTip="Amount">
+                                                      ToolTip="Only enter late fees. Subtracts to account balance">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="FeeAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                                     <Binding.ValidationRules>

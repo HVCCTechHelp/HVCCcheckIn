@@ -262,7 +262,7 @@
             // Check to see if there is a WaterShutoff record for the Owner.  If there
             // is not, we will generate one here.  If there is, it is updated to reflect the
             // current past due status.
-            if (comment.Contains("30")
+            if (   comment.Contains("30")
                 || comment.Contains("60")
                 || comment.Contains("90"))
             {
@@ -271,10 +271,42 @@
                                       && x.IsResolved == false
                                       select x).FirstOrDefault();
 
+                // No WaterShutoff record found, so we will create one.
                 if (null == wsOff)
                 {
-
+                    WaterShutoff waterShutoff = new WaterShutoff();
+                    waterShutoff.OwnerID = selectedOwner.OwnerID;
+                    if (comment.Contains("30"))
+                    {
+                        waterShutoff.IsLate30 = true;
+                        waterShutoff.FirstNotificationDate = DateTime.Now;
+                        this.dc.WaterShutoffs.InsertOnSubmit(waterShutoff);
+                    }
                 }
+                // There is an existing record, so it needs to be updated.....
+                else
+                {
+                    if (comment.Contains("60"))
+                    {
+                        wsOff.IsLate60 = true;
+                        wsOff.IsMemberSuspended = true;
+                        wsOff.SuspensionDate = DateTime.Now;
+                        wsOff.SecondNotificationDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        wsOff.IsLate90 = true;
+                        if (!wsOff.IsMemberSuspended)
+                        {
+                            wsOff.IsMemberSuspended = true;
+                            wsOff.SuspensionDate = DateTime.Now;
+                        }
+                        wsOff.IsShutoffNoticeIssued = true;
+                        wsOff.ShutoffNoticeIssuedDate = DateTime.Now;
+                    }
+                }
+                ChangeSet cs = dc.GetChangeSet();
+                dc.SubmitChanges();
             }
         }
     }

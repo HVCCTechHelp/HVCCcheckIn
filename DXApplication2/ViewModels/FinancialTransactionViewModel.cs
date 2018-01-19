@@ -241,7 +241,7 @@
             }
         }
 
-        public decimal? AccountBalance
+        public decimal AccountBalance
         {
             get
             {
@@ -258,13 +258,13 @@
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return 0m;
                 }
             }
         }
 
-        private decimal? _creditAmount = null;
-        public decimal? CreditAmount
+        private decimal _creditAmount = 0m;
+        public decimal CreditAmount
         {
             get
             { return _creditAmount; }
@@ -278,8 +278,8 @@
             }
         }
 
-        private decimal? _debitAmount = null;
-        public decimal? DebitAmount
+        private decimal _debitAmount = 0m;
+        public decimal DebitAmount
         {
             get
             { return _debitAmount; }
@@ -361,8 +361,8 @@
             }
         }
 
-        private decimal? _duesAmount = null;
-        public decimal? DuesAmount
+        private decimal _duesAmount = 0m;
+        public decimal DuesAmount
         {
             get
             {
@@ -384,6 +384,33 @@
 
                     _duesAmount = value;
                     TotalAmount += (decimal)_duesAmount;
+                }
+            }
+        }
+
+        private decimal _feeAmount = 0m;
+        public decimal FeeAmount
+        {
+            get
+            {
+                return _feeAmount;
+            }
+            set
+            {
+                if (_feeAmount != value)
+                {
+                    string tmp = string.Format("Fees:{0:c} ", value);
+                    if (_feeAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
+
+                    _feeAmount = value;
+                    TotalAmount += (decimal)_feeAmount;
                 }
             }
         }
@@ -721,15 +748,18 @@
                 Note note = new Note();
                 StringBuilder sb = new StringBuilder();
 
-                if (null != CreditAmount)
+                // Determine if we are posting a credit or a debit.  
+                if (0 != CreditAmount)
                 {
-                    transaction.Balance = (decimal)AccountBalance - (decimal)CreditAmount;
+                    // Only Dues and Late Fees credits are deducted from the balance owed, or added
+                    // as a positive credit.  All other types of credits are journaled for history.
+                    transaction.Balance = AccountBalance - DuesAmount - FeeAmount;
                     sb.Append("Credit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
                 else
                 {
-                    transaction.Balance = (decimal)AccountBalance + (decimal)DebitAmount;
+                    transaction.Balance = AccountBalance + DebitAmount;
                     sb.Append("Debit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
@@ -745,7 +775,7 @@
                 transaction.Comment = TransactionComment;
                 dc.FinancialTransactions.InsertOnSubmit(transaction);
 
-                // Add/Attach a comment to the Owner
+                // Add/Attach a comment to the Owner's Notes table.
                 sb.Append(" - ");
                 sb.Append(transaction.Comment);
                 sb.AppendLine();
@@ -753,6 +783,7 @@
                 note.Comment = sb.ToString().Trim();
                 dc.Notes.InsertOnSubmit(note);
 
+                // If there is credit applied to a golf cart, we create a Golf Cart record.
                 if (0 < CartAmount)
                 {
                     GolfCart golfCart = new GolfCart();
@@ -763,6 +794,24 @@
                     golfCart.IsPaid = true;
 
                     dc.GolfCarts.InsertOnSubmit(golfCart);
+                }
+
+                // Lastly, if the balance is zero, or a negative (they have a credit to their account), check
+                // to see if the account is in a Water Shutoff status.
+                if (transaction.Balance >= 0)
+                {
+                    WaterShutoff wsOff = (from x in dc.WaterShutoffs
+                                          where x.OwnerID == SelectedOwner.OwnerID
+                                          select x).FirstOrDefault();
+
+                    // If a WS record is found, we set the status to closed with balance paid.
+                    if (null != wsOff)
+                    {
+                        wsOff.IsResolved = true;
+                        wsOff.ResolutionDate = DateTime.Now;
+                        wsOff.Resolution = "Owner has paid off full balance due.";
+                        wsOff.IsMemberSuspended = false;
+                    }
                 }
 
                 this.dc.SubmitChanges();
@@ -865,8 +914,8 @@
             StringBuilder message = new StringBuilder();
 
             if (
-                   ((CreditAmount > 0 && null == DebitAmount)
-                || (DebitAmount > 0 && null == CreditAmount))
+                   ((CreditAmount > 0 && 0 == DebitAmount)
+                || (DebitAmount > 0 && 0 == CreditAmount))
                 && ((TotalAmount == CreditAmount)
                 || (TotalAmount == DebitAmount))
                 && (DateTime.Now > TransactionDate)

@@ -209,6 +209,23 @@
             }
         }
 
+        private FinancialTransaction _selectedTransaction = null;
+        public FinancialTransaction SelectedTransaction
+        {
+            get
+            {
+                return _selectedTransaction;
+            }
+            set
+            {
+                if (_selectedTransaction != value)
+                {
+                    _selectedTransaction = value;
+                    RaisePropertyChanged("SelectedTransaction");
+                }
+            }
+        }
+
         private Relationship _selectedRelationship = null;
         public Relationship SelectedRelationship
         {
@@ -953,7 +970,7 @@
         }
 
         /// <summary>
-        ///TextEdit LostFocus Event Action
+        /// TextEdit (Notes) LostFocus Event Action
         /// </summary>
         /// <param name="parameter"></param>
         public void TELostFocusAction(object parameter)
@@ -967,7 +984,7 @@
         }
 
         /// <summary>
-        /// Print Command
+        /// Property grid row double-click command
         /// </summary>
         private ICommand _rowDoubleClickCommand;
         public ICommand RowDoubleClickCommand
@@ -979,7 +996,7 @@
         }
 
         /// <summary>
-        /// Grid row double click event to command action
+        /// Property Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
@@ -1039,7 +1056,7 @@
         /// (ImageEdit) Drop Event to Command
         /// </summary>
         private ICommand _dropCommand;
-        public ICommand DropCommand
+        public ICommand DropCommand                // Currently not working......
         {
             get
             {
@@ -1063,6 +1080,26 @@
             //    this.label.Text += File + "\n";
         }
 
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new CommandHandlerWparm((object parameter) => RefreshAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RefreshAction(object parameter)
+        {
+        }
+
         ///// <summary>
         /////  Command Template
         ///// </summary>
@@ -1082,7 +1119,6 @@
         //public void TemplateAction(object parameter)
         //{
         //}
-
     }
 
     /*===============================================================================================================================================*/

@@ -112,23 +112,6 @@
             }
         }
 
-        //private Property _selectedProperty = null;
-        //public Property SelectedProperty
-        //{
-        //    get
-        //    {
-        //        return _selectedProperty;
-        //    }
-        //    set
-        //    {
-        //        if (_selectedProperty != value)
-        //        {
-        //            _selectedProperty = value;
-        //            RaisePropertyChanged("SelectedProperty");
-        //        }
-        //    }
-        //}
-
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods

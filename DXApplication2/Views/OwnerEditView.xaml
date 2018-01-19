@@ -90,12 +90,12 @@
                 <dxr:RibbonDefaultPageCategory>
                     <dxr:RibbonPage Caption="Actions" >
                         <dxr:RibbonPageGroup Caption="Data">
-                            <dxb:BarButtonItem Content="Refresh" 
+                            <!--<dxb:BarButtonItem Content="Refresh" 
                                                        IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
                                                        Command="{Binding RefreshCommand}"
                                                        Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
                                                        LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
-                                                       ToolTip="Refresh Property Data"/>
+                                                       ToolTip="Refresh Property Data"/>-->
                             <!--<dxb:BarButtonItem Content="Undo" 
                                                        IsEnabled="False"
                                                        Command="{Binding UndoCommand}"
@@ -448,7 +448,7 @@
                                         <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
                                      IsEnabled="True"
                                      ItemsSource="{Binding FinancialTransactions}"
-                                     SelectedItem="{Binding SelectedTransaction}"
+                                     SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}"
                                      >
                                             <dxg:GridControl.View>
                                                 <dxg:TableView x:Name="tableViewPayments" 
@@ -515,6 +515,9 @@
                                             </dxg:GridControl.Columns>
                                         </dxg:GridControl>
                                     </dxlc:LayoutItem >
+                                    <dxlc:LayoutItem>
+                                        <dxe:TextEdit EditValue="{Binding SelectedTransaction.Comment}" IsReadOnly="True" ShowBorder="False" HorizontalScrollBarVisibility="Auto"/>
+                                    </dxlc:LayoutItem>
                                 </dxlc:LayoutGroup>
 
 
