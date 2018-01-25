@@ -228,6 +228,14 @@
     /// </summary>
     public partial class OwnersViewModel
     {
+        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+
+        public enum ExportType { PDF, XLSX }
+        public enum PrintType { PREVIEW, PRINT }
+
         /// <summary>
         /// RowDoubleClick Event to Command
         /// </summary>
@@ -337,38 +345,6 @@
             //}
         }
 
-        /// <summary>
-        /// View Notes about Properties
-        /// </summary>
-        private ICommand _generateAnnualInvoicesCommand;
-        public ICommand GenerateAnnualInvoicesCommand
-        {
-            get
-            {
-                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), ApplPermissions.CanViewOwnerNotes));
-            }
-        }
-
-        /// <summary>
-        /// View Notes about Properties
-        /// </summary>
-        /// <param name="type"></param>
-        public void GenerateAnnualInvoicesAction()
-        {
-            string fileName = string.Empty;
-
-            RaisePropertyChanged("IsBusy");
-            foreach (v_OwnerDetail o in OwnersList)
-            {
-                //fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
-                //Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-                //report.Parameters["selectedOwner"].Value = o.OwnerID;
-                //report.CreateDocument();
-                //report.ExportToPdf(fileName);
-            }
-            RaisePropertyChanged("IsNotBusy");
-        }
-
         ///// <summary>
         ///// Import Command
         ///// </summary>
@@ -413,7 +389,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter, Table), CanExport));
             }
         }
 
@@ -427,9 +403,80 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter, Table), CanPrint));
             }
         }
+
+        /// <summary>
+        /// Exports data grid to Excel
+        /// </summary>
+        /// <param name="type"></param>
+        public void ExportAction(object parameter, object view) //ExportCommand
+        {
+            string fn;
+            try
+            {
+                TableView tv = view as TableView;
+                Enum.TryParse(parameter.ToString(), out ExportType type);
+
+                switch (type)
+                {
+                    case ExportType.PDF:
+                        SaveFileDialogService.Filter = "PDF files|*.pdf";
+                        if (SaveFileDialogService.ShowDialog())
+
+                            fn = SaveFileDialogService.GetFullFileName();
+
+                        ExportService.ExportToPDF(tv, SaveFileDialogService.GetFullFileName());
+                        break;
+                    case ExportType.XLSX:
+                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
+                        if (SaveFileDialogService.ShowDialog())
+                            ExportService.ExportToXLSX(tv, SaveFileDialogService.GetFullFileName());
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error exporting data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
+        }
+
+        /// <summary>
+        /// Prints the current document
+        /// </summary>
+        /// <param name="type"></param>
+        public void PrintAction(object parameter, object view) //PrintCommand
+        {
+            try
+            {
+                TableView tv = view as TableView;
+                Enum.TryParse(parameter.ToString(), out PrintType type);
+
+                switch (type)
+                {
+                    case PrintType.PREVIEW:
+                        ExportService.ShowPrintPreview(tv);
+                        break;
+                    case PrintType.PRINT:
+                        ExportService.Print(tv);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.Show("Error printing data:" + ex.Message);
+            }
+            finally
+            {
+                //this.IsRibbonMinimized = true;
+            }
+        }
+
     }
 
     /*================================================================================================================================================*/

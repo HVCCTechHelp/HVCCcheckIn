@@ -256,6 +256,7 @@
                                     <dxg:GridColumn FieldName="SecondaryPhone" Header="Phone-2" Width="10" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}"/>
                                     <dxg:GridColumn FieldName="Email" Header="EMail" Width="10" Visible="False"  AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
                                     <dxg:GridColumn FieldName="IsSendByEmail" Header="EMail" Width="10" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
+                                    <dxg:GridColumn FieldName="IsAssessment" Header="IsAssessment" Width="10" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
                                 </dxg:GridControl.Columns>
 
                                 <dxg:GridControl.TotalSummary>

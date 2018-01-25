@@ -155,6 +155,8 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText1 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
+            this.formattingRule1 = new DevExpress.XtraReports.UI.FormattingRule();
+            this.IsAssessment = new DevExpress.XtraReports.UI.FormattingRule();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
@@ -1077,6 +1079,7 @@
             this.xrLabel22.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
             new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.AssessmentAmount", "{0:$0.00}")});
             this.xrLabel22.FormattingRules.Add(this.GolfCartRule);
+            this.xrLabel22.FormattingRules.Add(this.IsAssessment);
             this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(499.8122F, 5.261294F);
             this.xrLabel22.Name = "xrLabel22";
             this.xrLabel22.SizeF = new System.Drawing.SizeF(64.97061F, 23F);
@@ -1094,6 +1097,7 @@
             // 
             this.xrLabel21.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
             new DevExpress.XtraReports.UI.XRBinding("Text", null, "Invoice.Assessment")});
+            this.xrLabel21.FormattingRules.Add(this.IsAssessment);
             this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(374.8871F, 5.130571F);
             this.xrLabel21.Name = "xrLabel21";
             this.xrLabel21.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1388,6 +1392,18 @@
             this.xrLabel1.StylePriority.UseFont = false;
             this.xrLabel1.Text = "Past Due Notice Information";
             // 
+            // formattingRule1
+            // 
+            this.formattingRule1.DataMember = "Invoice";
+            this.formattingRule1.Name = "formattingRule1";
+            // 
+            // IsAssessment
+            // 
+            this.IsAssessment.Condition = "[IsAssessment]  == False";
+            this.IsAssessment.DataMember = "Invoice";
+            this.IsAssessment.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
+            this.IsAssessment.Name = "IsAssessment";
+            // 
             // AnnuaInvoices
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -1407,7 +1423,9 @@
             this.PastDue1Rule,
             this.HideRateRule,
             this.BorderRule,
-            this.PastDue2Rule});
+            this.PastDue2Rule,
+            this.formattingRule1,
+            this.IsAssessment});
             this.Margins = new System.Drawing.Printing.Margins(51, 48, 18, 47);
             this.Parameters.AddRange(new DevExpress.XtraReports.Parameters.Parameter[] {
             this.selectedOwner});
@@ -1546,5 +1564,7 @@
         private DevExpress.XtraReports.UI.FormattingRule HideRateRule;
         private DevExpress.XtraReports.UI.FormattingRule BorderRule;
         private DevExpress.XtraReports.UI.FormattingRule PastDue2Rule;
+        private DevExpress.XtraReports.UI.FormattingRule IsAssessment;
+        private DevExpress.XtraReports.UI.FormattingRule formattingRule1;
     }
 }

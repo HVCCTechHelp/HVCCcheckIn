@@ -373,6 +373,41 @@
     /*================================================================================================================================================*/
     public partial class AdministrationViewModel : CommonViewModel
     {
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _generateAnnualInvoicesCommand;
+        public ICommand GenerateAnnualInvoicesCommand
+        {
+            get
+            {
+                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void GenerateAnnualInvoicesAction()
+        {
+            string fileName = string.Empty;
+            var list = (from a in this.dc.v_OwnerDetails
+                        select a);
+
+            ObservableCollection<v_OwnerDetail> OwnersList = new ObservableCollection<v_OwnerDetail>(list);
+
+            RaisePropertyChanged("IsBusy");
+            foreach (v_OwnerDetail o in OwnersList)
+            {
+                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                report.Parameters["selectedOwner"].Value = o.OwnerID;
+                report.CreateDocument();
+                report.ExportToPdf(fileName);
+            }
+            RaisePropertyChanged("IsNotBusy");
+        }
 
         /// <summary>
         /// Apply annual dues, cart fees and assessments Command
@@ -413,11 +448,8 @@
                 if (MessageBoxResult.OK == result)
                 {
                     CurrentSeason.IsCurrent = false;
+                    CurrentSeason.IsNext = false;
                     CurrentSeason.IsVisible = false;
-
-                    SelectedSeason.IsCurrent = true;
-                    SelectedSeason.IsDuesApplied = true;
-                    Seasons[SelectedSeasonIndex + 1].IsVisible = true;
 
                     var list = (from x in dc.Owners
                                 where x.IsCurrentOwner == true
@@ -447,6 +479,13 @@
                         ChangeSet cs = dc.GetChangeSet();
                     }
 
+                    // Update the Seasons table so we move the settings forward for the current and next season
+                    SelectedSeason.IsCurrent = true;
+                    SelectedSeason.IsNext = false;
+                    SelectedSeason.IsDuesApplied = true;
+                    Seasons[SelectedSeasonIndex + 1].IsNext = true;
+                    Seasons[SelectedSeasonIndex + 1].IsVisible = true;
+              
                     dc.SubmitChanges();
                     MessageBox.Show("Dues have been applied");
                 }
@@ -557,7 +596,7 @@
 
                     StringBuilder sb = new StringBuilder();
                     int propertyCount = owner.Properties.Count();
-                    decimal amount = 40.00m * propertyCount;
+                    decimal amount = 20.00m * propertyCount;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
                     //if (assessment == true)
                     //{
@@ -620,7 +659,7 @@
 
                     StringBuilder sb = new StringBuilder();
                     int propertyCount = owner.Properties.Count();
-                    decimal amount = 100.00m * propertyCount;
+                    decimal amount = 20.00m * propertyCount;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
                     //if (assessment == true)
                     //{

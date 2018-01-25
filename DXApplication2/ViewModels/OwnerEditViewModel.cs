@@ -203,7 +203,8 @@
         {
             get
             {
-                var list = (from x in SelectedOwner.FinancialTransactions
+                var list = (from x in dc.FinancialTransactions
+                            where x.OwnerID == SelectedOwner.OwnerID
                             select x);
                 return new ObservableCollection<FinancialTransaction>(list);
             }
@@ -1098,6 +1099,10 @@
         /// <param name="type"></param>
         public void RefreshAction(object parameter)
         {
+            RaisePropertyChanged("AccountBalance");
+            RaisePropertyChanged("FinancialTransactions");
+            RaisePropertyChanged("NotesHeader");
+            RaisePropertyChanged("AllNotes");
         }
 
         ///// <summary>

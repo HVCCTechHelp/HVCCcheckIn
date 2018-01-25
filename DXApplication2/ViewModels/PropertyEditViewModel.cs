@@ -47,7 +47,7 @@ namespace HVCC.Shell.ViewModels
             Owner = SelectedProperty.Owner;  // The View is bound to this element
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
-            CanSaveExecute = false;
+            CanSaveExecute = true;
             this.RegisterCommands();
 
             NotesHeader = string.Format("HVCC Notes [{0}]", NoteCount);

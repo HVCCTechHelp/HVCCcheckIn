@@ -147,7 +147,9 @@
                                       Style="{Binding TextEditEditStyle}"
                                       />
                                 </dxlc:LayoutItem>
-
+                                <dxlc:LayoutItem >
+                                    <dxe:CheckEdit Content="Assess for Pool? " IsChecked="{Binding SelectedProperty.IsAssessment, Mode=TwoWay}" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                                </dxlc:LayoutItem>
                             </dxlc:LayoutGroup>
                         </dxlc:LayoutGroup>
 
