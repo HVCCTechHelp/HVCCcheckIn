@@ -120,25 +120,8 @@
   <metadata name="sqlDataSource1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="customSqlQuery1.Sql" xml:space="preserve">
-    <value>select "Properties"."Customer",
-       "Properties"."IsInGoodStanding",
-       "Relationships"."LName",
-       "Relationships"."FName",
-       "FacilityUsages"."GolfRoundsMember",
-       "FacilityUsages"."GolfRoundsGuest",
-       "FacilityUsages"."PoolMember",
-       "FacilityUsages"."PoolGuest",
-       CAST ("FacilityUsages"."Date" as DATE) 'Date'
-  from ("dbo"."FacilityUsages" "FacilityUsages"
-   inner join "dbo"."Properties" "Properties"
-       on ("Properties"."PropertyID" = "FacilityUsages"."PropertyID")
-   inner join "dbo"."Relationships" "Relationships"
-       on ("Relationships"."RelationshipID" = "FacilityUsages"."RelationshipId"))
- where CAST ("FacilityUsages"."Date" as DATE) = CAST (@ForDate as DATE)</value>
-  </data>
   <data name="sqlDataSource1.ResultSchemaSerializable" xml:space="preserve">
-    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9IkZhY2lsaXR5VXNhZ2VzIj48RmllbGQgTmFtZT0iQ3VzdG9tZXIiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iSXNJbkdvb2RTdGFuZGluZyIgVHlwZT0iQm9vbGVhbiIgLz48RmllbGQgTmFtZT0iTE5hbWUiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iRk5hbWUiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iR29sZlJvdW5kc01lbWJlciIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IkdvbGZSb3VuZHNHdWVzdCIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IlBvb2xNZW1iZXIiIFR5cGU9IkludDMyIiAvPjxGaWVsZCBOYW1lPSJQb29sR3Vlc3QiIFR5cGU9IkludDMyIiAvPjxGaWVsZCBOYW1lPSJEYXRlIiBUeXBlPSJEYXRlVGltZSIgLz48L1ZpZXc+PC9EYXRhU2V0Pg==</value>
+    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9IkZhY2lsaXR5VXNhZ2VzIj48RmllbGQgTmFtZT0iT3duZXJJRCIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9Ik1haWxUbyIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJCYWxhbmNlIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJMTmFtZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJGTmFtZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJHb2xmUm91bmRzTWVtYmVyIiBUeXBlPSJJbnQzMiIgLz48RmllbGQgTmFtZT0iR29sZlJvdW5kc0d1ZXN0IiBUeXBlPSJJbnQzMiIgLz48RmllbGQgTmFtZT0iUG9vbE1lbWJlciIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IlBvb2xHdWVzdCIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IkRhdGUiIFR5cGU9IkRhdGVUaW1lIiAvPjwvVmlldz48L0RhdGFTZXQ+</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="xrPictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

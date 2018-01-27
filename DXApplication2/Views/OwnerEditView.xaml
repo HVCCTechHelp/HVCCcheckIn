@@ -704,11 +704,11 @@
                                 <!-- columns of the detail grid -->
                                 <dxg:GridControl.Columns>
                                     <dxg:GridColumn FieldName="RelationshipID" Header="rID" 
-                                            Width="25" 
+                                            Width="15" 
                                             />
                                     <dxg:GridColumn FieldName="FName" Header="First Name" 
                                             Width="75" 
-                                            SortOrder="Descending" 
+                                            SortOrder="Ascending" 
                                             SortIndex="0" 
                                             IsEnabled="True"
                                             />

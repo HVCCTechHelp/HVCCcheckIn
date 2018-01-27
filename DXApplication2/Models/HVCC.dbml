@@ -68,20 +68,6 @@
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
   </Table>
-  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
-    <Type Name="FacilityUsage">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Relationships" Member="Relationships">
     <Type Name="Relationship">
       <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -481,6 +467,33 @@
       <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.v_ActiveRelationships" Member="v_ActiveRelationships">
+    <Type Name="v_ActiveRelationship">
+      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="RelationToOwner" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
+    <Type Name="FacilityUsage">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">

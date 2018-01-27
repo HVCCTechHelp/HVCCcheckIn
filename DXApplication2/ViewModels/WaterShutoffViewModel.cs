@@ -25,6 +25,8 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
+
+            WaterShutoffs = FetchShutoffs();
         }
 
         public override bool IsValid { get { return true; } }
@@ -68,14 +70,37 @@
             }
         }
 
+        /// <summary>
+        /// Controls enable/disbale state of the Refresh ribbion action button
+        /// </summary>
+        private bool _isRefreshEnabled = true; // Default: false
+        public bool IsRefreshEnabled
+        {
+            get { return _isRefreshEnabled; }
+            set
+            {
+                if (value != _isRefreshEnabled)
+                {
+                    _isRefreshEnabled = value;
+                    RaisePropertyChanged("IsRefreshEnabled");
+                }
+            }
+        }
+
+        private ObservableCollection<v_WaterShutoff> _waterShutoffs = null;
         public ObservableCollection<v_WaterShutoff> WaterShutoffs
         {
             get
             {
-                var waterShutoffs = (from x in dc.v_WaterShutoffs
-                                     select x);
-
-                return new ObservableCollection<v_WaterShutoff>(waterShutoffs);
+                return _waterShutoffs;
+            }
+            set
+            {
+                if (_waterShutoffs != value)
+                {
+                    _waterShutoffs = value;
+                    RaisePropertyChanged("WaterShutoffs");
+                }
             }
         }
 
@@ -94,7 +119,19 @@
                 }
             }
         }
-    }
+
+        /// <summary>
+        /// Gets a list of WaterShutoff records
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<v_WaterShutoff> FetchShutoffs()
+        {
+            var waterShutoffs = (from x in dc.v_WaterShutoffs
+                     select x);
+            return new ObservableCollection<v_WaterShutoff>(waterShutoffs);
+
+        }
+}
 
     /*================================================================================================================================================*/
     /// <summary>
@@ -182,6 +219,30 @@
             IsBusy = true;
             Host.Execute(HostVerb.Open, "WaterShutoffEdit", p);
         }
+        /// <summary>
+        /// Refresh Command
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new CommandHandlerWparm((object parameter) => RefreshAction(parameter), IsRefreshEnabled));
+            }
+        }
+
+        /// <summary>
+        /// Refresh data sources
+        /// </summary>
+        /// <param name="type"></param>
+        public void RefreshAction(object parameter)
+        {
+            RaisePropertyChanged("IsBusy");
+            WaterShutoffs = FetchShutoffs();
+            RaisePropertyChanged("IsNotBusy");
+        }
+
+
     }
 
     /*================================================================================================================================================*/

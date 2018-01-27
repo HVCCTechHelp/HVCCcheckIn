@@ -120,22 +120,8 @@
   <metadata name="sqlDataSource1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="customSqlQuery1.Sql" xml:space="preserve">
-    <value>select CAST ("Notes"."Entered" as DATE) 'Date',
-       "Properties"."Balance",
-       "Properties"."IsInGoodStanding",
-       "Properties"."Status", "Notes"."Comment",
-       "Notes"."EnteredBy", 
-       "Properties"."BillTo",
-       "Notes"."PropertyID",
-       "Properties"."Customer"
-  from ("dbo"."Notes" "Notes"
-  inner join "dbo"."Properties" "Properties"
-       on ("Properties"."PropertyID" = "Notes"."PropertyID"))
-where CAST ("Notes"."Entered" as DATE) between @FromDate and @ToDate</value>
-  </data>
   <data name="sqlDataSource1.ResultSchemaSerializable" xml:space="preserve">
-    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9Ik5vdGVzIj48RmllbGQgTmFtZT0iRGF0ZSIgVHlwZT0iRGF0ZVRpbWUiIC8+PEZpZWxkIE5hbWU9IkJhbGFuY2UiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IklzSW5Hb29kU3RhbmRpbmciIFR5cGU9IkJvb2xlYW4iIC8+PEZpZWxkIE5hbWU9IlN0YXR1cyIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJDb21tZW50IiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkVudGVyZWRCeSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJCaWxsVG8iIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iUHJvcGVydHlJRCIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IkN1c3RvbWVyIiBUeXBlPSJTdHJpbmciIC8+PC9WaWV3PjwvRGF0YVNldD4=</value>
+    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9Ik5vdGVzIj48RmllbGQgTmFtZT0iRGF0ZSIgVHlwZT0iRGF0ZVRpbWUiIC8+PEZpZWxkIE5hbWU9Ik93bmVySUQiIFR5cGU9IkludDMyIiAvPjxGaWVsZCBOYW1lPSJCYWxhbmNlIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJDb21tZW50IiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkVudGVyZWRCeSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJNYWlsVG8iIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iT3duZXJJRF8xIiBUeXBlPSJJbnQzMiIgLz48RmllbGQgTmFtZT0iQ3VzdG9tZXIiIFR5cGU9IlN0cmluZyIgLz48L1ZpZXc+PC9EYXRhU2V0Pg==</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="xrPictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

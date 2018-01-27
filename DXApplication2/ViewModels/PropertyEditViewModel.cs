@@ -51,6 +51,10 @@ namespace HVCC.Shell.ViewModels
             this.RegisterCommands();
 
             NotesHeader = string.Format("HVCC Notes [{0}]", NoteCount);
+
+            SelectedProperty.PropertyChanged +=
+                 new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+
         }
 
         /* ------------------------------------- Properties --------------------------- */
@@ -385,6 +389,18 @@ namespace HVCC.Shell.ViewModels
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Summary
+        ///     Handles a property changed event when the SelectedProperty data is modified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Property_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+                this.CanSaveExecute = IsDirty;
+                RaisePropertyChanged("DataChanged");
         }
         #endregion
     }

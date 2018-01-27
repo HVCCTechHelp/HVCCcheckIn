@@ -46,12 +46,6 @@
         <classShapeMoniker Id="4581609e-cebf-44bc-8b3f-da945a602737" />
       </nodes>
     </associationConnector>
-    <classShape Id="0e176351-9edd-4ae4-b03b-d3f887c159f0" absoluteBounds="9.375, 17.75, 2, 2.7324039713541666">
-      <DataClassMoniker Name="/HVCCDataContext/FacilityUsage" />
-      <nestedChildShapes>
-        <elementListCompartment Id="ddb4f30c-17ec-412e-82ca-6aeed6739e1c" absoluteBounds="9.39, 18.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="bc038fc0-9f9c-4b67-bc25-deb6d23913df" absoluteBounds="1.75, 5.75, 2, 2.5401025390625">
       <DataClassMoniker Name="/HVCCDataContext/Relationship" />
       <nestedChildShapes>
@@ -165,21 +159,21 @@
         <elementListCompartment Id="e82ac6c5-708a-4369-8ee4-132506740079" absoluteBounds="13.89, 1.585, 1.9700000000000002, 3.518513997395833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(15.875 : 3.16425699869792); (16.7500005 : 3.16425699869792); (16.7500005 : 6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(15.875 : 3.16425699869792); (16.7500005 : 3.16425699869792); (16.7500005 : 6)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WaterMeterReading" />
       <nodes>
         <classShapeMoniker Id="67d86837-2b4a-4374-9d52-3b23a38198b5" />
         <classShapeMoniker Id="6fb54dac-ea2e-41f4-9b18-c097408448d6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(14.5 : 5.20351399739583); (14.5 : 6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(14.5 : 5.20351399739583); (14.5 : 6)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Property/Property_WellXProperty" />
       <nodes>
         <classShapeMoniker Id="67d86837-2b4a-4374-9d52-3b23a38198b5" />
         <classShapeMoniker Id="b3d51d79-5397-40ed-a1a9-f1e7e1c9d4eb" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.25 : 1.97250719360352); (13.875 : 1.97250719360352)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(6.25 : 1.97250719360352); (13.875 : 1.97250719360352)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Property" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -190,6 +184,18 @@
       <DataClassMoniker Name="/HVCCDataContext/v_PropertyDetail" />
       <nestedChildShapes>
         <elementListCompartment Id="71a4f0c3-1894-4d15-84cd-ced113479524" absoluteBounds="1.1399999999999997, 17.585, 1.9700000000000002, 5.4415283203125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2be2a52d-9ef9-4eef-bd19-d2d5a2c01eba" absoluteBounds="3.75, 20.5, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/HVCCDataContext/v_ActiveRelationship" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0a70b715-29fa-4eec-ab1a-49107047b162" absoluteBounds="3.7649999999999997, 20.96, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b4937b64-46c8-44ca-b4ea-3b67124e188b" absoluteBounds="9.375, 17.375, 2, 2.9247054036458331">
+      <DataClassMoniker Name="/HVCCDataContext/FacilityUsage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dc182d01-c741-4bd4-b407-6455fdd03803" absoluteBounds="9.39, 17.835, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

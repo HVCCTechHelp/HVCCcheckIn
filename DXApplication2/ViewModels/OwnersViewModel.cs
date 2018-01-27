@@ -72,6 +72,23 @@
             }
         }
 
+        /// <summary>
+        /// Controls enable/disbale state of the Refresh ribbion action button
+        /// </summary>
+        private bool _isRefreshEnabled = true; // Default: false
+        public bool IsRefreshEnabled
+        {
+            get { return _isRefreshEnabled; }
+            set
+            {
+                if (value != _isRefreshEnabled)
+                {
+                    _isRefreshEnabled = value;
+                    RaisePropertyChanged("IsRefreshEnabled");
+                }
+            }
+        }
+
         private ObservableCollection<v_OwnerDetail> _ownersList = null;
         public ObservableCollection<v_OwnerDetail> OwnersList
         {
@@ -112,12 +129,42 @@
             }
         }
 
+        public ObservableCollection<v_ActiveRelationship> Relationships
+        {
+            get
+            {
+                var list = (from x in dc.v_ActiveRelationships
+                            select x);
+                return new ObservableCollection<v_ActiveRelationship>(list);
+            }
+        }
+
+        private v_ActiveRelationship _selectedRelationship = null;
+        public v_ActiveRelationship SelectedRelationship
+        {
+            get
+            {
+                return _selectedRelationship;
+            }
+            set
+            {
+                if (_selectedRelationship != value)
+                {
+                    _selectedRelationship = value;
+                    SelectedOwner = (from x in OwnersList
+                                     where x.OwnerID == _selectedRelationship.OwnerID
+                                     select x).FirstOrDefault();
+                    IsBusy = true;
+                    Host.Execute(HostVerb.Open, "EditOwner", SelectedOwner);
+                }
+            }
+        }
 
         /* ------------------------------------ Public Methods -------------------------------------------- */
         #region Public Methods
 
         /// <summary>
-        /// Property Changed event handler for the view model
+        /// Property Changed event handler for the Host instance
         /// </summary>
         /// <param name="sender">object invoking the method</param>
         /// <param name="e">property change event arguments</param>
@@ -228,14 +275,6 @@
     /// </summary>
     public partial class OwnersViewModel
     {
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
-        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
-
         /// <summary>
         /// RowDoubleClick Event to Command
         /// </summary>
@@ -316,7 +355,7 @@
         }
 
         /// <summary>
-        /// Grid row double click event to command action
+        /// Ownership History command action
         /// </summary>
         /// <param name="type"></param>
         public void OwnershipHistoryAction()
@@ -378,7 +417,32 @@
         //    }
         //    CanSaveExecute = IsDirty;
         //}
+        /// <summary>
+        /// Refresh Command
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new CommandHandlerWparm((object parameter) => RefreshAction(parameter), IsRefreshEnabled));
+            }
+        }
 
+        /// <summary>
+        /// Refresh data sources
+        /// </summary>
+        /// <param name="type"></param>
+        public void RefreshAction(object parameter)
+        {
+            RaisePropertyChanged("IsBusy");
+            OwnersList = FetchOwners();
+            RaisePropertyChanged("IsNotBusy");
+        }
+
+
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
@@ -389,7 +453,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter, Table), CanExport));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
             }
         }
 
@@ -403,80 +467,9 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter, Table), CanPrint));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
-
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter, object view) //ExportCommand
-        {
-            string fn;
-            try
-            {
-                TableView tv = view as TableView;
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-
-                            fn = SaveFileDialogService.GetFullFileName();
-
-                        ExportService.ExportToPDF(tv, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(tv, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter, object view) //PrintCommand
-        {
-            try
-            {
-                TableView tv = view as TableView;
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(tv);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(tv);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
-            }
-        }
-
     }
 
     /*================================================================================================================================================*/

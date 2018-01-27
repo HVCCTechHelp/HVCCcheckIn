@@ -125,6 +125,35 @@
 
             </dxr:RibbonControl>
             <dxlc:LayoutControl Orientation="Vertical">
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Name Search" >
+
+                    <dxlc:LayoutItem Label="Enter a name to search" Width="450" HorizontalAlignment="Left">
+                        <dxg:LookUpEdit Name="searchLookUpEdit" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30"
+                                    ItemsSource="{Binding Relationships}"
+                                    SelectedItem="{Binding SelectedRelationship}"
+                                    AutoPopulateColumns="False"
+                                    DisplayMember="LName" Width="650">
+                            <dxg:LookUpEdit.StyleSettings>
+                                <dxg:SearchLookUpEditStyleSettings/>
+                            </dxg:LookUpEdit.StyleSettings>
+                            <dxg:LookUpEdit.PopupContentTemplate>
+                                <ControlTemplate>
+                                    <dxg:GridControl Name="PART_GridControl">
+                                        <dxg:GridControl.Columns>
+                                            <dxg:GridColumn FieldName="FName" Header="First Name"/>
+                                            <dxg:GridColumn FieldName="LName" Header="Last Name"/>
+                                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship"/>
+                                            <dxg:GridColumn FieldName="MailTo" Header="Owner"/>
+                                        </dxg:GridControl.Columns>
+                                        <dxg:GridControl.View>
+                                            <dxg:TableView Width="650"/>
+                                        </dxg:GridControl.View>
+                                    </dxg:GridControl>
+                                </ControlTemplate>
+                            </dxg:LookUpEdit.PopupContentTemplate>
+                        </dxg:LookUpEdit>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
 
                 <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Owner List">
                     <dxlc:LayoutItem>
@@ -160,7 +189,7 @@
                                             <dxc:Format Foreground="Green" />
                                         </dxg:FormatCondition>
                                     </dxg:TableView.FormatConditions>
-                                    
+
                                     <dxmvvm:Interaction.Behaviors>
                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                         Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedOwner}" />

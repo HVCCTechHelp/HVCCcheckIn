@@ -1,6 +1,8 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
     using DevExpress.Spreadsheet;
+    using DevExpress.Xpf.Grid;
     using HVCC.Shell.Common;
     using HVCC.Shell.Common.Commands;
     using HVCC.Shell.Common.Interfaces;
@@ -379,6 +381,7 @@
     /// </summary>
     public partial class PropertiesDetailsViewModel /*: CommonViewModel, ICommandSink*/
     {
+
         /// <summary>
         /// Refresh Command
         /// </summary>
@@ -399,10 +402,11 @@
         {
             RaisePropertyChanged("IsBusy");
             PropertiesList = GetPropertiesList();
-            IsRefreshEnabled = false;
             RaisePropertyChanged("IsNotBusy");
         }
 
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
@@ -413,7 +417,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
             }
         }
 
@@ -427,7 +431,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
 

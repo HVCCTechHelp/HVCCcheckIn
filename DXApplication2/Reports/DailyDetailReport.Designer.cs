@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.DataAccess.Sql.CustomSqlQuery customSqlQuery1 = new DevExpress.DataAccess.Sql.CustomSqlQuery();
+            DevExpress.DataAccess.Sql.StoredProcQuery storedProcQuery1 = new DevExpress.DataAccess.Sql.StoredProcQuery();
             DevExpress.DataAccess.Sql.QueryParameter queryParameter1 = new DevExpress.DataAccess.Sql.QueryParameter();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DailyDetailReport));
             DevExpress.XtraReports.UI.XRSummary xrSummary1 = new DevExpress.XtraReports.UI.XRSummary();
@@ -37,7 +37,7 @@
             DevExpress.XtraReports.UI.XRSummary xrSummary3 = new DevExpress.XtraReports.UI.XRSummary();
             DevExpress.XtraReports.UI.XRSummary xrSummary4 = new DevExpress.XtraReports.UI.XRSummary();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
-            this.xrCheckBox1 = new DevExpress.XtraReports.UI.XRCheckBox();
+            this.formattingRule1 = new DevExpress.XtraReports.UI.FormattingRule();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
@@ -52,7 +52,6 @@
             this.xrLabel9 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel6 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel19 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel20 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel21 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel22 = new DevExpress.XtraReports.UI.XRLabel();
@@ -92,7 +91,6 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrCheckBox1,
             this.xrLabel17,
             this.xrLabel13,
             this.xrLabel16,
@@ -105,15 +103,12 @@
             this.Detail.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
-            // xrCheckBox1
+            // formattingRule1
             // 
-            this.xrCheckBox1.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("CheckState", null, "FacilityUsages.IsInGoodStanding")});
-            this.xrCheckBox1.LocationFloat = new DevExpress.Utils.PointFloat(76.4135F, 0F);
-            this.xrCheckBox1.Name = "xrCheckBox1";
-            this.xrCheckBox1.SizeF = new System.Drawing.SizeF(31.56848F, 23F);
-            this.xrCheckBox1.StylePriority.UseTextAlignment = false;
-            this.xrCheckBox1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.formattingRule1.Condition = "[Balance] <= 0";
+            this.formattingRule1.DataMember = "FacilityUsages";
+            this.formattingRule1.Formatting.Visible = DevExpress.Utils.DefaultBoolean.False;
+            this.formattingRule1.Name = "formattingRule1";
             // 
             // xrLabel17
             // 
@@ -138,12 +133,11 @@
             // xrLabel16
             // 
             this.xrLabel16.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "FacilityUsages.Customer")});
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "FacilityUsages.OwnerID")});
             this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel16.SizeF = new System.Drawing.SizeF(61.07982F, 23F);
-            this.xrLabel16.Text = "xrLabel16";
             // 
             // xrLabel5
             // 
@@ -211,14 +205,14 @@
             // 
             this.sqlDataSource1.ConnectionName = "HVCC.Shell.Properties.Settings.HVCCConnectionString";
             this.sqlDataSource1.Name = "sqlDataSource1";
-            customSqlQuery1.Name = "FacilityUsages";
-            queryParameter1.Name = "ForDate";
+            storedProcQuery1.Name = "FacilityUsages";
+            queryParameter1.Name = "@ForDate";
             queryParameter1.Type = typeof(DevExpress.DataAccess.Expression);
             queryParameter1.Value = new DevExpress.DataAccess.Expression("[Parameters.ForDate]", typeof(System.DateTime));
-            customSqlQuery1.Parameters.Add(queryParameter1);
-            customSqlQuery1.Sql = resources.GetString("customSqlQuery1.Sql");
+            storedProcQuery1.Parameters.Add(queryParameter1);
+            storedProcQuery1.StoredProcName = "usp_GetFacilityUsageForDay";
             this.sqlDataSource1.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
-            customSqlQuery1});
+            storedProcQuery1});
             this.sqlDataSource1.ResultSchemaSerializable = resources.GetString("sqlDataSource1.ResultSchemaSerializable");
             // 
             // pageHeaderBand1
@@ -227,7 +221,6 @@
             this.xrLabel9,
             this.xrLabel6,
             this.xrLabel18,
-            this.xrLabel19,
             this.xrLabel20,
             this.xrLabel21,
             this.xrLabel22,
@@ -279,25 +272,8 @@
             this.xrLabel18.StylePriority.UseFont = false;
             this.xrLabel18.StylePriority.UseForeColor = false;
             this.xrLabel18.StylePriority.UseTextAlignment = false;
-            this.xrLabel18.Text = "Customer";
+            this.xrLabel18.Text = "OwnerID";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
-            // 
-            // xrLabel19
-            // 
-            this.xrLabel19.Borders = DevExpress.XtraPrinting.BorderSide.Bottom;
-            this.xrLabel19.CanGrow = false;
-            this.xrLabel19.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.xrLabel19.ForeColor = System.Drawing.Color.Maroon;
-            this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(76.4135F, 23.70835F);
-            this.xrLabel19.Name = "xrLabel19";
-            this.xrLabel19.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel19.SizeF = new System.Drawing.SizeF(26.5865F, 36F);
-            this.xrLabel19.StylePriority.UseBorders = false;
-            this.xrLabel19.StylePriority.UseFont = false;
-            this.xrLabel19.StylePriority.UseForeColor = false;
-            this.xrLabel19.StylePriority.UseTextAlignment = false;
-            this.xrLabel19.Text = "X";
-            this.xrLabel19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLabel20
             // 
@@ -699,6 +675,8 @@
             this.sqlDataSource1});
             this.DataMember = "FacilityUsages";
             this.DataSource = this.sqlDataSource1;
+            this.FormattingRuleSheet.AddRange(new DevExpress.XtraReports.UI.FormattingRule[] {
+            this.formattingRule1});
             this.Margins = new System.Drawing.Printing.Margins(49, 52, 28, 27);
             this.Parameters.AddRange(new DevExpress.XtraReports.Parameters.Parameter[] {
             this.ForDate});
@@ -756,14 +734,13 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel16;
         private DevExpress.XtraReports.UI.XRLabel xrLabel17;
         private DevExpress.XtraReports.UI.XRLabel xrLabel13;
-        private DevExpress.XtraReports.UI.XRCheckBox xrCheckBox1;
         private DevExpress.XtraReports.UI.XRLabel xrLabel18;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel19;
         private DevExpress.XtraReports.UI.XRLabel xrLabel20;
         private DevExpress.XtraReports.UI.XRLabel xrLabel21;
         private DevExpress.XtraReports.UI.XRLabel xrLabel22;
         private DevExpress.XtraReports.UI.XRLabel xrLabel23;
         private DevExpress.XtraReports.UI.XRLabel xrLabel24;
         private DevExpress.XtraReports.UI.XRLabel xrLabel25;
+        private DevExpress.XtraReports.UI.FormattingRule formattingRule1;
     }
 }
