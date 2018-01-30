@@ -19,6 +19,7 @@
     using System.Collections.Generic;
     using System.Text;
     using DevExpress.Xpf.Grid;
+    using System.Windows;
 
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
@@ -27,8 +28,8 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
 
-            // parameter is set at by the invocation: PropertyEditViewModel or ChangeOwnerViewModel
-            Property p = parameter as Property;
+            // parameter is set by the invocation: PropertyEditViewModel or ChangeOwnerViewModel
+            v_PropertyDetail p = parameter as v_PropertyDetail;
             if (null != p)
             {
                 // Set the SelectedProperty, and make a clone copy of it for later reference.
@@ -430,6 +431,12 @@
 
             if (0 == NewOwner.OwnerID)
             {
+                if (null == RelationshipsToProcess || 0 == RelationshipsToProcess.Count)
+                {
+                    MessageBox.Show("You must have at lease one owner.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 if (Helper.CheckForOwner(RelationshipsToProcess) && IsValid)
                 {
                     this.IsBusy = true;
@@ -472,10 +479,6 @@
                         r.Photo = ApplDefault.Photo;
                     }
                     dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
-                }
-                else
-                {
-                    MessageBoxService.ShowMessage("You must have at lease one owner.", "Warning", MessageButton.OK, MessageIcon.Warning);
                 }
             }
 

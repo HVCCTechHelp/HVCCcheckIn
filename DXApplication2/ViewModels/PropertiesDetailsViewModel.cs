@@ -476,7 +476,7 @@
         /// <param name="type"></param>
         public void ChangeOwnerAction(object parameter)
         {
-            Property p = parameter as Property;
+            v_PropertyDetail p = parameter as v_PropertyDetail;
             Host.Execute(HostVerb.Open, "ChangeOwner", p);
         }
 
