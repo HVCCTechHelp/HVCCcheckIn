@@ -558,15 +558,7 @@
                         }
                         else
                         {
-                            // If the FName string is empty, than we landed here as a result of an 'Add' to the 
-                            // Relationship collection firing on a collection change event.  We can ignore this
-                            // request for now.
-                            if (!string.IsNullOrEmpty(r.FName)
-                                && !string.IsNullOrEmpty(r.LName)
-                                && !string.IsNullOrEmpty(r.RelationToOwner))
-                            {
                                 bool result = Helper.AddRelationship(this.dc, SelectedOwner, r);
-                            }
                         }
                     }
                     break;
@@ -578,7 +570,8 @@
                     }
                     break;
             }
-            ChangeSet cs = this.dc.GetChangeSet();
+            //int i = Relationships.Count();
+            //ChangeSet cs = this.dc.GetChangeSet();
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
         }

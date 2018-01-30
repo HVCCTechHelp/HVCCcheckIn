@@ -174,10 +174,6 @@
                                        AllowPerPixelScrolling="True" 
                                        AutoWidth="True"
                                        NavigationStyle="Row"
-                                       SearchPanelNullText="Search"
-                                       ShowSearchPanelMode="Always"
-                                       ShowSearchPanelFindButton="True"
-                                       SearchPanelClearOnClose="False"
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
                                        >

@@ -462,20 +462,30 @@
                         int cartCount = o.GolfCarts.Count();
                         decimal amount = SelectedSeason.AnnualDues * propertyCount;
                         sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+
+                        // Check to see if Special Assessment needs to be applied.
+                        decimal assessedAmt = 0m;
+                        foreach (Property p in o.Properties)
+                        {
+                            if (p.IsAssessment)
+                            {
+                                assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
+                            }
+                        }
+                        if (assessedAmt > 0)
+                        {
+                            sb.AppendFormat(" {0} Asessment:{1}", SelectedSeason.Assessment, assessedAmt.ToString("C", CultureInfo.CurrentCulture));
+                        }
+
                         if (cartCount > 0)
                         {
                             amount += SelectedSeason.CartFee * cartCount;
                             sb.AppendFormat(" GolfCart:{0}", (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
                         }
-                        //if (assessment == true)
-                        //{
-                        //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-                        //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-                        //}
 
-                        string note = String.Format("Annual dues payment of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
+                        string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                         AddNote(o, note);
-                        GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues payment applied");
+                        GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
                         ChangeSet cs = dc.GetChangeSet();
                     }
 

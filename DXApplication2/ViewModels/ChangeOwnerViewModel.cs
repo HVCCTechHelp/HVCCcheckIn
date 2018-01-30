@@ -104,6 +104,7 @@
                 }
             }
         }
+
         private string _headerText = string.Empty;
         public string HeaderText
         {
@@ -440,6 +441,9 @@
                     NewOwner.PropertyChanged -=
                          new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
 
+                    // Call the Stored Procedure directly to perform the Insert.  We do this outside of the
+                    // managed datacontext so we can get the OwnerID of the new record which is required for
+                    // inserting Relationships for the new owner.
                     NewOwner.Customer = SelectedProperty.Customer;
                     dc.usp_InsertOwner(
                             NewOwner.Customer,
@@ -493,17 +497,17 @@
             oc.NewOwner = billTo;
             dc.OwnershipChanges.InsertOnSubmit(oc);
 
-            //int? rowId = 0;
-            //dc.usp_InsertOwnershipChange(
-            //    oc.PropertyID,
-            //    oc.PreviousOwnerID,
-            //    oc.PreviousOwner,
-            //    oc.NewOwnerID,
-            //    oc.NewOwner,
-            //    ref rowId);
-
-            // Set the previous owner inactive
+            // Set the previous owner inactive. We also need to de-activate any relationships associated to the 
+            // previous owner.
             PreviousOwner.IsCurrentOwner = false;
+
+            var list = (from r in dc.Relationships
+                        where r.OwnerID == PreviousOwner.OwnerID
+                        select r);
+            foreach (Relationship x in list)
+            {
+                x.Active = false;
+            }
 
             // Change the Property Owner to the NewOwner
             SelectedProperty.Owner = NewOwner;

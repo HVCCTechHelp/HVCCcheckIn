@@ -656,7 +656,7 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="relationshipsGrid" 
                                      IsEnabled="True"
                                      ItemsSource="{Binding Relationships, Mode=TwoWay}"
-                                     SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}"
+                                     SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}" 
                                      >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewDetail"  
