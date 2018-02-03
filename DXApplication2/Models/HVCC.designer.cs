@@ -69,7 +69,7 @@ namespace HVCC.Shell.Models
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}

@@ -151,7 +151,7 @@
                 if (_selectedRelationship != value)
                 {
                     _selectedRelationship = value;
-                    SelectedOwner = (from x in OwnersList
+                    SelectedOwner = (from x in dc.v_OwnerDetails
                                      where x.OwnerID == _selectedRelationship.OwnerID
                                      select x).FirstOrDefault();
                     IsBusy = true;

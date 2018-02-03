@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC_DEV" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC_DEV;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionStringDEV" Provider="System.Data.SqlClient" />
   <Table Name="dbo.WaterMeterReadings" Member="WaterMeterReadings">
     <Type Name="WaterMeterReading">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />

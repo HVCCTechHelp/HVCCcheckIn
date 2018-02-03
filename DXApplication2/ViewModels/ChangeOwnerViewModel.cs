@@ -120,6 +120,17 @@
             }
         }
 
+        public Season Season
+        {
+            get
+            {
+                Season s = (from x in dc.Seasons
+                            where x.IsCurrent == true
+                            select x).FirstOrDefault();
+                return s;
+            }
+        }
+
         #region Properties
 
         public ObservableCollection<Owner> OwnerList
@@ -471,6 +482,20 @@
                                 where x.OwnerID == newOwnerID
                                 select x).FirstOrDefault();
 
+                    // We have to also add an initial FinancialTransaction record to set the new owner
+                    // account balance to $0.00 since we use the OwnerDetail View for the Grids
+                    FinancialTransaction newTrans = new FinancialTransaction();
+                    newTrans.OwnerID = NewOwner.OwnerID;
+                    newTrans.Balance = 0m;
+                    newTrans.FiscalYear = Season.TimePeriod;
+                    newTrans.CreditAmount = 0;
+                    newTrans.DebitAmount = 0;
+                    newTrans.Comment = "New account establlished for owner";
+                    newTrans.TransactionDate = DateTime.Now;
+                    newTrans.TransactionAppliesTo = "Account";
+                    newTrans.TransactionMethod = "MachineGenerated";
+                    dc.FinancialTransactions.InsertOnSubmit(newTrans);
+
                     // Insert the Relationship collection
                     foreach (Relationship r in RelationshipsToProcess)
                     {
@@ -513,7 +538,16 @@
             }
 
             // Change the Property Owner to the NewOwner
+            NewOwner.IsCurrentOwner = true;
             SelectedProperty.Owner = NewOwner;
+            list = null;
+            list = (from r in dc.Relationships
+                        where r.OwnerID == NewOwner.OwnerID
+                        select r);
+            foreach (Relationship x in list)
+            {
+                x.Active = true;
+            }
 
 
             ChangeSet cs = dc.GetChangeSet();

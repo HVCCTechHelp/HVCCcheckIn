@@ -130,7 +130,7 @@
                     <dxlc:LayoutItem Label="Enter a name to search" Width="450" HorizontalAlignment="Left">
                         <dxg:LookUpEdit Name="searchLookUpEdit" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30"
                                     ItemsSource="{Binding Relationships}"
-                                    SelectedItem="{Binding SelectedRelationship}"
+                                    SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}"
                                     AutoPopulateColumns="False"
                                     DisplayMember="LName" Width="650">
                             <dxg:LookUpEdit.StyleSettings>
