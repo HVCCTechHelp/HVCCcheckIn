@@ -39,6 +39,11 @@
                 Owner p = parameter as Owner;
                 ownerID = p.OwnerID;
             }
+            else if (parameter is v_PropertyDetail)
+            {
+                v_PropertyDetail p = parameter as v_PropertyDetail;
+                ownerID = p.OwnerID;
+            }
             else
             {
                 MessageBox.Show("No Owner information passed in to edit form");

@@ -461,6 +461,29 @@
         /// <summary>
         /// Print Command
         /// </summary>
+        private ICommand _viewOwnerCommand;
+        public ICommand ViewOwnerCommand
+        {
+            get
+            {
+                return _viewOwnerCommand ?? (_viewOwnerCommand = new CommandHandlerWparm((object parameter) => ViewOwnerAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ViewOwnerAction(object parameter)
+        {
+            v_PropertyDetail p = parameter as v_PropertyDetail;
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "EditOwner", p);
+        }
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
         private ICommand _changeOwnerCommand;
         public ICommand ChangeOwnerCommand
         {

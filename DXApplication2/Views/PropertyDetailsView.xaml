@@ -101,6 +101,12 @@
                         </dxr:RibbonPageGroup>
                         <dxr:RibbonPageGroup Caption="Property Action">
 
+                            <dxb:BarButtonItem x:Name="bbOwner" Content="Owner" 
+                                               Command="{Binding ViewOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
+                                               Glyph="/Images/Icons/person_icon.png" 
+                                               LargeGlyph="/Images/Icons/person_icon.png" />
+
                             <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
                                                Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
@@ -220,6 +226,7 @@
                                     <dxg:GridColumn FieldName="Block" Header="Blk " Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True"/>
                                     <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
+                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="10" Visible="True" AllowEditing="False" ReadOnly="True"/>
                                     <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50" AllowEditing="False" ReadOnly="True" />
                                     <!--<dxg:GridColumn FieldName="BillTo" Header="Bill To" Width="100" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="{Binding ApplPermissions.CanEditProperty}" />-->
                                     <dxg:GridColumn FieldName="Balance" Header="BalanceDue" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True">
