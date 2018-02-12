@@ -3,6 +3,7 @@
     using DevExpress.Mvvm;
     using DevExpress.Spreadsheet;
     using DevExpress.Xpf.Grid;
+    using DevExpress.Xpf.Printing;
     using HVCC.Shell.Common;
     using HVCC.Shell.Common.Interfaces;
     using HVCC.Shell.Common.ViewModels;
@@ -87,6 +88,9 @@
                 }
             }
         }
+
+        private MvvmBinder _binder = null;
+        public MvvmBinder Binder { get; set; }
 
         public string HeaderText
         {
@@ -821,6 +825,38 @@
                 RaisePropertyChanged("DataChanged");
                 CanSaveExecute = IsDirty;
                 IsBusy = false;
+
+                var transactions = (from x in dc.FinancialTransactions
+                                           where x.OwnerID == SelectedOwner.OwnerID
+                                           orderby x.TransactionDate descending
+                                           select x);
+
+                FinancialTransaction ft = null;
+                foreach (FinancialTransaction f in transactions)
+                {
+                    ft = f;
+                    break;
+                }
+
+                // Get the MVVM binder for this viewmodel.  We need reference to the ViewModel's View
+                // in order to display the transaction receipt.
+                foreach (MvvmBinder m in Host.OpenMvvmBinders)
+                {
+                    if (m.ViewModel == this)
+                    {
+                        Binder = m;
+                        break;
+                    }
+                }
+
+                // Create and display the FinancialTransaction Recepit
+                Reports.TransactionReceipt report = new Reports.TransactionReceipt();
+                report.Parameters["transactionID"].Value = ft.RowId;
+                //string fileName = string.Format(@"D:\Transaction-{0}.PDF", ft.RowId);
+                //report.CreateDocument();
+                //report.ExportToPdf(fileName);
+                PrintHelper.ShowPrintPreview((HVCC.Shell.Views.FinancialTransactionView)Binder.View, report);
+
                 MessageBox.Show("Transaction successfully saved", "Success", MessageBoxButton.OK, MessageBoxImage.None);
                 Host.Execute(HostVerb.Close, this.Caption);
             }

@@ -6999,6 +6999,8 @@ namespace HVCC.Shell.Models
 		
 		private string _LastModifiedBy;
 		
+		private decimal _OwnerBalance;
+		
 		private string _MailTo;
 		
 		private string _Address;
@@ -7291,6 +7293,22 @@ namespace HVCC.Shell.Models
 				if ((this._LastModifiedBy != value))
 				{
 					this._LastModifiedBy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerBalance", DbType="Money NOT NULL")]
+		public decimal OwnerBalance
+		{
+			get
+			{
+				return this._OwnerBalance;
+			}
+			set
+			{
+				if ((this._OwnerBalance != value))
+				{
+					this._OwnerBalance = value;
 				}
 			}
 		}

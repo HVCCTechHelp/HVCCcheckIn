@@ -148,7 +148,7 @@
         {
             get
             {
-                return string.Format("Edit Owner #{0}", SelectedOwner.OwnerID); 
+                return string.Format("Edit Owner #{0:000000}", SelectedOwner.OwnerID); 
             }
         }
 

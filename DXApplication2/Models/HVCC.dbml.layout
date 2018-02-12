@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 17.875, 25.5" name="HVCC">
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 17.875, 25.25" name="HVCC">
   <DataContextMoniker Name="/HVCCDataContext" />
   <nestedChildShapes>
     <classShape Id="6fb54dac-ea2e-41f4-9b18-c097408448d6" absoluteBounds="15.625, 6, 2, 2.1554996744791666">
@@ -58,7 +58,7 @@
         <elementListCompartment Id="474f2eab-ed85-4b1d-b9eb-83908bfcafd9" absoluteBounds="4.265, 1.335, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.25 : 4.0473046875); (3.15625 : 4.0473046875); (3.15625 : 5.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(4.25 : 4.0473046875); (3.15625 : 4.0473046875); (3.15625 : 5.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -71,7 +71,7 @@
         <elementListCompartment Id="85d83370-ff75-4cf4-97b8-91454c11146a" absoluteBounds="0.51500000000000012, 1.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.25 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(4.25 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -84,10 +84,10 @@
         <elementListCompartment Id="3800173c-476e-4fe5-a181-89c071b471a6" absoluteBounds="9.39, 21.335, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="a7ba3529-cc30-4f9a-ad6e-b29cb5f86f4d" absoluteBounds="1.125, 23.5, 2, 1.7708968098958331">
+    <classShape Id="a7ba3529-cc30-4f9a-ad6e-b29cb5f86f4d" absoluteBounds="3.375, 23.25, 2, 1.7708968098958331">
       <DataClassMoniker Name="/HVCCDataContext/v_ChangeOfOwnership" />
       <nestedChildShapes>
-        <elementListCompartment Id="a5747807-748c-413b-974f-0d6eb2b39a82" absoluteBounds="1.1400000000000006, 23.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="a5747807-748c-413b-974f-0d6eb2b39a82" absoluteBounds="3.3900000000000006, 23.71, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="45642336-38aa-44da-8d9e-9f11973df702" absoluteBounds="3.75, 8.625, 2, 3.1170068359375">
@@ -192,10 +192,10 @@
         <classShapeMoniker Id="20e64093-3627-49c0-8d4c-072b05295044" />
       </nodes>
     </associationConnector>
-    <classShape Id="5f28c46e-ce40-4436-85ba-42df03e14458" absoluteBounds="1.125, 17.5, 2, 6.0015283203125">
+    <classShape Id="65492924-e264-48e5-8cf4-2492c2a2547e" absoluteBounds="1, 17.375, 2, 6.1938297526041657">
       <DataClassMoniker Name="/HVCCDataContext/v_PropertyDetail" />
       <nestedChildShapes>
-        <elementListCompartment Id="bda07cc5-322b-408a-98d9-40baab2658c4" absoluteBounds="1.1399999999999997, 17.96, 1.9700000000000002, 5.4415283203125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="02d2bc93-48b5-4ffa-bb54-e10a1f7f7eff" absoluteBounds="1.0149999999999997, 17.835, 1.9700000000000002, 5.6338297526041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

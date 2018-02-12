@@ -484,6 +484,7 @@
       <Column Name="WaterSystemNotes" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Column Name="OwnerBalance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />

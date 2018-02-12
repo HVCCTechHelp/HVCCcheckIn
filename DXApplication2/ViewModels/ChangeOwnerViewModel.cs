@@ -526,29 +526,33 @@
             dc.OwnershipChanges.InsertOnSubmit(oc);
 
             // Set the previous owner inactive. We also need to de-activate any relationships associated to the 
-            // previous owner.
-            PreviousOwner.IsCurrentOwner = false;
-
-            var list = (from r in dc.Relationships
-                        where r.OwnerID == PreviousOwner.OwnerID
-                        select r);
-            foreach (Relationship x in list)
+            // previous owner if they do not own any other properties.
+            var plist = (from x in dc.Properties
+                         where x.OwnerID == PreviousOwner.OwnerID
+                         select x);
+            if (0 == plist.Count())
             {
-                x.Active = false;
+                PreviousOwner.IsCurrentOwner = false;
+
+                var rlist = (from r in dc.Relationships
+                            where r.OwnerID == PreviousOwner.OwnerID
+                            select r);
+                foreach (Relationship x in rlist)
+                {
+                    x.Active = false;
+                }
             }
 
             // Change the Property Owner to the NewOwner
             NewOwner.IsCurrentOwner = true;
             SelectedProperty.Owner = NewOwner;
-            list = null;
-            list = (from r in dc.Relationships
+            var list = (from r in dc.Relationships
                         where r.OwnerID == NewOwner.OwnerID
                         select r);
             foreach (Relationship x in list)
             {
                 x.Active = true;
             }
-
 
             ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();

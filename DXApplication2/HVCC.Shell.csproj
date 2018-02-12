@@ -29,7 +29,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>27</ApplicationRevision>
+    <ApplicationRevision>28</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -243,6 +243,12 @@
     </Compile>
     <Compile Include="Reports\PropertyNotesReport.Designer.cs">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\TransactionReceipt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\TransactionReceipt.Designer.cs">
+      <DependentUpon>TransactionReceipt.cs</DependentUpon>
     </Compile>
     <Compile Include="Reports\WellMeterDetailReport.cs">
       <SubType>Component</SubType>
@@ -459,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PropertyNotesReport.resx">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\TransactionReceipt.resx">
+      <DependentUpon>TransactionReceipt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\WellMeterDetailReport.resx">
       <DependentUpon>WellMeterDetailReport.cs</DependentUpon>

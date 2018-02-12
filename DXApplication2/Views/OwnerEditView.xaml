@@ -192,10 +192,8 @@
                               IsEnabled="True"
                               Width="Auto" 
                               Style="{Binding TeStyle}"
-                              IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
-                              Focusable="{Binding ApplPermissions.CanEditOwner}"
-                              ValidateOnEnterKeyPressed="True"
-                              ValidateOnTextInput="False"
+                              IsReadOnly="True" 
+                              Focusable="False"
                               ToolTip="Enter Owner(s) names as: 'Fred Brown' or 'Fred/Betty Brown' or 'Fred Brown &amp; Martha White'">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="SelectedOwner.MailTo" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">

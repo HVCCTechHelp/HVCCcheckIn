@@ -202,10 +202,10 @@
                                 ValidateRow="view_ValidateRow" 
                                 >
                                         <dxg:TableView.FormatConditions>
-                                            <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                            <dxg:FormatCondition Expression="[OwnerBalance] &gt; 0.0" FieldName="OwnerBalance">
                                                 <dxc:Format Foreground="Red" />
                                             </dxg:FormatCondition>
-                                            <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                            <dxg:FormatCondition Expression="[OwnerBalance] &lt; 0.0" FieldName="OwnerBalance">
                                                 <dxc:Format Foreground="Green" />
                                             </dxg:FormatCondition>
                                         </dxg:TableView.FormatConditions>
@@ -226,15 +226,19 @@
                                     <dxg:GridColumn FieldName="Block" Header="Blk " Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True"/>
                                     <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
-                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="10" Visible="True" AllowEditing="False" ReadOnly="True"/>
-                                    <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50" AllowEditing="False" ReadOnly="True" />
-                                    <!--<dxg:GridColumn FieldName="BillTo" Header="Bill To" Width="100" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="{Binding ApplPermissions.CanEditProperty}" />-->
-                                    <dxg:GridColumn FieldName="Balance" Header="BalanceDue" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True">
+                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" Visible="True" AllowEditing="False" ReadOnly="True">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="OwnerBalance" Header="Balance" Width="20" AllowEditing="False" ReadOnly="True" Visible="True" >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                             </dxe:TextEditSettings>
                                         </dxg:GridColumn.EditSettings>
                                     </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50" AllowEditing="False" ReadOnly="True" />
                                     <!--<dxg:GridColumn FieldName="IsInGoodStanding" Header="GoodStanding" Width="20" Visible="False" AllowEditing="False" ReadOnly="True" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="Status" Header="Status" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True"/>-->
                                     <dxg:GridColumn FieldName="PhysicalAddress" Header="Address" Width="20" Visible="False" AllowEditing="True" ReadOnly="True" ShowInColumnChooser="True"/>
