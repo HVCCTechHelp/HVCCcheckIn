@@ -89,7 +89,6 @@
             }
         }
 
-        private MvvmBinder _binder = null;
         public MvvmBinder Binder { get; set; }
 
         public string HeaderText
@@ -792,6 +791,7 @@
                 {
                     GolfCart golfCart = new GolfCart();
                     golfCart.OwnerID = SelectedOwner.OwnerID;
+                    golfCart.Customer = SelectedOwner.Customer;
                     golfCart.Year = FiscalYear;
                     golfCart.PaymentDate = TransactionDate;
                     golfCart.Quanity = (int)GolfCartQuanity;

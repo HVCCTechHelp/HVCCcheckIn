@@ -214,6 +214,7 @@
     </Type>
     <InsertFunction FunctionId="FunctionId9">
       <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="year" Member="Year" />
       <Argument Parameter="quanity" Member="Quanity" />
       <Argument Parameter="isPaid" Member="IsPaid" />
@@ -706,15 +707,6 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
-    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
   <Function Id="FunctionId10" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
@@ -788,6 +780,16 @@
     <Parameter Name="IsAssessment" Parameter="isAssessment" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
     <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId9" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
 </Database>
