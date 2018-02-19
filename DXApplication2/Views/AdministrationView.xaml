@@ -87,6 +87,12 @@
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
+                            <dxb:BarButtonItem Content="Display Invoices"
+                                                   Command="{Binding DisplayInvoicesCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 

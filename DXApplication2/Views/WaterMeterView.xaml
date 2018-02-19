@@ -80,6 +80,14 @@
                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Import"  
+                                                    IsEnabled="{Binding CanPrint}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding InportCommand}" 
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
+                            </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
                         <!--<dxr:RibbonPageGroup Caption="Reports">

@@ -235,7 +235,21 @@
         {
             Note note = new Note();
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("Water Shutoff Status changed: {0} on {1:MM/dd/yyyy}", p, DateTime.Now);
+
+            // Check to see if there is a WaterShutoff record for the Owner.  If there
+            // is not, we will generate one here.  If there is, it is updated to reflect the
+            // current past due status.
+            if (p.Contains("30")
+                || p.Contains("60")
+                || p.Contains("90"))
+            {
+
+                sb.AppendFormat("Water Shutoff Status changed: {0} on {1:MM/dd/yyyy}", p, DateTime.Now);
+            }
+            else
+            {
+                sb.AppendFormat("{0}", p, DateTime.Now);
+            }
             note.Comment = sb.ToString().Trim();
             note.OwnerID = selectedOwner.OwnerID;
             dc.Notes.InsertOnSubmit(note);
@@ -262,7 +276,7 @@
             // Check to see if there is a WaterShutoff record for the Owner.  If there
             // is not, we will generate one here.  If there is, it is updated to reflect the
             // current past due status.
-            if (   comment.Contains("30")
+            if (comment.Contains("30")
                 || comment.Contains("60")
                 || comment.Contains("90"))
             {
@@ -410,6 +424,28 @@
         }
 
         /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _displayInvoicesCommand;
+        public ICommand DisplayInvoicesCommand
+        {
+            get
+            {
+                return _displayInvoicesCommand ?? (_displayInvoicesCommand = new CommandHandler(() => DisplayInvoicesAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void DisplayInvoicesAction()
+        {
+            Host.Execute(HostVerb.Open, "Invoices");
+        }
+
+
+        /// <summary>
         /// Apply annual dues, cart fees and assessments Command
         /// </summary>
         private ICommand _applyDuesCommand;
@@ -433,73 +469,75 @@
             int yyyy;
             Int32.TryParse(strings[0], out yyyy);
             DateTime startOfAnnual = new DateTime(yyyy, 5, 1, 0, 0, 0);
-            if (now.Year != startOfAnnual.Year
-                || now.Month != startOfAnnual.Month
-                || Math.Abs(now.Day - startOfAnnual.Day) > 3
-                )
+            //if (now.Year != startOfAnnual.Year
+            //    || now.Month != startOfAnnual.Month
+            //    || Math.Abs(now.Day - startOfAnnual.Day) > 3
+            //    )
+            //{
+            //    MessageBox.Show("You cannot apply dues before May 1st, or after May 3rd");
+            //}
+            //else
+            //{
+            string msg = String.Format("Confirm you would like to make {0} the active year, and apply annual dues to all accounts.",
+                SelectedSeason.TimePeriod);
+            MessageBoxResult result = MessageBox.Show(msg, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (MessageBoxResult.OK == result)
             {
-                MessageBox.Show("You cannot apply dues before May 1st, or after May 3rd");
-            }
-            else
-            {
-                string msg = String.Format("Confirm you would like to make {0} the active year, and apply annual dues to all accounts.",
-                    SelectedSeason.TimePeriod);
-                MessageBoxResult result = MessageBox.Show(msg, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question);
-                if (MessageBoxResult.OK == result)
+                IsBusy = true;
+                CurrentSeason.IsCurrent = false;
+                CurrentSeason.IsNext = false;
+                CurrentSeason.IsVisible = false;
+
+                var list = (from x in dc.Owners
+                            where x.IsCurrentOwner == true
+                            select x);
+                Owners = new ObservableCollection<Owner>(list);
+                foreach (Owner o in Owners)
                 {
-                    CurrentSeason.IsCurrent = false;
-                    CurrentSeason.IsNext = false;
-                    CurrentSeason.IsVisible = false;
+                    StringBuilder sb = new StringBuilder();
+                    int propertyCount = o.Properties.Count();
+                    int cartCount = o.GolfCarts.Count();
+                    decimal amount = SelectedSeason.AnnualDues * propertyCount;
+                    sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
 
-                    var list = (from x in dc.Owners
-                                where x.IsCurrentOwner == true
-                                select x);
-                    Owners = new ObservableCollection<Owner>(list);
-                    foreach (Owner o in Owners)
+                    // Check to see if Special Assessment needs to be applied.
+                    decimal assessedAmt = 0m;
+                    foreach (Property p in o.Properties)
                     {
-                        StringBuilder sb = new StringBuilder();
-                        int propertyCount = o.Properties.Count();
-                        int cartCount = o.GolfCarts.Count();
-                        decimal amount = SelectedSeason.AnnualDues * propertyCount;
-                        sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-
-                        // Check to see if Special Assessment needs to be applied.
-                        decimal assessedAmt = 0m;
-                        foreach (Property p in o.Properties)
+                        if (p.IsAssessment)
                         {
-                            if (p.IsAssessment)
-                            {
-                                assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
-                            }
+                            assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
                         }
-                        if (assessedAmt > 0)
-                        {
-                            sb.AppendFormat(" {0} Asessment:{1}", SelectedSeason.Assessment, assessedAmt.ToString("C", CultureInfo.CurrentCulture));
-                        }
-
-                        if (cartCount > 0)
-                        {
-                            amount += SelectedSeason.CartFee * cartCount;
-                            sb.AppendFormat(" GolfCart:{0}", (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-                        }
-
-                        string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                        AddNote(o, note);
-                        GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
-                        ChangeSet cs = dc.GetChangeSet();
+                    }
+                    if (assessedAmt > 0)
+                    {
+                        sb.AppendFormat(" {0} Asessment:{1}", SelectedSeason.Assessment, assessedAmt.ToString("C", CultureInfo.CurrentCulture));
                     }
 
-                    // Update the Seasons table so we move the settings forward for the current and next season
-                    SelectedSeason.IsCurrent = true;
-                    SelectedSeason.IsNext = false;
-                    SelectedSeason.IsDuesApplied = true;
-                    Seasons[SelectedSeasonIndex + 1].IsNext = true;
-                    Seasons[SelectedSeasonIndex + 1].IsVisible = true;
-              
-                    dc.SubmitChanges();
-                    MessageBox.Show("Dues have been applied");
+                    if (cartCount > 0)
+                    {
+                        amount += SelectedSeason.CartFee * cartCount;
+                        sb.AppendFormat(" GolfCart:{0}", (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
+                    }
+
+                    string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
+                    AddNote(o, note);
+                    GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
+                    ChangeSet cs = dc.GetChangeSet();
                 }
+
+                // Update the Seasons table so we move the settings forward for the current and next season
+                SelectedSeason.IsCurrent = true;
+                SelectedSeason.IsNext = false;
+                SelectedSeason.IsDuesApplied = true;
+                Seasons[SelectedSeasonIndex + 1].IsNext = true;
+                Seasons[SelectedSeasonIndex + 1].IsVisible = true;
+                IsBusy = false;
+
+                dc.SubmitChanges();
+                MessageBox.Show("Dues have been applied");
             }
+            //}
         }
 
         /// <summary>
@@ -538,8 +576,8 @@
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
                     Owner owner = (from x in dc.Owners
-                               where x.OwnerID == x.OwnerID
-                               select x).FirstOrDefault();
+                                   where x.OwnerID == x.OwnerID
+                                   select x).FirstOrDefault();
 
                     StringBuilder sb = new StringBuilder();
                     int propertyCount = owner.Properties.Count();

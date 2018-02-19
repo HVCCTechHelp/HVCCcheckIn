@@ -169,8 +169,11 @@
             }
             set
             {
-                this._newOwner = value;
-                RaisePropertyChanged("NewOwner");
+                if (value != _newOwner)
+                {
+                    this._newOwner = value;
+                    RaisePropertyChanged("NewOwner");
+                }
             }
         }
 
@@ -284,6 +287,19 @@
             if (e.PropertyName == "MailTo")
             {
                 RelationshipsToProcess = Helper.GetOwnersFromMailTo(NewOwner.MailTo);
+
+                // Check the new owner's name to make sure it doesn't already exist in the database.
+                foreach (Relationship r in RelationshipsToProcess)
+                {
+                    var lnameList = (from x in dc.Relationships
+                                     where x.LName == r.LName &&
+                                     x.FName == r.FName
+                                     select x);
+                    if (0 != lnameList.Count())
+                    {
+                        MessageBox.Show("There is a name similar to the one you entered.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
             }
 
             if (CkIsValid())
@@ -507,22 +523,30 @@
                 }
             }
 
-            string billTo = string.Format("{0} {1} {2} {3} {4} {5}"
+            string oldBillTo = string.Format("{0} {1} {2} {3} {4} {5}"
+                   , PreviousOwner.MailTo
+                   , PreviousOwner.Address
+                   , PreviousOwner.Address2
+                   , PreviousOwner.City
+                   , PreviousOwner.State
+                   , PreviousOwner.Zip);
+
+            string newBillTo = string.Format("{0} {1} {2} {3} {4} {5}"
                    , NewOwner.MailTo
                    , NewOwner.Address
                    , NewOwner.Address2
                    , NewOwner.City
                    , NewOwner.State
                    , NewOwner.Zip);
-            //SelectedProperty.BillTo = billTo;
+
 
             // Create the OwnershipChange record
             OwnershipChange oc = new OwnershipChange();
             oc.PropertyID = SelectedProperty.PropertyID;
             oc.PreviousOwnerID = PreviousOwner.OwnerID;
-            oc.PreviousOwner = PreviousOwner.MailTo;
+            oc.PreviousOwner = oldBillTo;
             oc.NewOwnerID = NewOwner.OwnerID;
-            oc.NewOwner = billTo;
+            oc.NewOwner = newBillTo;
             dc.OwnershipChanges.InsertOnSubmit(oc);
 
             // Set the previous owner inactive. We also need to de-activate any relationships associated to the 
@@ -530,7 +554,9 @@
             var plist = (from x in dc.Properties
                          where x.OwnerID == PreviousOwner.OwnerID
                          select x);
-            if (0 == plist.Count())
+            // If the previous owner only owned one property, then we can deactivate them, and their associated
+            // relationship records.
+            if (1 == plist.Count())
             {
                 PreviousOwner.IsCurrentOwner = false;
 

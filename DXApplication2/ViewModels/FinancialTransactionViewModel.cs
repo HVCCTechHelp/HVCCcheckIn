@@ -342,7 +342,7 @@
                 if (_transactionAppliesTo != value)
                 {
                     _transactionAppliesTo = value;
-                    RaisePropertyChanged("TransactionAppliesTo");
+                    //RaisePropertyChanged("TransactionAppliesTo");
                 }
             }
         }
@@ -375,6 +375,7 @@
             {
                 if (_duesAmount != value)
                 {
+                    _duesAmount = value;
                     string tmp = string.Format("Dues:{0:c} ", value);
                     if (_duesAmount != 0)
                     {
@@ -384,8 +385,6 @@
                     {
                         TransactionAppliesTo.Replace(tmp, "");
                     }
-
-                    _duesAmount = value;
                     TotalAmount += (decimal)_duesAmount;
                 }
             }
@@ -402,6 +401,7 @@
             {
                 if (_feeAmount != value)
                 {
+                    _feeAmount = value;
                     string tmp = string.Format("Fees:{0:c} ", value);
                     if (_feeAmount != 0)
                     {
@@ -411,8 +411,6 @@
                     {
                         TransactionAppliesTo.Replace(tmp, "");
                     }
-
-                    _feeAmount = value;
                     TotalAmount += (decimal)_feeAmount;
                 }
             }
@@ -444,6 +442,7 @@
             }
             set
             {
+                _cartAmount = value;
                 string tmp = string.Format("CartFee:{0:c} ", value);
                 if (_cartAmount != 0)
                 {
@@ -454,12 +453,8 @@
                     TransactionAppliesTo.Replace(tmp, "");
                 }
 
-                if (_cartAmount != value)
-                {
-                    _cartAmount = value;
                     RaisePropertyChanged("CartAmount");
                     TotalAmount += (decimal)_cartAmount;
-                }
             }
         }
 
@@ -474,6 +469,7 @@
             {
                 if (_assessmentAmount != value)
                 {
+                    _assessmentAmount = value;
                     string tmp = string.Format("Assessment:{0:c} ", value);
                     if (_assessmentAmount != 0)
                     {
@@ -484,7 +480,6 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    _assessmentAmount = value;
                     TotalAmount += (decimal)_assessmentAmount;
                 }
             }
@@ -501,6 +496,7 @@
             {
                 if (_reconnectAmount != value)
                 {
+                    _reconnectAmount = value;
                     string tmp = string.Format("Reconnect:{0:c} ", value);
                     if (_reconnectAmount != 0)
                     {
@@ -511,7 +507,6 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    _reconnectAmount = value;
                     TotalAmount += (decimal)_reconnectAmount;
                 }
             }
@@ -528,6 +523,7 @@
             {
                 if (_lienFeeAmount != value)
                 {
+                    _lienFeeAmount = value;
                     string tmp = string.Format("LienFee:{0:c} ", value);
                     if (_lienFeeAmount != 0)
                     {
@@ -538,8 +534,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    _lienFeeAmount = value;
-                    TotalAmount += (decimal)_lienFeeAmount;
+                    //TotalAmount += (decimal)_lienFeeAmount;
                 }
             }
         }
@@ -555,6 +550,7 @@
             {
                 if (_otherAmount != value)
                 {
+                    _otherAmount = value;
                     string tmp = string.Format("Other:{0:c} ", value);
                     if (_otherAmount != 0)
                     {
@@ -565,8 +561,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    _otherAmount = value;
-                    TotalAmount += (decimal)_otherAmount;
+                    //TotalAmount += (decimal)_otherAmount;
                 }
             }
         }

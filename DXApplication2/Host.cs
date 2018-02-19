@@ -190,6 +190,14 @@
             IView v = new HVCC.Shell.Views.AdministrationView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewInvoiceView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new InvoiceViewModel(dc) { Caption = "Invoices" };
+            IView v = new HVCC.Shell.Views.InvoiceView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         //
 
         /// <summary>
@@ -275,6 +283,11 @@
                 else if (param.ToString() == "WellMeter")
                 {
                     var binder = GetNewWellMeterView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "Invoices")
+                {
+                    var binder = GetNewInvoiceView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
             }
