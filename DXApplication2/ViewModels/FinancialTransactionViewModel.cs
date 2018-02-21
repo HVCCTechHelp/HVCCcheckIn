@@ -751,7 +751,7 @@
                 {
                     // Only Dues and Late Fees credits are deducted from the balance owed, or added
                     // as a positive credit.  All other types of credits are journaled for history.
-                    transaction.Balance = AccountBalance - DuesAmount - FeeAmount;
+                    transaction.Balance = AccountBalance - DuesAmount - FeeAmount - (decimal)AssessmentAmount - (decimal)CartAmount;
                     sb.Append("Credit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
@@ -782,7 +782,7 @@
                 dc.Notes.InsertOnSubmit(note);
 
                 // If there is credit applied to a golf cart, we create a Golf Cart record.
-                if (0 < CartAmount)
+                if (0 != CreditAmount && 0 < CartAmount)
                 {
                     GolfCart golfCart = new GolfCart();
                     golfCart.OwnerID = SelectedOwner.OwnerID;
@@ -815,17 +815,21 @@
 
                 this.dc.SubmitChanges();
 
+                // Add this transaction to the in-memory Selected owner record so it can be reflected without a 
+                // dc refresh from the database.
                 SelectedOwner.FinancialTransactions.Add(transaction);
 
                 RaisePropertyChanged("DataChanged");
                 CanSaveExecute = IsDirty;
                 IsBusy = false;
 
+                // I need to buffer the transactions so I can get the RowID of the last transaction; the one that was entered.
                 var transactions = (from x in dc.FinancialTransactions
                                            where x.OwnerID == SelectedOwner.OwnerID
                                            orderby x.TransactionDate descending
                                            select x);
 
+                // Break on the first record, which will be the last record entered.
                 FinancialTransaction ft = null;
                 foreach (FinancialTransaction f in transactions)
                 {
