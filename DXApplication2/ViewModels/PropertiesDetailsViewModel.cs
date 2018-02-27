@@ -516,7 +516,7 @@
         }
 
         /// <summary>
-        /// Facility Usage by date range report
+        /// Imports balances from a QuickBooks spreadsheet
         /// </summary>
         /// <param name="type"></param>
         public void ImportAction(object parameter)

@@ -80,7 +80,7 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
-                        <dxr:RibbonPageGroup Caption="Owner Action">
+                        <dxr:RibbonPageGroup Caption="Actions">
                             <dxb:BarButtonItem Content="Generate Invoices"
                                                    Command="{Binding GenerateAnnualInvoicesCommand}"
                                                    IsVisible="{Binding ApplPermissions.CanEditOwner}" 

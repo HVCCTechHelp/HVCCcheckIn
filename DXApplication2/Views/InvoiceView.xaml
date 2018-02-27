@@ -76,17 +76,38 @@
             </dxr:RibbonControl>
             <dxlc:LayoutControl Orientation="Vertical">
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Invoice List">
-                    <dxlc:LayoutItem>
-                        <dxg:GridControl AutoPopulateColumns="False" x:Name="ownerGrid" 
+                <dxlc:LayoutGroup View="Group" Orientation="Vertical">
+                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Header="Season">
+                        <dxlc:LayoutItem Label="For Fiscal Year:" x:Name="lbFiscalYear"  Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <dxlc:LayoutItem>
+                            <dxe:ComboBoxEdit x:Name="ceFiscalYear" Width="150" HorizontalAlignment="Left"
+                                              ItemsSource="{Binding FiscalYears}"
+                                              SelectedItem="{Binding SelectedSeason}"
+                                              AutoComplete="True" 
+                                              AllowNullInput="False" 
+                                              IsTextEditable="False" 
+                                              NullText="Select One"
+                                              ValidateOnTextInput="False"
+                                              ValidateOnEnterKeyPressed="False"
+                                              >
+                                <dxe:TextEdit.EditValue>
+                                    <Binding Path="FiscalYear" Mode="TwoWay"/>
+                                </dxe:TextEdit.EditValue>
+                            </dxe:ComboBoxEdit>
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="{Binding HeaderText}">
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="ownerGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding Invoices}"
                                  Width="Auto"
                                  Height="700"
                                  HorizontalAlignment="Left"
                                  >
-                            <dxg:GridControl.View>
-                                <dxg:TableView x:Name="tableViewInvoices" 
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewInvoices" 
                                        AllowEditing="False"
                                        AllowColumnFiltering="True" 
                                        AllowGrouping="False"
@@ -98,69 +119,71 @@
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
                                        >
-                                    <dxg:TableView.FormatConditions>
-                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
-                                            <dxc:Format Foreground="Red" />
-                                        </dxg:FormatCondition>
-                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
-                                            <dxc:Format Foreground="Green" />
-                                        </dxg:FormatCondition>
-                                    </dxg:TableView.FormatConditions>
-                                </dxg:TableView>
-                            </dxg:GridControl.View>
-                            <!-- columns of the detail grid -->
-                            <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
-                                        </dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="Balance" Header="Balance" Width="25" ReadOnly="True">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                        </dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Dues" Header="Dues" Width="25" ReadOnly="True">
+                                        <dxg:TableView.FormatConditions>
+                                            <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                                <dxc:Format Foreground="Red" />
+                                            </dxg:FormatCondition>
+                                            <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                                <dxc:Format Foreground="Green" />
+                                            </dxg:FormatCondition>
+                                        </dxg:TableView.FormatConditions>
+                                    </dxg:TableView>
+                                </dxg:GridControl.View>
+                                <!-- columns of the detail grid -->
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
+                                            </dxe:TextEditSettings>
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
+                                    <!--<dxg:GridColumn FieldName="Balance" Header="Balance" Width="25" ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Assessment" Header="Assessment" Width="25" ReadOnly="True">
+                                </dxg:GridColumn>-->
+                                    <dxg:GridColumn FieldName="Properties" Header="Properties" Width="150" ReadOnly="True"/>
+                                    <dxg:GridColumn FieldName="Dues" Header="Dues" Width="25" ReadOnly="True">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                            </dxe:TextEditSettings>
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="Assessment" Header="Assessment" Width="25" ReadOnly="True">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                            </dxe:TextEditSettings>
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="Cart" Header="Cart" Width="25" ReadOnly="True">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                            </dxe:TextEditSettings>
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="Total" Header="Total" Width="25" ReadOnly="True">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                            </dxe:TextEditSettings>
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <!--<dxg:GridColumn FieldName="NewBalance" Header="NewBalance" Width="25" ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Cart" Header="Cart" Width="25" ReadOnly="True">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                        </dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="Total" Header="Total" Width="25" ReadOnly="True">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                        </dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="NewBalance" Header="NewBalance" Width="25" ReadOnly="True">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                        </dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                            </dxg:GridControl.Columns>
-                            <dxg:GridControl.TotalSummary>
-                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
-                            </dxg:GridControl.TotalSummary>
+                                </dxg:GridColumn>-->
+                                </dxg:GridControl.Columns>
+                                <dxg:GridControl.TotalSummary>
+                                    <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                                </dxg:GridControl.TotalSummary>
 
-                        </dxg:GridControl>
-                    </dxlc:LayoutItem>
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
 
+                    </dxlc:LayoutGroup>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
         </DockPanel>

@@ -57,6 +57,15 @@
                 <dxr:RibbonDefaultPageCategory>
                     <dxr:RibbonPage x:Name="actions" Caption="Actions">
 
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                               IsEnabled="True"
+                                               Command="{Binding RefreshCommand}"
+                                               Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                               LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                               ToolTip="Refresh Meter Data"/>
+                        </dxr:RibbonPageGroup>
+
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
                                                     IsEnabled="{Binding CanExport}"
@@ -80,19 +89,15 @@
                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
-                            <dxb:BarSubItem Content="Import"  
-                                                    IsEnabled="{Binding CanPrint}"
-                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
-                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
-                                <dxb:BarButtonItem Content="Show preview" Command="{Binding InportCommand}" 
-                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
-                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
-                            </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
-                        <!--<dxr:RibbonPageGroup Caption="Reports">
-                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
-                        </dxr:RibbonPageGroup>-->
+                        <dxr:RibbonPageGroup Caption="Actions">
+                            <dxb:BarButtonItem Content="Import Readings" 
+                                               Command="{Binding ImportCommand}"
+                                               IsEnabled="True"
+                                               Glyph="/Images/Icons/import-16x16.png" 
+                                               LargeGlyph="/Images/Icons/import-32x32.png" />
+                        </dxr:RibbonPageGroup>
 
                     </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
@@ -136,7 +141,7 @@
                                             <dxc:Format Foreground="Green" />
                                         </dxg:FormatCondition>
                                     </dxg:TableView.FormatConditions>
-                                    
+
                                     <dxmvvm:Interaction.Behaviors>
                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}" />

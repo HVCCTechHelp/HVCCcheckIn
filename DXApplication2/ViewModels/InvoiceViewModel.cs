@@ -37,21 +37,7 @@
                                select x);
             Permissions = new ObservableCollection<ApplicationPermission>(permissions);
 
-            CurrentSeason = (from x in Seasons
-                             where x.IsNext == true
-                             select x).FirstOrDefault();
-
-            SelectedSeason = CurrentSeason;
-            int ndx = 0;
-            foreach (Season s in Seasons)
-            {
-                if (s.TimePeriod == SelectedSeason.TimePeriod)
-                {
-                    break;
-                }
-                ndx++;
-            }
-            SelectedSeasonIndex = ndx;
+            this.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
         }
 
         public override bool IsValid { get { return true; } }
@@ -91,6 +77,25 @@
             }
         }
 
+        private string _headerText = String.Empty;
+        public string HeaderText
+        {
+            get
+            {
+                return _headerText;
+            }
+            set
+            {
+                if (_headerText != value)
+                {
+                    _headerText = value;
+                    RaisePropertyChanged("HeaderText");
+                }
+
+            }
+        }
+
+
         private ObservableCollection<ApplicationPermission> _permissions = null;
         public ObservableCollection<ApplicationPermission> Permissions
         {
@@ -118,22 +123,6 @@
             }
         }
 
-        private Season _currentSeason = null;
-        public Season CurrentSeason
-        {
-            get
-            {
-                return _currentSeason;
-            }
-            set
-            {
-                if (_currentSeason != value)
-                {
-                    _currentSeason = value;
-                }
-            }
-        }
-
         private Season _selectedSeason = null;
         public Season SelectedSeason
         {
@@ -151,30 +140,73 @@
             }
         }
 
-        private int _selectedSeasonIndex = 0;
-        public int SelectedSeasonIndex
+        public ObservableCollection<string> FiscalYears
         {
             get
             {
-                return _selectedSeasonIndex;
+                var list = (from x in Seasons
+                            select x.TimePeriod);
+                return new ObservableCollection<string>(list);
+            }
+        }
+
+        private string _fiscalYear = String.Empty;
+        public string FiscalYear
+        {
+            get
+            {
+                return _fiscalYear;
             }
             set
             {
-                if (_selectedSeasonIndex != value)
+                if (_fiscalYear != value)
                 {
-                    _selectedSeasonIndex = value;
-                    SelectedSeason = Seasons[_selectedSeasonIndex];
-                    RaisePropertyChanged("SelectedSeasonIndex");
+                    _fiscalYear = value;
+                    SelectedSeason = (from x in Seasons
+                                          where x.TimePeriod == _fiscalYear
+                                          select x).FirstOrDefault();
+
+                    RaisePropertyChanged("FiscalYear");
                 }
             }
         }
 
         public ObservableCollection<Owner> Owners { get; set; }
 
+        private ObservableCollection<Invoice> _invoices = null;
         public ObservableCollection<Invoice> Invoices
         {
             get
             {
+                return _invoices;
+            }
+            set
+            {
+                if (_invoices != value)
+                {
+                    _invoices = value;
+                    RaisePropertyChanged("Invoices");
+                }
+            }
+        }
+
+        /* ----------------------------------- Private Methods ---------------------------------------- */
+        #region Private Methods
+
+        /// <summary>
+        /// Summary
+        ///     Raises a property changed event when the NewOwner data is modified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Property_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedSeason")
+            {
+                IsBusy = true;
+
+                HeaderText = string.Format("Invoice List for {0}", FiscalYear);
+
                 ObservableCollection<Invoice> invoiceList = new ObservableCollection<Invoice>();
 
                 var list = (from x in dc.Owners
@@ -198,14 +230,17 @@
                     invoice.Dues = SelectedSeason.AnnualDues * propertyCount;
 
                     // Check to see if Special Assessment needs to be applied.
+                    StringBuilder lots = new StringBuilder();
                     decimal assessedAmt = 0m;
                     foreach (Property p in o.Properties)
                     {
+                        lots.Append(string.Format("[ {0} ]     ", p.Customer));
                         if (p.IsAssessment)
                         {
                             assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
                         }
                     }
+                    invoice.Properties = lots.ToString();
                     invoice.Assessment = assessedAmt;
 
                     decimal cartAmt = 0m;
@@ -219,10 +254,13 @@
                     invoice.NewBalance = invoice.Balance + invoice.Total;
                     invoiceList.Add(invoice);
                 }
+                Invoices = invoiceList;
 
-                return invoiceList;
+                IsBusy = false;
             }
         }
+
+        #endregion
     }
 
     /*================================================================================================================================================*/
@@ -399,6 +437,7 @@ public class Invoice
 {
     public int OwnerID { get; set; }
     public string MailTo { get; set; }
+    public string Properties { get; set; }
     public decimal Balance { get; set; }
     public decimal Dues { get; set; }
     public decimal Assessment { get; set; }

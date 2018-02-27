@@ -364,8 +364,8 @@
             }
         }
 
-        private decimal _duesAmount = 0m;
-        public decimal DuesAmount
+        private decimal? _duesAmount = null;
+        public decimal? DuesAmount
         {
             get
             {
@@ -390,8 +390,8 @@
             }
         }
 
-        private decimal _feeAmount = 0m;
-        public decimal FeeAmount
+        private decimal? _feeAmount = null;
+        public decimal? FeeAmount
         {
             get
             {
@@ -751,7 +751,14 @@
                 {
                     // Only Dues and Late Fees credits are deducted from the balance owed, or added
                     // as a positive credit.  All other types of credits are journaled for history.
-                    transaction.Balance = AccountBalance - DuesAmount - FeeAmount - (decimal)AssessmentAmount - (decimal)CartAmount;
+                    if (null != DuesAmount)
+                    { transaction.Balance = AccountBalance - (decimal)DuesAmount; }
+                    if (null != FeeAmount)
+                    { transaction.Balance -= (decimal)FeeAmount; }
+                    if (null != AssessmentAmount)
+                    { transaction.Balance -= (decimal)AssessmentAmount; }
+                    if (null != CartAmount)
+                    { transaction.Balance -= (decimal)CartAmount; }
                     sb.Append("Credit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }

@@ -1,6 +1,8 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
     using DevExpress.Spreadsheet;
+    using DevExpress.Xpf.Spreadsheet;
     using HVCC.Shell.Common;
     using HVCC.Shell.Common.Commands;
     using HVCC.Shell.Common.Interfaces;
@@ -11,7 +13,9 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data.Linq;
+    using System.IO;
     using System.Linq;
+    using System.Windows;
     using System.Windows.Input;
 
     public partial class WaterMeterViewModel : CommonViewModel, ICommandSink
@@ -22,7 +26,29 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
+
+            PropertiesList = GetPropertiesList();
         }
+
+        /* -------------------------------- Interfaces ------------------------------------------------ */
+        #region Interfaces
+        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
+        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
+        #endregion
+        int RowNum;
+        public enum Column : int
+        {
+            Date = 0,
+            Time = 1,
+            Lot = 2,
+            Reading = 3
+        }
+
+        /* -------------------------------------------------------------------------------------------- */
+
+        public virtual bool DialogResult { get; protected set; }
 
         public override bool IsValid { get { return true; } }
 
@@ -70,20 +96,13 @@
         {
             get
             {
-                if (this._propertiesList == null)
-                {
-                    //// Get the list of "Properties" from the database
-                    var list = (from a in this.dc.Properties
-                                select a);
-
-                    this._propertiesList = new ObservableCollection<Property>(list);
-                }
                 return this._propertiesList;
             }
             set
             {
                 if (this._propertiesList != value)
                 {
+                    _propertiesList = null;
                     this._propertiesList = value;
                     RaisePropertyChanged("PropertiesList");
                 }
@@ -128,7 +147,26 @@
 
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
-        #region Methods
+        #region Private Methods
+
+        /// <summary>
+        /// Queries the database to get the current list of property records
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<Property> GetPropertiesList()
+        {
+            try
+            {
+                var list = (from a in this.dc.Properties
+                            select a);
+                return new ObservableCollection<Property>(list);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving Property data : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
 
         #endregion
     }
@@ -227,6 +265,30 @@
         }
 
         /// <summary>
+        /// Refresh Command
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new CommandHandlerWparm((object parameter) => RefreshAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Refresh data sources
+        /// </summary>
+        /// <param name="type"></param>
+        public void RefreshAction(object parameter)
+        {
+            RaisePropertyChanged("IsBusy");
+            PropertiesList = GetPropertiesList();
+            RaisePropertyChanged("IsNotBusy");
+        }
+
+
+        /// <summary>
         /// Print Command
         /// </summary>
         private ICommand _rowDoubleClickCommand;
@@ -247,6 +309,105 @@
             Property p = parameter as Property;
             Host.Execute(HostVerb.Open, "WaterMeterEdit", p);
         }
+
+        /// <summary>
+        /// Import water meter readings from csv file
+        /// </summary>
+        private ICommand _importCommand;
+        public ICommand ImportCommand
+        {
+            get
+            {
+                return _importCommand ?? (_importCommand = new CommandHandler(() => ImportReadingAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// Import meter readings command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ImportReadingAction()
+        {
+            string importFileName = string.Empty;
+
+            // Open a file chooser dialog window. Capture the user's file selection.
+            OpenFileDialogService.Filter = "CSV files|*.csv|Text file|*.txt";
+            OpenFileDialogService.FilterIndex = 1;
+            DialogResult = OpenFileDialogService.ShowDialog();
+            if (DialogResult)
+            {
+                IFileInfo file = OpenFileDialogService.Files.First();
+                importFileName = file.GetFullName();
+            }
+
+            if (!String.IsNullOrEmpty(importFileName))
+            {
+                // Set the busy flag so the cursor in the UI will spin to indicate something is happening.
+                RaisePropertyChanged("IsBusy");
+
+                // Process the CVS file to import new meter readings records
+                try
+                {
+                    // Read each line of the file into a string array. Each element
+                    // of the array is one line of the file.
+                    string[] lines = System.IO.File.ReadAllLines(importFileName);
+
+                    RowNum = 0;
+                    // Process the file contents by using a foreach loop.
+                    foreach (string line in lines)
+                    {
+                        WaterMeterReading newReading = new WaterMeterReading();
+                        RowNum++;
+                        string[] columns = line.Split(',');
+
+                        // Lets deal with the first two columns where are Date and Time
+                        string date = columns[(int)Column.Date];
+                        string time = columns[(int)Column.Time];
+                        string datetime = String.Format("{0} {1}", date, time);
+
+                        // We need to fetch the last meter reading for the property to calculate
+                        // the consumption between readings
+                        int pID = (from x in dc.Properties
+                                   where x.Customer == columns[(int)Column.Lot]
+                                   select x.PropertyID).SingleOrDefault();
+
+                        WaterMeterReading lastWMR = (from x in dc.WaterMeterReadings
+                                                     where x.PropertyID == pID
+                                                     orderby x.ReadingDate descending
+                                                     select x).FirstOrDefault();
+
+                        newReading.PropertyID = pID;
+                        newReading.ReadingDate = DateTime.ParseExact(datetime, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                        newReading.MeterReading = Int32.Parse(columns[(int)Column.Reading]); ;
+
+                        if (null == lastWMR)
+                        {
+                            newReading.Consumption = 0;
+                        }
+                        else
+                        {
+
+                            newReading.Consumption = newReading.MeterReading - (int)lastWMR.MeterReading;
+                        }
+
+                        // Add this reading to the data context's change set
+                        dc.WaterMeterReadings.InsertOnSubmit(newReading);
+                    }
+
+                    ChangeSet cs = dc.GetChangeSet();
+                    dc.SubmitChanges();
+                    RaisePropertyChanged("IsNotBusy");
+                    string msg = String.Format("Import complete. {0} records imported", cs.Inserts.Count());
+                    MessageBox.Show(msg, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    RaisePropertyChanged("IsNotBusy");
+                    MessageBoxService.Show("Error importing data at row " + RowNum + "\nMessage: " + ex.Message);
+                }
+            }
+        }
+
     }
     /*================================================================================================================================================*/
     /// <summary>

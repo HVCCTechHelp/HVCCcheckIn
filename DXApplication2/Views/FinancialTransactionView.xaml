@@ -246,7 +246,7 @@
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
-                                                      NullText="$0.00"
+                                                      NullText="{Binding SelectedFiscalYear.AnnualDues}"
                                                       ToolTip="Only enter dues payment. Subtracts from account balance">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="DuesAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -266,7 +266,7 @@
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
-                                                      NullText="$0.00"
+                                                      NullText="$20.00"
                                                       ToolTip="Only enter late fees. Subtracts to account balance">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="FeeAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -306,7 +306,7 @@
                                                       IsReadOnly="True"
                                                       Focusable="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
-                                                      NullText="$50.00"
+                                                      NullText="{Binding SelectedFiscalYear.CartFee}"
                                                       ShowBorder="False">
                                             </dxe:TextEdit>
                                         </dxlc:LayoutItem>

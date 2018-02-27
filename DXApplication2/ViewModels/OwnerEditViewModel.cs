@@ -148,7 +148,7 @@
         {
             get
             {
-                return string.Format("Edit Owner #{0:000000}", SelectedOwner.OwnerID); 
+                return string.Format("Edit Owner #{0:000000}", SelectedOwner.OwnerID);
             }
         }
 
@@ -406,8 +406,6 @@
             {
                 try
                 {
-                    // Using the PropertyXOwner Xref to get the OwnerID, we can
-                    // then query the GolfCartXOwner to see if the owner owns a golf cart.
                     var cart = (from a in SelectedOwner.GolfCarts
                                 where a.OwnerID == SelectedOwner.OwnerID
                                 select a).LastOrDefault();
@@ -439,8 +437,27 @@
         {
             get
             {
-                string _image = @"/Images/Icons/GolfCart_Icon.png";
+                string _image = String.Empty;
+                if (GolfCart.Year == CurrentSeason.TimePeriod)
+                {
+                    _image = @"/Images/Icons/GolfCart_Icon.png";
+                }
+                else
+                {
+                    _image = @"/Images/Icons/GolfCart_Red_Icon.png";
+                }
                 return _image;
+            }
+        }
+
+        public Season CurrentSeason
+        {
+            get
+            {
+                Season _currentSeason = (from x in dc.Seasons
+                                         where x.IsCurrent == true
+                                         select x).First();
+                return _currentSeason;
             }
         }
         /* ------------------------------------ Public Methods -------------------------------------------- */
@@ -563,7 +580,7 @@
                         }
                         else
                         {
-                                bool result = Helper.AddRelationship(this.dc, SelectedOwner, r);
+                            bool result = Helper.AddRelationship(this.dc, SelectedOwner, r);
                         }
                     }
                     break;
@@ -749,7 +766,7 @@
     /// <summary>
     /// ViewModel Commands
     /// </summary>
-    public partial class OwnerEditViewModel 
+    public partial class OwnerEditViewModel
     {
 
         /// <summary>
