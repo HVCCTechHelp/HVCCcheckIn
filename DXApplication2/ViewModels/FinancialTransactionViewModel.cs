@@ -759,6 +759,12 @@
                     { transaction.Balance -= (decimal)AssessmentAmount; }
                     if (null != CartAmount)
                     { transaction.Balance -= (decimal)CartAmount; }
+                    if (null != FeeAmount)
+                    { transaction.Balance -= (decimal)FeeAmount; }
+                    if (null != LienFeeAmount)
+                    { transaction.Balance -= (decimal)LienFeeAmount; }
+                    if (null != OtherAmount)
+                    { transaction.Balance -= (decimal)OtherAmount; }
                     sb.Append("Credit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }

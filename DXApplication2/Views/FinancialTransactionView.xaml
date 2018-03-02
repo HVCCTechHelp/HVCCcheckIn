@@ -208,6 +208,7 @@
                                                     <dxe:ComboBoxEditItem Content="Check" IsSelected="True"/>
                                                     <dxe:ComboBoxEditItem Content="Cash" />
                                                     <dxe:ComboBoxEditItem Content="Money Order" />
+                                                    <dxe:ComboBoxEditItem Content="Credit Memo" />
                                                 </dxe:ComboBoxEdit.Items>
                                             </dxe:ComboBoxEdit>
                                         </dxlc:LayoutItem>
