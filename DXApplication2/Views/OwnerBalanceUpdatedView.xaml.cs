@@ -22,7 +22,7 @@
     /// <summary>
     /// Interaction logic for PropertiesUpdatedView.xaml
     /// </summary>
-    public partial class PropertiesUpdatedView : UserControl, IView
+    public partial class OwnerBalanceUpdatedView : UserControl, IView
     {
         ApplicationPermission appPermissions;
         public IViewModel ViewModel
@@ -31,7 +31,7 @@
             set { this.DataContext = value; }
         }
 
-        public PropertiesUpdatedView(IViewModel vm)
+        public OwnerBalanceUpdatedView(IViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;

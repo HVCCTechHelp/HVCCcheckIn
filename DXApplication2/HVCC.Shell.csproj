@@ -29,7 +29,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>36</ApplicationRevision>
+    <ApplicationRevision>37</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -182,6 +182,7 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Models\UnmatchedBalance.cs" />
     <Compile Include="Models\WaterMeterException.cs" />
     <Compile Include="Models\WellMeterHistory.cs" />
     <Compile Include="Reports\IntentToLienNotice.cs">
@@ -279,7 +280,7 @@
     <Compile Include="ViewModels\OwnershipHistoryViewModel.cs" />
     <Compile Include="ViewModels\OwnersViewModel.cs" />
     <Compile Include="ViewModels\FinancialTransactionViewModel.cs" />
-    <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
+    <Compile Include="ViewModels\OwnerBalanceUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
@@ -312,8 +313,8 @@
     <Compile Include="Views\FinancialTransactionView.xaml.cs">
       <DependentUpon>FinancialTransactionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PropertiesUpdatedView.xaml.cs">
-      <DependentUpon>PropertiesUpdatedView.xaml</DependentUpon>
+    <Compile Include="Views\OwnerBalanceUpdatedView.xaml.cs">
+      <DependentUpon>OwnerBalanceUpdatedView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertyDetailsView.xaml.cs">
       <DependentUpon>PropertyDetailsView.xaml</DependentUpon>
@@ -386,7 +387,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PropertiesUpdatedView.xaml">
+    <Page Include="Views\OwnerBalanceUpdatedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

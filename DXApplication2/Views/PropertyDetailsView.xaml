@@ -112,12 +112,6 @@
                                                IsEnabled="{Binding IsEnabledChangeOwner}"
                                                Glyph="/Images/Icons/Ownership_16x16.png" 
                                                LargeGlyph="/Images/Icons/Ownership_32x32.png" />
-                            <!--<dxb:BarButtonItem x:Name="bbImport" Content="Update" 
-                                               Command="{Binding ImportCommand}"
-                                               IsEnabled="{Binding ApplPermissions.CanImport}"
-                                               Glyph="/Images/Icons/Financal-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Financal-32x32.png"
-                                               ToolTip="Bulk update dues balance information" />-->
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 

@@ -298,49 +298,48 @@
             Host.Execute(HostVerb.Open, "EditOwner", p);
         }
 
-        ///// <summary>
-        ///// RowDoubleClick Command
-        ///// </summary>
-        //private ICommand _focusedRowChangedCommand;
-        //public ICommand FocusedRowChangedCommand
-        //{
-        //    get
-        //    {
-        //        return _focusedRowChangedCommand ?? (_focusedRowChangedCommand = new CommandHandlerWparm((object parameter) => FocusedRowChangedAction(parameter), true));
-        //    }
-        //}
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _importCommand;
+        public ICommand ImportCommand
+        {
+            get
+            {
+                return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
+            }
+        }
 
-        ///// <summary>
-        ///// Grid row double click event to command action
-        ///// </summary>
-        ///// <param name="type"></param>
-        //public void FocusedRowChangedAction(object parameter)
-        //{
-        //    DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e = parameter as DevExpress.Xpf.Grid.FocusedRowChangedEventArgs;
-        //    SelectedProperty = e.NewRow as Property;
-        //}
+        /// <summary>
+        /// Imports balances from a QuickBooks spreadsheet
+        /// </summary>
+        /// <param name="type"></param>
+        public void ImportAction(object parameter)
+        {
+            Host.Execute(HostVerb.Open, "ImportBalances");
+        }
 
         /// <summary>
         /// Print Command
         /// </summary>
-        private ICommand _changeOwnerCommand;
-        public ICommand ChangeOwnerCommand
-        {
-            get
-            {
-                return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanEditOwner));
-            }
-        }
+        //private ICommand _changeOwnerCommand;
+        //public ICommand ChangeOwnerCommand
+        //{
+        //    get
+        //    {
+        //        return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanEditOwner));
+        //    }
+        //}
 
         /// <summary>
         /// Grid row double click event to command action
         /// </summary>
         /// <param name="type"></param>
-        public void ChangeOwnerAction(object parameter)
-        {
-            Property p = parameter as Property;
-            Host.Execute(HostVerb.Open, "ChangeOwner", p);
-        }
+        //public void ChangeOwnerAction(object parameter)
+        //{
+        //    Property p = parameter as Property;
+        //    Host.Execute(HostVerb.Open, "ChangeOwner", p);
+        //}
 
         /// <summary>
         /// Print Command

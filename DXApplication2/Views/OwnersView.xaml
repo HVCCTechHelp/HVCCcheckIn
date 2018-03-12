@@ -44,8 +44,24 @@
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+                    <dxr:RibbonPage Caption="Actions" >
+                        <dxr:RibbonPageGroup Caption="Data">
+                            <dxb:BarButtonItem Content="Refresh" 
+                                                       IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
+                                                       Command="{Binding RefreshCommand}"
+                                                       Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
+                                                       ToolTip="Refresh Property Data"/>
+                            <!--<dxb:BarButtonItem Content="Undo" 
+                                                       IsEnabled="False"
+                                                       Command="{Binding UndoCommand}"
+                                                       Glyph="{dx:DXImage Image=Reset2_16x16.png}" 
+                                                       LargeGlyph="{dx:DXImage Image=Reset2_32x32.png}"
+                                                       ToolTip="Discard All Changes"/>-->
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
 
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
                                                     IsEnabled="{Binding CanExport}"
@@ -71,19 +87,14 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
-                        <!--<dxr:RibbonPageGroup Caption="Owner Action">
-                            <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
-                                               Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
-                                               IsEnabled="{Binding IsEnabledChangeOwner}"
-                                               Glyph="/Images/Icons/Ownership_16x16.png" 
-                                               LargeGlyph="/Images/Icons/Ownership_32x32.png" />
+                        <dxr:RibbonPageGroup Caption="Owner Action">
                             <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Financal-16x16.png" 
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
                                                ToolTip="Bulk update dues balance information" />
-                        </dxr:RibbonPageGroup>-->
+                        </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
                     <dxr:RibbonPage x:Name="ownerReports" Caption="Reports">
 

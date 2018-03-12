@@ -141,12 +141,12 @@
             IView v = new HVCC.Shell.Views.WaterShutoffEditView(vm);
             return new MvvmBinder(dc, v, vm);
         }
-        public static IMvvmBinder GetNewPropertiesUpdatedView(object arg)
+        public static IMvvmBinder GetNewOwnerBalanceUpdatedView(object arg)
         {
             ////IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
-            IViewModel vm = new PropertiesUpdatedViewModel(dc, arg) { Caption = "Updated Balances" };
-            IView v = new HVCC.Shell.Views.PropertiesUpdatedView(vm);
+            IViewModel vm = new OwnerBalanceUpdatedViewModel(dc, arg) { Caption = "Updated Balances" };
+            IView v = new HVCC.Shell.Views.OwnerBalanceUpdatedView(vm);
             return new MvvmBinder(dc, v, vm);
         }
         public static IMvvmBinder GetNewGolfCartView(object arg)
@@ -262,7 +262,7 @@
                 }
                 else if (param.ToString() == "ImportBalances")
                 {
-                    var binder = GetNewPropertiesUpdatedView(arg);
+                    var binder = GetNewOwnerBalanceUpdatedView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
                 else if (param.ToString() == "GolfCart")

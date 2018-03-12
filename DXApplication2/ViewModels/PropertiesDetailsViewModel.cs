@@ -504,27 +504,6 @@
         }
 
         /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _importCommand;
-        public ICommand ImportCommand
-        {
-            get
-            {
-                return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
-            }
-        }
-
-        /// <summary>
-        /// Imports balances from a QuickBooks spreadsheet
-        /// </summary>
-        /// <param name="type"></param>
-        public void ImportAction(object parameter)
-        {
-            Host.Execute(HostVerb.Open, "ImportBalances");
-        }
-
-        /// <summary>
         /// Facility Usage by date range report
         /// </summary>
         private ICommand _periodUsageReportCommand;
