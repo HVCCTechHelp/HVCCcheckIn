@@ -24,6 +24,8 @@
         >
 
     <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:OpenFileDialogService Title="Open File" />
+        <dxmvvm:SaveFileDialogService Title="Save File" />
         <common:TableViewExportService />
         <!-- TableViewExportService is defined in HVCC.Shell.Common.ExportServices.cs -->
         <dx:DXMessageBoxService />
@@ -69,19 +71,6 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
 
-                        <!--<dxr:RibbonPageGroup Caption="Owner Action">
-                            <dxb:BarButtonItem x:Name="bbChangeOwner" Content="ChangeOwner" 
-                                               Command="{Binding ChangeOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
-                                               IsEnabled="{Binding IsEnabledChangeOwner}"
-                                               Glyph="/Images/Icons/Ownership_16x16.png" 
-                                               LargeGlyph="/Images/Icons/Ownership_32x32.png" />
-                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
-                                               Command="{Binding ImportCommand}"
-                                               IsEnabled="{Binding ApplPermissions.CanImport}"
-                                               Glyph="/Images/Icons/Financal-16x16.png" 
-                                               LargeGlyph="/Images/Icons/Financal-32x32.png"
-                                               ToolTip="Bulk update dues balance information" />
-                        </dxr:RibbonPageGroup>-->
                     </dxr:RibbonPage>
                     
                     <!--<dxr:RibbonPage x:Name="shutoffReports" Caption="Reports">
@@ -141,7 +130,12 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="10" Visible="False" Fixed="Left" IsEnabled="False" ShowInColumnChooser="True" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                <dxg:GridColumn FieldName="OwnerID" Header="ID" Width="60" ReadOnly="True" SortOrder="Ascending" SortIndex="0" Fixed="Left">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
+                                    </dxe:TextEditSettings>
+                                </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="150" ReadOnly="True"  Fixed="Left"/>
                                 <dxg:GridColumn FieldName="Balance" Header="Balance" Width="100" ReadOnly="True" Fixed="Left">
                                     <dxg:GridColumn.EditSettings>

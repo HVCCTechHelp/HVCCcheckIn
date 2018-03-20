@@ -211,7 +211,10 @@
                 var list = (from x in dc.FinancialTransactions
                             where x.OwnerID == SelectedOwner.OwnerID
                             select x);
-                return new ObservableCollection<FinancialTransaction>(list);
+
+                ObservableCollection < FinancialTransaction > ftCollection = new ObservableCollection<FinancialTransaction>(list);
+                AccountBalance = ftCollection[ftCollection.Count() - 1].Balance;
+                return ftCollection;
             }
         }
 
@@ -352,24 +355,38 @@
             }
         }
 
+        private decimal? _accountBalance = null;
         public decimal? AccountBalance
         {
             get
             {
-                try
+                if (null == _accountBalance)
                 {
-                    var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
-
-                    if (b.Balance > 0)
+                    try
                     {
-                        TextColor = new SolidColorBrush(Colors.DarkRed);
+                        var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
+
+                        if (b.Balance > 0)
+                        {
+                            TextColor = new SolidColorBrush(Colors.DarkRed);
+                        }
+                        _accountBalance = b.Balance;
+                        RaisePropertyChanged("AccountBalance");
                     }
-                    return b.Balance;
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _accountBalance = null;
+                    }
                 }
-                catch (Exception ex)
+                return _accountBalance;
+            }
+            set
+            {
+                if (value != _accountBalance)
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    _accountBalance = value;
+                    RaisePropertyChanged("AccountBalance");
                 }
             }
         }

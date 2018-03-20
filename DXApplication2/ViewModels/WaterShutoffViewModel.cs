@@ -10,6 +10,8 @@
     using HVCC.Shell.Resources;
     using HVCC.Shell.Common.ViewModels;
     using HVCC.Shell.Common.Interfaces;
+    using DevExpress.Mvvm;
+    using HVCC.Shell.Common.Commands;
 
     public partial class WaterShutoffViewModel : CommonViewModel, ICommandSink
     {
@@ -242,6 +244,37 @@
             RaisePropertyChanged("IsNotBusy");
         }
 
+
+
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
+        public bool CanExport = true;
+        /// <summary>
+        /// Add Cart Command
+        /// </summary>
+        private ICommand _exportCommand;
+        public ICommand ExportCommand
+        {
+            get
+            {
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
+            }
+        }
+
+        public bool CanPrint = true;
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _printCommand;
+        public ICommand PrintCommand
+        {
+            get
+            {
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
+            }
+        }
 
     }
 

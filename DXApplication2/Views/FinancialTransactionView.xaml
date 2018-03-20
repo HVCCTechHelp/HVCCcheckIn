@@ -151,7 +151,8 @@
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
                                                       NullText="$0.00"
-                                                      ToolTip="Credits deduct from the balance" Foreground="#FF41B804" GotFocus="teCredit_GotFocus">
+                                                      ToolTip="Credits deduct from the balance" Foreground="#FF41B804" 
+                                                      GotFocus="teCredit_GotFocus">
                                                 <dxe:TextEdit.EditValue>
                                                     <Binding Path="CreditAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                                         <Binding.ValidationRules>
@@ -247,7 +248,7 @@
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
-                                                      NullText="{Binding SelectedFiscalYear.AnnualDues}"
+                                                      NullText="{Binding DuesNullText}"
                                                       ToolTip="Only enter dues payment. Subtracts from account balance">
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="DuesAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -377,7 +378,7 @@
                                                       NullText="$0.00"
                                                       ToolTip="Amount">
                                             <dxe:TextEdit.EditValue>
-                                                <Binding Path="LeinFeeAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                <Binding Path="LienFeeAmount" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
                                                     <Binding.ValidationRules>
                                                         <validation:RequiredValidationRule FieldName="LeinFeeAmount"/>
                                                     </Binding.ValidationRules>

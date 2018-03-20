@@ -134,7 +134,7 @@
 
         private void teCredit_GotFocus(object sender, RoutedEventArgs e)
         {
-            teDebit.NullText = "0.00";
+            teCredit.NullText = string.Empty;
             teDebit.Visibility = Visibility.Hidden;
             lbDebit.Visibility = Visibility.Hidden;
             lbDebitMethod.Visibility = Visibility.Hidden;
@@ -143,7 +143,7 @@
         }
         private void teDebit_GotFocus(object sender, RoutedEventArgs e)
         {
-            teCredit.NullText = "0.00";
+            teDebit.NullText = string.Empty;
             teCredit.Visibility = Visibility.Hidden;
             lbCredit.Visibility = Visibility.Hidden;
             lbCreditMethod.Visibility = Visibility.Hidden;

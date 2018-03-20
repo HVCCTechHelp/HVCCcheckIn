@@ -99,6 +99,23 @@
             }
         }
 
+        private string _duesNullText = string.Empty;
+        public string DuesNullText
+        {
+            get
+            {
+                return _duesNullText;                 
+            }
+            set
+            {
+                if (value != _duesNullText)
+                {
+                    _duesNullText = value;
+                    RaisePropertyChanged("DuesNullText");
+                }
+            }
+        }
+
         public ObservableCollection<Season> Seasons
         {
             get
@@ -137,6 +154,7 @@
                                           where x.TimePeriod == _fiscalYear
                                           select x).FirstOrDefault();
 
+                    DuesNullText = string.Format("${0:#.00}", SelectedFiscalYear.AnnualDues);
                     RaisePropertyChanged("FiscalYear");
                 }
             }
@@ -266,8 +284,8 @@
             }
         }
 
-        private decimal _creditAmount = 0m;
-        public decimal CreditAmount
+        private decimal? _creditAmount = null;
+        public decimal? CreditAmount
         {
             get
             { return _creditAmount; }
@@ -281,8 +299,8 @@
             }
         }
 
-        private decimal _debitAmount = 0m;
-        public decimal DebitAmount
+        private decimal? _debitAmount = null;
+        public decimal? DebitAmount
         {
             get
             { return _debitAmount; }
@@ -534,7 +552,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    //TotalAmount += (decimal)_lienFeeAmount;
+                    TotalAmount += (decimal)_lienFeeAmount;
                 }
             }
         }
@@ -561,12 +579,12 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    //TotalAmount += (decimal)_otherAmount;
+                    TotalAmount += (decimal)_otherAmount;
                 }
             }
         }
 
-        private decimal _totalAmount = 0;
+        private decimal _totalAmount = 0m;
         public decimal TotalAmount
         {
             get
@@ -747,30 +765,32 @@
                 StringBuilder sb = new StringBuilder();
 
                 // Determine if we are posting a credit or a debit.  
-                if (0 != CreditAmount)
+                if (null != CreditAmount)
                 {
-                    // Only Dues and Late Fees credits are deducted from the balance owed, or added
-                    // as a positive credit.  All other types of credits are journaled for history.
+                    DebitAmount = 0;
+                    transaction.Balance = AccountBalance;
                     if (null != DuesAmount)
-                    { transaction.Balance = AccountBalance - (decimal)DuesAmount; }
+                    { transaction.Balance -= (decimal)DuesAmount; }
                     if (null != FeeAmount)
                     { transaction.Balance -= (decimal)FeeAmount; }
                     if (null != AssessmentAmount)
                     { transaction.Balance -= (decimal)AssessmentAmount; }
                     if (null != CartAmount)
                     { transaction.Balance -= (decimal)CartAmount; }
-                    if (null != FeeAmount)
-                    { transaction.Balance -= (decimal)FeeAmount; }
+                    if (null != ReconnectAmount)
+                    { transaction.Balance -= (decimal)ReconnectAmount; }
                     if (null != LienFeeAmount)
                     { transaction.Balance -= (decimal)LienFeeAmount; }
                     if (null != OtherAmount)
                     { transaction.Balance -= (decimal)OtherAmount; }
+
                     sb.Append("Credit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
                 else
                 {
-                    transaction.Balance = AccountBalance + DebitAmount;
+                    CreditAmount = 0;
+                    transaction.Balance = AccountBalance + (decimal)DebitAmount;
                     sb.Append("Debit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
@@ -778,8 +798,8 @@
                 // Add this transaction to the DC as an Insert....
                 transaction.OwnerID = SelectedOwner.OwnerID;
                 transaction.FiscalYear = FiscalYear;
-                transaction.CreditAmount = CreditAmount;
-                transaction.DebitAmount = DebitAmount;
+                transaction.CreditAmount = (decimal)CreditAmount;
+                transaction.DebitAmount = (decimal)DebitAmount;
                 transaction.TransactionDate = TransactionDate;
                 transaction.TransactionMethod = TransactionMethod;
                 transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
@@ -832,9 +852,9 @@
                 // dc refresh from the database.
                 SelectedOwner.FinancialTransactions.Add(transaction);
 
-                RaisePropertyChanged("DataChanged");
-                CanSaveExecute = IsDirty;
                 IsBusy = false;
+                CanSaveExecute = false;
+                RaisePropertyChanged("DataChanged");
 
                 // I need to buffer the transactions so I can get the RowID of the last transaction; the one that was entered.
                 var transactions = (from x in dc.FinancialTransactions
@@ -874,6 +894,7 @@
             }
             catch (Exception ex)
             {
+                IsBusy = false;
                 MessageBox.Show("Error saving transaction: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -962,8 +983,8 @@
             StringBuilder message = new StringBuilder();
 
             if (
-                   ((CreditAmount > 0 && 0 == DebitAmount)
-                || (DebitAmount > 0 && 0 == CreditAmount))
+                   ((CreditAmount > 0 && null == DebitAmount)
+                || (DebitAmount > 0 && null == CreditAmount))
                 && ((TotalAmount == CreditAmount)
                 || (TotalAmount == DebitAmount))
                 && (DateTime.Now > TransactionDate)
