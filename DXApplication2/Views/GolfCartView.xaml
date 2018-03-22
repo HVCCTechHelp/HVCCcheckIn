@@ -110,7 +110,7 @@
 
             <dxlc:LayoutControl Orientation="Vertical">
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Registered Carts">
+                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" >
                     <dxlc:LayoutItem>
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="registeredCartGrid" 
                                  IsEnabled="True"
@@ -134,7 +134,9 @@
                                        SearchPanelClearOnClose="False"
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
-                                               >
+                                       NavigationStyle="Cell"
+                                       EnableImmediatePosting="True"
+                                       >
                                     <!--ValidateRow="tableViewDetail_ValidateRow"
                                        RowUpdated="tableViewDetail_RowUpdated"
                                        RowCanceled="tableViewDetail_RowCanceled"
@@ -149,14 +151,16 @@
                                 <dxg:GridColumn FieldName="RowID" Header="Row" Width="10" Visible="False" IsEnabled="False" ReadOnly="True" SortIndex="1" SortMode="Value" SortOrder="Descending"/>
                                 <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" Visible="False" IsEnabled="False" ReadOnly="True" ShowInColumnChooser="True"/>
                                 <dxg:GridColumn FieldName="Owner.MailTo" Header="Owner Name" Width="200" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="Year" Header="Year" Width="100" SortIndex="0" SortMode="DisplayText" SortOrder="Descending" GroupIndex="0" />
-                                <dxg:GridColumn FieldName="Quanity" Header="Qty" Width="25">
+                                <dxg:GridColumn FieldName="Year" Header="Year" Width="100" ReadOnly="True"  SortIndex="0" SortMode="DisplayText" SortOrder="Descending" GroupIndex="0" />
+                                <dxg:GridColumn FieldName="Quanity" Header="Qty" Width="25" ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:SpinEditSettings MaxValue="9" MinValue="1" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="IsPaid" Header="Paid" Width="50" />
-                                <dxg:GridColumn FieldName="PaymentDate" Header="Payment Date" Width="100" />
+                                <dxg:GridColumn FieldName="IsPaid" Header="Paid" Width="50" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="PaymentDate" Header="Payment Date" Width="100" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsReceived" Header="Received" Width="50" />
+                                <dxg:GridColumn FieldName="ReceivedDate" Header="Received Date" Width="100" />
 
                             </dxg:GridControl.Columns>
 

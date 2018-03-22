@@ -102,9 +102,9 @@
       <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
       <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
       <Association Name="Owner_FinancialTransaction" Member="FinancialTransactions" ThisKey="OwnerID" OtherKey="OwnerID" Type="FinancialTransaction" />
-      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
       <Association Name="Owner_WaterShutoff" Member="WaterShutoffs" ThisKey="OwnerID" OtherKey="OwnerID" Type="WaterShutoff" />
       <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
+      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
     </Type>
     <InsertFunction FunctionId="FunctionId4">
       <Argument Parameter="customer" Member="Customer" />
@@ -199,29 +199,6 @@
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
   </Table>
-  <Table Name="dbo.GolfCarts" Member="GolfCarts">
-    <Type Name="GolfCart">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Year" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Quanity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
-      <Association Name="Owner_GolfCart" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId9">
-      <Argument Parameter="ownerID" Member="OwnerID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="year" Member="Year" />
-      <Argument Parameter="quanity" Member="Quanity" />
-      <Argument Parameter="isPaid" Member="IsPaid" />
-      <Argument Parameter="paymentDate" Member="PaymentDate" />
-      <Argument Parameter="rowID" Member="RowID" />
-    </InsertFunction>
-  </Table>
   <Table Name="dbo.v_OwnerDetails" Member="v_OwnerDetails">
     <Type Name="v_OwnerDetail">
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -271,7 +248,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_WaterShutoff" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId10">
+    <InsertFunction FunctionId="FunctionId9">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -299,7 +276,7 @@
       <Argument Parameter="resolution" Member="Resolution" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId11">
+    <UpdateFunction FunctionId="FunctionId10">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -448,7 +425,7 @@
       <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
       <Association Name="Owner_Property" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <UpdateFunction FunctionId="FunctionId12">
+    <UpdateFunction FunctionId="FunctionId11">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -497,6 +474,42 @@
       <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
     </Type>
+  </Table>
+  <Table Name="dbo.GolfCarts" Member="GolfCarts">
+    <Type Name="GolfCart">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Quanity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsReceived" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ReceivedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
+      <Association Name="Owner_GolfCart" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId12">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="year" Member="Year" />
+      <Argument Parameter="quanity" Member="Quanity" />
+      <Argument Parameter="isPaid" Member="IsPaid" />
+      <Argument Parameter="paymentDate" Member="PaymentDate" />
+      <Argument Parameter="rowID" Member="RowID" />
+    </InsertFunction>
+    <UpdateFunction FunctionId="FunctionId13">
+      <Argument Parameter="rowID" Member="RowID" />
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="year" Member="Year" />
+      <Argument Parameter="quanity" Member="Quanity" />
+      <Argument Parameter="isPaid" Member="IsPaid" />
+      <Argument Parameter="paymentDate" Member="PaymentDate" />
+      <Argument Parameter="isReceived" Member="IsReceived" />
+      <Argument Parameter="receivedDate" Member="ReceivedDate" />
+    </UpdateFunction>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
@@ -707,7 +720,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId10" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
+  <Function Id="FunctionId9" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -736,7 +749,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId11" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
+  <Function Id="FunctionId10" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -764,7 +777,7 @@
     <Parameter Name="Resolution" Parameter="resolution" Type="System.String" DbType="VarChar(500)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId12" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
+  <Function Id="FunctionId11" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -780,16 +793,6 @@
     <Parameter Name="IsAssessment" Parameter="isAssessment" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
     <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
-    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
@@ -811,5 +814,27 @@
       <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
     </ElementType>
+  </Function>
+  <Function Id="FunctionId12" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId13" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Quanity" Parameter="quanity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsPaid" Parameter="isPaid" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="IsReceived" Parameter="isReceived" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="ReceivedDate" Parameter="receivedDate" Type="System.DateTime" DbType="Date" />
+    <Return Type="System.Int32" />
   </Function>
 </Database>

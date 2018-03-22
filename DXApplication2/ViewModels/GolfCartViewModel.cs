@@ -178,6 +178,7 @@
             }
         }
 
+        private ObservableCollection<GolfCart> _registeredGolfCarts = null;
         public ObservableCollection<GolfCart> RegisteredGolfCarts
         {
             get
@@ -187,7 +188,9 @@
                     var list = (from x in dc.GolfCarts
                                 select x);
 
-                    return new ObservableCollection<GolfCart>(list);
+                    _registeredGolfCarts = new ObservableCollection<GolfCart>(list);
+                    this.RegisterForChangedNotification<GolfCart>(_registeredGolfCarts);
+                    return _registeredGolfCarts;
                 }
                 catch (Exception ex)
                 {
@@ -231,6 +234,70 @@
             RaisePropertyChanged("DataChanged");
             //}
         }
+
+
+        protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
+        {
+            list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
+            foreach (T row in list)
+            {
+                row.PropertyChanged += new PropertyChangedEventHandler(this.ListItem_PropertyChanged);
+            }
+        }
+
+        private void List_CollectionChanged<T>(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) where T : INotifyPropertyChanged
+        {
+            if (e != null && e.OldItems != null)
+            {
+                foreach (T row in e.OldItems)
+                {
+                    if (row != null)
+                    {
+                        // If one is deleted you can DeleteOnSubmit it here or something, also unregister for its property changed
+                        row.PropertyChanged -= this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+
+            if (e != null && e.NewItems != null)
+            {
+                foreach (T row in e.NewItems)
+                {
+                    if (row != null)
+                    {
+                        // If a new one is entered you can InsertOnSubmit it here or something, also register for its property changed
+                        row.PropertyChanged += this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Listen for changes to a collection item property change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if ("IsReceived" == e.PropertyName.ToString())
+            {
+                SelectedCartOwner = sender as GolfCart;
+                if (SelectedCartOwner.IsReceived)
+                {
+                    SelectedCartOwner.ReceivedDate = DateTime.Now;
+                }
+                else
+                {
+                    SelectedCartOwner.ReceivedDate = null;
+                }
+
+                if (this.IsDirty)
+                {
+                RaisePropertyChanged("DataChanged");
+                }
+            }
+        }
+
 
         #endregion
 
