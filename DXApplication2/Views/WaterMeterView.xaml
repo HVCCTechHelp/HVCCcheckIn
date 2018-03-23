@@ -151,27 +151,33 @@
 
                             <!-- Use the GroupIndex attribute on the GridColumn to group on opening -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Section" Header="Section" Width="10"
+                                <dxg:GridColumn FieldName="Customer" Header="Lot#" Width="30"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True" 
                                             SortOrder="Ascending" SortIndex="0"
                                             />
-                                <dxg:GridColumn FieldName="Block" Header="Block " Width="10"
+                                <!--<dxg:GridColumn FieldName="Section" Header="Section" Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True" 
-                                            />
-                                <dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"
+                                            SortOrder="Ascending" SortIndex="0"
+                                            />-->
+                                <!--<dxg:GridColumn FieldName="Block" Header="Block " Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True" 
-                                            />
-                                <dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"
+                                            />-->
+                                <!--<dxg:GridColumn FieldName="Lot" Header="Lot" Width="10"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="True" 
-                                            />
+                                            />-->
+                                <!--<dxg:GridColumn FieldName="SubLot" Header="SubLot" Width="10"
+                                            AllowEditing="False" 
+                                            ReadOnly="True"
+                                            EditFormVisible="True" 
+                                            />-->
                                 <dxg:GridColumn FieldName="BillTo" Header="BillTo" Width="20" 
                                             Visible="False"
                                             AllowEditing="False" 
@@ -205,6 +211,16 @@
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d">
                                         </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="LastMeterEntry.MeterReading" Header="Reading" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            EditFormVisible="True" 
+                                            EditFormCaption="Last Read:" 
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="LastMeterEntry.Consumption" Header="Consumption" Width="20" 

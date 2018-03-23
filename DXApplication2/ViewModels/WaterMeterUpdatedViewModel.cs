@@ -300,6 +300,7 @@
                 try
                 {
                     string rawData = String.Empty;
+                    int row = 0;
 
                     using (StreamReader sr = new StreamReader(ResultFileName))
                     {
@@ -331,7 +332,7 @@
                                        select c).FirstOrDefault();
 
                             // If we can't match up the customer string scanned from the bar code book, we have
-                            // an issue.....
+                            // an issue and the reading is skipped.....
                             if (null == pID)
                             {
                                 reading.PropertyID = 0;
@@ -339,59 +340,59 @@
                             else
                             {
                                 reading.PropertyID = pID.PropertyID;
-                            }
 
-                            // Assign the current meter reading....
-                            reading.MeterReading = Int32.Parse(subStrings[3]);
+                                // Assign the current meter reading....
+                                reading.MeterReading = Int32.Parse(subStrings[3]);
 
-                            // Get the last meter reading so the current consumption can be calculated.
-                            var lmr = (from m in this.dc.WaterMeterReadings
-                                       where m.PropertyID == pID.PropertyID
-                                       orderby m.ReadingDate descending
-                                       select m).FirstOrDefault();
+                                // Get the last meter reading so the current consumption can be calculated.
+                                var lmr = (from m in this.dc.WaterMeterReadings
+                                           where m.PropertyID == pID.PropertyID
+                                           orderby m.ReadingDate descending
+                                           select m).FirstOrDefault();
 
-                            if (null == lmr)
-                            {
-                                reading.Consumption = 0;
-                            }
-                            else
-                            {
-                                // Calculate the consumption between this reading and the last reading
-                                reading.Consumption = reading.MeterReading - lmr.MeterReading;
-
-                                // Check to make sure the last meter reading date is not the current date, or a date
-                                // greater than the current reading date.
-                                if (reading.ReadingDate <= lmr.ReadingDate)
+                                if (null == lmr)
                                 {
-                                    //MessageBoxService.ShowMessage("The meter read date is the same or older than the last meter read date.\nThe import will be terminated", "ERROR", MessageButton.OK, MessageIcon.Error);
-                                    //return;
-                                    this.MeterReadingExceptions.Add(new WaterMeterException()
-                                    {
-                                        Customer = customer,
-                                        CurrentMeterReadingDate = reading.ReadingDate,
-                                        LastMeterReadingDate = lmr.ReadingDate,
-                                        CurrentMeterReading = reading.MeterReading,
-                                        LastMeterReading = null
-                                    });
-                                }
-
-                                // Do a bit of checking to make sure the delta value isn't wonky...
-                                else if (0 > reading.Consumption ||
-                                        1000 <= reading.Consumption)
-                                {
-                                    this.MeterReadingExceptions.Add(new WaterMeterException()
-                                    {
-                                        Customer = customer,
-                                        CurrentMeterReadingDate = reading.ReadingDate,
-                                        LastMeterReadingDate = null, //lmr.ReadingDate,
-                                        CurrentMeterReading = reading.MeterReading,
-                                        LastMeterReading = lmr.MeterReading
-                                    });
+                                    reading.Consumption = 0;
                                 }
                                 else
                                 {
-                                    // Add this reading to pending inserts......
-                                    this.dc.WaterMeterReadings.InsertOnSubmit(reading);
+                                    // Calculate the consumption between this reading and the last reading
+                                    reading.Consumption = reading.MeterReading - lmr.MeterReading;
+
+                                    // Check to make sure the last meter reading date is not the current date, or a date
+                                    // greater than the current reading date.
+                                    if (reading.ReadingDate <= lmr.ReadingDate)
+                                    {
+                                        //MessageBoxService.ShowMessage("The meter read date is the same or older than the last meter read date.\nThe import will be terminated", "ERROR", MessageButton.OK, MessageIcon.Error);
+                                        //return;
+                                        this.MeterReadingExceptions.Add(new WaterMeterException()
+                                        {
+                                            Customer = customer,
+                                            CurrentMeterReadingDate = reading.ReadingDate,
+                                            LastMeterReadingDate = lmr.ReadingDate,
+                                            CurrentMeterReading = reading.MeterReading,
+                                            LastMeterReading = null
+                                        });
+                                    }
+
+                                    // Do a bit of checking to make sure the delta value isn't wonky...
+                                    else if (0 > reading.Consumption ||
+                                            1000 <= reading.Consumption)
+                                    {
+                                        this.MeterReadingExceptions.Add(new WaterMeterException()
+                                        {
+                                            Customer = customer,
+                                            CurrentMeterReadingDate = reading.ReadingDate,
+                                            LastMeterReadingDate = null, //lmr.ReadingDate,
+                                            CurrentMeterReading = reading.MeterReading,
+                                            LastMeterReading = lmr.MeterReading
+                                        });
+                                    }
+                                    else
+                                    {
+                                        // Add this reading to pending inserts......
+                                        this.dc.WaterMeterReadings.InsertOnSubmit(reading);
+                                    }
                                 }
                             }
                         }

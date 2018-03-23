@@ -371,32 +371,44 @@
                                    where x.Customer == columns[(int)Column.Lot]
                                    select x.PropertyID).SingleOrDefault();
 
-                        WaterMeterReading lastWMR = (from x in dc.WaterMeterReadings
-                                                     where x.PropertyID == pID
-                                                     orderby x.ReadingDate descending
-                                                     select x).FirstOrDefault();
-
-                        newReading.PropertyID = pID;
-                        newReading.ReadingDate = DateTime.ParseExact(datetime, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                        newReading.MeterReading = Int32.Parse(columns[(int)Column.Reading]); ;
-
-                        if (null == lastWMR)
+                        if (0 != pID)
                         {
-                            newReading.Consumption = 0;
-                        }
-                        else
-                        {
+                            WaterMeterReading lastWMR = (from x in dc.WaterMeterReadings
+                                                         where x.PropertyID == pID
+                                                         orderby x.ReadingDate descending
+                                                         select x).FirstOrDefault();
 
-                            newReading.Consumption = newReading.MeterReading - (int)lastWMR.MeterReading;
-                        }
+                            newReading.PropertyID = pID;
+                            newReading.ReadingDate = DateTime.ParseExact(datetime, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                            newReading.MeterReading = Int32.Parse(columns[(int)Column.Reading]); ;
 
-                        // Add this reading to the data context's change set
-                        dc.WaterMeterReadings.InsertOnSubmit(newReading);
+                            if (null == lastWMR)
+                            {
+                                newReading.Consumption = 0;
+                                dc.WaterMeterReadings.InsertOnSubmit(newReading);
+                            }
+                            else
+                            {
+                                newReading.Consumption = newReading.MeterReading - (int)lastWMR.MeterReading;
+                                // Check to make sure this isn't a duplicate reading.....
+                                if (newReading.ReadingDate != lastWMR.ReadingDate
+                                   && newReading.MeterReading != lastWMR.MeterReading)
+                                {
+                                    // Add this reading to the data context's change set
+                                    dc.WaterMeterReadings.InsertOnSubmit(newReading);
+                                }
+                            }
+                        }
                     }
 
                     ChangeSet cs = dc.GetChangeSet();
                     dc.SubmitChanges();
                     RaisePropertyChanged("IsNotBusy");
+
+                    IFileInfo file = OpenFileDialogService.Files.First();
+                    string processedFileName = String.Format("{0}\\Processed\\{1}", file.DirectoryName, file.Name);
+                    File.Move(importFileName, processedFileName);
+
                     string msg = String.Format("Import complete. {0} records imported", cs.Inserts.Count());
                     MessageBox.Show(msg, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
