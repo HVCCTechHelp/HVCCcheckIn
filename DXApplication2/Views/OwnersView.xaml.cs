@@ -54,110 +54,35 @@
         {
         }
 
-        public static int expandedRow = 0;
-        /// <summary>
-        /// Executes when a Master grid expands the detail grid.  When this happens, the previous master row
-        /// is collapsed before expanding the newly selected master row.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ownerGrid_MasterRowExpanded(object sender, RowEventArgs e)
-        {
-            try
-            {
-                if (0 < expandedRow)
-                {
-                    ownerGrid.CollapseMasterRow(expandedRow);
-                }
-
-                // Set focus on the first row (after the 'click to add new row') of the detail grid
-                expandedRow = e.RowHandle;
-                tableViewOwners.FocusedRowHandle = expandedRow;
-                var detailGridControl = ownerGrid.GetDetail(e.RowHandle) as GridControl;
-                var rowHandle = detailGridControl.GetRowHandleByVisibleIndex(0);
-                detailGridControl.View.FocusedRowHandle = rowHandle;
-            }
-            catch
-            {
-                // Happens when use expanded, collapses, expands the same row...
-                expandedRow = 0;
-            }
-        }
-
-
-        #region Report Button Events
-        private Dictionary<int, int> PopulateDates()
-        {
-            Dictionary<int, int> daysInMonth = new Dictionary<int, int>();
-            daysInMonth.Add(1, 31);
-            daysInMonth.Add(2, 28);
-            daysInMonth.Add(3, 31);
-            daysInMonth.Add(4, 30);
-            daysInMonth.Add(5, 31);
-            daysInMonth.Add(6, 30);
-            daysInMonth.Add(7, 31);
-            daysInMonth.Add(8, 31);
-            daysInMonth.Add(9, 30);
-            daysInMonth.Add(10, 31);
-            daysInMonth.Add(11, 30);
-            daysInMonth.Add(12, 31);
-            return daysInMonth;
-        }
-
-        private void bb_PeriodReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            Dictionary<int, int> daysInMonth = PopulateDates();
-            int year = DateTime.Now.Year;
-            int mon = DateTime.Now.Month;
-
-            DateTime start = new DateTime(year, mon, 1, 12, 0, 0);
-            DateTime end = new DateTime(year, mon, daysInMonth[mon], 12, 0, 0);
-
-            Reports.FacilitiesUsageReport report = new Reports.FacilitiesUsageReport();
-            report.Parameters["StartDate"].Value = start;
-            report.Parameters["EndDate"].Value = end;
-            PrintHelper.ShowPrintPreview(this, report);
-        }
-
-        private void bb_DailyReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            DateTime forDate = DateTime.Now;
-
-            Reports.DailyDetailReport report = new Reports.DailyDetailReport();
-            report.Parameters["ForDate"].Value = forDate;
-            PrintHelper.ShowPrintPreview(this, report);
-        }
-
-        private void bb_NotesReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            Dictionary<int, int> daysInMonth = PopulateDates();
-            int year = DateTime.Now.Year;
-            int mon = DateTime.Now.Month;
-
-            DateTime start = new DateTime(year, mon, 1, 12, 0, 0);
-            DateTime end = new DateTime(year, mon, daysInMonth[mon], 12, 0, 0);
-
-            Reports.PropertyNotesReport report = new Reports.PropertyNotesReport();
-            report.Parameters["FromDate"].Value = start;
-            report.Parameters["ToDate"].Value = end;
-            PrintHelper.ShowPrintPreview(this, report);
-        }
-
-        private void bb_BalanceReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            Reports.BalancesDueReport report = new Reports.BalancesDueReport();
-            PrintHelper.ShowPrintPreview(this, report);
-        }
-
-        //private void bb_AnnualInvoiceReportClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        //public static int expandedRow = 0;
+        ///// <summary>
+        ///// Executes when a Master grid expands the detail grid.  When this happens, the previous master row
+        ///// is collapsed before expanding the newly selected master row.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void ownerGrid_MasterRowExpanded(object sender, RowEventArgs e)
         //{
-        //    Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-        //    report.Parameters["selectedOwner"].Value = (this.ownerGrid.SelectedItem as Owner).OwnerID;
-        //    PrintHelper.ShowPrintPreview(this, report);
-        //    //report.CreateDocument();
-        //    //report.ExportToPdf(@"D:\Invoices\Invoice.PDF");
+        //    try
+        //    {
+        //        if (0 < expandedRow)
+        //        {
+        //            ownerGrid.CollapseMasterRow(expandedRow);
+        //        }
+
+        //        // Set focus on the first row (after the 'click to add new row') of the detail grid
+        //        expandedRow = e.RowHandle;
+        //        tableViewOwners.FocusedRowHandle = expandedRow;
+        //        var detailGridControl = ownerGrid.GetDetail(e.RowHandle) as GridControl;
+        //        var rowHandle = detailGridControl.GetRowHandleByVisibleIndex(0);
+        //        detailGridControl.View.FocusedRowHandle = rowHandle;
+        //    }
+        //    catch
+        //    {
+        //        // Happens when use expanded, collapses, expands the same row...
+        //        expandedRow = 0;
+        //    }
         //}
-        #endregion
 
         private void Owners_Loaded(object sender, RoutedEventArgs e)
         {

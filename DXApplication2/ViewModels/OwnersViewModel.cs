@@ -320,103 +320,6 @@
         }
 
         /// <summary>
-        /// Print Command
-        /// </summary>
-        //private ICommand _changeOwnerCommand;
-        //public ICommand ChangeOwnerCommand
-        //{
-        //    get
-        //    {
-        //        return _changeOwnerCommand ?? (_changeOwnerCommand = new CommandHandlerWparm((object parameter) => ChangeOwnerAction(parameter), ApplPermissions.CanEditOwner));
-        //    }
-        //}
-
-        /// <summary>
-        /// Grid row double click event to command action
-        /// </summary>
-        /// <param name="type"></param>
-        //public void ChangeOwnerAction(object parameter)
-        //{
-        //    Property p = parameter as Property;
-        //    Host.Execute(HostVerb.Open, "ChangeOwner", p);
-        //}
-
-        /// <summary>
-        /// Print Command
-        /// </summary>
-        private ICommand _ownershipHistoryCommand;
-        public ICommand OwnershipHistoryCommand
-        {
-            get
-            {
-                return _ownershipHistoryCommand ?? (_ownershipHistoryCommand = new CommandHandler(() => OwnershipHistoryAction(), ApplPermissions.CanViewOwnerNotes));
-            }
-        }
-
-        /// <summary>
-        /// Ownership History command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void OwnershipHistoryAction()
-        {
-            Host.Execute(HostVerb.Open, "OwnershipHistory");
-
-            //foreach (Owner o in dc.Owners)
-            //{
-            //    decimal balance = 0;
-            //    foreach (Property p in o.Properties)
-            //    {
-            //        balance += (decimal)p.Balance;
-            //    }
-            //    FinancialTransaction transaction = new FinancialTransaction();
-            //    transaction.OwnerID = o.OwnerID;
-            //    transaction.Balance = balance;
-            //    transaction.CreditAmount = 0;
-            //    transaction.DebitAmount = 0;
-            //    transaction.TransactionMethod = "Machine Generated";
-            //    transaction.TransactionAppliesTo = "Opening Balance";
-            //    transaction.TransactionDate = DateTime.Now;
-            //    transaction.Comment = "Sum balance of all properties owned, based on current property balances in the database";
-
-            //    dc.FinancialTransactions.InsertOnSubmit(transaction);
-            //    dc.SubmitChanges();
-            //}
-        }
-
-        ///// <summary>
-        ///// Import Command
-        ///// </summary>
-        //private ICommand _importCommand;
-        //public ICommand ImportCommand
-        //{
-        //    get
-        //    {
-        //        return _importCommand ?? (_importCommand = new CommandHandlerWparm((object parameter) => ImportAction(parameter), ApplPermissions.CanImport));
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Facility Usage by date range report
-        ///// </summary>
-        ///// <param name="type"></param>
-        //public void ImportAction(object parameter)
-        //{
-        //    ObservableCollection<Note> notes = new ObservableCollection<Note>();
-
-        //    var list = (from x in dc.Notes
-        //                 select x);
-
-        //    foreach (Note n in list)
-        //    {
-        //        Property property = (from p in dc.Properties
-        //                   where p.PropertyID == n.PropertyID
-        //                   select p).FirstOrDefault();
-
-        //        n.OwnerID = property.OwnerID;
-        //    }
-        //    CanSaveExecute = IsDirty;
-        //}
-        /// <summary>
         /// Refresh Command
         /// </summary>
         private ICommand _refreshCommand;
@@ -438,7 +341,6 @@
             OwnersList = FetchOwners();
             RaisePropertyChanged("IsNotBusy");
         }
-
 
         public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
         public virtual IExportService ExportService { get { return GetService<IExportService>(); } }

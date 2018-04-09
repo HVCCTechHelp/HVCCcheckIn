@@ -59,6 +59,37 @@
                 return new ObservableCollection<v_ChangeOfOwnership>(list);
             }
         }
+
+        private v_ChangeOfOwnership _selectedOwner = null;
+        public v_ChangeOfOwnership SelectedOwner
+        {
+            get
+            {
+                return _selectedOwner;
+            }
+            set
+            {
+                if (value != _selectedOwner)
+                {
+                    _selectedOwner = value;
+                    RaisePropertyChanged("SelectedOwner");
+                }
+            }
+        }
+
+        private Object _cellValue = null;
+        public Object CellValue
+        {
+            get { return _cellValue; }
+            set
+            {
+                if (value != _cellValue)
+                {
+                    _cellValue = value;
+                    RaisePropertyChanged("CellValue");
+                }
+            }
+        }
     }
 
     /*================================================================================================================================================*/
@@ -126,6 +157,29 @@
     /// </summary>
     public partial class OwnershipHistoryViewModel 
     {
+        /// <summary>
+        /// RowDoubleClick Event to Command
+        /// </summary>
+        private ICommand _rowDoubleClickCommand;
+        public ICommand RowDoubleClickCommand
+        {
+            get
+            {
+                return _rowDoubleClickCommand ?? (_rowDoubleClickCommand = new CommandHandlerWparm((object parameter) => RowDoubleClickAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RowDoubleClickAction(object parameter)
+        {
+            v_ChangeOfOwnership p = parameter as v_ChangeOfOwnership;
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "EditOwner", p);
+        }
+
         public bool CanExport = true;
         /// <summary>
         /// Export grid Command

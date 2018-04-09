@@ -29,6 +29,24 @@
             return defaults.Photo;
         }
 
+        public static Dictionary<int, int> PopulateDates()
+        {
+            Dictionary<int, int> daysInMonth = new Dictionary<int, int>();
+            daysInMonth.Add(1, 31);
+            daysInMonth.Add(2, 28);
+            daysInMonth.Add(3, 31);
+            daysInMonth.Add(4, 30);
+            daysInMonth.Add(5, 31);
+            daysInMonth.Add(6, 30);
+            daysInMonth.Add(7, 31);
+            daysInMonth.Add(8, 31);
+            daysInMonth.Add(9, 30);
+            daysInMonth.Add(10, 31);
+            daysInMonth.Add(11, 30);
+            daysInMonth.Add(12, 31);
+            return daysInMonth;
+        }
+
         /// <summary>
         /// Extracts the Section-Block-Lot-SubLot information from a Property.Customer string
         /// </summary>
@@ -268,110 +286,5 @@
 
             return rList;
         }
-
-        /// <summary>
-        /// Return the placholder Property record that deactivated Relationship records are assign to
-        /// </summary>
-        /// <param name="datacontext"></param>
-        /// <returns></returns>
-        private static Property GetDummyPropertyID(IDataContext datacontext)
-        {
-            HVCCDataContext dc = datacontext as HVCCDataContext;
-
-            Property dummyProperty = (from p in dc.Properties
-                                      where p.Customer == "99-99-99-0"
-                                      select p).FirstOrDefault();
-
-            return dummyProperty;
-        }
-
-        /// <summary>
-        /// Attempts to extract the owner name(s) from the BillTo string
-        /// </summary>
-        /// <param name="theProperty"></param>
-        /// <returns></returns>
-        //public static List<Relationship> ExtractOwner(Property theProperty)
-        //{
-        //    char[] charsToTrim = {' ', '\t' };
-        //    string workingString;
-        //    string[] fullArray = theProperty.BillTo.Split(',');
-        //    string[] workingArray;
-        //    List<Relationship> owners = new List<Relationship>();
-        //    Relationship firstOwner = new Relationship();
-
-        //    if (0 == theProperty.PropertyID)
-        //    {
-        //        return owners;
-        //    }
-        //    else
-        //    {
-        //        //// Check to see if there is more than one element
-        //        if (fullArray.Count() > 1)
-        //        {
-        //            //// The first element should be the last name of the owner. However, there
-        //            //// may be mutiple owners separated by a slash, or some other odd format present
-        //            workingArray = fullArray[0].Split('/');
-        //            if (1 == workingArray.Count())
-        //            {
-        //                workingString = fullArray[0].Trim(charsToTrim);
-        //                workingArray = workingString.Split(' '); // make sure the string doesn't have a <sp>
-        //                if (1 == workingArray.Count())
-        //                {
-        //                    firstOwner.LName = fullArray[0];
-        //                }
-        //                else // it appears there was a <sp>, so we use the split working array
-        //                {
-        //                    firstOwner.LName = workingArray[0];
-        //                }
-
-        //                //// Now try to extract out the first name(s).  There is odd formatting here to deal with as well....
-        //                workingString = fullArray[1].TrimStart();
-        //                workingArray = workingString.Split(' ');
-        //                firstOwner.FName = workingArray[0];
-        //                firstOwner.RelationToOwner = "Owner";
-        //                firstOwner.PropertyID = theProperty.PropertyID;
-        //                owners.Add(firstOwner);
-
-        //                //// Check to see if there are two first names (separated by &)
-        //                if (fullArray[1].Contains("&"))
-        //                {
-        //                    Relationship secondOwner = new Relationship();
-        //                    secondOwner.RelationToOwner = firstOwner.RelationToOwner;
-        //                    secondOwner.PropertyID = firstOwner.PropertyID;
-        //                    secondOwner.LName = firstOwner.LName;
-        //                    secondOwner.FName = workingArray[2];
-        //                    owners.Add(secondOwner);
-        //                }
-        //                return owners;
-        //            }
-        //            else
-        //            {
-        //                return owners;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return owners;
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// Returns a slash delimited list of unique names from a list
-        /// </summary>
-        /// <param name="names"></param>
-        /// <returns></returns>
-        //public static string UniqueNames(List<string> names)
-        //{
-        //    List<string> nameList = (from l in names
-        //                              select l).Distinct().ToList();
-        //    string tString = String.Empty;
-        //    foreach (string s in nameList)
-        //    {
-        //        tString = tString + s + "/";
-        //    }
-        //    int lastChr = tString.Length - 1;
-        //    return tString.Substring(0, lastChr);
-        //}
     }
 }

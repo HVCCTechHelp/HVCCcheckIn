@@ -115,47 +115,6 @@
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 
-                    <dxr:RibbonPage x:Name="propertyReports" Caption="Reports">
-
-                        <!--<dxr:RibbonPageGroup Caption="Reports">
-                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
-                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
-                        </dxr:RibbonPageGroup>-->
-
-                        <dxr:RibbonPageGroup Caption="Property Reports" IsVisible="{Binding ApplPermissions.CanViewProperty}">
-                            <dxb:BarButtonItem Content="Period Usage"
-                                                   ItemClick="bb_PeriodReportClick"
-                                                   IsVisible="True" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Daily Usage"
-                                                   ItemClick="bb_DailyReportClick"
-                                                   IsVisible="True" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Property Notes"
-                                                   ItemClick="bb_NotesReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Balances Due"
-                                                   ItemClick="bb_BalanceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <!--<dxb:BarButtonItem Content="Annual Invoices"
-                                                   ItemClick="bb_AnnualInvoiceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />-->
-                        </dxr:RibbonPageGroup>
-
-                    </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
 
             </dxr:RibbonControl>

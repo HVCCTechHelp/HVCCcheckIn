@@ -87,6 +87,8 @@
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="changeHistoryGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding OwnershipHistories}"
+                                 SelectedItem="{Binding SelectedOwner, Mode=TwoWay}"
+                                 CurrentCellValue="{Binding CellValue, Mode=TwoWay}"
                                  Width="Auto"
                                  Height="800"
                                  HorizontalAlignment="Left"
@@ -105,15 +107,23 @@
                                        SearchPanelClearOnClose="False"
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True"
-                                               >
+                                       NavigationStyle="Cell"
+                                       >
+
+                                    <dxmvvm:Interaction.Behaviors>
+                                        <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                                             Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedOwner}" />
+                                    </dxmvvm:Interaction.Behaviors>
                                 </dxg:TableView>
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Property" Width="50" IsEnabled="True" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
-                                <dxg:GridColumn FieldName="NewOwner" Header="New Owner" Width="200" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="PreviousOwner" Header="Previous Owner" Width="200" />
-                                <dxg:GridColumn FieldName="LastModified" Header="Recorded" Width="100">
+                                <dxg:GridColumn FieldName="Customer" Header="Property" Width="50" IsEnabled="False" ReadOnly="True" Focusable="False" SortOrder="Ascending" SortIndex="0" AllowFocus="False" />
+                                <dxg:GridColumn FieldName="NewOwner" Header="New Owner" Width="200" IsEnabled="False" ReadOnly="True" Focusable="False" AllowFocus="False"/>
+                                <dxg:GridColumn FieldName="NewOwnerID" Header="ID" Width="20" ReadOnly="True" Focusable="True"/>
+                                <dxg:GridColumn FieldName="PreviousOwner" Header="Previous Owner" Width="200" IsEnabled="False" Focusable="False" AllowFocus="False"/>
+                                <dxg:GridColumn FieldName="PreviousOwnerID" Header="ID" Width="20" Focusable="True"/>
+                                <dxg:GridColumn FieldName="LastModified" Header="Recorded" Width="100" IsEnabled="False" Focusable="False" AllowFocus="False">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:DateEditSettings Mask="d" MaskUseAsDisplayFormat="True" />
                                     </dxg:GridColumn.EditSettings>

@@ -161,15 +161,6 @@
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
   </Table>
-  <Table Name="dbo.v_ChangeOfOwnership" Member="v_ChangeOfOwnerships">
-    <Type Name="v_ChangeOfOwnership">
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="NewOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="PreviousOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.FinancialTransactions" Member="FinancialTransactions">
     <Type Name="FinancialTransaction">
       <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -387,21 +378,6 @@
       <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
-    <Type Name="FacilityUsage">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Properties" Member="Properties">
     <Type Name="Property">
       <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -511,6 +487,40 @@
       <Argument Parameter="receivedDate" Member="ReceivedDate" />
     </UpdateFunction>
   </Table>
+  <Table Name="dbo.v_ChangeOfOwnership" Member="v_ChangeOfOwnerships">
+    <Type Name="v_ChangeOfOwnership">
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="NewOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="NewOwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PreviousOwner" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="PreviousOwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FacilityUsages" Member="FacilityUsages">
+    <Type Name="FacilityUsage">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RelationshipId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="GolfRoundsGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolMember" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PoolGuest" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId14">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="relationshipId" Member="RelationshipId" />
+      <Argument Parameter="golfRoundsMember" Member="GolfRoundsMember" />
+      <Argument Parameter="golfRoundsGuest" Member="GolfRoundsGuest" />
+      <Argument Parameter="poolMember" Member="PoolMember" />
+      <Argument Parameter="poolGuest" Member="PoolGuest" />
+      <Argument Parameter="rowID" Member="RowID" />
+    </InsertFunction>
+  </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
     <ElementType Name="usp_GetPropertyByIdResult">
@@ -574,16 +584,6 @@
   <Function Name="dbo.fn_IsMember" Method="fn_IsMember" IsComposable="true">
     <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="VarChar(MAX)" />
     <Return Type="System.Boolean" />
-  </Function>
-  <Function Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
-    <Parameter Name="GolfRoundsGuest" Parameter="golfRoundsGuest" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PoolMember" Parameter="poolMember" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_GetFacilityUsageForDate" Method="usp_GetFacilityUsageForDate">
     <Parameter Name="RelationshipID" Parameter="relationshipID" Type="System.Int32" DbType="Int" />
@@ -835,6 +835,16 @@
     <Parameter Name="PaymentDate" Parameter="paymentDate" Type="System.DateTime" DbType="Date" />
     <Parameter Name="IsReceived" Parameter="isReceived" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="ReceivedDate" Parameter="receivedDate" Type="System.DateTime" DbType="Date" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId14" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
+    <Parameter Name="GolfRoundsGuest" Parameter="golfRoundsGuest" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PoolMember" Parameter="poolMember" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

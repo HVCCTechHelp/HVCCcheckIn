@@ -146,27 +146,30 @@
                                                 <Image  Source="Images/Icons/membership.jpg" MouseLeftButtonDown="OnClicked_Owners" Width="100" Height="100" ToolTip="Look up Owner Info"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
-                                                <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="100" Height="100" ToolTip="Look Up Properties" />
+                                                <Image Source="/Images/Icons/home-icon-hi.png" MouseLeftButtonDown="OnClicked_Property" Width="75" Height="75" ToolTip="Look Up Properties" />
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/Shutdown-icon.png" MouseLeftButtonDown="OnClicked_WaterShutoff" Width="100" Height="100" ToolTip="Look up Water Shutoffs"/>
+                                                <Image  Source="Images/Icons/Shutdown-icon.png" MouseLeftButtonDown="OnClicked_WaterShutoff" Width="75" Height="75" ToolTip="Look up Water Shutoffs"/>
                                             </dxd:LayoutControlItem>
                                             
                                             <!--<dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCartXOwner" Width="100" Height="100" ToolTip="Look up Golf Cart Info"/>
+                                                <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCartXOwner" Width="75" Height="75" ToolTip="Look up Golf Cart Info"/>
                                             </dxd:LayoutControlItem>-->
 
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewOwner, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCart" Width="100" Height="100" ToolTip="Look up Golf Cart Info"/>
+                                                <Image  Source="Images/Icons/GolfCart_Icon.png" MouseLeftButtonDown="OnClicked_GolfCart" Width="75" Height="75" ToolTip="Look up Golf Cart Info"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/watermeter.png" MouseLeftButtonDown="OnClicked_WaterSystem" Width="100" Height="100" ToolTip="Look up Water Meter Records"/>
+                                                <Image  Source="Images/Icons/watermeter.png" MouseLeftButtonDown="OnClicked_WaterSystem" Width="75" Height="75" ToolTip="Look up Water Meter Records"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="100" Height="100" ToolTip="Look up Water Well Records"/>
+                                                <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="75" Height="75" ToolTip="Look up Water Well Records"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="100" Height="100" ToolTip="View Permissions"/>
+                                                <Image  Source="Images/Icons/Report.png" MouseLeftButtonDown="OnClicked_ReportCarousel" Width="75" Height="75" ToolTip="View Reports"/>
+                                            </dxd:LayoutControlItem>
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
+                                                <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="75" Height="75" ToolTip="View Permissions"/>
                                             </dxd:LayoutControlItem>
                                         </dxd:LayoutGroup>
                                     </dxd:LayoutGroup>

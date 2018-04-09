@@ -1,0 +1,277 @@
+﻿<UserControl    x:Class="HVCC.Shell.Views.FacilityUsageGraphView" x:Name="FacilityUsageGraph"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxc1="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+    xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
+    xmlns:converters="clr-namespace:HVCC.Shell.Common.Converters;assembly=HVCC.Shell.Common"
+    common:CommandSinkBinding.CommandSink="{Binding}" 
+    mc:Ignorable="d" 
+    d:DesignHeight="768" d:DesignWidth="1024"
+    >
+
+    <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
+
+        <DockPanel x:Name="dockPanel">
+
+            <dxr:RibbonControl DockPanel.Dock="Top">
+                <dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPage x:Name="shutoffActions" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Print/Export">
+                            <dxb:BarSubItem Content="Export" 
+                                                    IsEnabled="{Binding CanExport}"
+                                                    Glyph="{dx:DXImage Image=Export_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
+                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                                                   Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}" />
+                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                                                   Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}" />
+                            </dxb:BarSubItem>
+                            <dxb:BarSubItem Content="Print"  
+                                                    IsEnabled="{Binding CanPrint}"
+                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
+                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                                                   Glyph="{dx:DXImage Image=Preview_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Preview_32x32.png}" />
+                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                                                   Glyph="{dx:DXImage Image=Print_16x16.png}" 
+                                                   LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
+                            </dxb:BarSubItem>
+                        </dxr:RibbonPageGroup>
+
+                        <!--<dxr:RibbonPageGroup Caption="Actions">
+                            <dxb:BarButtonItem Content="Generate Invoices"
+                                                   Command="{Binding GenerateAnnualInvoicesCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                            <dxb:BarButtonItem Content="Display Invoices"
+                                                   Command="{Binding DisplayInvoicesCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+                        </dxr:RibbonPageGroup>-->
+                    </dxr:RibbonPage>
+
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
+            <dxlc:LayoutControl Orientation="Vertical">
+                <dxlc:LayoutControl Orientation="Horizontal">
+                    <dxc1:ChartControl>
+                        <dxc1:ChartControl.Legends>
+                            <dxc1:Legend/>
+                        </dxc1:ChartControl.Legends>
+
+                        <dxc1:XYDiagram2D >
+                            <dxc1:XYDiagram2D.Series>
+                                <dxc1:LineSeries2D DisplayName="Golf Members"
+                                  DataSource="{Binding GolfMembers}"
+                                  ArgumentDataMember="Date"
+                                  ValueDataMember="Sum"
+                                  Visible="{Binding IsDisplayGolfMembers, UpdateSourceTrigger=PropertyChanged}"
+                                />
+                                <dxc1:LineSeries2D DisplayName="Golf Guests"
+                                  DataSource="{Binding GolfGuests}"
+                                  ArgumentDataMember="Date"
+                                  ValueDataMember="Sum"
+                                  Visible="{Binding IsDisplayGolfGuests, UpdateSourceTrigger=PropertyChanged}"
+                                 />
+                                <dxc1:LineSeries2D DisplayName="Pool Members"
+                                  DataSource="{Binding PoolMembers}"
+                                  ArgumentDataMember="Date"
+                                  ValueDataMember="Sum"
+                                  Visible="{Binding IsDisplayPoolMembers, UpdateSourceTrigger=PropertyChanged}"
+                                />
+                                <dxc1:LineSeries2D DisplayName="Pool Guests"
+                                  DataSource="{Binding PoolGuests}"
+                                  ArgumentDataMember="Date"
+                                  ValueDataMember="Sum"
+                                  Visible="{Binding IsDisplayPoolGuests, UpdateSourceTrigger=PropertyChanged}"
+                                 />
+                            </dxc1:XYDiagram2D.Series>
+                        </dxc1:XYDiagram2D>
+
+                    </dxc1:ChartControl>
+                </dxlc:LayoutControl>
+
+                <dxlc:LayoutControl Orientation="Horizontal">
+                    <dxlc:LayoutGroup View="Group" Orientation="Vertical">
+                        <dxlc:LayoutItem Label="Select Season: " Width="100"/>
+                        <dxlc:LayoutItem Width="100">
+                            <dxe:ListBoxEdit 
+                            Height="100 " Width="100"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding Seasons}" 
+                            SelectedIndex="{Binding SelectedSeasonIndex}"
+                           DisplayMember="TimePeriod"/>
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Golf Members" Width="225">
+                        <dxlc:LayoutItem Label="Show Series">
+                            <dxe:CheckEdit EditValue="{Binding IsDisplayGolfMembers, Mode=TwoWay}"/>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="golfMembersGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding GolfMembers}"
+                                 Width="200"
+                                 Height="300"
+                                 HorizontalAlignment="Left"
+                                 >
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewMembers" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwner}"
+                                       AllowColumnFiltering="True" 
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       ShowSearchPanelMode="Never"
+                                       ShowTotalSummary="True"
+                                      />
+                                </dxg:GridControl.View>
+
+                                <!-- columns of the detail grid -->
+                                <dxg:GridColumn FieldName="Date" Header="Date" Width="40" ReadOnly="True" SortIndex="1" SortMode="Value" />
+                                <dxg:GridColumn FieldName="Sum" Header="Sum" Width="40" ReadOnly="True" ShowInColumnChooser="True"/>
+
+                                <dxg:GridControl.TotalSummary>
+                                    <dxg:GridSummaryItem FieldName="Sum" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                </dxg:GridControl.TotalSummary>
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
+
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Golf Guests" Width="225">
+                        <dxlc:LayoutItem Label="Show Series">
+                            <dxe:CheckEdit EditValue="{Binding IsDisplayGolfGuests, Mode=TwoWay}"/>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="golfGuestGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding GolfGuests}"
+                                 Width="200"
+                                 Height="300"
+                                 HorizontalAlignment="Left"
+                                 >
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewGolfGuests" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwner}"
+                                       AllowColumnFiltering="True" 
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       ShowSearchPanelMode="Never"
+                                       ShowTotalSummary="True"
+                                       />
+                                </dxg:GridControl.View>
+
+                                <dxg:GridControl.TotalSummary>
+                                    <dxg:GridSummaryItem FieldName="Sum" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                </dxg:GridControl.TotalSummary>
+
+                                <!-- columns of the detail grid -->
+                                <dxg:GridColumn FieldName="Date" Header="Date" Width="40" ReadOnly="True" SortIndex="1" SortMode="Value" />
+                                <dxg:GridColumn FieldName="Sum" Header="Sum" Width="40" ReadOnly="True" ShowInColumnChooser="True"/>
+
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
+
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Pool Members" Width="225" Margin="20,0,0,0">
+                        <dxlc:LayoutItem Label="Show Series">
+                            <dxe:CheckEdit EditValue="{Binding IsDisplayPoolMembers}"/>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="poolMembersGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding PoolMembers}"
+                                 Width="200"
+                                 Height="300"
+                                 HorizontalAlignment="Left"
+                                 >
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewPoolMembers" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwner}"
+                                       AllowColumnFiltering="True" 
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       ShowSearchPanelMode="Never"
+                                       ShowTotalSummary="True"
+                                       />
+                                </dxg:GridControl.View>
+
+                                <dxg:GridControl.TotalSummary>
+                                    <dxg:GridSummaryItem FieldName="Sum" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                </dxg:GridControl.TotalSummary>
+
+                                <!-- columns of the detail grid -->
+                                <dxg:GridColumn FieldName="Date" Header="Date" Width="40" ReadOnly="True" SortIndex="1" SortMode="Value" />
+                                <dxg:GridColumn FieldName="Sum" Header="Sum" Width="40" ReadOnly="True" ShowInColumnChooser="True"/>
+
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
+
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Pool Guests" Width="225">
+                        <dxlc:LayoutItem Label="Show Series">
+                            <dxe:CheckEdit EditValue="{Binding IsDisplayPoolGuests}"/>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem>
+                            <dxg:GridControl AutoPopulateColumns="False" x:Name="poolGuestGrid" 
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding PoolGuests}"
+                                 Width="200"
+                                 Height="300"
+                                 HorizontalAlignment="Left"
+                                 >
+                                <dxg:GridControl.View>
+                                    <dxg:TableView x:Name="tableViewPoolGuests" 
+                                       AllowEditing="{Binding ApplPermissions.CanEditOwner}"
+                                       AllowColumnFiltering="True" 
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="True" 
+                                       ShowSearchPanelMode="Never"
+                                       ShowTotalSummary="True"
+                                       />
+                                </dxg:GridControl.View>
+
+                                <dxg:GridControl.TotalSummary>
+                                    <dxg:GridSummaryItem FieldName="Sum" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
+                                </dxg:GridControl.TotalSummary>
+
+                                <!-- columns of the detail grid -->
+                                <dxg:GridColumn FieldName="Date" Header="Date" Width="40" ReadOnly="True" SortIndex="1" SortMode="Value" />
+                                <dxg:GridColumn FieldName="Sum" Header="Sum" Width="40" ReadOnly="True" ShowInColumnChooser="True"/>
+
+                            </dxg:GridControl>
+                        </dxlc:LayoutItem>
+
+                    </dxlc:LayoutGroup>
+                </dxlc:LayoutControl>
+
+            </dxlc:LayoutControl>
+        </DockPanel>
+    </dxb:BarManager>
+
+</UserControl>

@@ -1,19 +1,25 @@
 ﻿namespace HVCC.Shell.Views
 {
+    using HVCC.Shell.Common.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
-    using HVCC.Shell.Models;
-    using DevExpress.Xpf.Grid;
-    using HVCC.Shell.Common.Interfaces;
-    using System.Collections.Generic;
-    using System;
-    using DevExpress.Xpf.Printing;
+    using System.Windows.Data;
+    using System.Windows.Documents;
     using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+    using System.Windows.Navigation;
+    using System.Windows.Shapes;
 
     /// <summary>
-    /// Interaction logic for PropertyDetailView.xaml
+    /// Interaction logic for FacilityUsageGraph.xaml
     /// </summary>
-    public partial class PropertyDetailsView : UserControl, IView
+    public partial class FacilityUsageGraphView : UserControl, IView
     {
         public IViewModel ViewModel
         {
@@ -21,13 +27,13 @@
             set { this.DataContext = value; }
         }
 
-        public PropertyDetailsView(IViewModel vm)
+        public FacilityUsageGraphView(IViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
             this.Loaded += OnLoaded;
 
-            this.ViewModel.Table = this.propertiesView;
+            //this.ViewModel.Table = this.tableViewMembers;
         }
 
         public object SaveState()
@@ -50,25 +56,10 @@
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void view_ValidateRow(object sender, GridRowValidationEventArgs e)
-        {
-            if (!e.IsValid)
-            {
-                e.IsValid = false;
-                e.ErrorType = DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical;
-                e.ErrorContent = "The highlighted field cannot be blank";
-                e.SetError(e.ErrorContent);
-            }
-        }
-
-        private void Properties_Loaded(object sender, RoutedEventArgs e)
+        private void Administration_Loaded(object sender, RoutedEventArgs e)
         {
             Mouse.OverrideCursor = Cursors.Arrow;
         }
     }
+
 }

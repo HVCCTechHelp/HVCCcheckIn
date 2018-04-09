@@ -1,17 +1,10 @@
 ﻿namespace HVCC.Shell.Views
 {
-    using DevExpress.Xpf.Grid;
     using DevExpress.Xpf.Editors;
-    using HVCC.Shell.Helpers;
-    using HVCC.Shell.ViewModels;
     using Models;
-    using System;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Linq;
-    using System.IO;
     using HVCC.Shell.Common.Interfaces;
-    using System.Windows.Media.Imaging;
     using System.Windows.Input;
 
 

@@ -29,7 +29,7 @@
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>42</ApplicationRevision>
+    <ApplicationRevision>45</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -66,7 +66,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Images\Icons\HVCC.ico</ApplicationIcon>
@@ -101,6 +101,7 @@
     <Reference Include="DevExpress.Spreadsheet.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Utils.v17.1.UI, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.Carousel.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Charts.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Core.v17.1" />
     <Reference Include="DevExpress.Data.v17.1" />
@@ -175,6 +176,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Host.cs" />
+    <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\DataBaseRole.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Models\HVCC.designer.cs">
@@ -183,6 +185,7 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Models\UnmatchedBalance.cs" />
+    <Compile Include="Models\UtilityClasses.cs" />
     <Compile Include="Models\WaterMeterException.cs" />
     <Compile Include="Models\WellMeterHistory.cs" />
     <Compile Include="Reports\IntentToLienNotice.cs">
@@ -251,6 +254,12 @@
     <Compile Include="Reports\TransactionReceipt.Designer.cs">
       <DependentUpon>TransactionReceipt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Reports\WeeklyFinancialTransactionReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\WeeklyFinancialTransactionReport.Designer.cs">
+      <DependentUpon>WeeklyFinancialTransactionReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Reports\WellMeterDetailReport.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -272,6 +281,7 @@
     <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
     <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
     <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
+    <Compile Include="ViewModels\FacilityUsageGraphViewModel.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\OwnerEditViewModel.cs" />
@@ -283,6 +293,7 @@
     <Compile Include="ViewModels\OwnerBalanceUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
+    <Compile Include="ViewModels\ReportCarouselViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
@@ -294,6 +305,9 @@
     </Compile>
     <Compile Include="Views\ChangeOwnerView.xaml.cs">
       <DependentUpon>ChangeOwnerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FacilityUsageGraphView.xaml.cs">
+      <DependentUpon>FacilityUsageGraphView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InvoiceView.xaml.cs">
       <DependentUpon>InvoiceView.xaml</DependentUpon>
@@ -321,6 +335,9 @@
     </Compile>
     <Compile Include="Views\PropertyEditView.xaml.cs">
       <DependentUpon>PropertyEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportCarouselView.xaml.cs">
+      <DependentUpon>ReportCarouselView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateFacilitiesUsagesView.xaml.cs">
       <DependentUpon>UpdateFacilitiesUsagesView.xaml</DependentUpon>
@@ -363,6 +380,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FacilityUsageGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\InvoiceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -398,6 +419,10 @@
     <Page Include="Views\PropertyEditView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ReportCarouselView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UpdateFacilitiesUsagesView.xaml">
       <SubType>Designer</SubType>
@@ -477,6 +502,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\TransactionReceipt.resx">
       <DependentUpon>TransactionReceipt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\WeeklyFinancialTransactionReport.resx">
+      <DependentUpon>WeeklyFinancialTransactionReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\WellMeterDetailReport.resx">
       <DependentUpon>WellMeterDetailReport.cs</DependentUpon>
@@ -615,6 +643,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\GolfCart_Red_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Reports\BalanceDue.JPG" />
+    <Resource Include="Images\Reports\DailyUsage.JPG" />
+    <Resource Include="Images\Reports\FacilityUsage.JPG" />
+    <Resource Include="Images\Reports\OwnershipHistory.JPG" />
+    <Resource Include="Images\Reports\PropertyNotes.JPG" />
+    <Resource Include="Images\Reports\Transactions.JPG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

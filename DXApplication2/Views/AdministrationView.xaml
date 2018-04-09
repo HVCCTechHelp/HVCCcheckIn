@@ -93,6 +93,12 @@
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
+                            <dxb:BarButtonItem Content="Graph Golf"
+                                                   Command="{Binding GraphGolfCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 
@@ -161,7 +167,7 @@
                 </dxlc:LayoutGroup>
                 <!-- User Privileges -->
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Current Season" Width="Auto">
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Current Season" Width="Auto">
                     <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Width="Auto">
                         <dxlc:LayoutItem Label="Select Season: " Width="200">
                             <dxe:ListBoxEdit 

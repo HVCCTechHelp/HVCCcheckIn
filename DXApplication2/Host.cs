@@ -198,6 +198,22 @@
             IView v = new HVCC.Shell.Views.InvoiceView(vm);
             return new MvvmBinder(dc, v, vm);
         }
+        public static IMvvmBinder GetNewFacilityUsageGraphView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new FacilityUsageGraphViewModel(dc) { Caption = "Graph Facilities" };
+            IView v = new HVCC.Shell.Views.FacilityUsageGraphView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
+        public static IMvvmBinder GetNewReportCarouselView(object arg)
+        {
+            ////IDataContext dc = new UnitTextConnectionDataContext();
+            IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
+            IViewModel vm = new ReportCarouselViewModel(dc) { Caption = "Report Carousel" };
+            IView v = new HVCC.Shell.Views.ReportCarouselView(vm);
+            return new MvvmBinder(dc, v, vm);
+        }
         //
 
         /// <summary>
@@ -288,6 +304,16 @@
                 else if (param.ToString() == "Invoices")
                 {
                     var binder = GetNewInvoiceView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "Graph Facilities")
+                {
+                    var binder = GetNewFacilityUsageGraphView(arg);
+                    this.OpenMvvmBinders.Add(binder);
+                }
+                else if (param.ToString() == "Report Carousel")
+                {
+                    var binder = GetNewReportCarouselView(arg);
                     this.OpenMvvmBinders.Add(binder);
                 }
             }

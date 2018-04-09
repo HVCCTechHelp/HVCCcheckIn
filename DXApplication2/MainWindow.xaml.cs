@@ -228,6 +228,17 @@
         }
 
         /// <summary>
+        /// Creates of Focuses the Report Carousel DocumentPanel (used for testing purposes)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClicked_ReportCarousel(object sender, MouseButtonEventArgs e)
+        {
+            // Using Dependancy Inversion, bind the viewModel to the view through the Host.Instance interface
+            Host.Instance.Execute(HostVerb.Open, "Report Carousel");
+        }
+
+        /// <summary>
         /// Creates of Focuses the Administration DocumentPanel (used for testing purposes)
         /// </summary>
         /// <param name="sender"></param>

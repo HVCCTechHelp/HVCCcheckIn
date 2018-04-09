@@ -842,7 +842,7 @@
                         {
                             FacilityUsage usage = new FacilityUsage();
 
-                            usage.PropertyID = SelectedProperty.PropertyID;
+                            usage.OwnerID = SelectedOwner.OwnerID;
                             usage.RelationshipId = r.RelationshipID;
                             usage.Date = DateTime.Now;
                             if (r.IsGolf)
@@ -902,7 +902,7 @@
                                                   select q).FirstOrDefault();
 
                             FacilityUsage gUsage = new FacilityUsage();
-                            gUsage.PropertyID = SelectedProperty.PropertyID;
+                            gUsage.OwnerID = SelectedOwner.OwnerID;
                             gUsage.RelationshipId = guest.RelationshipID;
                             gUsage.Date = DateTime.Now;
                             gUsage.GolfRoundsMember = 0;

@@ -76,7 +76,9 @@
     <Compile Include="Commands\CommandActions.cs" />
     <Compile Include="Commands\CustomCommands.cs" />
     <Compile Include="Converters\BalanceValueToTypeConverter.cs" />
+    <Compile Include="Converters\Base64ImageConverter.cs" />
     <Compile Include="Converters\BooleanToVisibility.cs" />
+    <Compile Include="Converters\DoubleToIntConverter.cs" />
     <Compile Include="Converters\EventArgsConverter.cs" />
     <Compile Include="Converters\BitmapToByteArrayConverter.cs" />
     <Compile Include="Converters\InvertBoolean.cs" />
