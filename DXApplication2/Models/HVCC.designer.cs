@@ -50,7 +50,6 @@ namespace HVCC.Shell.Models
     partial void DeleteNote(Note instance);
     partial void UpdateOwnershipChange(OwnershipChange instance);
     partial void DeleteOwnershipChange(OwnershipChange instance);
-    partial void UpdateFinancialTransaction(FinancialTransaction instance);
     partial void DeleteFinancialTransaction(FinancialTransaction instance);
     partial void DeleteWaterShutoff(WaterShutoff instance);
     partial void InsertApplicationPermission(ApplicationPermission instance);
@@ -67,7 +66,7 @@ namespace HVCC.Shell.Models
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}
@@ -312,6 +311,11 @@ namespace HVCC.Shell.Models
 			System.Nullable<int> p1 = obj.RowId;
 			this.usp_InsertFinancialTransaction(((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment, ref p1);
 			obj.RowId = p1.GetValueOrDefault();
+		}
+		
+		private void UpdateFinancialTransaction(FinancialTransaction obj)
+		{
+			this.usp_UpdateFinancialTransaction(((System.Nullable<int>)(obj.RowId)), ((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment);
 		}
 		
 		private void InsertWaterShutoff(WaterShutoff obj)
@@ -595,6 +599,13 @@ namespace HVCC.Shell.Models
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, relationshipId, golfRoundsMember, golfRoundsGuest, poolMember, poolGuest, rowID);
 			rowID = ((System.Nullable<int>)(result.GetParameterValue(6)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateFinancialTransaction")]
+		public int usp_UpdateFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYear", DbType="VarChar(20)")] string fiscalYear, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="DateTime")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(50)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId, ownerID, fiscalYear, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment);
 			return ((int)(result.ReturnValue));
 		}
 	}

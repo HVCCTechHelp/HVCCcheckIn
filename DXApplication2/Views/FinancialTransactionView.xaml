@@ -498,6 +498,12 @@
                                                                NavigationStyle="Row" 
                                                                ShowGroupPanel="False"
                                                                >
+
+                                            <dxmvvm:Interaction.Behaviors>
+                                                <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                                                        Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedTransaction}" />
+                                            </dxmvvm:Interaction.Behaviors>
+                                            
                                             <dxg:TableView.FormatConditions>
                                                 <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
                                                     <dxc:Format Foreground="Red" />

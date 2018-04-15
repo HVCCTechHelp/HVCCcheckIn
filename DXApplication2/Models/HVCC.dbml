@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC_DEV" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC_DEV;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionStringDEV" Provider="System.Data.SqlClient" />
   <Table Name="dbo.WaterMeterReadings" Member="WaterMeterReadings">
     <Type Name="WaterMeterReading">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -189,6 +189,18 @@
       <Argument Parameter="comment" Member="Comment" />
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
+    <UpdateFunction FunctionId="FunctionId9">
+      <Argument Parameter="rowId" Member="RowId" />
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="fiscalYear" Member="FiscalYear" />
+      <Argument Parameter="balance" Member="Balance" />
+      <Argument Parameter="creditAmount" Member="CreditAmount" />
+      <Argument Parameter="debitAmount" Member="DebitAmount" />
+      <Argument Parameter="transactionDate" Member="TransactionDate" />
+      <Argument Parameter="transactionMethod" Member="TransactionMethod" />
+      <Argument Parameter="transactionAppliesTo" Member="TransactionAppliesTo" />
+      <Argument Parameter="comment" Member="Comment" />
+    </UpdateFunction>
   </Table>
   <Table Name="dbo.v_OwnerDetails" Member="v_OwnerDetails">
     <Type Name="v_OwnerDetail">
@@ -239,7 +251,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_WaterShutoff" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId9">
+    <InsertFunction FunctionId="FunctionId10">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -267,7 +279,7 @@
       <Argument Parameter="resolution" Member="Resolution" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId10">
+    <UpdateFunction FunctionId="FunctionId11">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -401,7 +413,7 @@
       <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
       <Association Name="Owner_Property" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <UpdateFunction FunctionId="FunctionId11">
+    <UpdateFunction FunctionId="FunctionId12">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -466,7 +478,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
       <Association Name="Owner_GolfCart" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId12">
+    <InsertFunction FunctionId="FunctionId13">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="year" Member="Year" />
@@ -475,7 +487,7 @@
       <Argument Parameter="paymentDate" Member="PaymentDate" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId13">
+    <UpdateFunction FunctionId="FunctionId14">
       <Argument Parameter="rowID" Member="RowID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -511,7 +523,7 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId14">
+    <InsertFunction FunctionId="FunctionId15">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="relationshipId" Member="RelationshipId" />
       <Argument Parameter="golfRoundsMember" Member="GolfRoundsMember" />
@@ -720,7 +732,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
+  <Function Id="FunctionId10" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -749,7 +761,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId10" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
+  <Function Id="FunctionId11" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -777,7 +789,7 @@
     <Parameter Name="Resolution" Parameter="resolution" Type="System.String" DbType="VarChar(500)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId11" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
+  <Function Id="FunctionId12" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -815,7 +827,7 @@
       <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Id="FunctionId12" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
+  <Function Id="FunctionId13" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
@@ -825,7 +837,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId13" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
+  <Function Id="FunctionId14" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -837,7 +849,7 @@
     <Parameter Name="ReceivedDate" Parameter="receivedDate" Type="System.DateTime" DbType="Date" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId14" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
+  <Function Id="FunctionId15" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
     <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
@@ -845,6 +857,19 @@
     <Parameter Name="PoolMember" Parameter="poolMember" Type="System.Int32" DbType="Int" />
     <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId9" Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
+    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FiscalYear" Parameter="fiscalYear" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="CreditAmount" Parameter="creditAmount" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="DebitAmount" Parameter="debitAmount" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="TransactionDate" Parameter="transactionDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="TransactionMethod" Parameter="transactionMethod" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="TransactionAppliesTo" Parameter="transactionAppliesTo" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(100)" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

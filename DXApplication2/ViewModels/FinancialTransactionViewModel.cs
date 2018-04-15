@@ -104,7 +104,7 @@
         {
             get
             {
-                return _duesNullText;                 
+                return _duesNullText;
             }
             set
             {
@@ -197,6 +197,19 @@
             }
         }
 
+        private bool _isEditTransaction = false;
+        public bool IsEditTransaction
+        {
+            get { return _isEditTransaction; }
+            set
+            {
+                if (value != _isEditTransaction)
+                {
+                    _isEditTransaction = value;
+                }
+            }
+        }
+
         /// <summary>
         /// A collection of Payments 
         /// </summary>
@@ -208,7 +221,7 @@
                             where x.OwnerID == SelectedOwner.OwnerID
                             select x).OrderByDescending(x => x.TransactionDate);
                 return new ObservableCollection<FinancialTransaction>(list);
-             }
+            }
         }
 
         private FinancialTransaction _selectedTransaction = new FinancialTransaction();
@@ -225,6 +238,20 @@
                     _selectedTransaction = value;
                     RaisePropertyChanged("SelectedTransaction");
                 }
+            }
+        }
+
+        public int SelectedTransactionIndex
+        {
+            get
+            {
+                int ndx = 0;
+                foreach (FinancialTransaction t in FinancialTransactions)
+                {
+                    if (t == SelectedTransaction) { break; }
+                    ++ndx;
+                }
+                return ndx;
             }
         }
 
@@ -404,6 +431,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
                     TotalAmount += (decimal)_duesAmount;
+                    RaisePropertyChanged("DuesAmount");
                 }
             }
         }
@@ -420,7 +448,7 @@
                 if (_feeAmount != value)
                 {
                     _feeAmount = value;
-                    string tmp = string.Format("Fees:{0:c} ", value);
+                    string tmp = string.Format("LateFee:{0:c} ", value);
                     if (_feeAmount != 0)
                     {
                         TransactionAppliesTo.Append(tmp);
@@ -430,6 +458,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
                     TotalAmount += (decimal)_feeAmount;
+                    RaisePropertyChanged("FeeAmount");
                 }
             }
         }
@@ -447,6 +476,7 @@
                 {
                     _golfCartQuanity = value;
                     CartAmount = _golfCartQuanity * SelectedFiscalYear.CartFee;
+                    RaisePropertyChanged("GolfCartQuanity");
                 }
             }
         }
@@ -460,19 +490,28 @@
             }
             set
             {
-                _cartAmount = value;
-                string tmp = string.Format("CartFee:{0:c} ", value);
-                if (_cartAmount != 0)
+                if (value != _cartAmount)
                 {
-                    TransactionAppliesTo.Append(tmp);
-                }
-                else
-                {
-                    TransactionAppliesTo.Replace(tmp, "");
-                }
+                    // Before we update the CartAmount, we need to subtract the current value from the total
+                    // so it does not get added again when the amount changes.
+                    if (null != _cartAmount)
+                    {
+                        TotalAmount -= (decimal)_cartAmount;
+                    }
+                    _cartAmount = value;
+                    string tmp = string.Format("CartFee:{0:c} ", value);
+                    if (_cartAmount != 0)
+                    {
+                        TransactionAppliesTo.Append(tmp);
+                    }
+                    else
+                    {
+                        TransactionAppliesTo.Replace(tmp, "");
+                    }
 
-                    RaisePropertyChanged("CartAmount");
                     TotalAmount += (decimal)_cartAmount;
+                    RaisePropertyChanged("CartAmount");
+                }
             }
         }
 
@@ -499,6 +538,7 @@
                     }
 
                     TotalAmount += (decimal)_assessmentAmount;
+                    RaisePropertyChanged("AssessmentAmount");
                 }
             }
         }
@@ -526,6 +566,7 @@
                     }
 
                     TotalAmount += (decimal)_reconnectAmount;
+                    RaisePropertyChanged("ReconnectAmount");
                 }
             }
         }
@@ -553,6 +594,7 @@
                     }
 
                     TotalAmount += (decimal)_lienFeeAmount;
+                    RaisePropertyChanged("LienFeeAmount");
                 }
             }
         }
@@ -580,6 +622,7 @@
                     }
 
                     TotalAmount += (decimal)_otherAmount;
+                    RaisePropertyChanged("OtherAmount");
                 }
             }
         }
@@ -761,14 +804,33 @@
             {
                 this.IsBusy = true;
                 FinancialTransaction transaction = new FinancialTransaction();
+                decimal accountBalance = AccountBalance;
+                transaction.Balance = accountBalance;
                 Note note = new Note();
                 StringBuilder sb = new StringBuilder();
+
+                // If we are editing an existing transaction.....
+                if (IsEditTransaction)
+                {
+                    transaction = SelectedTransaction;
+                    transaction.TransactionAppliesTo = String.Empty;
+
+                    string xxx = TransactionAppliesTo.ToString();
+
+                    // adjust balance..... In order to correctly calculate the account balance, we first need to add/subtract the 
+                    // previous posted amount (credit/debit) from the current account balance.  The new/adjusted balance will
+                    // be calculated below.
+                    if (null != transaction.CreditAmount) { accountBalance += (decimal)transaction.CreditAmount; }
+                    if (null != transaction.DebitAmount) { accountBalance -= (decimal)transaction.DebitAmount; }
+                    transaction.Balance = accountBalance;
+
+                    sb.Append(String.Format("Revised #{0}: ", SelectedTransaction.RowId));
+                }
 
                 // Determine if we are posting a credit or a debit.  
                 if (null != CreditAmount)
                 {
                     DebitAmount = 0;
-                    transaction.Balance = AccountBalance;
                     if (null != DuesAmount)
                     { transaction.Balance -= (decimal)DuesAmount; }
                     if (null != FeeAmount)
@@ -790,12 +852,12 @@
                 else
                 {
                     CreditAmount = 0;
-                    transaction.Balance = AccountBalance + (decimal)DebitAmount;
+                    transaction.Balance = accountBalance + (decimal)DebitAmount;
                     sb.Append("Debit ");
                     sb.Append(TransactionAppliesTo.ToString().Trim());
                 }
 
-                // Add this transaction to the DC as an Insert....
+                // Assign the field values to the transaction object......
                 transaction.OwnerID = SelectedOwner.OwnerID;
                 transaction.FiscalYear = FiscalYear;
                 transaction.CreditAmount = (decimal)CreditAmount;
@@ -804,7 +866,12 @@
                 transaction.TransactionMethod = TransactionMethod;
                 transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
                 transaction.Comment = TransactionComment;
-                dc.FinancialTransactions.InsertOnSubmit(transaction);
+
+                // If this is a new transaction, we have to add it to the datacontext change set as an insert
+                if (!IsEditTransaction)
+                {
+                    dc.FinancialTransactions.InsertOnSubmit(transaction);
+                }
 
                 // Add/Attach a comment to the Owner's Notes table.
                 sb.Append(" - ");
@@ -814,7 +881,7 @@
                 note.Comment = sb.ToString().Trim();
                 dc.Notes.InsertOnSubmit(note);
 
-                // If there is credit applied to a golf cart, we create a Golf Cart record.
+                // If there is credit applied to a golf cart, we create or update a Golf Cart record.
                 if (0 != CreditAmount && 0 < CartAmount)
                 {
                     GolfCart golfCart = new GolfCart();
@@ -824,7 +891,6 @@
                     golfCart.PaymentDate = TransactionDate;
                     golfCart.Quanity = (int)GolfCartQuanity;
                     golfCart.IsPaid = true;
-
                     dc.GolfCarts.InsertOnSubmit(golfCart);
                 }
 
@@ -846,6 +912,7 @@
                     }
                 }
 
+                ChangeSet cs = dc.GetChangeSet();
                 this.dc.SubmitChanges();
 
                 // Add this transaction to the in-memory Selected owner record so it can be reflected without a 
@@ -857,17 +924,24 @@
                 RaisePropertyChanged("DataChanged");
 
                 // I need to buffer the transactions so I can get the RowID of the last transaction; the one that was entered.
-                var transactions = (from x in dc.FinancialTransactions
-                                           where x.OwnerID == SelectedOwner.OwnerID
-                                           orderby x.TransactionDate descending
-                                           select x);
-
-                // Break on the first record, which will be the last record entered.
                 FinancialTransaction ft = null;
-                foreach (FinancialTransaction f in transactions)
+                if (!IsEditTransaction)
                 {
-                    ft = f;
-                    break;
+                    var transactions = (from x in dc.FinancialTransactions
+                                        where x.OwnerID == SelectedOwner.OwnerID
+                                        orderby x.TransactionDate descending
+                                        select x);
+
+                    // Break on the first record, which will be the last record entered.
+                    foreach (FinancialTransaction f in transactions)
+                    {
+                        ft = f;
+                        break;
+                    }
+                }
+                else
+                {
+                    ft = SelectedTransaction;
                 }
 
                 // Get the MVVM binder for this viewmodel.  We need reference to the ViewModel's View
@@ -941,8 +1015,81 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Property p = parameter as Property;
-            //Host.Execute(HostVerb.Open, "PropertyEdit", p);
+            if (0 != SelectedTransactionIndex)
+            {
+                MessageBox.Show("Only the last transaction can be modified.", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                FinancialTransaction p = parameter as FinancialTransaction;
+                IsEditTransaction = true;
+                TransactionDate = p.TransactionDate;
+                if (null != p.CreditAmount)
+                {
+                    // If the amount is $0.00, we need to null the value to make the validation work.  This is because on a new
+                    // transaction, the Credit/Debit amounts are null. It's not until it is saved to the DB that it is saved as $0
+                    if (0 == p.CreditAmount) { p.CreditAmount = null; }
+                    CreditAmount = p.CreditAmount;
+                }
+                if (null != p.DebitAmount)
+                {
+                    if (0 == p.DebitAmount) { p.DebitAmount = null; }
+                    DebitAmount = p.DebitAmount;
+                }
+
+                TransactionMethod = p.TransactionMethod;
+                FiscalYear = p.FiscalYear;
+                TransactionComment = p.Comment;
+
+                // We remove the "Pool " string from the transaction description so it just leaves "Assessment".  
+                // The pool assessment ended in FY18/19.  If in the future, another assessment is added we will 
+                // need to still be able to account for it.
+                string tmp = p.TransactionAppliesTo.ToString().Replace("Pool ", "");
+                String[] substrngs = tmp.Split(' ');
+
+                foreach (string s in substrngs)
+                {
+                    String[] items = s.Split(':');
+                    string amt = items[1].Replace("$", "");
+
+                    switch (items[0])
+                    {
+                        case "Dues":
+                            Decimal.TryParse(amt, out decimal duesAmount);
+                            this.DuesAmount = duesAmount;
+                            break;
+                        case "LateFee":
+                            Decimal.TryParse(amt, out decimal feeAmount);
+                            this.FeeAmount = feeAmount;
+                            break;
+                        case "GolfCart":
+                        case "CartFee":
+                            Decimal.TryParse(amt, out decimal cartAmount);
+                            int count = Decimal.ToInt32(cartAmount / SelectedFiscalYear.CartFee);
+                            this.GolfCartQuanity = count;
+                            break;
+                        case "Asessment":
+                        case "Assessment":
+                            Decimal.TryParse(amt, out decimal assessmentAmount);
+                            this.AssessmentAmount = assessmentAmount;
+                            break;
+                        case "Reconnect":
+                            Decimal.TryParse(amt, out decimal reconnectAmount);
+                            this.ReconnectAmount = reconnectAmount;
+                            break;
+                        case "LienFee":
+                            Decimal.TryParse(amt, out decimal lienFeeAmount);
+                            this.LienFeeAmount = lienFeeAmount;
+                            break;
+                        case "Other":
+                            Decimal.TryParse(amt, out decimal otherAmount);
+                            this.OtherAmount = otherAmount;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         ///// <summary>
@@ -983,8 +1130,8 @@
             StringBuilder message = new StringBuilder();
 
             if (
-                   ((CreditAmount > 0 && null == DebitAmount)
-                || (DebitAmount > 0 && null == CreditAmount))
+                   ((CreditAmount > 0 && null == DebitAmount))
+                || (DebitAmount > 0 && (null == CreditAmount))
                 && ((TotalAmount == CreditAmount)
                 || (TotalAmount == DebitAmount))
                 && (DateTime.Now > TransactionDate)
@@ -1042,7 +1189,7 @@
         string IDataErrorInfo.this[string columnName]
         {
             get
-            { 
+            {
                 //// If invoked, will throw validation error if property is null/blank
 
                 //StringBuilder errorMsg = new StringBuilder();
@@ -1119,8 +1266,8 @@
 
     }
 
-    /*================================================================================================================================================*/ 
-     /// <summary>
+    /*================================================================================================================================================*/
+    /// <summary>
     /// Disposition.......
     /// </summary>
     #region public partial class OwnersEditViewModel : IDisposable
