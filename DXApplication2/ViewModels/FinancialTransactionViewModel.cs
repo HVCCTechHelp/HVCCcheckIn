@@ -370,6 +370,15 @@
                 if (_transactionMethod != value)
                 {
                     _transactionMethod = value;
+                    if ("Cash" == _transactionMethod)
+                    {
+                        CheckNumber = "Cash";
+                    }
+                    if ("Credit Memo" == _transactionMethod)
+                    {
+                        CheckNumber = "CreditMemo";
+                        ReceiptNumber = "CreditMemo";
+                    }
                     RaisePropertyChanged("TransactionMethod");
                 }
             }
@@ -405,6 +414,34 @@
                 {
                     _transactionComment = value;
                     RaisePropertyChanged("TransactionComment");
+                }
+            }
+        }
+
+        private string _checkNumber = String.Empty;
+        public string CheckNumber
+        {
+            get { return _checkNumber; }
+            set
+            {
+                if (value != _checkNumber)
+                {
+                    _checkNumber = value;
+                    RaisePropertyChanged("CheckNumber");
+                }
+            }
+        }
+
+        private string _recieptNumber = String.Empty;
+        public string ReceiptNumber
+        {
+            get { return _recieptNumber; }
+            set
+            {
+                if (value != _recieptNumber)
+                {
+                    _recieptNumber = value;
+                    RaisePropertyChanged("ReceiptNumber");
                 }
             }
         }
@@ -815,12 +852,14 @@
                     transaction = SelectedTransaction;
                     transaction.TransactionAppliesTo = String.Empty;
 
-                    string xxx = TransactionAppliesTo.ToString();
-
                     // adjust balance..... In order to correctly calculate the account balance, we first need to add/subtract the 
                     // previous posted amount (credit/debit) from the current account balance.  The new/adjusted balance will
                     // be calculated below.
-                    if (null != transaction.CreditAmount) { accountBalance += (decimal)transaction.CreditAmount; }
+                    if (null != transaction.CreditAmount)
+                    {
+                        accountBalance += (decimal)transaction.CreditAmount;
+                        DebitAmount = null;
+                    }
                     if (null != transaction.DebitAmount) { accountBalance -= (decimal)transaction.DebitAmount; }
                     transaction.Balance = accountBalance;
 
@@ -862,10 +901,12 @@
                 transaction.FiscalYear = FiscalYear;
                 transaction.CreditAmount = (decimal)CreditAmount;
                 transaction.DebitAmount = (decimal)DebitAmount;
+                transaction.CheckNumber = CheckNumber.Trim();
+                transaction.ReceiptNumber = ReceiptNumber.Trim();
                 transaction.TransactionDate = TransactionDate;
                 transaction.TransactionMethod = TransactionMethod;
                 transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
-                transaction.Comment = TransactionComment;
+                transaction.Comment = TransactionComment.Trim();
 
                 // If this is a new transaction, we have to add it to the datacontext change set as an insert
                 if (!IsEditTransaction)
@@ -884,14 +925,33 @@
                 // If there is credit applied to a golf cart, we create or update a Golf Cart record.
                 if (0 != CreditAmount && 0 < CartAmount)
                 {
-                    GolfCart golfCart = new GolfCart();
-                    golfCart.OwnerID = SelectedOwner.OwnerID;
-                    golfCart.Customer = SelectedOwner.Customer;
-                    golfCart.Year = FiscalYear;
-                    golfCart.PaymentDate = TransactionDate;
-                    golfCart.Quanity = (int)GolfCartQuanity;
-                    golfCart.IsPaid = true;
-                    dc.GolfCarts.InsertOnSubmit(golfCart);
+                    // Check to see if this is a new transaction, or if it is being edited. On edit
+                    // we do not want to add a(nother) golf cart record.
+                    if (!IsEditTransaction)
+                    {
+                        // Check to see if there is already a golf cart record for this Owner and for the selected
+                        // season.  In some cases an Owner may have been invoiced for (1) cart, but they are
+                        // purchashing a second sticker.
+                        GolfCart gc = (from g in dc.GolfCarts
+                                       where g.OwnerID == transaction.OwnerID
+                                       && g.Year == transaction.FiscalYear
+                                       select g).FirstOrDefault();
+                        if (null != gc)
+                        {
+                            gc.Quanity += (int)GolfCartQuanity;
+                        }
+                        else
+                        {
+                            GolfCart golfCart = new GolfCart();
+                            golfCart.OwnerID = SelectedOwner.OwnerID;
+                            golfCart.Customer = SelectedOwner.Customer;
+                            golfCart.Year = FiscalYear;
+                            golfCart.PaymentDate = TransactionDate;
+                            golfCart.Quanity = (int)GolfCartQuanity;
+                            golfCart.IsPaid = true;
+                            dc.GolfCarts.InsertOnSubmit(golfCart);
+                        }
+                    }
                 }
 
                 // Lastly, if the balance is zero, or a negative (they have a credit to their account), check
@@ -1127,18 +1187,17 @@
         /// <returns></returns>
         public bool CkIsValid()
         {
-            StringBuilder message = new StringBuilder();
-
-            if (
-                   ((CreditAmount > 0 && null == DebitAmount))
-                || (DebitAmount > 0 && (null == CreditAmount))
-                && ((TotalAmount == CreditAmount)
-                || (TotalAmount == DebitAmount))
-                && (DateTime.Now > TransactionDate)
-                && !String.IsNullOrEmpty(FiscalYear)
-                && !String.IsNullOrEmpty(TransactionMethod)
-                && !String.IsNullOrEmpty(FiscalYear)
-                && !String.IsNullOrEmpty(TransactionComment)
+            if (                                                                    // The following conditions must be met to pass validation
+                   ((CreditAmount > 0 && null == DebitAmount))                      // must have a non-zero amount in either Credit or Debit
+                || (DebitAmount > 0 && (null == CreditAmount))                      // must have a non-zero amount in either Debit or Credit
+                && ((TotalAmount == CreditAmount)                                   // the calculated total must equal Credit amount, or
+                || (TotalAmount == DebitAmount))                                    // the calculated total must equal Debit amount
+                && (DateTime.Now > TransactionDate)                                 // the transaction must match todays date
+                && !String.IsNullOrEmpty(FiscalYear)                                // the FiscalYear may not be empty
+                && !String.IsNullOrEmpty(TransactionMethod)                         // the TransactionMethod may not be empty
+                && !String.IsNullOrEmpty(TransactionComment)                        // the Comment may not be empty
+                && !(null != CreditAmount && !String.IsNullOrEmpty(CheckNumber))    // the CheckNumber may not be empty if Credit is not null
+                && !(null != CreditAmount && !String.IsNullOrEmpty(ReceiptNumber))  // the ReceiptNumber may not be empty if Credit is not null
                )
             {
                 return true;
@@ -1153,8 +1212,6 @@
         {
             get
             {
-                //if (!allowValidation) return null;
-
                 IDataErrorInfo iDataErrorInfo = (IDataErrorInfo)this;
                 string error = String.Empty;
 
@@ -1169,6 +1226,8 @@
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => TotalAmount)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => FiscalYear)]
                     + iDataErrorInfo[BindableBase.GetPropertyName(() => TransactionComment)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => CheckNumber)]
+                    + iDataErrorInfo[BindableBase.GetPropertyName(() => ReceiptNumber)]
                     ;
 
                 if (!string.IsNullOrEmpty(error))
@@ -1231,7 +1290,17 @@
                 }
                 else if (columnName == BindableBase.GetPropertyName(() => TransactionComment))
                 {
-                    errorMsg.Append(RequiredValidationRule.CkStateAbbreviation(() => "TransactionComment", TransactionComment));
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "TransactionComment", TransactionComment));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => CheckNumber))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "CheckNumber", CheckNumber));
+                    return errorMsg.ToString();
+                }
+                else if (columnName == BindableBase.GetPropertyName(() => ReceiptNumber))
+                {
+                    errorMsg.Append(RequiredValidationRule.CheckNullInput(() => "ReceiptNumber", ReceiptNumber));
                     return errorMsg.ToString();
                 }
                 //// No errors found......

@@ -30,6 +30,8 @@
                 case "TransactionMethod":
                 case "TransactionComment":
                 case "FiscalYear":
+                case "CheckNumber":
+                case "ReceiptNumber":
                     error = CheckNullInput(FieldName, value);
                     break;
                 case "CreditAmount":

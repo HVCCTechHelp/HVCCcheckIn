@@ -69,7 +69,7 @@
                                                        ToolTip="Discard All Changes"/>
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>-->
-                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+                    <!--<dxr:RibbonPage x:Name="ownerActions" Caption="Actions">-->
 
                         <!--<dxr:RibbonPageGroup Caption="Owner Action">
 
@@ -79,7 +79,7 @@
                                                Glyph="/Images/Icons/payment_32x32.png" 
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
                         </dxr:RibbonPageGroup>-->
-                    </dxr:RibbonPage>
+                    <!--</dxr:RibbonPage>-->
 
                 </dxr:RibbonDefaultPageCategory>
 
@@ -96,7 +96,7 @@
                                       >
                         <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="900" >
 
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="900" Height="450" HorizontalAlignment="Left">
+                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="900" Height="530" HorizontalAlignment="Left">
 
                                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="550" HorizontalAlignment="Left">
                                     <dxlc:LayoutItem Label="Transaction Date: "  Margin="0,0,0,10" Width="100" HorizontalAlignment="Left"/>
@@ -140,7 +140,7 @@
 
                                 <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" HorizontalAlignment="Left" Header="Transaction Type" Margin="0,0,0,0">
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="550" HorizontalAlignment="Left">
-                                        <dxlc:LayoutItem Label="Credit:" x:Name="lbCredit" Margin="50,0,0,10" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Payment:" x:Name="lbCredit" Margin="50,0,0,10" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teCredit" HorizontalAlignment="Left"
                                                       IsEnabled="True"
                                                       Width="100" 
@@ -165,7 +165,7 @@
 
                                         <dxlc:LayoutItem Label="-OR-" x:Name="lbOR" Margin="57,0,0,10" HorizontalAlignment="Left" FontWeight="Bold"/>
 
-                                        <dxlc:LayoutItem Label="Debit:" x:Name="lbDebit" Margin="57,0,0,10" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Invoice:" x:Name="lbDebit" Margin="57,0,0,10" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teDebit"  HorizontalAlignment="Left"
                                                       IsEnabled="True"
                                                       Width="100" 
@@ -235,6 +235,50 @@
                                                 </dxe:ComboBoxEdit.Items>
                                             </dxe:ComboBoxEdit>
                                         </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+
+                                    <dxlc:LayoutGroup View="Group" Orientation="Vertical" HorizontalAlignment="Left">
+                                        <dxlc:LayoutItem Label="Check#:" x:Name="lbCheck" Margin="50,0,0,5" HorizontalAlignment="Left">
+                                            <dxe:TextEdit x:Name="teCheck" HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="100" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="False"
+                                                      ToolTip="Check or Money Order Number"  
+                                                      >
+                                                <dxe:TextEdit.EditValue>
+                                                    <Binding Path="CheckNumber" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                        <Binding.ValidationRules>
+                                                            <validation:RequiredValidationRule FieldName="CheckNumber"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </dxe:TextEdit.EditValue>
+                                            </dxe:TextEdit>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Receipt#:" x:Name="lbReceipt" Margin="50,0,0,5" HorizontalAlignment="Left">
+                                            <dxe:TextEdit x:Name="teReceipt" HorizontalAlignment="Left"
+                                                      IsEnabled="True"
+                                                      Width="100" 
+                                                      Style="{Binding TeStyle}"
+                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
+                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      ValidateOnEnterKeyPressed="True"
+                                                      ValidateOnTextInput="False"
+                                                      ToolTip="Receipt Number" 
+                                                      >
+                                                <dxe:TextEdit.EditValue>
+                                                    <Binding Path="ReceiptNumber" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
+                                                        <Binding.ValidationRules>
+                                                            <validation:RequiredValidationRule FieldName="ReceiptNumber"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </dxe:TextEdit.EditValue>
+                                            </dxe:TextEdit>
+                                        </dxlc:LayoutItem>
+
                                     </dxlc:LayoutGroup>
                                 </dxlc:LayoutGroup>
 
@@ -442,7 +486,7 @@
                                                       AcceptsReturn="False"
                                                       Height="50" Width="650"
                                                       MaxLength="100"
-                                                      NullText="Enter Check#, Receipt# and/or other identifing information to document this transaction"
+                                                      NullText="Enter information to document this transaction"
                                                       >
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="TransactionComment" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -461,7 +505,7 @@
                     </dxlc:LayoutGroup>
 
                     <dxlc:LayoutGroup View="GroupBox" Header="Transaction History" 
-                              Height="300" Width="950" 
+                              Height="200" Width="950" 
                               Margin="0,10,0,0" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
@@ -469,7 +513,7 @@
                               IsCollapsed="False" 
                               Orientation="Horizontal"
                               >
-                        <dxlc:LayoutGroup Orientation="Vertical" Height="250" Width="900">
+                        <dxlc:LayoutGroup Orientation="Vertical" Height="155" Width="900">
                             <dxlc:LayoutItem Label="Account Balance: " HorizontalAlignment="Left">
                                 <dxe:TextEdit Text="{Binding AccountBalance, Mode=OneWay}" 
                                           Margin="5,0,0,0"
@@ -484,20 +528,22 @@
 
                             <dxlc:LayoutItem>
                                 <dxg:GridControl AutoPopulateColumns="False" x:Name="transactionGrid" 
-                                                         IsEnabled="True"
-                                                         ItemsSource="{Binding FinancialTransactions}"
-                                                         SelectedItem="{Binding SelectedTransaction}"
-                                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                                         >
+                                                 IsEnabled="True"
+                                                 Width="Auto"
+                                                 ItemsSource="{Binding FinancialTransactions}"
+                                                 SelectedItem="{Binding SelectedTransaction}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                 >
                                     <dxg:GridControl.View>
                                         <dxg:TableView x:Name="tableViewTransactions" 
                                                                AllowEditing="False"
                                                                AllowPerPixelScrolling="True" 
-                                                               AutoWidth="True" 
-                                                               Height="200"
+                                                               Width="Auto" 
+                                                               Height="125"
                                                                NavigationStyle="Row" 
                                                                ShowGroupPanel="False"
-                                                               >
+                                                               HorizontalScrollbarVisibility="Visible"
+                                                              >
 
                                             <dxmvvm:Interaction.Behaviors>
                                                 <dxmvvm:EventToCommand EventName="RowDoubleClick" 
@@ -517,17 +563,18 @@
                                     <!-- columns of the detail grid -->
                                     <dxg:GridControl.Columns>
                                         <dxg:GridColumn FieldName="TransactionDate" Header="Date" 
-                                            Width="35" 
+                                            Width="100" 
                                             SortOrder="Descending" 
                                             SortIndex="0" 
                                             IsEnabled="True"
+                                            Fixed="Left"
                                             >
                                             <dxg:GridColumn.EditSettings>
                                                 <dxe:DateEditSettings DisplayFormat="d" />
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="CreditAmount" Header="Credit" 
-                                            Width="35" 
+                                        <dxg:GridColumn FieldName="CreditAmount" Header="Payments" 
+                                            Width="75" 
                                             Visible="True"
                                             >
                                             <dxg:GridColumn.EditSettings>
@@ -535,8 +582,8 @@
                                                 </dxe:TextEditSettings>
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="DebitAmount" Header="Debit" 
-                                            Width="35" 
+                                        <dxg:GridColumn FieldName="DebitAmount" Header="Invoices" 
+                                            Width="75" 
                                             Visible="True"
                                             >
                                             <dxg:GridColumn.EditSettings>
@@ -545,7 +592,7 @@
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
                                         <dxg:GridColumn FieldName="Balance" Header="Balance" 
-                                            Width="45" 
+                                            Width="100" 
                                             IsEnabled="True"
                                             >
                                             <dxg:GridColumn.EditSettings>
@@ -553,8 +600,10 @@
                                                 </dxe:TextEditSettings>
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="TransactionMethod" Header="Method" Visible="False" ShowInColumnChooser="True"/>
-                                        <dxg:GridColumn FieldName="TransactionAppliesTo" Header="For" Visible="False" ShowInColumnChooser="True"/>
+                                        <dxg:GridColumn FieldName="CheckNumber" Header="Check#" Width="150"/>
+                                        <dxg:GridColumn FieldName="ReceiptNumber" Header="Receipt#" Width="250"/>
+                                        <dxg:GridColumn FieldName="TransactionMethod" Header="Method" Width="150"/>
+                                        <dxg:GridColumn FieldName="TransactionAppliesTo" Header="For" Width="250"/>
                                         <dxg:GridColumn FieldName="Comment" Header="Comment" Width="300"/>
                                     </dxg:GridControl.Columns>
                                 </dxg:GridControl>

@@ -88,7 +88,7 @@
                         </dxr:RibbonPageGroup>
 
                         <dxr:RibbonPageGroup Caption="Owner Action">
-                            <dxb:BarButtonItem x:Name="bbImport" Content="Update" 
+                            <dxb:BarButtonItem x:Name="bbImport" Content="Compare" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Financal-16x16.png" 

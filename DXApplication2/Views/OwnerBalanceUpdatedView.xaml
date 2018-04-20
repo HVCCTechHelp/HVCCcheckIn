@@ -89,6 +89,7 @@
 
                     <dxg:GridControl x:Name="propertiesGrid" 
                              ItemsSource="{Binding OwnersUpdated}" 
+                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                              IsEnabled="True"
                              MaxHeight="850"
                              >
@@ -114,10 +115,10 @@
                                     </dxg:FormatCondition>
                                 </dxg:TableView.FormatConditions>
 
-                                <!--<dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:Interaction.Behaviors>
                                     <dxmvvm:EventToCommand EventName="RowDoubleClick" 
-                                               Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}"/>
-                                </dxmvvm:Interaction.Behaviors>-->
+                                               Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedItem}"/>
+                                </dxmvvm:Interaction.Behaviors>
 
                             </dxg:TableView>
                         </dxg:GridControl.View>

@@ -125,6 +125,8 @@
             deTransactionDate.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             ceCreditMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             ceDebitMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teCheck.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
+            teReceipt.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teTotal.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
             teComment.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
 
@@ -148,6 +150,10 @@
             lbCredit.Visibility = Visibility.Hidden;
             lbCreditMethod.Visibility = Visibility.Hidden;
             ceCreditMethod.Visibility = Visibility.Hidden;
+            lbCheck.Visibility = Visibility.Hidden;
+            lbReceipt.Visibility = Visibility.Hidden;
+            teCheck.Visibility = Visibility.Hidden;
+            teReceipt.Visibility = Visibility.Hidden;
             lbOR.Visibility = Visibility.Hidden;
             //ceGolfCart.Visibility = Visibility.Hidden;
             //ceWaterReconnect.Visibility = Visibility.Hidden;

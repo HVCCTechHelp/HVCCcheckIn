@@ -111,7 +111,7 @@
                                        SearchPanelClearOnClose="False"
 				                       ShowFixedTotalSummary="True" 
                                        ShowTotalSummary="True" 
-                                               HorizontalScrollbarVisibility="Visible"
+                                       HorizontalScrollbarVisibility="Visible"
                                        >
                                     <dxg:TableView.FormatConditions>
                                         <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">

@@ -135,6 +135,20 @@
             }
         }
 
+        private UnmatchedBalance _selectedItem = null;
+        public UnmatchedBalance SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (value != _selectedItem)
+                {
+                    _selectedItem = value;
+                    RaisePropertyChanged("SelectedItem");
+                }
+            }
+        }
+
         #endregion
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
@@ -562,8 +576,12 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Property p = parameter as Property;
-            Host.Execute(HostVerb.Open, "PropertyEdit", p);
+            UnmatchedBalance p = parameter as UnmatchedBalance;
+            Owner owner = new Owner();
+            owner.OwnerID = p.OwnerID;
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "FinancialTransaction", owner);
+
         }
 
         #endregion

@@ -50,7 +50,6 @@ namespace HVCC.Shell.Models
     partial void DeleteNote(Note instance);
     partial void UpdateOwnershipChange(OwnershipChange instance);
     partial void DeleteOwnershipChange(OwnershipChange instance);
-    partial void DeleteFinancialTransaction(FinancialTransaction instance);
     partial void DeleteWaterShutoff(WaterShutoff instance);
     partial void InsertApplicationPermission(ApplicationPermission instance);
     partial void UpdateApplicationPermission(ApplicationPermission instance);
@@ -63,10 +62,11 @@ namespace HVCC.Shell.Models
     partial void DeleteGolfCart(GolfCart instance);
     partial void UpdateFacilityUsage(FacilityUsage instance);
     partial void DeleteFacilityUsage(FacilityUsage instance);
+    partial void DeleteFinancialTransaction(FinancialTransaction instance);
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -167,14 +167,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<FinancialTransaction> FinancialTransactions
-		{
-			get
-			{
-				return this.GetTable<FinancialTransaction>();
-			}
-		}
-		
 		public System.Data.Linq.Table<v_OwnerDetail> v_OwnerDetails
 		{
 			get
@@ -263,6 +255,14 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<FinancialTransaction> FinancialTransactions
+		{
+			get
+			{
+				return this.GetTable<FinancialTransaction>();
+			}
+		}
+		
 		private void UpdateWaterMeterReading(WaterMeterReading obj)
 		{
 			this.usp_UpdateWaterMeterReading(((System.Nullable<int>)(obj.RowID)), ((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.MeterReading)), ((System.Nullable<int>)(obj.Consumption)), ((System.Nullable<System.DateTime>)(obj.ReadingDate)));
@@ -306,18 +306,6 @@ namespace HVCC.Shell.Models
 			obj.RowId = p1.GetValueOrDefault();
 		}
 		
-		private void InsertFinancialTransaction(FinancialTransaction obj)
-		{
-			System.Nullable<int> p1 = obj.RowId;
-			this.usp_InsertFinancialTransaction(((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment, ref p1);
-			obj.RowId = p1.GetValueOrDefault();
-		}
-		
-		private void UpdateFinancialTransaction(FinancialTransaction obj)
-		{
-			this.usp_UpdateFinancialTransaction(((System.Nullable<int>)(obj.RowId)), ((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment);
-		}
-		
 		private void InsertWaterShutoff(WaterShutoff obj)
 		{
 			System.Nullable<int> p1 = obj.RowID;
@@ -352,6 +340,18 @@ namespace HVCC.Shell.Models
 			System.Nullable<int> p1 = obj.RowID;
 			this.usp_InsertFacilityUsage(((System.Nullable<int>)(obj.OwnerID)), ((System.Nullable<int>)(obj.RelationshipId)), ((System.Nullable<int>)(obj.GolfRoundsMember)), ((System.Nullable<int>)(obj.GolfRoundsGuest)), ((System.Nullable<int>)(obj.PoolMember)), ((System.Nullable<int>)(obj.PoolGuest)), ref p1);
 			obj.RowID = p1.GetValueOrDefault();
+		}
+		
+		private void InsertFinancialTransaction(FinancialTransaction obj)
+		{
+			System.Nullable<int> p1 = obj.RowId;
+			this.usp_InsertFinancialTransaction(((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment, obj.CheckNumber, obj.ReceiptNumber, ref p1);
+			obj.RowId = p1.GetValueOrDefault();
+		}
+		
+		private void UpdateFinancialTransaction(FinancialTransaction obj)
+		{
+			this.usp_UpdateFinancialTransaction(((System.Nullable<int>)(obj.RowId)), ((System.Nullable<int>)(obj.OwnerID)), obj.FiscalYear, ((System.Nullable<decimal>)(obj.Balance)), ((System.Nullable<decimal>)(obj.CreditAmount)), ((System.Nullable<decimal>)(obj.DebitAmount)), ((System.Nullable<System.DateTime>)(obj.TransactionDate)), obj.TransactionMethod, obj.TransactionAppliesTo, obj.Comment, obj.CheckNumber, obj.ReceiptNumber);
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -491,14 +491,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertFinancialTransaction")]
-		public int usp_InsertFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYEar", DbType="VarChar(20)")] string fiscalYEar, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="Date")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(50)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, fiscalYEar, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(9)));
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertWaterShutoff")]
 		public int usp_InsertWaterShutoff(
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, 
@@ -602,10 +594,18 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateFinancialTransaction")]
-		public int usp_UpdateFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYear", DbType="VarChar(20)")] string fiscalYear, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="DateTime")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(50)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertFinancialTransaction")]
+		public int usp_InsertFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYEar", DbType="VarChar(20)")] string fiscalYEar, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="Date")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(50)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CheckNumber", DbType="VarChar(20)")] string checkNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ReceiptNumber", DbType="VarChar(20)")] string receiptNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId, ownerID, fiscalYear, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, fiscalYEar, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment, checkNumber, receiptNumber, rowID);
+			rowID = ((System.Nullable<int>)(result.GetParameterValue(11)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateFinancialTransaction")]
+		public int usp_UpdateFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYear", DbType="VarChar(20)")] string fiscalYear, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="DateTime")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(50)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CheckNumber", DbType="VarChar(20)")] string checkNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ReceiptNumber", DbType="VarChar(20)")] string receiptNumber)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId, ownerID, fiscalYear, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment, checkNumber, receiptNumber);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -1931,13 +1931,13 @@ namespace HVCC.Shell.Models
 		
 		private EntitySet<Note> _Notes;
 		
-		private EntitySet<FinancialTransaction> _FinancialTransactions;
-		
 		private EntitySet<WaterShutoff> _WaterShutoffs;
 		
 		private EntitySet<Property> _Properties;
 		
 		private EntitySet<GolfCart> _GolfCarts;
+		
+		private EntitySet<FinancialTransaction> _FinancialTransactions;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1979,10 +1979,10 @@ namespace HVCC.Shell.Models
 		{
 			this._Relationships = new EntitySet<Relationship>(new Action<Relationship>(this.attach_Relationships), new Action<Relationship>(this.detach_Relationships));
 			this._Notes = new EntitySet<Note>(new Action<Note>(this.attach_Notes), new Action<Note>(this.detach_Notes));
-			this._FinancialTransactions = new EntitySet<FinancialTransaction>(new Action<FinancialTransaction>(this.attach_FinancialTransactions), new Action<FinancialTransaction>(this.detach_FinancialTransactions));
 			this._WaterShutoffs = new EntitySet<WaterShutoff>(new Action<WaterShutoff>(this.attach_WaterShutoffs), new Action<WaterShutoff>(this.detach_WaterShutoffs));
 			this._Properties = new EntitySet<Property>(new Action<Property>(this.attach_Properties), new Action<Property>(this.detach_Properties));
 			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
+			this._FinancialTransactions = new EntitySet<FinancialTransaction>(new Action<FinancialTransaction>(this.attach_FinancialTransactions), new Action<FinancialTransaction>(this.detach_FinancialTransactions));
 			OnCreated();
 		}
 		
@@ -2312,19 +2312,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_FinancialTransactions", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<FinancialTransaction> FinancialTransactions
-		{
-			get
-			{
-				return this._FinancialTransactions;
-			}
-			set
-			{
-				this._FinancialTransactions.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_WaterShutoff", Storage="_WaterShutoffs", ThisKey="OwnerID", OtherKey="OwnerID")]
 		public EntitySet<WaterShutoff> WaterShutoffs
 		{
@@ -2361,6 +2348,19 @@ namespace HVCC.Shell.Models
 			set
 			{
 				this._GolfCarts.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_FinancialTransactions", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<FinancialTransaction> FinancialTransactions
+		{
+			get
+			{
+				return this._FinancialTransactions;
+			}
+			set
+			{
+				this._FinancialTransactions.Assign(value);
 			}
 		}
 		
@@ -2408,18 +2408,6 @@ namespace HVCC.Shell.Models
 			entity.Owner = null;
 		}
 		
-		private void attach_FinancialTransactions(FinancialTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_FinancialTransactions(FinancialTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
 		private void attach_WaterShutoffs(WaterShutoff entity)
 		{
 			this.SendPropertyChanging();
@@ -2451,6 +2439,18 @@ namespace HVCC.Shell.Models
 		}
 		
 		private void detach_GolfCarts(GolfCart entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_FinancialTransactions(FinancialTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_FinancialTransactions(FinancialTransaction entity)
 		{
 			this.SendPropertyChanging();
 			entity.Owner = null;
@@ -2885,373 +2885,6 @@ namespace HVCC.Shell.Models
 					this._LastModifiedBy = value;
 					this.SendPropertyChanged("LastModifiedBy");
 					this.OnLastModifiedByChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.FinancialTransactions")]
-	public partial class FinancialTransaction : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RowId;
-		
-		private int _OwnerID;
-		
-		private string _FiscalYear;
-		
-		private decimal _Balance;
-		
-		private System.Nullable<decimal> _CreditAmount;
-		
-		private System.Nullable<decimal> _DebitAmount;
-		
-		private System.DateTime _TransactionDate;
-		
-		private string _TransactionMethod;
-		
-		private string _TransactionAppliesTo;
-		
-		private string _Comment;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastMOdifiedBy;
-		
-		private EntityRef<Owner> _Owner;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRowIdChanging(int value);
-    partial void OnRowIdChanged();
-    partial void OnOwnerIDChanging(int value);
-    partial void OnOwnerIDChanged();
-    partial void OnFiscalYearChanging(string value);
-    partial void OnFiscalYearChanged();
-    partial void OnBalanceChanging(decimal value);
-    partial void OnBalanceChanged();
-    partial void OnCreditAmountChanging(System.Nullable<decimal> value);
-    partial void OnCreditAmountChanged();
-    partial void OnDebitAmountChanging(System.Nullable<decimal> value);
-    partial void OnDebitAmountChanged();
-    partial void OnTransactionDateChanging(System.DateTime value);
-    partial void OnTransactionDateChanged();
-    partial void OnTransactionMethodChanging(string value);
-    partial void OnTransactionMethodChanged();
-    partial void OnTransactionAppliesToChanging(string value);
-    partial void OnTransactionAppliesToChanged();
-    partial void OnCommentChanging(string value);
-    partial void OnCommentChanged();
-    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastModifiedChanged();
-    partial void OnLastMOdifiedByChanging(string value);
-    partial void OnLastMOdifiedByChanged();
-    #endregion
-		
-		public FinancialTransaction()
-		{
-			this._Owner = default(EntityRef<Owner>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RowId
-		{
-			get
-			{
-				return this._RowId;
-			}
-			set
-			{
-				if ((this._RowId != value))
-				{
-					this.OnRowIdChanging(value);
-					this.SendPropertyChanging();
-					this._RowId = value;
-					this.SendPropertyChanged("RowId");
-					this.OnRowIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					if (this._Owner.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._OwnerID = value;
-					this.SendPropertyChanged("OwnerID");
-					this.OnOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FiscalYear", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string FiscalYear
-		{
-			get
-			{
-				return this._FiscalYear;
-			}
-			set
-			{
-				if ((this._FiscalYear != value))
-				{
-					this.OnFiscalYearChanging(value);
-					this.SendPropertyChanging();
-					this._FiscalYear = value;
-					this.SendPropertyChanged("FiscalYear");
-					this.OnFiscalYearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money NOT NULL")]
-		public decimal Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
-			set
-			{
-				if ((this._Balance != value))
-				{
-					this.OnBalanceChanging(value);
-					this.SendPropertyChanging();
-					this._Balance = value;
-					this.SendPropertyChanged("Balance");
-					this.OnBalanceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreditAmount", DbType="Money")]
-		public System.Nullable<decimal> CreditAmount
-		{
-			get
-			{
-				return this._CreditAmount;
-			}
-			set
-			{
-				if ((this._CreditAmount != value))
-				{
-					this.OnCreditAmountChanging(value);
-					this.SendPropertyChanging();
-					this._CreditAmount = value;
-					this.SendPropertyChanged("CreditAmount");
-					this.OnCreditAmountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DebitAmount", DbType="Money")]
-		public System.Nullable<decimal> DebitAmount
-		{
-			get
-			{
-				return this._DebitAmount;
-			}
-			set
-			{
-				if ((this._DebitAmount != value))
-				{
-					this.OnDebitAmountChanging(value);
-					this.SendPropertyChanging();
-					this._DebitAmount = value;
-					this.SendPropertyChanged("DebitAmount");
-					this.OnDebitAmountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionDate", DbType="DateTime NOT NULL")]
-		public System.DateTime TransactionDate
-		{
-			get
-			{
-				return this._TransactionDate;
-			}
-			set
-			{
-				if ((this._TransactionDate != value))
-				{
-					this.OnTransactionDateChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionDate = value;
-					this.SendPropertyChanged("TransactionDate");
-					this.OnTransactionDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionMethod", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string TransactionMethod
-		{
-			get
-			{
-				return this._TransactionMethod;
-			}
-			set
-			{
-				if ((this._TransactionMethod != value))
-				{
-					this.OnTransactionMethodChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionMethod = value;
-					this.SendPropertyChanged("TransactionMethod");
-					this.OnTransactionMethodChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionAppliesTo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string TransactionAppliesTo
-		{
-			get
-			{
-				return this._TransactionAppliesTo;
-			}
-			set
-			{
-				if ((this._TransactionAppliesTo != value))
-				{
-					this.OnTransactionAppliesToChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionAppliesTo = value;
-					this.SendPropertyChanged("TransactionAppliesTo");
-					this.OnTransactionAppliesToChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string Comment
-		{
-			get
-			{
-				return this._Comment;
-			}
-			set
-			{
-				if ((this._Comment != value))
-				{
-					this.OnCommentChanging(value);
-					this.SendPropertyChanging();
-					this._Comment = value;
-					this.SendPropertyChanged("Comment");
-					this.OnCommentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this.OnLastModifiedChanging(value);
-					this.SendPropertyChanging();
-					this._LastModified = value;
-					this.SendPropertyChanged("LastModified");
-					this.OnLastModifiedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastMOdifiedBy", DbType="VarChar(40)")]
-		public string LastMOdifiedBy
-		{
-			get
-			{
-				return this._LastMOdifiedBy;
-			}
-			set
-			{
-				if ((this._LastMOdifiedBy != value))
-				{
-					this.OnLastMOdifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._LastMOdifiedBy = value;
-					this.SendPropertyChanged("LastMOdifiedBy");
-					this.OnLastMOdifiedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
-		public Owner Owner
-		{
-			get
-			{
-				return this._Owner.Entity;
-			}
-			set
-			{
-				Owner previousValue = this._Owner.Entity;
-				if (((previousValue != value) 
-							|| (this._Owner.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Owner.Entity = null;
-						previousValue.FinancialTransactions.Remove(this);
-					}
-					this._Owner.Entity = value;
-					if ((value != null))
-					{
-						value.FinancialTransactions.Add(this);
-						this._OwnerID = value.OwnerID;
-					}
-					else
-					{
-						this._OwnerID = default(int);
-					}
-					this.SendPropertyChanged("Owner");
 				}
 			}
 		}
@@ -7544,6 +7177,421 @@ namespace HVCC.Shell.Models
 					this._LastModifiedBy = value;
 					this.SendPropertyChanged("LastModifiedBy");
 					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.FinancialTransactions")]
+	public partial class FinancialTransaction : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowId;
+		
+		private int _OwnerID;
+		
+		private string _FiscalYear;
+		
+		private decimal _Balance;
+		
+		private System.Nullable<decimal> _CreditAmount;
+		
+		private System.Nullable<decimal> _DebitAmount;
+		
+		private System.DateTime _TransactionDate;
+		
+		private string _TransactionMethod;
+		
+		private string _TransactionAppliesTo;
+		
+		private string _Comment;
+		
+		private string _ReceiptNumber;
+		
+		private string _CheckNumber;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastMOdifiedBy;
+		
+		private EntityRef<Owner> _Owner;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIdChanging(int value);
+    partial void OnRowIdChanged();
+    partial void OnOwnerIDChanging(int value);
+    partial void OnOwnerIDChanged();
+    partial void OnFiscalYearChanging(string value);
+    partial void OnFiscalYearChanged();
+    partial void OnBalanceChanging(decimal value);
+    partial void OnBalanceChanged();
+    partial void OnCreditAmountChanging(System.Nullable<decimal> value);
+    partial void OnCreditAmountChanged();
+    partial void OnDebitAmountChanging(System.Nullable<decimal> value);
+    partial void OnDebitAmountChanged();
+    partial void OnTransactionDateChanging(System.DateTime value);
+    partial void OnTransactionDateChanged();
+    partial void OnTransactionMethodChanging(string value);
+    partial void OnTransactionMethodChanged();
+    partial void OnTransactionAppliesToChanging(string value);
+    partial void OnTransactionAppliesToChanged();
+    partial void OnCommentChanging(string value);
+    partial void OnCommentChanged();
+    partial void OnReceiptNumberChanging(string value);
+    partial void OnReceiptNumberChanged();
+    partial void OnCheckNumberChanging(string value);
+    partial void OnCheckNumberChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastMOdifiedByChanging(string value);
+    partial void OnLastMOdifiedByChanged();
+    #endregion
+		
+		public FinancialTransaction()
+		{
+			this._Owner = default(EntityRef<Owner>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowId
+		{
+			get
+			{
+				return this._RowId;
+			}
+			set
+			{
+				if ((this._RowId != value))
+				{
+					this.OnRowIdChanging(value);
+					this.SendPropertyChanging();
+					this._RowId = value;
+					this.SendPropertyChanged("RowId");
+					this.OnRowIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					if (this._Owner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._OwnerID = value;
+					this.SendPropertyChanged("OwnerID");
+					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FiscalYear", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string FiscalYear
+		{
+			get
+			{
+				return this._FiscalYear;
+			}
+			set
+			{
+				if ((this._FiscalYear != value))
+				{
+					this.OnFiscalYearChanging(value);
+					this.SendPropertyChanging();
+					this._FiscalYear = value;
+					this.SendPropertyChanged("FiscalYear");
+					this.OnFiscalYearChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money NOT NULL")]
+		public decimal Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+			set
+			{
+				if ((this._Balance != value))
+				{
+					this.OnBalanceChanging(value);
+					this.SendPropertyChanging();
+					this._Balance = value;
+					this.SendPropertyChanged("Balance");
+					this.OnBalanceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreditAmount", DbType="Money")]
+		public System.Nullable<decimal> CreditAmount
+		{
+			get
+			{
+				return this._CreditAmount;
+			}
+			set
+			{
+				if ((this._CreditAmount != value))
+				{
+					this.OnCreditAmountChanging(value);
+					this.SendPropertyChanging();
+					this._CreditAmount = value;
+					this.SendPropertyChanged("CreditAmount");
+					this.OnCreditAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DebitAmount", DbType="Money")]
+		public System.Nullable<decimal> DebitAmount
+		{
+			get
+			{
+				return this._DebitAmount;
+			}
+			set
+			{
+				if ((this._DebitAmount != value))
+				{
+					this.OnDebitAmountChanging(value);
+					this.SendPropertyChanging();
+					this._DebitAmount = value;
+					this.SendPropertyChanged("DebitAmount");
+					this.OnDebitAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionDate", DbType="DateTime NOT NULL")]
+		public System.DateTime TransactionDate
+		{
+			get
+			{
+				return this._TransactionDate;
+			}
+			set
+			{
+				if ((this._TransactionDate != value))
+				{
+					this.OnTransactionDateChanging(value);
+					this.SendPropertyChanging();
+					this._TransactionDate = value;
+					this.SendPropertyChanged("TransactionDate");
+					this.OnTransactionDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionMethod", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string TransactionMethod
+		{
+			get
+			{
+				return this._TransactionMethod;
+			}
+			set
+			{
+				if ((this._TransactionMethod != value))
+				{
+					this.OnTransactionMethodChanging(value);
+					this.SendPropertyChanging();
+					this._TransactionMethod = value;
+					this.SendPropertyChanged("TransactionMethod");
+					this.OnTransactionMethodChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransactionAppliesTo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string TransactionAppliesTo
+		{
+			get
+			{
+				return this._TransactionAppliesTo;
+			}
+			set
+			{
+				if ((this._TransactionAppliesTo != value))
+				{
+					this.OnTransactionAppliesToChanging(value);
+					this.SendPropertyChanging();
+					this._TransactionAppliesTo = value;
+					this.SendPropertyChanged("TransactionAppliesTo");
+					this.OnTransactionAppliesToChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string Comment
+		{
+			get
+			{
+				return this._Comment;
+			}
+			set
+			{
+				if ((this._Comment != value))
+				{
+					this.OnCommentChanging(value);
+					this.SendPropertyChanging();
+					this._Comment = value;
+					this.SendPropertyChanged("Comment");
+					this.OnCommentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReceiptNumber", DbType="VarChar(20)")]
+		public string ReceiptNumber
+		{
+			get
+			{
+				return this._ReceiptNumber;
+			}
+			set
+			{
+				if ((this._ReceiptNumber != value))
+				{
+					this.OnReceiptNumberChanging(value);
+					this.SendPropertyChanging();
+					this._ReceiptNumber = value;
+					this.SendPropertyChanged("ReceiptNumber");
+					this.OnReceiptNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CheckNumber", DbType="VarChar(20)")]
+		public string CheckNumber
+		{
+			get
+			{
+				return this._CheckNumber;
+			}
+			set
+			{
+				if ((this._CheckNumber != value))
+				{
+					this.OnCheckNumberChanging(value);
+					this.SendPropertyChanging();
+					this._CheckNumber = value;
+					this.SendPropertyChanged("CheckNumber");
+					this.OnCheckNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastMOdifiedBy", DbType="VarChar(40)")]
+		public string LastMOdifiedBy
+		{
+			get
+			{
+				return this._LastMOdifiedBy;
+			}
+			set
+			{
+				if ((this._LastMOdifiedBy != value))
+				{
+					this.OnLastMOdifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastMOdifiedBy = value;
+					this.SendPropertyChanged("LastMOdifiedBy");
+					this.OnLastMOdifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
+		public Owner Owner
+		{
+			get
+			{
+				return this._Owner.Entity;
+			}
+			set
+			{
+				Owner previousValue = this._Owner.Entity;
+				if (((previousValue != value) 
+							|| (this._Owner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Owner.Entity = null;
+						previousValue.FinancialTransactions.Remove(this);
+					}
+					this._Owner.Entity = value;
+					if ((value != null))
+					{
+						value.FinancialTransactions.Add(this);
+						this._OwnerID = value.OwnerID;
+					}
+					else
+					{
+						this._OwnerID = default(int);
+					}
+					this.SendPropertyChanged("Owner");
 				}
 			}
 		}
