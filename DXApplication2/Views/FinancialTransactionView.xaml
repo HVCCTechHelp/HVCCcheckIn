@@ -80,6 +80,18 @@
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
                         </dxr:RibbonPageGroup>-->
                     <!--</dxr:RibbonPage>-->
+                    
+                    <dxr:RibbonPage x:Name="ownerActions" Caption="Actions">
+
+                        <dxr:RibbonPageGroup Caption="Transaction">
+                            <dxb:BarButtonItem x:Name="bePrint" Content="Re-Print"
+                                               Command="{Binding ReprintCommand}"
+                                               IsEnabled="{Binding ApplPermissions.CanImport}"
+                                               Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
+                                               LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"
+                                               ToolTip="Reprint selected transaction" />
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>
 
                 </dxr:RibbonDefaultPageCategory>
 

@@ -58,7 +58,7 @@
         <elementListCompartment Id="474f2eab-ed85-4b1d-b9eb-83908bfcafd9" absoluteBounds="4.265, 1.335, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.71107085462022 : 4.5689111328125); (4.71107085462022 : 7.02005126953125); (3.75 : 7.02005126953125)]" fixedFrom="Caller" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.71107085462022 : 4.5689111328125); (4.71107085462022 : 7.02005126953125); (3.75 : 7.02005126953125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -71,7 +71,7 @@
         <elementListCompartment Id="85d83370-ff75-4cf4-97b8-91454c11146a" absoluteBounds="0.51500000000000012, 1.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.25 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.25 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />
@@ -191,7 +191,7 @@
         <elementListCompartment Id="47a29bd4-5efe-4c7b-ba2c-fe4077d14e8f" absoluteBounds="4.265, 10.085, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(5.37116042731011 : 4.5689111328125); (5.37116042731011 : 9.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.37116042731011 : 4.5689111328125); (5.37116042731011 : 9.625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
       <nodes>
         <classShapeMoniker Id="0a368953-4678-441c-8f28-f3d71adce9ec" />

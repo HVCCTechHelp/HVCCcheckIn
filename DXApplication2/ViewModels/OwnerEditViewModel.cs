@@ -28,7 +28,11 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
 
+            // This V/VM can be invoked by several different Views. Therefore, we have conditions for
+            // each invocation possibility.  In all cases, the OwnerID value will be set to find the selected
+            // owner record to edit.  Secondarliy, the RelationshipID may be set to set the SelectedRelationship.
             int ownerID = 0;
+            int relationshipID = 0;
             if (parameter is v_OwnerDetail)
             {
                 v_OwnerDetail p = parameter as v_OwnerDetail;
@@ -38,6 +42,12 @@
             {
                 Owner p = parameter as Owner;
                 ownerID = p.OwnerID;
+            }
+            else if (parameter is v_ActiveRelationship)
+            {
+                v_ActiveRelationship p = parameter as v_ActiveRelationship;
+                ownerID = p.OwnerID;
+                relationshipID = p.RelationshipID;
             }
             else if (parameter is v_PropertyDetail)
             {
@@ -60,14 +70,28 @@
                 //// Set the focused row in the Properties grid to the first item.
                 SelectedProperty = Properties[0];
 
-                // Set the focused row in the Relationships grid to the first item in the Owner's
-                // Relationship collection.
+                // Fetch the collection of Relationships for this owner
                 var rList = (from x in this.dc.Relationships
                              where x.OwnerID == SelectedOwner.OwnerID
                              select x);
 
                 Relationships = new ObservableCollection<Relationship>(rList);
-                SelectedRelationship = Relationships[0];
+
+                // Set the focus to either the first relationship in the collection, or to the
+                // RelationshipID if one was passed in.
+                if (0 == relationshipID)
+                {
+                    // Set the focused row in the Relationships grid to the first item in the Owner's
+                    // Relationship collection.
+                    SelectedRelationship = Relationships[0];
+                }
+                else
+                {
+                    Relationship r = (from x in Relationships
+                                      where x.RelationshipID == relationshipID
+                                      select x).FirstOrDefault();
+                    SelectedRelationship = r;
+                }
             }
             catch (Exception ex)
             {

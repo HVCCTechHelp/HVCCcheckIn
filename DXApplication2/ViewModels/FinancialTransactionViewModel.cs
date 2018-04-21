@@ -1152,6 +1152,45 @@
             }
         }
 
+
+        /// <summary>
+        ///  Re-Print Command 
+        /// </summary>
+        private ICommand _rePrintCommand;
+        public ICommand ReprintCommand
+        {
+            get
+            {
+                return _rePrintCommand ?? (_rePrintCommand = new CommandHandlerWparm((object parameter) => RePrintAction(parameter), ApplPermissions.CanImport));
+            }
+        }
+
+        /// <summary>
+        /// Re-Print Transaction Action
+        /// </summary>
+        /// <param name="type"></param>
+        public void RePrintAction(object parameter)
+        {
+            // Get the MVVM binder for this viewmodel.  We need reference to the ViewModel's View
+            // in order to display the transaction receipt.
+            foreach (MvvmBinder m in Host.OpenMvvmBinders)
+            {
+                if (m.ViewModel == this)
+                {
+                    Binder = m;
+                    break;
+                }
+            }
+
+            // Create and display the FinancialTransaction Recepit
+            Reports.TransactionReceipt report = new Reports.TransactionReceipt();
+            report.Parameters["transactionID"].Value = SelectedTransaction.RowId;
+            //string fileName = string.Format(@"D:\Transaction-{0}.PDF", ft.RowId);
+            //report.CreateDocument();
+            //report.ExportToPdf(fileName);
+            PrintHelper.ShowPrintPreview((HVCC.Shell.Views.FinancialTransactionView)Binder.View, report);
+        }
+
         ///// <summary>
         /////  Command Template
         ///// </summary>

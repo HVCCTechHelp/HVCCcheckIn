@@ -111,7 +111,7 @@
         {
             get
             {
-                return _selectedOwner;
+                return _selectedOwner; 
             }
             set
             {
@@ -155,7 +155,7 @@
                                      where x.OwnerID == _selectedRelationship.OwnerID
                                      select x).FirstOrDefault();
                     IsBusy = true;
-                    Host.Execute(HostVerb.Open, "EditOwner", SelectedOwner);
+                    Host.Execute(HostVerb.Open, "EditOwner", _selectedRelationship);
                 }
             }
         }

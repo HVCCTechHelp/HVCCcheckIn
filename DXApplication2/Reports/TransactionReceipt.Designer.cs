@@ -72,11 +72,17 @@
             this.DetailCaptionBackground3 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
             this.transactionID = new DevExpress.XtraReports.Parameters.Parameter();
+            this.xrLabel25 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel26 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel27 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel28,
+            this.xrLabel27,
             this.xrLabel23,
             this.xrLabel21,
             this.xrLabel19,
@@ -98,7 +104,9 @@
             this.xrLabel18,
             this.xrLabel20,
             this.xrLabel22,
-            this.xrLabel24});
+            this.xrLabel24,
+            this.xrLabel25,
+            this.xrLabel26});
             this.Detail.HeightF = 518.75F;
             this.Detail.Name = "Detail";
             this.Detail.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
@@ -484,6 +492,42 @@
             this.transactionID.Type = typeof(int);
             this.transactionID.ValueInfo = "0";
             // 
+            // xrLabel25
+            // 
+            this.xrLabel25.LocationFloat = new DevExpress.Utils.PointFloat(500.576F, 22.99999F);
+            this.xrLabel25.Name = "xrLabel25";
+            this.xrLabel25.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel25.SizeF = new System.Drawing.SizeF(100F, 23F);
+            this.xrLabel25.Text = "Check Number:";
+            // 
+            // xrLabel26
+            // 
+            this.xrLabel26.LocationFloat = new DevExpress.Utils.PointFloat(500.5759F, 45.99997F);
+            this.xrLabel26.Name = "xrLabel26";
+            this.xrLabel26.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel26.SizeF = new System.Drawing.SizeF(100F, 23F);
+            this.xrLabel26.Text = "Receipt Number:";
+            // 
+            // xrLabel27
+            // 
+            this.xrLabel27.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "FinancialTransactions.CheckNumber")});
+            this.xrLabel27.LocationFloat = new DevExpress.Utils.PointFloat(600.5759F, 22.99999F);
+            this.xrLabel27.Name = "xrLabel27";
+            this.xrLabel27.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel27.SizeF = new System.Drawing.SizeF(100F, 23F);
+            this.xrLabel27.Text = "xrLabel27";
+            // 
+            // xrLabel28
+            // 
+            this.xrLabel28.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "FinancialTransactions.ReceiptNumber")});
+            this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(600.5757F, 45.99997F);
+            this.xrLabel28.Name = "xrLabel28";
+            this.xrLabel28.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel28.SizeF = new System.Drawing.SizeF(100F, 23F);
+            this.xrLabel28.Text = "xrLabel28";
+            // 
             // TransactionReceipt
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -554,5 +598,9 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel22;
         private DevExpress.XtraReports.UI.XRLabel xrLabel24;
         private DevExpress.XtraReports.UI.FormattingRule ShowBalanceStatement;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel28;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel27;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel25;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel26;
     }
 }
