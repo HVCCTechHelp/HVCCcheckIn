@@ -464,6 +464,9 @@
         //    MessageBox.Show("Not Implemented", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         //}
 
+
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
@@ -474,13 +477,13 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
             }
         }
 
         public bool CanPrint = true;
         /// <summary>
-        /// Add Cart Command
+        /// Print Command
         /// </summary>
         private ICommand _printCommand;
         public ICommand PrintCommand
@@ -488,7 +491,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
     }

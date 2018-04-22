@@ -165,7 +165,7 @@
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewWater, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/water-spigot.jpg" MouseLeftButtonDown="OnClicked_WellMeterReadings" Width="75" Height="75" ToolTip="Look up Water Well Records"/>
                                             </dxd:LayoutControlItem>
-                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
+                                            <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewProperty, Converter={StaticResource BoolToVis}}">
                                                 <Image  Source="Images/Icons/Report.png" MouseLeftButtonDown="OnClicked_ReportCarousel" Width="75" Height="75" ToolTip="View Reports"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">

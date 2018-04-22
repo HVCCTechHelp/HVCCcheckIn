@@ -133,7 +133,6 @@
                                     <dxlc:LayoutItem>
                                         <dxe:ComboBoxEdit x:Name="ceFiscalYear" Width="150" HorizontalAlignment="Left"
                                                               ItemsSource="{Binding FiscalYears}"
-                                                              SelectedItem="{Binding SelectedNdx}"
                                                               AutoComplete="True" 
                                                               AllowNullInput="False" IsTextEditable="False" 
                                                               ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
@@ -154,11 +153,11 @@
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="550" HorizontalAlignment="Left">
                                         <dxlc:LayoutItem Label="Payment:" x:Name="lbCredit" Margin="50,0,0,10" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teCredit" HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
-                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
-                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
+                                                      Focusable="{Binding IsFocusable, Mode=TwoWay}"
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
@@ -179,11 +178,11 @@
 
                                         <dxlc:LayoutItem Label="Invoice:" x:Name="lbDebit" Margin="57,0,0,10" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teDebit"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
-                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
-                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
+                                                      Focusable="{Binding IsFocusable, Mode=TwoWay}"
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
@@ -205,6 +204,8 @@
                                         <dxlc:LayoutItem>
                                             <dxe:ComboBoxEdit x:Name="ceCreditMethod" Width="150" HorizontalAlignment="Left"
                                                                   Text="{Binding TransactionMethod}"
+                                                                  IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                                  IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                                   AutoComplete="True" 
                                                                   AllowNullInput="False" IsTextEditable="False" 
                                                                   ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
@@ -229,6 +230,8 @@
                                         <dxlc:LayoutItem>
                                             <dxe:ComboBoxEdit x:Name="ceDebitMethod" Width="150" HorizontalAlignment="Left" 
                                                                   Text="{Binding TransactionMethod}"
+                                                                  IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                                  IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                                   AutoComplete="True" 
                                                                   AllowNullInput="False" IsTextEditable="False"
                                                                   ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
@@ -252,11 +255,11 @@
                                     <dxlc:LayoutGroup View="Group" Orientation="Vertical" HorizontalAlignment="Left">
                                         <dxlc:LayoutItem Label="Check#:" x:Name="lbCheck" Margin="50,0,0,5" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teCheck" HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
-                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
-                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
+                                                      Focusable="{Binding IsFocusable, Mode=TwoWay}"
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       ToolTip="Check or Money Order Number"  
@@ -272,11 +275,11 @@
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Label="Receipt#:" x:Name="lbReceipt" Margin="50,0,0,5" HorizontalAlignment="Left">
                                             <dxe:TextEdit x:Name="teReceipt" HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
-                                                      IsReadOnly="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource Invert}}" 
-                                                      Focusable="{Binding ApplPermissions.CanEditOwner}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
+                                                      Focusable="{Binding IsFocusable, Mode=TwoWay}"
                                                       ValidateOnEnterKeyPressed="True"
                                                       ValidateOnTextInput="False"
                                                       ToolTip="Receipt Number" 
@@ -298,7 +301,8 @@
                                     <dxlc:LayoutItem Label="Dues:" Margin="20,0,0,0">
                                         <!--<dxe:CheckEdit x:Name="ceDues" Content="Dues"   Margin="0,0,10,0" IsChecked="{Binding IsDues, Mode=TwoWay}" Unchecked="CheckBox_Click"/>-->
                                         <dxe:TextEdit x:Name="teDues"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -318,7 +322,8 @@
                                     <dxlc:LayoutItem Label="Late Fee:" Margin="20,0,0,0">
                                         <!--<dxe:CheckEdit x:Name="ceLateFee" Content="Late Fee"  Margin="0,0,10,0" IsChecked="{Binding IsLateFee, Mode=TwoWay}" Unchecked="CheckBox_Click"/>-->
                                         <dxe:TextEdit x:Name="teLateFee"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -340,7 +345,8 @@
                                         <dxlc:LayoutItem Label="Golf Cart:" Width="85" Margin="20,0,0,0"/>
                                         <dxlc:LayoutItem Label="Qty: " Width="50" Margin="5,0,0,0">
                                             <dxe:TextEdit x:Name="teQtyCart"  HorizontalAlignment="Right"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="20" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -359,7 +365,7 @@
                                         <dxlc:LayoutItem Width="45" Margin="0,0,0,0">
                                             <dxe:TextEdit x:Name="teCartFee" Margin="0,3,0,0"  HorizontalAlignment="Right"
                                                       EditValue="{Binding SelectedFiscalYear.CartFee}"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="45" 
                                                       IsReadOnly="True"
                                                       Focusable="False"
@@ -373,7 +379,7 @@
                                             <!--<dxe:CheckEdit x:Name="ceGolfCart" Content="Golf Cart" IsChecked="{Binding IsGolfCart, Mode=TwoWay}" Unchecked="CheckBox_Click"/>-->
                                             <dxe:TextEdit x:Name="teGolfCart" Margin="0,3,0,0"  HorizontalAlignment="Right"
                                                       EditValue="{Binding CartAmount}"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
                                                       Width="75" 
                                                       IsReadOnly="True"
                                                       Focusable="False"
@@ -387,7 +393,8 @@
                                     <dxlc:LayoutItem Label="Pool Assessment:" Margin="20,0,0,0">
                                         <!--<dxe:CheckEdit x:Name="cePoolAssessment" Content="Pool Assessment"  Margin="0,0,10,0" IsChecked="{Binding IsPoolAssessment, Mode=TwoWay}" Unchecked="CheckBox_Click"/>-->
                                         <dxe:TextEdit x:Name="tePoolAssmnt"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -406,7 +413,8 @@
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutItem Label="Water Reconnect:" Margin="20,0,0,0">
                                         <dxe:TextEdit x:Name="teReconnect"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -425,7 +433,8 @@
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutItem Label="Lien Fee:" Margin="20,0,0,0">
                                         <dxe:TextEdit x:Name="teLien"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"
@@ -444,7 +453,8 @@
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutItem Label="Other:" Margin="20,0,0,0">
                                         <dxe:TextEdit x:Name="teOther"  HorizontalAlignment="Left"
-                                                      IsEnabled="True"
+                                                      IsEnabled="{Binding IsFocusable, Mode=TwoWay}"
+                                                      IsReadOnly="{Binding IsFocusable, Mode=TwoWay, Converter={StaticResource InverseBool}}"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
                                                       ValidateOnEnterKeyPressed="True"

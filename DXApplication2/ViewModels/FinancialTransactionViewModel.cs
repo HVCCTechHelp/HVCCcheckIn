@@ -116,6 +116,20 @@
             }
         }
 
+        private bool _isFocusable = false;
+        public bool IsFocusable
+        {
+            get { return _isFocusable; }
+            set
+            {
+                if (value != _isFocusable)
+                {
+                    _isFocusable = value;
+                    RaisePropertyChanged("IsFocusable");
+                }
+            }
+        }
+
         public ObservableCollection<Season> Seasons
         {
             get
@@ -156,6 +170,7 @@
 
                     DuesNullText = string.Format("${0:#.00}", SelectedFiscalYear.AnnualDues);
                     RaisePropertyChanged("FiscalYear");
+                    IsFocusable = true;
                 }
             }
         }

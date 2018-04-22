@@ -127,6 +127,7 @@
                     return false;
                 }
                 Caption = caption[0].TrimEnd(' ') + "*";
+                CanSaveExecute = true;
                 return true;
             }
             set { }
@@ -811,7 +812,7 @@
     {
 
         /// <summary>
-        /// Print Command
+        /// CheckIn Command
         /// </summary>
         private ICommand _checkInCommand;
         public ICommand CheckInCommand
