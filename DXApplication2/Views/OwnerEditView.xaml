@@ -26,9 +26,8 @@
              xmlns:validation="clr-namespace:HVCC.Shell.Validation"
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="900"
-             Loaded="EditOwner_Loaded"
+             mc:Ignorable="d"
+             Loaded="EditOwner_Loaded" Height="930.5" Width="1161"
              >
 
     <UserControl.Resources>
@@ -177,9 +176,9 @@
                           Width="Auto">
 
                     <dxlc:LayoutGroup Orientation="Horizontal" View="Group">
-                        <dxlc:LayoutGroup Orientation="Vertical">
+                        <dxlc:LayoutGroup Orientation="Vertical" Width="700">
                             <dxlc:LayoutGroup View="GroupBox" Header="Owner Information" 
-                              Width="800" 
+                              Width="700" Height="220"
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
                               Visibility="{Binding ApplPermissions.CanViewOwner, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
@@ -335,12 +334,12 @@
                             </dxlc:LayoutGroup>
 
                             <dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader, Mode=OneWay}"
-                              Width="800" Height="Auto" 
+                              Width="700" Height="200" 
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
                               Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay, Converter={StaticResource BoolToVis}}"
-                              IsCollapsed="True"
                               IsCollapsible="True"
+                              IsCollapsed="True"
                               Orientation="Vertical"
                               >
                                 <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}">
@@ -371,7 +370,7 @@
 
                         <dxlc:LayoutGroup Orientation="Vertical">
                             <dxlc:LayoutGroup View="GroupBox" Header="Properties" 
-                              Height="175" Width="300" 
+                              Height="220" Width="400" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
                               IsCollapsible="True" 
@@ -389,7 +388,7 @@
                                                 <dxg:TableView x:Name="tableViewProperties"  
                                                            AllowPerPixelScrolling="True" 
                                                            AutoWidth="True" 
-                                                           Height="100"
+                                                           Height="95"
                                                            NavigationStyle="Row" 
                                                            ShowGroupPanel="False"
                                                            >
@@ -415,11 +414,37 @@
                                             </dxg:GridControl.Columns>
                                         </dxg:GridControl>
                                     </dxlc:LayoutItem >
+
+                                    <dxlc:LayoutItem x:Name="lbPropUsage"  Margin="0,0,0,0" HorizontalAlignment="Left">
+                                        <Label FontWeight="Bold" >Property Usage:</Label>
+                                    </dxlc:LayoutItem>
+                                    <dxlc:LayoutGroup Orientation="Horizontal" >
+                                        <dxlc:LayoutItem Label="Primary Res:">
+                                          <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsPrimaryRes, Mode=TwoWay}"/>  
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Weekend:">
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsWeekend, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Seasonal:">
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsSeasonal, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+                                    <dxlc:LayoutGroup Orientation="Horizontal" >
+                                        <dxlc:LayoutItem Label="Rental:">
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsRental, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="RV Lot:">
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsRVlot, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Empty Lot:">
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsEmptyLot, Mode=TwoWay}"/>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
                                 </dxlc:LayoutGroup>
 
                             </dxlc:LayoutGroup>
                             <dxlc:LayoutGroup View="GroupBox" Header="Financials" 
-                              Height="200" Width="300" 
+                              Height="200" Width="400" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
                               Visibility="{Binding ApplPermissions.CanEditOwner, Converter={StaticResource BoolToVis}}"
@@ -525,7 +550,7 @@
 
 
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" x:Name="lgCheckIn">
-                        <dxlc:LayoutGroup View="GroupBox" Header="Check-In" Margin="400,0,0,0"
+                        <dxlc:LayoutGroup View="GroupBox" Header="Check-In" Margin="400,0,0,0" Height="145"
                               Visibility="{Binding ApplPermissions.CanCheckIn, Mode=OneWay, Converter={StaticResource BoolToVis}}"
                               VerticalAlignment="Top" 
                               Orientation="Vertical"
@@ -625,7 +650,7 @@
                             </dxlc:LayoutGroup>
                         </dxlc:LayoutGroup>
 
-                        <dxlc:LayoutGroup View="GroupBox" Header="Golf Cart" x:Name="lgGolfCart" Width="150"  
+                        <dxlc:LayoutGroup View="GroupBox" Header="Golf Cart" x:Name="lgGolfCart" Height="145" Width="150"  
                                           Orientation="Vertical"
                                           HorizontalAlignment="Left"
                                           IsCollapsible="True" 
@@ -770,7 +795,7 @@
                                 <dxmvvm:Interaction.Behaviors>
                                     <dxmvvm:EventToCommand EventName="Drop" Command="{Binding DataContext.DropCommand}" PassEventArgsToCommand="True"/>
                                 </dxmvvm:Interaction.Behaviors>
-                                
+
                                 <dxe:ImageEdit.MenuTemplate>
                                     <ControlTemplate>
                                         <StackPanel Orientation="Horizontal">

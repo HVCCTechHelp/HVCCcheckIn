@@ -237,7 +237,7 @@
                             where x.OwnerID == SelectedOwner.OwnerID
                             select x);
 
-                ObservableCollection < FinancialTransaction > ftCollection = new ObservableCollection<FinancialTransaction>(list);
+                ObservableCollection<FinancialTransaction> ftCollection = new ObservableCollection<FinancialTransaction>(list);
                 AccountBalance = ftCollection[ftCollection.Count() - 1].Balance;
                 return ftCollection;
             }
