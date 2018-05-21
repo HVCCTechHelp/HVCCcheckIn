@@ -918,27 +918,27 @@
                             r.IsPool = false;
                             r.IsGolf = false;
                         }
-
-                        // If there are guests of the members, add them last.
-                        if (0 < this.SelectedProperty.PoolGuests || 0 < this.SelectedProperty.GolfGuests)
-                        {
-                            Relationship guest = (from q in this.dc.Relationships
-                                                  where q.RelationToOwner == "Guest"
-                                                  select q).FirstOrDefault();
-
-                            FacilityUsage gUsage = new FacilityUsage();
-                            gUsage.OwnerID = SelectedOwner.OwnerID;
-                            gUsage.RelationshipId = guest.RelationshipID;
-                            gUsage.Date = DateTime.Now;
-                            gUsage.GolfRoundsMember = 0;
-                            gUsage.PoolMember = 0;
-                            gUsage.GolfRoundsGuest = SelectedProperty.GolfGuests;
-                            gUsage.PoolGuest = SelectedProperty.PoolGuests;
-
-                            dc.FacilityUsages.InsertOnSubmit(gUsage);
-                        }
-
                     }
+
+                    // If there are guests of the members, add them last.
+                    if (0 < this.SelectedOwner.PoolGuests || 0 < this.SelectedOwner.GolfGuests)
+                    {
+                        Relationship guest = (from q in this.dc.Relationships
+                                              where q.RelationToOwner == "Guest"
+                                              select q).FirstOrDefault();
+
+                        FacilityUsage gUsage = new FacilityUsage();
+                        gUsage.OwnerID = SelectedOwner.OwnerID;
+                        gUsage.RelationshipId = guest.RelationshipID;
+                        gUsage.Date = DateTime.Now;
+                        gUsage.GolfRoundsMember = 0;
+                        gUsage.PoolMember = 0;
+                        gUsage.GolfRoundsGuest = SelectedOwner.GolfGuests;
+                        gUsage.PoolGuest = SelectedOwner.PoolGuests;
+
+                        dc.FacilityUsages.InsertOnSubmit(gUsage);
+                    }
+
                     ChangeSet cs = dc.GetChangeSet();
                     dc.SubmitChanges();
                     MessageBox.Show("Check In Complete");

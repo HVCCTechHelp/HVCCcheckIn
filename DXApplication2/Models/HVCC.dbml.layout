@@ -156,42 +156,42 @@
         <elementListCompartment Id="6d92e4fc-41d6-4626-9bf3-c3c1fb77d891" absoluteBounds="4.515, 1.335, 1.9700000000000002, 4.2877197265625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.5 : 4.624208984375); (3.15625 : 4.624208984375); (3.15625 : 5.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 4.624208984375); (3.15625 : 4.624208984375); (3.15625 : 5.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Relationship" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="bc038fc0-9f9c-4b67-bc25-deb6d23913df" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.5 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="382b4c1b-b026-4ce0-bc0e-a7a2e1b029c8" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.5 : 4.73635986328125); (9.375 : 4.73635986328125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(6.5 : 4.73635986328125); (9.375 : 4.73635986328125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_WaterShutoff" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="179c00fd-69ba-45a1-be40-2af6741f1d14" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.5 : 2.28125); (13.75 : 2.28125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(6.5 : 2.28125); (13.75 : 2.28125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Property" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="20e64093-3627-49c0-8d4c-072b05295044" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.40625 : 5.7227197265625); (6.40625 : 8.21875); (6.875 : 8.21875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(6.40625 : 5.7227197265625); (6.40625 : 8.21875); (6.875 : 8.21875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.375 : 5.7227197265625); (5.375 : 9.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.375 : 5.7227197265625); (5.375 : 9.625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
