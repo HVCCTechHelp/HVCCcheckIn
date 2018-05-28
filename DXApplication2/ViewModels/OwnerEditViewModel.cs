@@ -960,10 +960,10 @@
             finally
             {
                 IsCheckinEnabled = false;
-                this.SelectedProperty.PoolMembers = 0;
-                this.SelectedProperty.PoolGuests = 0;
-                this.SelectedProperty.GolfMembers = 0;
-                this.SelectedProperty.GolfGuests = 0;
+                this.SelectedOwner.PoolMembers = 0;
+                this.SelectedOwner.PoolGuests = 0;
+                this.SelectedOwner.GolfMembers = 0;
+                this.SelectedOwner.GolfGuests = 0;
 
                 Host.Execute(HostVerb.Close, this.Caption);
             }

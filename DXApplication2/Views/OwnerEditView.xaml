@@ -580,7 +580,7 @@
                                             </dxe:SpinEdit>
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Width="50" Height="25">
-                                            <dxe:SpinEdit x:Name="sePoolGuests" EditValue="{Binding SelectedOwner.PoolGuests, Mode=TwoWay}" Width="50"
+                                            <dxe:SpinEdit x:Name="sePoolGuests" Value="{Binding SelectedOwner.PoolGuests, Mode=TwoWay}" Width="50"
                                       MinValue="0"
                                       MaxValue="100"
                                       IsFloatValue="False"
