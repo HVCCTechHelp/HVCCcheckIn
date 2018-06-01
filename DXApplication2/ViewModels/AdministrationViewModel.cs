@@ -177,7 +177,7 @@
                 string[] strings = SelectedSeason.TimePeriod.Split('-');
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
-                DateTime startDate = new DateTime(yyyy, 6, 1, 0, 0, 0);
+                DateTime startDate = new DateTime(yyyy, 5, 31, 0, 0, 0);
                 DateTime endDate = new DateTime(yyyy, 6, 7, 0, 0, 0);
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
@@ -276,52 +276,52 @@
             // Check to see if there is a WaterShutoff record for the Owner.  If there
             // is not, we will generate one here.  If there is, it is updated to reflect the
             // current past due status.
-            if (comment.Contains("30")
-                || comment.Contains("60")
-                || comment.Contains("90"))
-            {
-                WaterShutoff wsOff = (from x in dc.WaterShutoffs
-                                      where x.OwnerID == selectedOwner.OwnerID
-                                      && x.IsResolved == false
-                                      select x).FirstOrDefault();
+            //if (comment.Contains("30")
+            //    || comment.Contains("60")
+            //    || comment.Contains("90"))
+            //{
+            //    WaterShutoff wsOff = (from x in dc.WaterShutoffs
+            //                          where x.OwnerID == selectedOwner.OwnerID
+            //                          && x.IsResolved == false
+            //                          select x).FirstOrDefault();
 
-                // No WaterShutoff record found, so we will create one.
-                if (null == wsOff)
-                {
-                    WaterShutoff waterShutoff = new WaterShutoff();
-                    waterShutoff.OwnerID = selectedOwner.OwnerID;
-                    if (comment.Contains("30"))
-                    {
-                        waterShutoff.IsLate30 = true;
-                        waterShutoff.FirstNotificationDate = DateTime.Now;
-                        this.dc.WaterShutoffs.InsertOnSubmit(waterShutoff);
-                    }
-                }
-                // There is an existing record, so it needs to be updated.....
-                else
-                {
-                    if (comment.Contains("60"))
-                    {
-                        wsOff.IsLate60 = true;
-                        wsOff.IsMemberSuspended = true;
-                        wsOff.SuspensionDate = DateTime.Now;
-                        wsOff.SecondNotificationDate = DateTime.Now;
-                    }
-                    else
-                    {
-                        wsOff.IsLate90 = true;
-                        if (!wsOff.IsMemberSuspended)
-                        {
-                            wsOff.IsMemberSuspended = true;
-                            wsOff.SuspensionDate = DateTime.Now;
-                        }
-                        wsOff.IsShutoffNoticeIssued = true;
-                        wsOff.ShutoffNoticeIssuedDate = DateTime.Now;
-                    }
-                }
-                ChangeSet cs = dc.GetChangeSet();
-                dc.SubmitChanges();
-            }
+            //    // No WaterShutoff record found, so we will create one.
+            //    if (null == wsOff)
+            //    {
+            //        WaterShutoff waterShutoff = new WaterShutoff();
+            //        waterShutoff.OwnerID = selectedOwner.OwnerID;
+            //        if (comment.Contains("30"))
+            //        {
+            //            waterShutoff.IsLate30 = true;
+            //            waterShutoff.FirstNotificationDate = DateTime.Now;
+            //            this.dc.WaterShutoffs.InsertOnSubmit(waterShutoff);
+            //        }
+            //    }
+            //    // There is an existing record, so it needs to be updated.....
+            //    else
+            //    {
+            //        if (comment.Contains("60"))
+            //        {
+            //            wsOff.IsLate60 = true;
+            //            wsOff.IsMemberSuspended = true;
+            //            wsOff.SuspensionDate = DateTime.Now;
+            //            wsOff.SecondNotificationDate = DateTime.Now;
+            //        }
+            //        else
+            //        {
+            //            wsOff.IsLate90 = true;
+            //            if (!wsOff.IsMemberSuspended)
+            //            {
+            //                wsOff.IsMemberSuspended = true;
+            //                wsOff.SuspensionDate = DateTime.Now;
+            //            }
+            //            wsOff.IsShutoffNoticeIssued = true;
+            //            wsOff.ShutoffNoticeIssuedDate = DateTime.Now;
+            //        }
+            //    }
+            //    ChangeSet cs = dc.GetChangeSet();
+            //    dc.SubmitChanges();
+            //}
         }
     }
 
@@ -591,28 +591,40 @@
             }
             else
             {
+                IsBusy = true;
+
+                // Get the list of Owners who are now 30 days late paying dues.  If they owe
+                // $100 or less, we let them go for now.
                 var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 0
+                            where x.Balance > (CurrentSeason.AnnualDues - 100.00m)
                             select x);
+
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
                     Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == x.OwnerID
+                                   where x.OwnerID == ownerDetail.OwnerID
                                    select x).FirstOrDefault();
 
                     StringBuilder sb = new StringBuilder();
-                    int propertyCount = owner.Properties.Count();
-                    decimal amount = 20.00m * propertyCount;
+                    decimal amount = 20.00m;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+
+                    // If they haven't paid their assessment.....
                     //if (assessment == true)
                     //{
                     //    amount += SelectedSeason.AssessmentAmount * propertyCount;
                     //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
                     //}
 
-                    string note = String.Format("30 Day Late Fee of {0} for {1} property/ies applied", amount.ToString("C", CultureInfo.CurrentCulture), propertyCount);
+                    string note = String.Format("30 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     AddNote(owner, note);
                     GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 30 days late");
+                    Late30Day late30 = new Late30Day();
+                    late30.OwnerID = ownerDetail.OwnerID;
+                    late30.MailTo = ownerDetail.MailTo;
+                    late30.Season = CurrentSeason.TimePeriod;
+                    dc.Late30Days.InsertOnSubmit(late30);
+                    
                     ChangeSet cs = dc.GetChangeSet();
                     this.dc.SubmitChanges();
 
@@ -628,6 +640,8 @@
                 this.dc.SubmitChanges();
                 MessageBox.Show("Fees have been applied");
             }
+
+            IsBusy = false;
         }
 
         /// <summary>
@@ -654,18 +668,19 @@
             }
             else
             {
+                IsBusy = true;
+
                 var list = (from x in this.dc.v_OwnerDetails
                             where x.Balance > 0
                             select x);
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
                     Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == x.OwnerID
+                                   where x.OwnerID == ownerDetail.OwnerID
                                    select x).FirstOrDefault();
 
                     StringBuilder sb = new StringBuilder();
-                    int propertyCount = owner.Properties.Count();
-                    decimal amount = 20.00m * propertyCount;
+                    decimal amount = 20.00m;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
                     //if (assessment == true)
                     //{
@@ -673,9 +688,14 @@
                     //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
                     //}
 
-                    string note = String.Format("60 Day Late Fee of {0} for {1} property/ies applied", amount.ToString("C", CultureInfo.CurrentCulture), propertyCount);
+                    string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     AddNote(owner, note);
                     GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 60 days late");
+                    Late60Day late60 = new Late60Day();
+                    late60.OwnerID = ownerDetail.OwnerID;
+                    late60.Season = CurrentSeason.TimePeriod;
+                    dc.Late60Days.InsertOnSubmit(late60);
+
                     ChangeSet cs = dc.GetChangeSet();
                     this.dc.SubmitChanges();
 
@@ -686,6 +706,8 @@
                     report.CreateDocument();
                     report.ExportToPdf(fileName);
                 }
+
+                IsBusy = false;
 
                 SelectedSeason.IsLate60Applied = true;
                 this.dc.SubmitChanges();
@@ -717,18 +739,19 @@
             }
             else
             {
+                IsBusy = true;
+
                 var list = (from x in this.dc.v_OwnerDetails
                             where x.Balance > 0
                             select x);
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
                     Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == x.OwnerID
+                                   where x.OwnerID == ownerDetail.OwnerID
                                    select x).FirstOrDefault();
 
                     StringBuilder sb = new StringBuilder();
-                    int propertyCount = owner.Properties.Count();
-                    decimal amount = 20.00m * propertyCount;
+                    decimal amount = 20.00m;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
                     //if (assessment == true)
                     //{
@@ -736,9 +759,14 @@
                     //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
                     //}
 
-                    string note = String.Format("90 Day Late Fee of {0} for {1} property/ies applied", amount.ToString("C", CultureInfo.CurrentCulture), propertyCount);
+                    string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     AddNote(owner, note);
                     GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    Late90Day late90 = new Late90Day();
+                    late90.OwnerID = ownerDetail.OwnerID;
+                    late90.Season = CurrentSeason.TimePeriod;
+                    dc.Late90Days.InsertOnSubmit(late90);
+
                     ChangeSet cs = dc.GetChangeSet();
                     this.dc.SubmitChanges();
 
@@ -749,6 +777,7 @@
                     report.CreateDocument();
                     report.ExportToPdf(fileName);
                 }
+                IsBusy = false;
 
                 SelectedSeason.IsLate90Applied = true;
                 this.dc.SubmitChanges();

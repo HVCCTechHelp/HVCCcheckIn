@@ -224,7 +224,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply30DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding Apply30DayCommand}"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate30DaysCommand}"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>
@@ -232,7 +232,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply60DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding Apply60DayCommand}"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate60DaysCommand}"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>
@@ -240,7 +240,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply90DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding Apply90DayCommand}"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate90DayCommand}"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>

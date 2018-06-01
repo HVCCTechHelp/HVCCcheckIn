@@ -525,6 +525,9 @@
       <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
       <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
       <Association Name="Owner_FinancialTransaction" Member="FinancialTransactions" ThisKey="OwnerID" OtherKey="OwnerID" Type="FinancialTransaction" />
+      <Association Name="Owner_Late90Day" Member="Late90Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late90Day" />
+      <Association Name="Owner_Late60Day" Member="Late60Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late60Day" />
+      <Association Name="Owner_Late30Day" Member="Late30Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late30Day" />
     </Type>
     <InsertFunction FunctionId="FunctionId14">
       <Argument Parameter="customer" Member="Customer" />
@@ -568,6 +571,53 @@
       <Argument Parameter="isRVlot" Member="IsRVlot" />
       <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
     </UpdateFunction>
+  </Table>
+  <Table Name="dbo.Late90Days" Member="Late90Days">
+    <Type Name="Late90Day">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Season" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Late90Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId16">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="season" Member="Season" />
+      <Argument Parameter="rowID" Member="RowId" />
+    </InsertFunction>
+  </Table>
+  <Table Name="dbo.Late60Days" Member="Late60Days">
+    <Type Name="Late60Day">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Season" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Late60Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId17">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="season" Member="Season" />
+      <Argument Parameter="rowID" Member="RowId" />
+    </InsertFunction>
+  </Table>
+  <Table Name="dbo.Late30Days" Member="Late30Days">
+    <Type Name="Late30Day">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Season" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Late30Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId18">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="mailTo" Member="MailTo" />
+      <Argument Parameter="season" Member="Season" />
+      <Argument Parameter="rowID" Member="RowId" />
+    </InsertFunction>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
@@ -900,6 +950,25 @@
     <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId16" Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId17" Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId18" Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
   <Function Id="FunctionId15" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
