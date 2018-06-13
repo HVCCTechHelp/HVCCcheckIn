@@ -293,6 +293,14 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<v_WaterMeterReading> v_WaterMeterReadings
+		{
+			get
+			{
+				return this.GetTable<v_WaterMeterReading>();
+			}
+		}
+		
 		private void UpdateWaterMeterReading(WaterMeterReading obj)
 		{
 			this.usp_UpdateWaterMeterReading(((System.Nullable<int>)(obj.RowID)), ((System.Nullable<int>)(obj.PropertyID)), ((System.Nullable<int>)(obj.MeterReading)), ((System.Nullable<int>)(obj.Consumption)), ((System.Nullable<System.DateTime>)(obj.ReadingDate)));
@@ -8575,6 +8583,159 @@ namespace HVCC.Shell.Models
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_WaterMeterReadings")]
+	public partial class v_WaterMeterReading
+	{
+		
+		private int _PropertyID;
+		
+		private System.Nullable<int> _OwnerID;
+		
+		private string _Customer;
+		
+		private string _PhysicalAddress;
+		
+		private System.Nullable<System.DateTime> _ReadingDate;
+		
+		private System.Nullable<int> _MeterReading;
+		
+		private System.Nullable<int> _Consumption;
+		
+		private int _RowID;
+		
+		public v_WaterMeterReading()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					this._PropertyID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int")]
+		public System.Nullable<int> OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50)")]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhysicalAddress", DbType="VarChar(50)")]
+		public string PhysicalAddress
+		{
+			get
+			{
+				return this._PhysicalAddress;
+			}
+			set
+			{
+				if ((this._PhysicalAddress != value))
+				{
+					this._PhysicalAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReadingDate", DbType="Date")]
+		public System.Nullable<System.DateTime> ReadingDate
+		{
+			get
+			{
+				return this._ReadingDate;
+			}
+			set
+			{
+				if ((this._ReadingDate != value))
+				{
+					this._ReadingDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeterReading", DbType="Int")]
+		public System.Nullable<int> MeterReading
+		{
+			get
+			{
+				return this._MeterReading;
+			}
+			set
+			{
+				if ((this._MeterReading != value))
+				{
+					this._MeterReading = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Consumption", DbType="Int")]
+		public System.Nullable<int> Consumption
+		{
+			get
+			{
+				return this._Consumption;
+			}
+			set
+			{
+				if ((this._Consumption != value))
+				{
+					this._Consumption = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", DbType="Int NOT NULL")]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this._RowID = value;
+				}
 			}
 		}
 	}

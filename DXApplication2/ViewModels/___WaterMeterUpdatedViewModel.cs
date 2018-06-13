@@ -150,7 +150,7 @@
         {
             // Since the WaterMeterReading VM is virtual, we copy it back to the main (Properties) VM.
             // This updates, or copies over, changes a user has made to VM properties of the SelectedProperty
-            this.SelectedProperty = waterSystemViewModel.SelectedProperty;
+            //this.SelectedProperty = waterSystemViewModel.SelectedProperty;
 
             // However, the MeterReadings are stored in a separate collection, so we have to iterate
             // over them and add new items to the PropertiesVM in order for them to be registered

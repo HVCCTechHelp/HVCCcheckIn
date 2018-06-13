@@ -624,7 +624,7 @@
                     late30.MailTo = ownerDetail.MailTo;
                     late30.Season = CurrentSeason.TimePeriod;
                     dc.Late30Days.InsertOnSubmit(late30);
-                    
+
                     ChangeSet cs = dc.GetChangeSet();
                     this.dc.SubmitChanges();
 

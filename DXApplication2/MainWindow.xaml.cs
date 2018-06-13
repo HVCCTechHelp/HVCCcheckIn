@@ -113,6 +113,7 @@
                     // property, relationship, and water share a symbiotic data relationship, if anyone of the property related
                     // documents panel data change, we update them all.  This leaves the Golf Cart panel as a standalone. Therefore,
                     // the logic has to account for the combinations of data changes.
+                    case "Caption":
                     case "DataChanged":
                         foreach (IMvvmBinder binder in Host.Instance.OpenMvvmBinders)
                         {

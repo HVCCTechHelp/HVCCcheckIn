@@ -7,6 +7,7 @@
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              mc:Ignorable="d" 
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"    
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
@@ -215,7 +216,7 @@
                 </dxlc:LayoutGroup>
             </dxlc:LayoutGroup>
 
-            <dxlc:LayoutGroup View="GroupBox" Header="Meter Reading History" Width="500" 
+            <dxlc:LayoutGroup View="GroupBox" Header="Meter Reading History" Width="800" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
                               IsCollapsible="True" 
@@ -224,42 +225,62 @@
                               >
                 <dxlc:LayoutItem Label="Meter Readings: " >
                     <dxg:GridControl AutoPopulateColumns="False" 
-                                             IsEnabled="{Binding ApplPermissions.CanEditWater}"
-                                             ItemsSource="{Binding MeterReadings}"
+                                     IsEnabled="{Binding ApplPermissions.CanEditWater}"
+                                     ItemsSource="{Binding MeterReadings}"
+                                     SelectedItem="{Binding SelectedMeterReading}"
                                              >
                         <dxg:GridControl.View>
                             <dxg:TableView x:Name="tableViewDetail"  
                                                AllowEditing="{Binding ApplPermissions.CanEditWater}"
-                                               AllowColumnFiltering="True" 
+                                               AllowColumnFiltering="False" 
                                                AllowGrouping="False"
                                                ShowGroupPanel="False"
                                                AllowPerPixelScrolling="True" 
-                                               NavigationStyle="Cell" 
                                                AutoWidth="True" 
-                                               Width="250"
-                                               Height="150"
+                                               Width="750"
+                                               Height="350"
                                                NewItemRowPosition="Top"
-                                               ValidateRow="tableViewDetail_ValidateRow"
+                                               NavigationStyle="Cell" 
+                                               CellValueChanging="tableViewDetail_CellValueChanging"
                                                RowUpdated="tableViewDetail_RowUpdated"
                                                RowCanceled="tableViewDetail_RowCanceled"
                                         >
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand EventName="ValidateRow" Command="{Binding RowUpdatedCommand}" PassEventArgsToCommand="True"/>
+                                </dxmvvm:Interaction.Behaviors>
+                                <!--ValidateRow="tableViewDetail_ValidateRow"-->
+
+
+                                <dxg:TableView.RowCellMenuCustomizations>
+                                    <!--<dxb:BarButtonItem x:Name="editRowItem"
+                                                       Content="Add"
+                                                       Glyph="{dx:DXImage Image=Apply_16x16.png}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanEditRelationship, Mode=TwoWay}"
+                                                       Command="{Binding DataContext.EditRelationshipCommand, ElementName=WaterMeterEdit}"
+                                                       CommandParameter="{Binding DataContext.SelectedMeterReading, ElementName=WaterMeterEdit}"
+                                                       />-->
+                                    <dxb:BarButtonItem x:Name="removeRowItem"
+                                                       Content="Remove"
+                                                       Glyph="{dx:DXImage Image=Delete_16x16.png}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanEditWater}"
+                                                       Command="{Binding DataContext.RemoveReadingCommand, ElementName=WaterMeterEdit}"
+                                                       CommandParameter="{Binding DataContext.SelectedMeterReading, ElementName=WaterMeterEdit}"
+                                        />
+                                    <!--NOTE: The 'ElementName' of the BarButtonItem MUST match the x:Name of the View-->
+                                </dxg:TableView.RowCellMenuCustomizations>
                             </dxg:TableView>
                         </dxg:GridControl.View>
                         <!-- columns of the detail grid -->
                         <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="ReadingDate" Header="Date" Width="75" SortOrder="Descending" SortIndex="0" IsEnabled="True"/>
-                            <dxg:GridColumn FieldName="MeterReading" Header="Reading" Width="75" >
+                            <dxg:GridColumn FieldName="ReadingDate" Header="Date" SortOrder="Descending" SortIndex="0" ReadOnly="True" />
+                            <dxg:GridColumn FieldName="MeterReading" Header="Reading" >
                                 <dxg:GridColumn.EditSettings>
                                     <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="d">
                                     </dxe:TextEditSettings>
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Consumption" Header="Usage" Width="75" ReadOnly="True" IsEnabled="False">
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="d">
-                                    </dxe:TextEditSettings>
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Consumption" Header="Consumption" ReadOnly="True"/>
+                            <dxg:GridColumn FieldName="Null" Header=" " ReadOnly="True"/>
                         </dxg:GridControl.Columns>
                     </dxg:GridControl>
                 </dxlc:LayoutItem>

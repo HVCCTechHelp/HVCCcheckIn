@@ -30,13 +30,6 @@
             PropertiesList = GetPropertiesList();
         }
 
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
-        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
-        #endregion
         int RowNum;
         public enum Column : int
         {
@@ -91,8 +84,8 @@
         /// <summary>
         /// Collection of properties
         /// </summary>
-        private ObservableCollection<Property> _propertiesList = null;
-        public ObservableCollection<Property> PropertiesList
+        private ObservableCollection<v_WaterMeterReading> _propertiesList = null;
+        public ObservableCollection<v_WaterMeterReading> PropertiesList
         {
             get
             {
@@ -112,8 +105,8 @@
         /// <summary>
         /// Currently selected property from a property grid view
         /// </summary>
-        private Property _selectedProperty = null;
-        public Property SelectedProperty
+        private v_WaterMeterReading _selectedProperty = null;
+        public v_WaterMeterReading SelectedProperty
         {
             get
             {
@@ -153,13 +146,15 @@
         /// Queries the database to get the current list of property records
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Property> GetPropertiesList()
+        private ObservableCollection<v_WaterMeterReading> GetPropertiesList()
         {
             try
             {
-                var list = (from a in this.dc.Properties
+                //var list = (from a in this.dc.Properties
+                //            select a);
+                var list = (from a in this.dc.v_WaterMeterReadings
                             select a);
-                return new ObservableCollection<Property>(list);
+                return new ObservableCollection<v_WaterMeterReading>(list);
             }
             catch (Exception ex)
             {
@@ -236,6 +231,10 @@
     /*================================================================================================================================================*/
     public partial class WaterMeterViewModel
     {
+
+        protected virtual IOpenFileDialogService OpenFileDialogService { get { return this.GetService<IOpenFileDialogService>(); } }
+        public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
+        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public bool CanExport = true;
         /// <summary>
         /// Add Cart Command
@@ -246,7 +245,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table), CanExport));
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
             }
         }
 
@@ -260,7 +259,7 @@
             get
             {
                 CommandAction action = new CommandAction();
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table), CanPrint));
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
 
@@ -283,6 +282,7 @@
         public void RefreshAction(object parameter)
         {
             RaisePropertyChanged("IsBusy");
+            PropertiesList = null;
             PropertiesList = GetPropertiesList();
             RaisePropertyChanged("IsNotBusy");
         }
@@ -306,7 +306,7 @@
         /// <param name="type"></param>
         public void RowDoubleClickAction(object parameter)
         {
-            Property p = parameter as Property;
+            v_WaterMeterReading p = parameter as v_WaterMeterReading;
             Host.Execute(HostVerb.Open, "WaterMeterEdit", p);
         }
 
@@ -415,7 +415,7 @@
                 catch (Exception ex)
                 {
                     RaisePropertyChanged("IsNotBusy");
-                    MessageBoxService.Show("Error importing data at row " + RowNum + "\nMessage: " + ex.Message);
+                    MessageBox.Show("Error importing data at row " + RowNum + "\nMessage: " + ex.Message);
                 }
             }
         }

@@ -185,13 +185,14 @@
             // 
             this.xrLabel14.AutoWidth = true;
             this.xrLabel14.CanShrink = true;
+            this.xrLabel14.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.Balance", "{0:$0.00}")});
             this.xrLabel14.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(336.2083F, 292.25F);
+            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(483.0834F, 292.25F);
             this.xrLabel14.Name = "xrLabel14";
             this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(303.7916F, 23F);
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(131.9165F, 23F);
             this.xrLabel14.StylePriority.UseFont = false;
-            this.xrLabel14.Text = "  $[Balance] Due Immediately";
             this.xrLabel14.WordWrap = false;
             // 
             // xrPanel1
@@ -351,9 +352,9 @@
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(138.6364F, 292.25F);
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(197.5719F, 23F);
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(344.447F, 23F);
             this.xrLabel15.StylePriority.UseFont = false;
-            this.xrLabel15.Text = "New Account Balance:";
+            this.xrLabel15.Text = "New Account Balance Due Immediately:";
             // 
             // xrRichText4
             // 

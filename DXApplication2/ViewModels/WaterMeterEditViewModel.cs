@@ -1,20 +1,27 @@
 ﻿namespace HVCC.Shell.ViewModels
 {
+    using DevExpress.Mvvm;
+    using DevExpress.Spreadsheet;
+    using DevExpress.Xpf.Grid;
+    using HVCC.Shell.Common;
+    using HVCC.Shell.Common.Commands;
+    using HVCC.Shell.Common.Interfaces;
+    using HVCC.Shell.Common.ViewModels;
+    using HVCC.Shell.Helpers;
+    using HVCC.Shell.Models;
+    using HVCC.Shell.Resources;
+    using HVCC.Shell.Validation;
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using DevExpress.Xpf.Docking;
     using System.Data.Linq;
-    using HVCC.Shell.Common;
-    using DevExpress.Mvvm;
-    using HVCC.Shell.Models;
-    using DevExpress.Spreadsheet;
-    using System.Windows.Input;
-    using HVCC.Shell.Resources;
-    using HVCC.Shell.Common.ViewModels;
-    using HVCC.Shell.Common.Interfaces;
     using System.Diagnostics;
+    using System.Linq;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Media;
 
     public partial class WaterMeterEditViewModel : CommonViewModel, ICommandSink
     {
@@ -32,7 +39,11 @@
         {
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
-            Property p = parameter as Property;
+            v_WaterMeterReading r = parameter as v_WaterMeterReading;
+            Property p = (from x in this.dc.Properties
+                          where x.PropertyID == r.PropertyID
+                          select x).FirstOrDefault();
+
             if (null != p)
             {
                 this.SelectedProperty = p as Property;
@@ -44,20 +55,19 @@
             }
             this.RegisterCommands();
 
+            var list = (from x in this.dc.WaterMeterReadings
+                        where x.PropertyID == SelectedProperty.PropertyID
+                        select x);
+
+            MeterReadings = new ObservableCollection<WaterMeterReading>(list);
+
             IsBusy = false;
         }
 
-        /* -------------------------------- Interfaces ------------------------------------------------ */
-        #region Interfaces
-        public IMessageBoxService MessageBoxService { get { return GetService<IMessageBoxService>(); } }
-        public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
-        public virtual ISaveFileDialogService SaveFileDialogService { get { return GetService<ISaveFileDialogService>(); } }
-        #endregion
-
-        public enum ExportType { PDF, XLSX }
-        public enum PrintType { PREVIEW, PRINT }
-
         /* ------------------------------------- Properties --------------------------- */
+
+        public ApplicationPermission ApplPermissions { get; set; }
+        public ApplicationDefault ApplDefault { get; set; }
 
         public override bool IsValid { get { return true; } }
 
@@ -75,6 +85,7 @@
                     return false;
                 }
                 Caption = caption[0].TrimEnd(' ') + "* ";
+                CanSaveExecute = true;
                 return true;
             }
             set { }
@@ -154,6 +165,41 @@
             }
         }
 
+
+        private ObservableCollection<WaterMeterReading> _meterReadings = null;
+        public ObservableCollection<WaterMeterReading> MeterReadings
+        {
+            get
+            {
+                return _meterReadings;
+            }
+            set
+            {
+                if (value != _meterReadings)
+                {
+                    _meterReadings = value;
+                    RaisePropertyChanged("MeterReadings");
+                }
+            }
+        }
+
+        private WaterMeterReading _selectedMeterReading = null;
+        public WaterMeterReading SelectedMeterReading
+        {
+            get
+            {
+                return _selectedMeterReading;
+            }
+            set
+            {
+                if (value != _selectedMeterReading)
+                {
+                    _selectedMeterReading = value;
+                    RaisePropertyChanged("SelectedMeterReading");
+                }
+            }
+        }
+
         /// <summary>
         /// Summary
         ///     Raises a property changed event when the SelectedCart data is modified
@@ -198,10 +244,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return true;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -259,13 +303,75 @@
             }
             catch (Exception ex)
             {
-                MessageBoxService.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
             }
         }
 
+
+        /// <summary>
+        /// RowUpdated Command
+        /// </summary>
+        private ICommand _rowUpdatedCommand;
+        public ICommand RowUpdatedCommand
+        {
+            get
+            {
+                return _rowUpdatedCommand ?? (_rowUpdatedCommand = new CommandHandlerWparm((object parameter) => RowUpdatedAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// RowUpdatedAction Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void RowUpdatedAction(object parameter)
+        {
+            GridRowValidationEventArgs e = parameter as GridRowValidationEventArgs;
+            WaterMeterReading r = e.Row as WaterMeterReading;
+            for (int i = 1; i < MeterReadings.Count(); i++)
+            {
+                MeterReadings[i].Consumption = MeterReadings[i].MeterReading - MeterReadings[i - 1].MeterReading;
+            }
+            CanSaveExecute = IsDirty;
+        }
+
+        /// <summary>
+        /// RemoveReading Command
+        /// </summary>
+        private ICommand _removeReadingCommand;
+        public ICommand RemoveReadingCommand
+        {
+            get
+            {
+                return _removeReadingCommand ?? (_removeReadingCommand = new CommandHandlerWparm((object parameter) => RemoveReadingAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// RemoveReadingAction Action
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void RemoveReadingAction(object parameter)
+        {
+            WaterMeterReading r = parameter as WaterMeterReading;
+            MeterReadings.Remove(r);
+            this.dc.WaterMeterReadings.DeleteOnSubmit(r);
+            CanSaveExecute = IsDirty;
+
+            // If we have more than 1 MeterReading and we delete one, we have to recalculate the consumption
+            // for the set of readings.
+            if (1 < MeterReadings.Count())
+            {
+                MeterReadings[0].Consumption = 0;
+                for (int i = 1; i < MeterReadings.Count(); i++)
+                {
+                    MeterReadings[i].Consumption = MeterReadings[i].MeterReading - MeterReadings[i - 1].MeterReading;
+                }
+            }
+        }
     }
 
     /*================================================================================================================================================*/

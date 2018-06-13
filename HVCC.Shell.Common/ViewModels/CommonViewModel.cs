@@ -28,6 +28,7 @@
                     _caption = value;
                     // Need to rasise CaptionChanged
                     //this.RaiseCaptionChangedEvent(new CaptionChangedEventArgs() { NewCaption = value });
+                    RaisePropertyChanged("Caption");
                 }
             }
         }

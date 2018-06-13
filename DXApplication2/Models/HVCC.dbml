@@ -619,6 +619,18 @@
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
   </Table>
+  <Table Name="dbo.v_WaterMeterReadings" Member="v_WaterMeterReadings">
+    <Type Name="v_WaterMeterReading">
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PhysicalAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ReadingDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="MeterReading" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Consumption" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
     <ElementType Name="usp_GetPropertyByIdResult">

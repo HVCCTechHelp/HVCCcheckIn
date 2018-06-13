@@ -70,6 +70,16 @@
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tableViewDetail_CellValueChanging(object sender, CellValueChangedEventArgs e)
+        {
+            this.tableViewDetail.PostEditor();
+        }
+
+        /// <summary>
         /// Validates a grid row 
         /// </summary>
         /// <param name="sender"></param>
@@ -94,8 +104,10 @@
                         return;
                     }
                     // Rule-2: Meter Reading must be greater than previous reading.
-                    if (row.ReadingDate <= vm.SelectedProperty.LastMeterEntry.ReadingDate ||
-                        row.MeterReading <= vm.SelectedProperty.LastMeterEntry.MeterReading)
+                    //if (row.ReadingDate <= vm.SelectedProperty.LastMeterEntry.ReadingDate ||
+                    //    row.MeterReading <= vm.SelectedProperty.LastMeterEntry.MeterReading)
+                    if (row.ReadingDate <= vm.SelectedProperty.ReadingDate ||
+                        row.MeterReading <= vm.SelectedProperty.MeterReading)
                     {
                         e.IsValid = false;
                         e.ErrorType = DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical;
