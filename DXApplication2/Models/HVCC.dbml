@@ -628,6 +628,7 @@
       <Column Name="ReadingDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="MeterReading" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Consumption" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ReadingCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>

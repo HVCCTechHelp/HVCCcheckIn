@@ -8605,6 +8605,8 @@ namespace HVCC.Shell.Models
 		
 		private System.Nullable<int> _Consumption;
 		
+		private System.Nullable<int> _ReadingCount;
+		
 		private int _RowID;
 		
 		public v_WaterMeterReading()
@@ -8719,6 +8721,22 @@ namespace HVCC.Shell.Models
 				if ((this._Consumption != value))
 				{
 					this._Consumption = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReadingCount", DbType="Int")]
+		public System.Nullable<int> ReadingCount
+		{
+			get
+			{
+				return this._ReadingCount;
+			}
+			set
+			{
+				if ((this._ReadingCount != value))
+				{
+					this._ReadingCount = value;
 				}
 			}
 		}

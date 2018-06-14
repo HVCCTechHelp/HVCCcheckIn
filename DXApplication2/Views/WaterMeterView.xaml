@@ -181,6 +181,17 @@
                                             EditFormVisible="True" 
                                             EditFormCaption="Parcel:" 
                                             />-->
+                                <dxg:GridColumn FieldName="ReadingCount" Header="ReadingCount" Width="20" 
+                                            Visible="True"
+                                            AllowEditing="False" 
+                                            EditFormVisible="True" 
+                                            EditFormCaption="Reading Count" 
+                                                HorizontalHeaderContentAlignment="Center"
+                                            >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" HorizontalContentAlignment="Center"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="ReadingDate" Header="Last Reading" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
@@ -276,6 +287,11 @@
                                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
                             </dxg:GridControl.TotalSummary>
 
+                            <!--<dxg:GridControl.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="2" ScaleX="2" />
+                                </TransformGroup>
+                            </dxg:GridControl.LayoutTransform>-->
 
                         </dxg:GridControl>
 
