@@ -285,10 +285,10 @@ namespace HVCC.Shell.Models
                     // Pool and Golf are mutually exclusive, so when one is true, the
                     // other must be false.  Additonally, when the value is true, the count
                     // is incremented, or when false the count is decremented.
-                    if (_isPool)
-                    {
-                        this.IsGolf = false;
-                    }
+                    //if (_isPool)
+                    //{
+                    //    this.IsGolf = false;
+                    //}
                 }
                 RaisePropertyChanged("IsPool");
             }
@@ -306,10 +306,10 @@ namespace HVCC.Shell.Models
                 if (value != _isGolf)
                 {
                     _isGolf = value;
-                    if (_isGolf)
-                    {
-                        this.IsPool = false;
-                    }
+                    //if (_isGolf)
+                    //{
+                    //    this.IsPool = false;
+                    //}
                 }
                 RaisePropertyChanged("IsGolf");
             }

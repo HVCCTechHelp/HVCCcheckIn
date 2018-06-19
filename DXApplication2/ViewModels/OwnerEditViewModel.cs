@@ -76,6 +76,7 @@
                              select x);
 
                 Relationships = new ObservableCollection<Relationship>(rList);
+                CkFacilityUsage();
 
                 // Set the focus to either the first relationship in the collection, or to the
                 // RelationshipID if one was passed in.
@@ -102,6 +103,7 @@
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
 
+            // Register an event handler for SelectedOwner property changed.
             SelectedOwner.PropertyChanged +=
                  new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
 
@@ -548,6 +550,46 @@
         }
 
         /// <summary>
+        /// Checks to see if Relationships have checked in at the clubhouse already so the UI values
+        /// are set correctly.
+        /// </summary>
+        private void CkFacilityUsage()
+        {
+            SelectedOwner.GolfMembers = 0;
+            SelectedOwner.GolfGuests = 0;
+            SelectedOwner.PoolMembers = 0;
+            SelectedOwner.PoolGuests = 0;
+
+            DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
+            DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
+
+            var zList = (from p in dc.FacilityUsages
+                         where (p.OwnerID == SelectedOwner.OwnerID)
+                         && (p.Date >= dt1 && p.Date <= dt2)
+                         select p);
+
+            foreach (FacilityUsage f in zList)
+            {
+                Relationship r = (from x in Relationships
+                                  where x.RelationshipID == f.RelationshipId
+                                  select x).FirstOrDefault();
+
+                if (null != r && r.RelationToOwner != "Guest")
+                {
+                    r.IsGolf = Convert.ToBoolean(f.GolfRoundsMember);
+                    r.IsPool = Convert.ToBoolean(f.PoolMember);
+                    SelectedOwner.GolfMembers += f.GolfRoundsMember;
+                    SelectedOwner.PoolMembers += f.PoolMember;
+                }
+                else
+                {
+                    SelectedOwner.GolfGuests = f.GolfRoundsGuest;
+                    SelectedOwner.PoolGuests = f.PoolGuest;
+                }
+            }
+        }
+
+        /// <summary>
         /// Summary
         ///     Raises a property changed event when the NewOwner data is modified
         /// </summary>
@@ -835,7 +877,15 @@
 
                 if (AccountBalance > 0)
                 {
-                    results = MessageBox.Show("This member is not is good standing.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
+                    results = MessageBox.Show("This member's privileges are suspended.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
+                        , "Warning"
+                        , MessageBoxButton.OKCancel
+                        , MessageBoxImage.Exclamation
+                        );
+                }
+                else if ((SelectedOwner.GolfGuests+SelectedOwner.PoolGuests) > 10)
+                {
+                    results = MessageBox.Show("Maximum number of guests per day has been exceeded.\nInform member the maximum number of guests per day is 10.\n Click OK to continue Checking In, or Cancel to not Check In"
                         , "Warning"
                         , MessageBoxButton.OKCancel
                         , MessageBoxImage.Exclamation
@@ -854,89 +904,85 @@
                 // If the property is in good standing, or staff allows member to check in, then proceed
                 if (MessageBoxResult.OK == results)
                 {
-                    string activity = string.Empty;
+                    FacilityUsage usage = null;
 
-                    //using (dc)
-                    //{
-                    List<FacilityUsage> usages = new List<FacilityUsage>();
+                    DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
+                    DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
 
-                    // Register the members what are checking in.
+                    // Query to see if any Owner relationships have checked-in and have facility usage records for today. 
+                    var zList = (from p in dc.FacilityUsages
+                             where (p.OwnerID == SelectedOwner.OwnerID)
+                             && (p.Date >= dt1 && p.Date <= dt2)
+                             select p);
+
+
+                    // Iterate over the Relationship records. If a relationship has checked-in previously we will update their
+                    // record if there is a change. For example, in the morning they check-in for golf, and later in the day
+                    // they check-in for the pool.  Otherwise, if this is the first check-in we create a new record.  Simliar
+                    // logic applies for Guests. If the number of guests changes we record the change.
                     foreach (Relationship r in Relationships)
                     {
-                        if (r.IsGolf || r.IsPool)
+                        FacilityUsage xUsage = (from u in zList
+                                                where u.RelationshipId == r.RelationshipID
+                                                select u).FirstOrDefault();
+                        if (null != xUsage)
                         {
-                            FacilityUsage usage = new FacilityUsage();
+                            usage = xUsage;
+                            usage.GolfRoundsMember = Convert.ToInt32(r.IsGolf);
+                            usage.PoolMember = Convert.ToInt32(r.IsPool);
+                        }
+                        else
+                        {
+                            usage = new FacilityUsage();
 
-                            usage.OwnerID = SelectedOwner.OwnerID;
-                            usage.RelationshipId = r.RelationshipID;
-                            usage.Date = DateTime.Now;
-                            if (r.IsGolf)
+                            if (r.IsGolf || r.IsPool)
                             {
-                                usage.GolfRoundsMember = 1;
-                                activity = "Golf";
-                            }
-                            else
-                            {
-                                usage.GolfRoundsMember = 0;
-                            }
-                            if (r.IsPool)
-                            {
-                                usage.PoolMember = 1;
-                                activity = "the Pool";
-                            }
-                            else
-                            {
-                                usage.PoolMember = 0;
-                            }
-                            usage.GolfRoundsGuest = 0;
-                            usage.PoolGuest = 0;
 
-                            // Before committing the data, we check to make sure the member(s)
-                            // have not already been checked in for the day.
-                            // 
-                            DateTime dt1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
-                            DateTime dt2 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
+                                usage.OwnerID = SelectedOwner.OwnerID;
+                                usage.RelationshipId = r.RelationshipID;
+                                usage.Date = DateTime.Now;
+                                usage.GolfRoundsMember = Convert.ToInt32(r.IsGolf);
+                                usage.PoolMember = Convert.ToInt32(r.IsPool);
 
-                            var z = (from p in dc.FacilityUsages
-                                     where p.RelationshipId == r.RelationshipID
-                                     && p.GolfRoundsMember == usage.GolfRoundsMember
-                                     && p.PoolMember == usage.PoolMember
-                                     && (p.Date >= dt1 && p.Date <= dt2)
-                                     select p).FirstOrDefault();
-
-                            if (null == z)
-                            {
+                                usage.GolfRoundsGuest = 0;
+                                usage.PoolGuest = 0;
                                 dc.FacilityUsages.InsertOnSubmit(usage);
-                            }
-                            else
-                            {
-                                string msg = String.Format("Member {0} {1} has already checked in for {2} today.", r.FName, r.LName, activity);
-                                MessageBox.Show(msg, "Warning", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-                            }
 
-                            // Flip the Golf & Pool bits so they aren't left in a true state
-                            r.IsPool = false;
-                            r.IsGolf = false;
+                                // Flip the Golf & Pool bits so they aren't left in a true state
+                                r.IsPool = false;
+                                r.IsGolf = false;
+                            }
                         }
                     }
 
                     // If there are guests of the members, add them last.
                     if (0 < this.SelectedOwner.PoolGuests || 0 < this.SelectedOwner.GolfGuests)
                     {
+                        FacilityUsage gUsage = null;
                         Relationship guest = (from q in this.dc.Relationships
                                               where q.RelationToOwner == "Guest"
                                               select q).FirstOrDefault();
 
-                        FacilityUsage gUsage = new FacilityUsage();
-                        gUsage.OwnerID = SelectedOwner.OwnerID;
-                        gUsage.RelationshipId = guest.RelationshipID;
-                        gUsage.Date = DateTime.Now;
-                        gUsage.GolfRoundsMember = 0;
-                        gUsage.PoolMember = 0;
-                        gUsage.GolfRoundsGuest = SelectedOwner.GolfGuests;
-                        gUsage.PoolGuest = SelectedOwner.PoolGuests;
+                        gUsage = (from x in zList
+                                  where x.OwnerID == SelectedOwner.OwnerID
+                                  select x).FirstOrDefault();
 
-                        dc.FacilityUsages.InsertOnSubmit(gUsage);
+                        if (null != gUsage)
+                        {
+                            gUsage.GolfRoundsGuest = SelectedOwner.GolfGuests;
+                            gUsage.PoolGuest = SelectedOwner.PoolGuests;
+                        }
+                        else
+                        {
+                            gUsage = new FacilityUsage();
+                            gUsage.OwnerID = SelectedOwner.OwnerID;
+                            gUsage.RelationshipId = guest.RelationshipID;
+                            gUsage.Date = DateTime.Now;
+                            gUsage.GolfRoundsGuest = SelectedOwner.GolfGuests;
+                            gUsage.PoolGuest = SelectedOwner.PoolGuests;
+
+                            dc.FacilityUsages.InsertOnSubmit(gUsage);
+                        }
                     }
 
                     ChangeSet cs = dc.GetChangeSet();

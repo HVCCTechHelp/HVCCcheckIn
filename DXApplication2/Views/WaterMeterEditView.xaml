@@ -272,7 +272,7 @@
                         </dxg:GridControl.View>
                         <!-- columns of the detail grid -->
                         <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="ReadingDate" Header="Date" SortOrder="Descending" SortIndex="0" ReadOnly="True" />
+                            <dxg:GridColumn FieldName="ReadingDate" Header="Date" SortOrder="Descending" SortIndex="0"  />
                             <dxg:GridColumn FieldName="MeterReading" Header="Reading" >
                                 <dxg:GridColumn.EditSettings>
                                     <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="d">

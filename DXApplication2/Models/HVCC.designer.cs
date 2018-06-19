@@ -72,7 +72,7 @@ namespace HVCC.Shell.Models
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}
@@ -8599,6 +8599,8 @@ namespace HVCC.Shell.Models
 		
 		private string _PhysicalAddress;
 		
+		private System.Nullable<int> _WellNumber;
+		
 		private System.Nullable<System.DateTime> _ReadingDate;
 		
 		private System.Nullable<int> _MeterReading;
@@ -8673,6 +8675,22 @@ namespace HVCC.Shell.Models
 				if ((this._PhysicalAddress != value))
 				{
 					this._PhysicalAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WellNumber", DbType="Int")]
+		public System.Nullable<int> WellNumber
+		{
+			get
+			{
+				return this._WellNumber;
+			}
+			set
+			{
+				if ((this._WellNumber != value))
+				{
+					this._WellNumber = value;
 				}
 			}
 		}
