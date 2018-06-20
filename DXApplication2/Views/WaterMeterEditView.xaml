@@ -226,7 +226,7 @@
                 <dxlc:LayoutItem Label="Meter Readings: " >
                     <dxg:GridControl AutoPopulateColumns="False" 
                                      IsEnabled="{Binding ApplPermissions.CanEditWater}"
-                                     ItemsSource="{Binding MeterReadings}"
+                                     ItemsSource="{Binding MeterReadings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      SelectedItem="{Binding SelectedMeterReading}"
                                              >
                         <dxg:GridControl.View>

@@ -211,6 +211,7 @@
             RaisePropertyChanged("DataChanged");
         }
 
+
         #endregion
 
         /* ---------------------------------- Public/Private Methods ------------------------------------------ */
@@ -331,10 +332,13 @@
         {
             GridRowValidationEventArgs e = parameter as GridRowValidationEventArgs;
             WaterMeterReading r = e.Row as WaterMeterReading;
+            r.PropertyID = SelectedProperty.PropertyID;
             for (int i = 1; i < MeterReadings.Count(); i++)
             {
                 MeterReadings[i].Consumption = MeterReadings[i].MeterReading - MeterReadings[i - 1].MeterReading;
             }
+            dc.WaterMeterReadings.InsertOnSubmit(r);
+            ChangeSet cs = dc.GetChangeSet();
             CanSaveExecute = IsDirty;
         }
 

@@ -42,7 +42,6 @@
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.groupHeaderBand1 = new DevExpress.XtraReports.UI.GroupHeaderBand();
             this.xrRichText2 = new DevExpress.XtraReports.UI.XRRichText();
-            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPanel1 = new DevExpress.XtraReports.UI.XRPanel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
@@ -68,6 +67,7 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText3 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText4)).BeginInit();
@@ -162,8 +162,8 @@
             // groupHeaderBand1
             // 
             this.groupHeaderBand1.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel5,
             this.xrRichText2,
-            this.xrLabel14,
             this.xrPanel1,
             this.xrRichText1,
             this.xrPanel2,
@@ -180,19 +180,6 @@
             this.xrRichText2.Name = "xrRichText2";
             this.xrRichText2.SerializableRtfString = resources.GetString("xrRichText2.SerializableRtfString");
             this.xrRichText2.SizeF = new System.Drawing.SizeF(686.6921F, 80.87106F);
-            // 
-            // xrLabel14
-            // 
-            this.xrLabel14.AutoWidth = true;
-            this.xrLabel14.CanShrink = true;
-            this.xrLabel14.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(336.2083F, 315.25F);
-            this.xrLabel14.Name = "xrLabel14";
-            this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(279.9243F, 23F);
-            this.xrLabel14.StylePriority.UseFont = false;
-            this.xrLabel14.Text = "  $[Balance]  Due Immediately";
-            this.xrLabel14.WordWrap = false;
             // 
             // xrPanel1
             // 
@@ -289,10 +276,10 @@
             // xrRichText1
             // 
             this.xrRichText1.Font = new System.Drawing.Font("Times New Roman", 9.75F);
-            this.xrRichText1.LocationFloat = new DevExpress.Utils.PointFloat(26.66664F, 183.2917F);
+            this.xrRichText1.LocationFloat = new DevExpress.Utils.PointFloat(26.66664F, 161.4167F);
             this.xrRichText1.Name = "xrRichText1";
             this.xrRichText1.SerializableRtfString = resources.GetString("xrRichText1.SerializableRtfString");
-            this.xrRichText1.SizeF = new System.Drawing.SizeF(686.6921F, 131.9583F);
+            this.xrRichText1.SizeF = new System.Drawing.SizeF(686.6921F, 153.8333F);
             // 
             // xrPanel2
             // 
@@ -344,14 +331,14 @@
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(138.6364F, 315.25F);
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(197.5719F, 23F);
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(348.6136F, 23F);
             this.xrLabel15.StylePriority.UseFont = false;
-            this.xrLabel15.Text = "New Account Balance:";
+            this.xrLabel15.Text = "New Account Balance Due Immediately: ";
             // 
             // xrRichText4
             // 
             this.xrRichText4.Font = new System.Drawing.Font("Times New Roman", 9.75F);
-            this.xrRichText4.LocationFloat = new DevExpress.Utils.PointFloat(204.5417F, 445.2878F);
+            this.xrRichText4.LocationFloat = new DevExpress.Utils.PointFloat(204.5417F, 460.2878F);
             this.xrRichText4.Name = "xrRichText4";
             this.xrRichText4.SerializableRtfString = resources.GetString("xrRichText4.SerializableRtfString");
             this.xrRichText4.SizeF = new System.Drawing.SizeF(306.4394F, 109.6214F);
@@ -447,6 +434,21 @@
             this.xrLabel18.Text = "Water Termination Policy";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
+            // xrLabel5
+            // 
+            this.xrLabel5.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.Balance", "{0:$0.00}")});
+            this.xrLabel5.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
+            this.xrLabel5.ForeColor = System.Drawing.Color.Red;
+            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(487.25F, 315.25F);
+            this.xrLabel5.Name = "xrLabel5";
+            this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(152.7498F, 23F);
+            this.xrLabel5.StylePriority.UseBackColor = false;
+            this.xrLabel5.StylePriority.UseFont = false;
+            this.xrLabel5.StylePriority.UseForeColor = false;
+            this.xrLabel5.Text = "xrLabel5";
+            // 
             // PastDue60Days
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -508,7 +510,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel4;
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
         private DevExpress.XtraReports.UI.XRRichText xrRichText2;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel14;
         private DevExpress.XtraReports.UI.XRLabel xrLabel13;
         private DevExpress.XtraReports.UI.XRLabel xrLabel15;
         private DevExpress.XtraReports.Parameters.Parameter OwnerID;
@@ -518,5 +519,6 @@
         private DevExpress.XtraReports.UI.XRRichText xrRichText3;
         private DevExpress.XtraReports.UI.XRLabel xrLabel18;
         private DevExpress.XtraReports.UI.XRRichText xrRichText4;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel5;
     }
 }

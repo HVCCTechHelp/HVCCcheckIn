@@ -221,7 +221,9 @@
                             <!-- columns of the master grid -->
 
                             <dxg:GridControl.TotalSummary>
-                                <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
+                                <!--<dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />-->
+                                <dxg:GridSummaryItem FieldName="Customer" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Consumption" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />
                             </dxg:GridControl.TotalSummary>
 
                             <!--<dxg:GridControl.LayoutTransform>

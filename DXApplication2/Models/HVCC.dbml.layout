@@ -163,7 +163,7 @@
         <classShapeMoniker Id="bc038fc0-9f9c-4b67-bc25-deb6d23913df" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.5 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 2.48159912109375); (2.5 : 2.48159912109375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
@@ -191,7 +191,7 @@
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.0312525 : 5.7227197265625); (6.0312525 : 12.2508048502604); (5.91644664624176 : 12.2508048502604 : JumpStart); (5.7497799795751 : 12.2508048502604 : JumpEnd); (3.625 : 12.2508048502604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(6.0312525 : 5.7227197265625); (6.0312525 : 12.2508048502604); (5.91644664624176 : 12.2508048502604 : JumpStart); (5.7497799795751 : 12.2508048502604 : JumpEnd); (5.03091960014444 : 12.2508048502604 : JumpStart); (4.86425293347778 : 12.2508048502604 : JumpEnd); (3.625 : 12.2508048502604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
