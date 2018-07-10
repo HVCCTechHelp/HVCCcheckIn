@@ -90,6 +90,13 @@
                                                Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
                                                LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"
                                                ToolTip="Reprint selected transaction" />
+                            
+                            <dxb:BarButtonItem x:Name="beDeleteTransaction" Content="Delete Transaction"
+                                               Command="{Binding DeleteTransactionCommand}"
+                                               IsEnabled="{Binding CanDeleteTransaction}"
+                                               Glyph="{dx:DXImage Image=Delete_16x16.png}" 
+                                               LargeGlyph="{dx:DXImage Image=Delete_32x32.png}"
+                                               ToolTip="Delete selected transaction" />
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 

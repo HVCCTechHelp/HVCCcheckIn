@@ -111,30 +111,30 @@
         /// <summary>
         /// Collection of properties
         /// </summary>
-        private ObservableCollection<Property> _propertiesList = null;
-        public ObservableCollection<Property> PropertiesList
-        {
-            get
-            {
-                if (this._propertiesList == null)
-                {
-                    //// Get the list of "Properties" from the database
-                    var list = (from a in this.dc.Properties
-                                select a);
+        //private ObservableCollection<Property> _propertiesList = null;
+        //public ObservableCollection<Property> PropertiesList
+        //{
+        //    get
+        //    {
+        //        if (this._propertiesList == null)
+        //        {
+        //            //// Get the list of "Properties" from the database
+        //            var list = (from a in this.dc.Properties
+        //                        select a);
 
-                    this._propertiesList = new ObservableCollection<Property>(list);
-                }
-                return this._propertiesList;
-            }
-            set
-            {
-                if (this._propertiesList != value)
-                {
-                    this._propertiesList = value;
-                    RaisePropertyChanged("PropertiesList");
-                }
-            }
-        }
+        //            this._propertiesList = new ObservableCollection<Property>(list);
+        //        }
+        //        return this._propertiesList;
+        //    }
+        //    set
+        //    {
+        //        if (this._propertiesList != value)
+        //        {
+        //            this._propertiesList = value;
+        //            RaisePropertyChanged("PropertiesList");
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Currently selected property from a property grid view
@@ -255,11 +255,18 @@
         /// </summary>
         private void SaveExecute()
         {
-            this.IsBusy = true;
-            ChangeSet cs = dc.GetChangeSet();
-            this.dc.SubmitChanges();
-            RaisePropertyChanged("DataChanged");
-            this.IsBusy = false;
+            try
+            {
+                this.IsBusy = true;
+                ChangeSet cs = dc.GetChangeSet();
+                this.dc.SubmitChanges();
+                RaisePropertyChanged("DataChanged");
+                this.IsBusy = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private CommandSink _sink = new CommandSink();

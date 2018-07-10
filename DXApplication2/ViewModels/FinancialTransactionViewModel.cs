@@ -447,15 +447,15 @@
             }
         }
 
-        private string _recieptNumber = String.Empty;
+        private string _receiptNumber = String.Empty;
         public string ReceiptNumber
         {
-            get { return _recieptNumber; }
+            get { return _receiptNumber; }
             set
             {
-                if (value != _recieptNumber)
+                if (value != _receiptNumber)
                 {
-                    _recieptNumber = value;
+                    _receiptNumber = value;
                     RaisePropertyChanged("ReceiptNumber");
                 }
             }
@@ -1099,20 +1099,31 @@
                 FinancialTransaction p = parameter as FinancialTransaction;
                 IsEditTransaction = true;
                 TransactionDate = p.TransactionDate;
+
+                RaisePropertyChanged("CanDeleteTransaction");
+
                 if (null != p.CreditAmount)
                 {
                     // If the amount is $0.00, we need to null the value to make the validation work.  This is because on a new
                     // transaction, the Credit/Debit amounts are null. It's not until it is saved to the DB that it is saved as $0
-                    if (0 == p.CreditAmount) { p.CreditAmount = null; }
+                    if (0 == p.CreditAmount)
+                    {
+                        p.CreditAmount = null;
+                    }
                     CreditAmount = p.CreditAmount;
                 }
                 if (null != p.DebitAmount)
                 {
-                    if (0 == p.DebitAmount) { p.DebitAmount = null; }
+                    if (0 == p.DebitAmount)
+                    {
+                        p.DebitAmount = null;
+                    }
                     DebitAmount = p.DebitAmount;
                 }
 
                 TransactionMethod = p.TransactionMethod;
+                CheckNumber = p.CheckNumber;
+                ReceiptNumber = p.ReceiptNumber;
                 FiscalYear = p.FiscalYear;
                 TransactionComment = p.Comment;
 
@@ -1204,6 +1215,78 @@
             //report.CreateDocument();
             //report.ExportToPdf(fileName);
             PrintHelper.ShowPrintPreview((HVCC.Shell.Views.FinancialTransactionView)Binder.View, report);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 
+        private bool _canDeleteTransaction = false;
+       
+        public bool CanDeleteTransaction
+        {
+            get
+            {
+                // Only allow deletions of an existing record that is not in a dirty state.
+                if (this.SelectedTransaction != null && IsEditTransaction && ApplPermissions.CanViewAdministration)
+                {
+                    return _canDeleteTransaction = true;
+                }
+
+                return _canDeleteTransaction = false;
+            }
+            set
+            {
+                if (_canDeleteTransaction != value)
+                {
+                    _canDeleteTransaction = value;
+                    RaisePropertyChanged("CanDeleteTransaction");
+                }
+            }
+        }
+
+        /// <summary>
+        ///  Delete Transaction Command 
+        /// </summary>
+        private ICommand _deleteTransactionCommand;
+        public ICommand DeleteTransactionCommand
+        {
+            get
+            {
+                return _deleteTransactionCommand ?? (_deleteTransactionCommand = new CommandHandlerWparm((object parameter) => DeleteTransactionAction(parameter), CanDeleteTransaction));
+            }
+        }
+
+        /// <summary>
+        /// Delete Transaction Action
+        /// </summary>
+        /// <param name="type"></param>
+        public void DeleteTransactionAction(object parameter)
+        {
+            MessageBoxResult result = MessageBox.Show("Deleting the transaction will permanently remove the record from the database. Are you sure you want to delete the transaction?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    try
+                    {
+                        this.IsBusy = true;
+                        
+                        // Remove Note from Owner's table???
+
+
+                        // delete record from database
+
+                        // Ask Andy -
+                        // Check if owner belongs back on water shutoff status if balance is greater than 0??? and past due?
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                    return;
+                case MessageBoxResult.No:
+                    break;
+            }
         }
 
         ///// <summary>

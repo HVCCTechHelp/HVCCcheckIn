@@ -1007,4 +1007,8 @@
     <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Return Type="System.Int32" />
   </Function>
+  <Function Name="dbo.usp_DeleteFinancialTransaction" Method="usp_DeleteFinancialTransaction">
+    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
 </Database>

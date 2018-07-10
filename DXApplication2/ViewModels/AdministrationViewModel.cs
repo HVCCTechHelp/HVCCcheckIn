@@ -596,7 +596,7 @@
                 // Get the list of Owners who are now 30 days late paying dues.  If they owe
                 // $100 or less, we let them go for now.
                 var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > (CurrentSeason.AnnualDues - 100.00m)
+                            where x.Balance > 100.00m
                             select x);
 
                 foreach (v_OwnerDetail ownerDetail in list)
@@ -671,7 +671,7 @@
                 IsBusy = true;
 
                 var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 0
+                            where x.Balance > 100.00m
                             select x);
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
@@ -685,8 +685,8 @@
                     //if (assessment == true)
                     //{
                     //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-                    //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
                     //}
+                    //sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
 
                     string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     AddNote(owner, note);

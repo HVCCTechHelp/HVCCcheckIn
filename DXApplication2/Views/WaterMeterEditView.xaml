@@ -112,13 +112,6 @@
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
                 <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                    <dxlc:LayoutItem Label="Bill To: " BorderThickness="2">
-                        <dxe:TextEdit Text="{Binding SelectedProperty.BillTo}" Width="Auto" 
-                                     IsReadOnly="True"
-                                     Focusable="False"
-                                     Style="{StaticResource TextEditDisplayStyle}"
-                                     />
-                    </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutGroup>
 
