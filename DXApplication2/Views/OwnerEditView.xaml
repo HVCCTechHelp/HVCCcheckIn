@@ -48,6 +48,7 @@
                                   >
                     <dxe:ComboBoxEdit.Items>
                         <dxe:ComboBoxEditItem Content="Owner" />
+                        <dxe:ComboBoxEditItem Content="Representative" />
                         <dxe:ComboBoxEditItem Content="Spouse/Partner" />
                         <dxe:ComboBoxEditItem Content="Child" />
                         <dxe:ComboBoxEditItem Content="In-Law" />

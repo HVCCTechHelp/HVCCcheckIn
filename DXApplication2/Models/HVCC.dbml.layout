@@ -184,14 +184,14 @@
         <classShapeMoniker Id="20e64093-3627-49c0-8d4c-072b05295044" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 5.7227197265625); (5.5 : 8.21875); (5.7497799795751 : 8.21875 : JumpStart); (5.91644664624176 : 8.21875 : JumpEnd); (5.94791916666667 : 8.21875 : JumpStart); (6.11458583333333 : 8.21875 : JumpEnd); (6.875 : 8.21875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(5.5 : 5.7227197265625); (5.5 : 8.21875); (5.7497799795751 : 8.21875 : JumpStart); (5.91644664624176 : 8.21875 : JumpEnd); (6.875 : 8.21875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.0312525 : 5.7227197265625); (6.0312525 : 12.2508048502604); (5.03091960014444 : 12.2508048502604 : JumpStart); (4.86425293347778 : 12.2508048502604 : JumpEnd); (3.625 : 12.2508048502604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(6.0312525 : 5.7227197265625); (6.0312525 : 12.2508048502604); (5.91644664624176 : 12.2508048502604 : JumpStart); (5.7497799795751 : 12.2508048502604 : JumpEnd); (5.03091960014444 : 12.2508048502604 : JumpStart); (4.86425293347778 : 12.2508048502604 : JumpEnd); (3.625 : 12.2508048502604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
@@ -230,7 +230,7 @@
         <elementListCompartment Id="b2a18ff5-67f3-42dd-8934-9dc25d7d52ba" absoluteBounds="7.0150000000000006, 11.71, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(5.45767753362223 : 5.7227197265625); (5.45767753362223 : 9.125); (6.75 : 9.125); (6.75 : 12.2315991210937); (7 : 12.2315991210937)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(5.45767753362223 : 5.7227197265625); (5.45767753362223 : 9.125); (5.7497799795751 : 9.125 : JumpStart); (5.91644664624176 : 9.125 : JumpEnd); (5.94791916666667 : 9.125 : JumpStart); (6.11458583333333 : 9.125 : JumpEnd); (6.75 : 9.125); (6.75 : 12.2315991210937); (7 : 12.2315991210937)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Late30Day" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />

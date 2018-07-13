@@ -70,9 +70,10 @@
                 //// Set the focused row in the Properties grid to the first item.
                 SelectedProperty = Properties[0];
 
-                // Fetch the collection of Relationships for this owner
+                // Fetch the collection of avtive Relationships for this owner
                 var rList = (from x in this.dc.Relationships
                              where x.OwnerID == SelectedOwner.OwnerID
+                             && x.Active == true
                              select x);
 
                 Relationships = new ObservableCollection<Relationship>(rList);
