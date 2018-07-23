@@ -212,6 +212,7 @@
                 if (value != _selectedProperty)
                 {
                     _selectedProperty = value;
+                    RaisePropertyChanged("SelectedProperty");
                 }
             }
         }

@@ -111,7 +111,7 @@
 
         /// <summary>
         /// Executed when the View is loaded. Force an update on the controls that require validation.  
-        /// This will force them to fail validateion if data is missing or invalid.
+        /// This will force them to fail validation if data is missing or invalid.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -143,6 +143,7 @@
             ceDebitMethod.Visibility = Visibility.Hidden;
             lbOR.Visibility = Visibility.Hidden;
         }
+
         private void teDebit_GotFocus(object sender, RoutedEventArgs e)
         {
             teDebit.NullText = string.Empty;

@@ -383,7 +383,7 @@
                                         <dxg:GridControl AutoPopulateColumns="False" x:Name="propertyGrid" 
                                      IsEnabled="True"
                                      ItemsSource="{Binding Properties}"
-                                     SelectedItem="{Binding SelectedProperty}"
+                                     SelectedItem="{Binding SelectedProperty, Mode=TwoWay}"
                                      >
                                             <dxg:GridControl.View>
                                                 <dxg:TableView x:Name="tableViewProperties"  

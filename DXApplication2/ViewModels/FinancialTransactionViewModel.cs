@@ -28,6 +28,7 @@
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             Owner p = parameter as Owner;
+            CanDeleteTransaction = false;
 
             try
             {
@@ -252,6 +253,15 @@
                 {
                     _selectedTransaction = value;
                     RaisePropertyChanged("SelectedTransaction");
+                    RaisePropertyChanged("CanDeleteTransaction");
+                    //if (0 == SelectedTransactionIndex)
+                    //{
+                    //    CanDeleteTransaction = true;
+                    //}
+                    //else
+                    //{
+                    //    CanDeleteTransaction = false;
+                    //}
                 }
             }
         }
@@ -855,16 +865,21 @@
             try
             {
                 this.IsBusy = true;
+
+                int? transactionID = null;
+                int? noteID = null;
                 FinancialTransaction transaction = new FinancialTransaction();
+                Note note = new Note();
+
                 decimal accountBalance = AccountBalance;
                 transaction.Balance = accountBalance;
-                Note note = new Note();
                 StringBuilder sb = new StringBuilder();
 
                 // If we are editing an existing transaction.....
                 if (IsEditTransaction)
                 {
                     transaction = SelectedTransaction;
+                    transactionID = SelectedTransaction.RowId;
                     transaction.TransactionAppliesTo = String.Empty;
 
                     // adjust balance..... In order to correctly calculate the account balance, we first need to add/subtract the 
@@ -878,7 +893,7 @@
                     if (null != transaction.DebitAmount) { accountBalance -= (decimal)transaction.DebitAmount; }
                     transaction.Balance = accountBalance;
 
-                    sb.Append(String.Format("Revised #{0}: ", SelectedTransaction.RowId));
+                    sb.Append(String.Format("Revised #{0}: ", transactionID));
                 }
 
                 // Determine if we are posting a credit or a debit.  
@@ -923,10 +938,31 @@
                 transaction.TransactionAppliesTo = TransactionAppliesTo.ToString().Trim();
                 transaction.Comment = TransactionComment.Trim();
 
-                // If this is a new transaction, we have to add it to the datacontext change set as an insert
+                // If this is a new transaction, insert the new transaction using the usp_Insert so we can get
+                // the transaction ID back from the database and use it as a reference in the Note record.
                 if (!IsEditTransaction)
                 {
-                    dc.FinancialTransactions.InsertOnSubmit(transaction);
+                    try
+                    {
+                        dc.usp_InsertFinancialTransaction(
+                                    transaction.OwnerID,
+                                    transaction.FiscalYear,
+                                    transaction.Balance,
+                                    transaction.CreditAmount,
+                                    transaction.DebitAmount,
+                                    transaction.TransactionDate,
+                                    transaction.TransactionMethod,
+                                    transaction.TransactionAppliesTo,
+                                    transaction.Comment,
+                                    transaction.CheckNumber,
+                                    transaction.ReceiptNumber,
+                                    ref transactionID
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
 
                 // Add/Attach a comment to the Owner's Notes table.
@@ -935,7 +971,33 @@
                 sb.AppendLine();
                 note.OwnerID = transaction.OwnerID;
                 note.Comment = sb.ToString().Trim();
-                dc.Notes.InsertOnSubmit(note);
+                try
+                {
+                    dc.usp_InsertNote(
+                            note.OwnerID,
+                            note.Comment,
+                            ref noteID);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                // Add the XRef record Transaction <-> Note
+                try
+                {
+
+                    TransactionXNote tXn = new TransactionXNote();
+                    int? tXnID = null;
+                    dc.usp_InsertTransactionXNote(
+                        transactionID,
+                        noteID,
+                        ref tXnID);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
                 // If there is credit applied to a golf cart, we create or update a Golf Cart record.
                 if (0 != CreditAmount && 0 < CartAmount)
@@ -982,7 +1044,7 @@
                     {
                         wsOff.IsResolved = true;
                         wsOff.ResolutionDate = DateTime.Now;
-                        wsOff.Resolution = "Owner has paid off full balance due.";
+                        wsOff.Resolution = "Owner has paid full balance due.";
                         wsOff.IsMemberSuspended = false;
                     }
                 }
@@ -1228,7 +1290,7 @@
             get
             {
                 // Only allow deletions of an existing record that is not in a dirty state.
-                if (this.SelectedTransaction != null && IsEditTransaction && ApplPermissions.CanViewAdministration)
+                if (this.SelectedTransaction != null && this.SelectedTransactionIndex == 0 && !IsEditTransaction && ApplPermissions.CanViewAdministration)
                 {
                     return _canDeleteTransaction = true;
                 }
@@ -1253,7 +1315,7 @@
         {
             get
             {
-                return _deleteTransactionCommand ?? (_deleteTransactionCommand = new CommandHandlerWparm((object parameter) => DeleteTransactionAction(parameter), CanDeleteTransaction));
+                return _deleteTransactionCommand ?? (_deleteTransactionCommand = new CommandHandlerWparm((object parameter) => DeleteTransactionAction(parameter), ApplPermissions.CanViewAdministration));
             }
         }
 
@@ -1263,29 +1325,55 @@
         /// <param name="type"></param>
         public void DeleteTransactionAction(object parameter)
         {
-            MessageBoxResult result = MessageBox.Show("Deleting the transaction will permanently remove the record from the database. Are you sure you want to delete the transaction?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-            switch (result)
+            if (0 != SelectedTransactionIndex)
             {
-                case MessageBoxResult.Yes:
-                    try
-                    {
-                        this.IsBusy = true;
-                        
-                        // Remove Note from Owner's table???
+                MessageBox.Show("Only the most recent transaction can be deleted.", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Deleting the transaction will permanently remove the record from the database. Are you sure you want to delete the transaction?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        try
+                        {
+                            this.IsBusy = true;
 
+                            // Get the XRef record for this transaction....
+                            TransactionXNote tXn = (from x in dc.TransactionXNotes
+                                                    where x.TransactionID == SelectedTransaction.RowId
+                                                    select x).FirstOrDefault();
 
-                        // delete record from database
+                            if (null != tXn)
+                            {
+                                // Remove the XRef record
+                                dc.usp_DeleteTransactionXNote(tXn.RowId);
+                                // Remove Note from Owner's table???
+                                dc.usp_DeleteNote(tXn.NoteID);
+                                // delete record from database
+                                dc.usp_DeleteFinancialTransaction(tXn.TransactionID);
 
-                        // Ask Andy -
-                        // Check if owner belongs back on water shutoff status if balance is greater than 0??? and past due?
-                    }
-                    catch (Exception e)
-                    {
+                                // Ask Andy -
+                                // Check if owner belongs back on water shutoff status if balance is greater than 0??? and past due?
+                                // Answer:
+                                //  For now, No.  The water shutoff needs to be reviewed and I am sure it will need work. So, for
+                                //  now I am just going to leave it alone.
 
-                    }
-                    return;
-                case MessageBoxResult.No:
-                    break;
+                                // We also need to remove the transaction from the in-memory collection so it is reflected
+                                // in the UI.  
+                                FinancialTransactions.Remove(SelectedTransaction);
+                                SelectedTransaction = FinancialTransactions[0];
+                                RaisePropertyChanged("FinancialTransactions");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show("Error removing transaction: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        return;
+                    case MessageBoxResult.No:
+                        break;
+                }
             }
         }
 

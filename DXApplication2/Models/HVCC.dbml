@@ -82,22 +82,6 @@
       <Association Name="Owner_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Notes" Member="Notes">
-    <Type Name="Note">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PropertyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Comment" Type="System.String" DbType="VarChar(250) NOT NULL" CanBeNull="false" />
-      <Column Name="EnteredBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
-      <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Association Name="Owner_Note" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId4">
-      <Argument Parameter="ownerID" Member="OwnerID" />
-      <Argument Parameter="comment" Member="Comment" />
-      <Argument Parameter="rowID" Member="RowID" />
-    </InsertFunction>
-  </Table>
   <Table Name="dbo.OwnershipChanges" Member="OwnershipChanges">
     <Type Name="OwnershipChange">
       <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -109,7 +93,7 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId5">
+    <InsertFunction FunctionId="FunctionId4">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="previousOwnerID" Member="PreviousOwnerID" />
       <Argument Parameter="previousOwner" Member="PreviousOwner" />
@@ -167,7 +151,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_WaterShutoff" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId6">
+    <InsertFunction FunctionId="FunctionId5">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -195,7 +179,7 @@
       <Argument Parameter="resolution" Member="Resolution" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId7">
+    <UpdateFunction FunctionId="FunctionId6">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="isWaterShutoff" Member="IsWaterShutoff" />
       <Argument Parameter="isMemberSuspended" Member="IsMemberSuspended" />
@@ -329,7 +313,7 @@
       <Association Name="Property_WellXProperty" Member="WellXProperties" ThisKey="PropertyID" OtherKey="PropertyId" Type="WellXProperty" />
       <Association Name="Owner_Property" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <UpdateFunction FunctionId="FunctionId8">
+    <UpdateFunction FunctionId="FunctionId7">
       <Argument Parameter="propertyId" Member="PropertyID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -394,7 +378,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
       <Association Name="Owner_GolfCart" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId9">
+    <InsertFunction FunctionId="FunctionId8">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="year" Member="Year" />
@@ -403,7 +387,7 @@
       <Argument Parameter="paymentDate" Member="PaymentDate" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId10">
+    <UpdateFunction FunctionId="FunctionId9">
       <Argument Parameter="rowID" Member="RowID" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
@@ -439,7 +423,7 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId11">
+    <InsertFunction FunctionId="FunctionId10">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="relationshipId" Member="RelationshipId" />
       <Argument Parameter="golfRoundsMember" Member="GolfRoundsMember" />
@@ -465,9 +449,10 @@
       <Column Name="CheckNumber" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastMOdifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="FinancialTransaction_TransactionXNote" Member="TransactionXNotes" ThisKey="RowId" OtherKey="TransactionID" Type="TransactionXNote" />
       <Association Name="Owner_FinancialTransaction" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId12">
+    <InsertFunction FunctionId="FunctionId11">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="fiscalYEar" Member="FiscalYear" />
       <Argument Parameter="balance" Member="Balance" />
@@ -481,7 +466,7 @@
       <Argument Parameter="receiptNumber" Member="ReceiptNumber" />
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId13">
+    <UpdateFunction FunctionId="FunctionId12">
       <Argument Parameter="rowId" Member="RowId" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="fiscalYear" Member="FiscalYear" />
@@ -520,7 +505,6 @@
       <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
-      <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
       <Association Name="Owner_WaterShutoff" Member="WaterShutoffs" ThisKey="OwnerID" OtherKey="OwnerID" Type="WaterShutoff" />
       <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
       <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
@@ -528,8 +512,9 @@
       <Association Name="Owner_Late90Day" Member="Late90Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late90Day" />
       <Association Name="Owner_Late60Day" Member="Late60Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late60Day" />
       <Association Name="Owner_Late30Day" Member="Late30Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late30Day" />
+      <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
     </Type>
-    <InsertFunction FunctionId="FunctionId14">
+    <InsertFunction FunctionId="FunctionId13">
       <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="mailTo" Member="MailTo" />
       <Argument Parameter="address" Member="Address" />
@@ -550,7 +535,7 @@
       <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
       <Argument Parameter="ownerID" Member="OwnerID" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId15">
+    <UpdateFunction FunctionId="FunctionId14">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="customer" Member="Customer" />
       <Argument Parameter="mailTo" Member="MailTo" />
@@ -581,7 +566,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late90Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId16">
+    <InsertFunction FunctionId="FunctionId15">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="season" Member="Season" />
       <Argument Parameter="rowID" Member="RowId" />
@@ -596,7 +581,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late60Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId17">
+    <InsertFunction FunctionId="FunctionId16">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="season" Member="Season" />
       <Argument Parameter="rowID" Member="RowId" />
@@ -612,7 +597,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late30Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId18">
+    <InsertFunction FunctionId="FunctionId17">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="mailTo" Member="MailTo" />
       <Argument Parameter="season" Member="Season" />
@@ -632,6 +617,45 @@
       <Column Name="ReadingCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
+  </Table>
+  <Table Name="dbo.Notes" Member="Notes">
+    <Type Name="Note">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="VarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="EnteredBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
+      <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Note_TransactionXNote" Member="TransactionXNotes" ThisKey="RowID" OtherKey="NoteID" Type="TransactionXNote" />
+      <Association Name="Owner_Note" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId18">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="comment" Member="Comment" />
+      <Argument Parameter="rowID" Member="RowID" />
+    </InsertFunction>
+    <DeleteFunction FunctionId="FunctionId19">
+      <Argument Parameter="rowId" Member="RowID" />
+    </DeleteFunction>
+  </Table>
+  <Table Name="dbo.TransactionXNote" Member="TransactionXNotes">
+    <Type Name="TransactionXNote">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NoteID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Entered" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EnteredBy" Type="System.String" DbType="VarChar(40) NOT NULL" CanBeNull="false" />
+      <Association Name="FinancialTransaction_TransactionXNote" Member="FinancialTransaction" ThisKey="TransactionID" OtherKey="RowId" Type="FinancialTransaction" IsForeignKey="true" />
+      <Association Name="Note_TransactionXNote" Member="Note" ThisKey="NoteID" OtherKey="RowID" Type="Note" IsForeignKey="true" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId20">
+      <Argument Parameter="transactionID" Member="TransactionID" />
+      <Argument Parameter="noteID" Member="NoteID" />
+      <Argument Parameter="rowID" Member="RowId" />
+    </InsertFunction>
+    <DeleteFunction FunctionId="FunctionId21">
+      <Argument Parameter="rowId" Member="RowId" />
+    </DeleteFunction>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
     <Parameter Name="PropertyID" Parameter="propertyID" Type="System.Int32" DbType="Int" />
@@ -689,7 +713,7 @@
     <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
+  <Function Id="FunctionId19" Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
@@ -767,18 +791,7 @@
     <Parameter Name="Photo" Parameter="photo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_UdateNote" Method="usp_UdateNote">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId4" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId5" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
+  <Function Id="FunctionId4" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="PreviousOwnerID" Parameter="previousOwnerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="PreviousOwner" Parameter="previousOwner" Type="System.String" DbType="VarChar(200)" />
@@ -787,7 +800,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId6" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
+  <Function Id="FunctionId5" Name="dbo.usp_InsertWaterShutoff" Method="usp_InsertWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -816,7 +829,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId7" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
+  <Function Id="FunctionId6" Name="dbo.usp_UpdateWaterShutoff" Method="usp_UpdateWaterShutoff">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="IsWaterShutoff" Parameter="isWaterShutoff" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsMemberSuspended" Parameter="isMemberSuspended" Type="System.Boolean" DbType="Bit" />
@@ -844,7 +857,7 @@
     <Parameter Name="Resolution" Parameter="resolution" Type="System.String" DbType="VarChar(500)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId8" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
+  <Function Id="FunctionId7" Name="dbo.usp_UpdateProperty" Method="usp_UpdateProperty">
     <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -882,7 +895,7 @@
       <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Id="FunctionId9" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
+  <Function Id="FunctionId8" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="Year" Parameter="year" Type="System.String" DbType="VarChar(50)" />
@@ -892,7 +905,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId10" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
+  <Function Id="FunctionId9" Name="dbo.usp_UdateGolfCart" Method="usp_UdateGolfCart">
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -904,7 +917,7 @@
     <Parameter Name="ReceivedDate" Parameter="receivedDate" Type="System.DateTime" DbType="Date" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId11" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
+  <Function Id="FunctionId10" Name="dbo.usp_InsertFacilityUsage" Method="usp_InsertFacilityUsage">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
     <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
@@ -914,7 +927,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId12" Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
+  <Function Id="FunctionId11" Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="FiscalYEar" Parameter="fiscalYEar" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
@@ -929,7 +942,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId13" Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
+  <Function Id="FunctionId12" Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="FiscalYear" Parameter="fiscalYear" Type="System.String" DbType="VarChar(20)" />
@@ -944,7 +957,7 @@
     <Parameter Name="ReceiptNumber" Parameter="receiptNumber" Type="System.String" DbType="VarChar(20)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId14" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
+  <Function Id="FunctionId13" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
@@ -966,26 +979,26 @@
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId16" Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
+  <Function Id="FunctionId15" Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId17" Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
+  <Function Id="FunctionId16" Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId18" Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
+  <Function Id="FunctionId17" Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId15" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
+  <Function Id="FunctionId14" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
@@ -1008,6 +1021,22 @@
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_DeleteFinancialTransaction" Method="usp_DeleteFinancialTransaction">
+    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId18" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId20" Name="dbo.usp_InsertTransactionXNote" Method="usp_InsertTransactionXNote">
+    <Parameter Name="TransactionID" Parameter="transactionID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="NoteID" Parameter="noteID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId21" Name="dbo.usp_DeleteTransactionXNote" Method="usp_DeleteTransactionXNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>

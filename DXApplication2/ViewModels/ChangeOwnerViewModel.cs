@@ -636,13 +636,10 @@
             object x = p.Source;
             NewOwner= p.Source.FocusedRow as Owner;
 
-            ApplPermissions.CanEditOwner = false;
-            ApplPermissions.CanAddRelationship = false;
             RaisePropertyChanged("ApplPermissions");
 
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
-
         }
 
         /// <summary>
