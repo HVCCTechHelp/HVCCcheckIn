@@ -240,7 +240,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply90DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate90DayCommand}"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate90DaysCommand}"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>

@@ -28,6 +28,7 @@
         /// <param name="parameter"></param>
         public AdministrationViewModel(IDataContext dc, IDataContext pDC = null)
         {
+            IsBusy = false;
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
             this.RegisterCommands();
@@ -231,8 +232,9 @@
         /// <param name="p"></param>
         /// <param name="d"></param>
         /// <returns></returns>
-        private void AddNote(Owner selectedOwner, string p)
+        private int? AddNote(Owner selectedOwner, string p)
         {
+            int? noteID = null;
             Note note = new Note();
             StringBuilder sb = new StringBuilder();
 
@@ -252,11 +254,24 @@
             }
             note.Comment = sb.ToString().Trim();
             note.OwnerID = selectedOwner.OwnerID;
-            dc.Notes.InsertOnSubmit(note);
+
+            try
+            {
+                dc.usp_InsertNote(
+                        note.OwnerID,
+                        note.Comment,
+                        ref noteID);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return noteID;
         }
 
-        private void GenerateFinancialTransaction(Owner selectedOwner, decimal amount, string appliesTo, string comment)
+        private int? GenerateFinancialTransaction(Owner selectedOwner, decimal amount, string appliesTo, string comment)
         {
+            int? transactionID = null;
             FinancialTransaction transaction = new FinancialTransaction();
 
             decimal balance = (from x in dc.v_OwnerDetails
@@ -271,7 +286,29 @@
             transaction.TransactionMethod = "Machine Generated";
             transaction.TransactionAppliesTo = appliesTo;
             transaction.Comment = comment;
-            dc.FinancialTransactions.InsertOnSubmit(transaction);
+
+            try
+            {
+                dc.usp_InsertFinancialTransaction(
+                            transaction.OwnerID,
+                            transaction.FiscalYear,
+                            transaction.Balance,
+                            transaction.CreditAmount,
+                            transaction.DebitAmount,
+                            transaction.TransactionDate,
+                            transaction.TransactionMethod,
+                            transaction.TransactionAppliesTo,
+                            transaction.Comment,
+                            transaction.CheckNumber,
+                            transaction.ReceiptNumber,
+                            ref transactionID
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return transactionID;
 
             // Check to see if there is a WaterShutoff record for the Owner.  If there
             // is not, we will generate one here.  If there is, it is updated to reflect the
@@ -579,6 +616,9 @@
         /// <param name="type"></param>
         public void ApplyLate30DaysAction()
         {
+            int? transactionID = null;
+            int? noteID = null;
+
             DateTime now = DateTime.Now;
 
             string[] strings = SelectedSeason.TimePeriod.Split('-');
@@ -617,8 +657,25 @@
                     //}
 
                     string note = String.Format("30 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    AddNote(owner, note);
-                    GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 30 days late");
+                    noteID = AddNote(owner, note);
+                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+
+                    // Add the XRef record Transaction <-> Note
+                    try
+                    {
+                        TransactionXNote tXn = new TransactionXNote();
+                        int? tXnID = null;
+                        dc.usp_InsertTransactionXNote(
+                            transactionID,
+                            noteID,
+                            ref tXnID);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    // Generate the PDF Report
                     Late30Day late30 = new Late30Day();
                     late30.OwnerID = ownerDetail.OwnerID;
                     late30.MailTo = ownerDetail.MailTo;
@@ -662,6 +719,9 @@
         /// <param name="type"></param>
         public void ApplyLate60DaysAction()
         {
+            int? transactionID = null;
+            int? noteID = null;
+
             if (!IsApply60DayLate)
             {
                 MessageBox.Show("You cannot apply fees before July 1st, or after July 7th");
@@ -689,8 +749,25 @@
                     //sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
 
                     string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    AddNote(owner, note);
-                    GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 60 days late");
+                    noteID = AddNote(owner, note);
+                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+
+                    // Add the XRef record Transaction <-> Note
+                    try
+                    {
+                        TransactionXNote tXn = new TransactionXNote();
+                        int? tXnID = null;
+                        dc.usp_InsertTransactionXNote(
+                            transactionID,
+                            noteID,
+                            ref tXnID);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    // Generate the PDF Report
                     Late60Day late60 = new Late60Day();
                     late60.OwnerID = ownerDetail.OwnerID;
                     late60.Season = CurrentSeason.TimePeriod;
@@ -733,6 +810,9 @@
         /// <param name="type"></param>
         public void ApplyLate90DaysAction()
         {
+            int? transactionID = null;
+            int? noteID = null;
+
             if (!IsApply90DayLate)
             {
                 MessageBox.Show("You cannot apply fees before Aug 1st, or after Aug 7th");
@@ -742,7 +822,7 @@
                 IsBusy = true;
 
                 var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 0
+                            where x.Balance > 100.00m
                             select x);
                 foreach (v_OwnerDetail ownerDetail in list)
                 {
@@ -760,8 +840,25 @@
                     //}
 
                     string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    AddNote(owner, note);
-                    GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    noteID = AddNote(owner, note);
+                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+
+                    // Add the XRef record Transaction <-> Note
+                    try
+                    {
+                        TransactionXNote tXn = new TransactionXNote();
+                        int? tXnID = null;
+                        dc.usp_InsertTransactionXNote(
+                            transactionID,
+                            noteID,
+                            ref tXnID);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    // Generate the PDF report
                     Late90Day late90 = new Late90Day();
                     late90.OwnerID = ownerDetail.OwnerID;
                     late90.Season = CurrentSeason.TimePeriod;
@@ -771,7 +868,7 @@
                     this.dc.SubmitChanges();
 
                     string fileName = string.Format(@"D:\LateNotices\90Day\90Day-{0}.PDF", ownerDetail.OwnerID);
-                    Reports.PastDue60Days report = new Reports.PastDue60Days();
+                    Reports.PastDue90Days report = new Reports.PastDue90Days();
                     report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
                     report.Parameters["InvoiceDate"].Value = DateTime.Now;
                     report.CreateDocument();
