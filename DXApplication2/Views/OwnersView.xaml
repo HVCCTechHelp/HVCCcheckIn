@@ -205,12 +205,13 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
+                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="30" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
                                 <dxg:GridColumn.EditSettings>
                                     <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
                                     </dxe:TextEditSettings>
                                 </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="PropertyCount" Header="Properties" Width="20" ReadOnly="True"/>
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
@@ -230,6 +231,7 @@
                             </dxg:GridControl.Columns>
                             <dxg:GridControl.TotalSummary>
                                 <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="PropertyCount" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />
                                 <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum"  DisplayFormat="{}{0:c0}" />
                             </dxg:GridControl.TotalSummary>
 
