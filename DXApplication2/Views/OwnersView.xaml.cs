@@ -88,5 +88,24 @@
         {
             Mouse.OverrideCursor = Cursors.Arrow;
         }
+
+        private void BFilterStatus_ItemClick(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        {
+            string tempStr = this.ownerGrid.FilterString;
+            string statusFilterString = "[Balance] >= 150.00";
+            // Only add it if it's not already there.
+            if (!tempStr.Contains(statusFilterString) && !tempStr.Contains("(" + statusFilterString + ")"))
+            {
+                if (!string.IsNullOrEmpty(this.ownerGrid.FilterString))
+                {
+                    this.ownerGrid.FilterString = string.Format("{0} And ({1})", this.ownerGrid.FilterString, statusFilterString);
+                }
+                else
+                {
+                    this.ownerGrid.FilterString = statusFilterString;
+                }
+            }
+        }
+
     }
 }

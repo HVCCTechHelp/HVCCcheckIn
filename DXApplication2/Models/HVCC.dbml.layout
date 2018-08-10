@@ -132,12 +132,6 @@
         <elementListCompartment Id="a39072eb-aa0b-4764-a2fc-114bb4dda29c" absoluteBounds="33.265, 6.4600000000000009, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="8261abda-e196-4c21-9c53-3687269592ba" absoluteBounds="6.75, 10.375, 2, 3.5016097005208326">
-      <DataClassMoniker Name="/HVCCDataContext/FinancialTransaction" />
-      <nestedChildShapes>
-        <elementListCompartment Id="47a29bd4-5efe-4c7b-ba2c-fe4077d14e8f" absoluteBounds="6.765, 10.835, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="37abad3b-675e-4946-8a4e-23623f0113f7" absoluteBounds="10, 0.875, 2, 4.8477197265625">
       <DataClassMoniker Name="/HVCCDataContext/Owner" />
       <nestedChildShapes>
@@ -165,18 +159,11 @@
         <classShapeMoniker Id="20e64093-3627-49c0-8d4c-072b05295044" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(11 : 5.7227197265625); (11 : 8.33735270182292); (12.375 : 8.33735270182292)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(11 : 5.7227197265625); (11 : 8.33735270182292); (11.7135454166667 : 8.33735270182292 : JumpStart); (11.8802120833333 : 8.33735270182292 : JumpEnd); (12.375 : 8.33735270182292)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(10.4687475 : 5.7227197265625); (10.4687475 : 12.8135060628255); (8.75 : 12.8135060628255)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
-      <nodes>
-        <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
-        <classShapeMoniker Id="8261abda-e196-4c21-9c53-3687269592ba" />
       </nodes>
     </associationConnector>
     <classShape Id="8d6acc7b-f31a-4414-83f5-f896a01d911b" absoluteBounds="13.875, 15.875, 2, 1.7708968098958327">
@@ -243,13 +230,6 @@
         <elementListCompartment Id="c9ad94bc-de87-4cbe-8ffe-799b507a6b81" absoluteBounds="6.765, 8.085, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(7.75 : 10.375); (7.75 : 9.39589680989583)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/HVCCDataContext/FinancialTransaction/FinancialTransaction_TransactionXNote" />
-      <nodes>
-        <classShapeMoniker Id="8261abda-e196-4c21-9c53-3687269592ba" />
-        <classShapeMoniker Id="9bc5ec6e-74b6-451b-8dca-6dae20c0f5f8" />
-      </nodes>
-    </associationConnector>
     <associationConnector edgePoints="[(7.75 : 6.7131982421875); (7.75 : 7.625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Note/Note_TransactionXNote" />
       <nodes>
@@ -263,5 +243,25 @@
         <elementListCompartment Id="24b2f8c5-083e-4ed9-8818-c104a863e9cd" absoluteBounds="25.515, 2.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="a2f4bb32-34e5-4b99-a5a4-024cbd0a7a2d" absoluteBounds="6.875, 10.625, 2, 3.5016097005208326">
+      <DataClassMoniker Name="/HVCCDataContext/FinancialTransaction" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f6aa9502-0737-47d4-83ba-72c850ee965a" absoluteBounds="6.8900000000000006, 11.085, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7.8125 : 10.625); (7.8125 : 9.39589680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HVCCDataContext/FinancialTransaction/FinancialTransaction_TransactionXNote" />
+      <nodes>
+        <classShapeMoniker Id="a2f4bb32-34e5-4b99-a5a4-024cbd0a7a2d" />
+        <classShapeMoniker Id="9bc5ec6e-74b6-451b-8dca-6dae20c0f5f8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.4687475 : 5.7227197265625); (10.4687475 : 12.9385060628255); (8.875 : 12.9385060628255)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_FinancialTransaction" />
+      <nodes>
+        <classShapeMoniker Id="37abad3b-675e-4946-8a4e-23623f0113f7" />
+        <classShapeMoniker Id="a2f4bb32-34e5-4b99-a5a4-024cbd0a7a2d" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

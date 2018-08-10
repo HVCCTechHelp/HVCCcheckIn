@@ -95,35 +95,46 @@
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
                                                ToolTip="Bulk update dues balance information" />
                         </dxr:RibbonPageGroup>
+
+                        <dxr:RibbonPageGroup Caption="Views">
+                            <dxb:BarButtonItem x:Name="bFilterStatus"
+                               Content="Past Due Balances"
+                               RibbonStyle="Large"
+                               MergeType="Replace"
+                               ItemClick="BFilterStatus_ItemClick"
+                               Glyph="{dx:DXImage Image=Filter_16x16.png}" 
+                               LargeGlyph="{dx:DXImage Image=Filter_32x32.png}" />
+                        </dxr:RibbonPageGroup>
+
                     </dxr:RibbonPage>
                     <!--<dxr:RibbonPage x:Name="ownerReports" Caption="Reports">-->
 
-                        <!--<dxr:RibbonPageGroup Caption="Owner Reports" IsVisible="{Binding ApplPermissions.CanViewOwner}">-->
-                            <!--<dxb:BarButtonItem Content="Daily Usage"
+                    <!--<dxr:RibbonPageGroup Caption="Owner Reports" IsVisible="{Binding ApplPermissions.CanViewOwner}">-->
+                    <!--<dxb:BarButtonItem Content="Daily Usage"
                                                    ItemClick="bb_PeriodReportClick"
                                                    IsVisible="True" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />-->
-                            <!--<dxb:BarButtonItem Content="Property Notes"
+                    <!--<dxb:BarButtonItem Content="Property Notes"
                                                    ItemClick="bb_NotesReportClick"
                                                    IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />-->
-                            <!--<dxb:BarButtonItem Content="Balances Due"
+                    <!--<dxb:BarButtonItem Content="Balances Due"
                                                    ItemClick="bb_BalanceReportClick"
                                                    IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />-->
-                            <!--<dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="Ownership History" 
+                    <!--<dxb:BarButtonItem x:Name="bbOwnershipHistory" Content="Ownership History" 
                                                    Command="{Binding OwnershipHistoryCommand}" CommandParameter=""
                                                    IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Ownership_16x16.png" 
                                                    LargeGlyph="/Images/Icons/Ownership_32x32.png" />-->
-                        <!--</dxr:RibbonPageGroup>-->
+                    <!--</dxr:RibbonPageGroup>-->
 
                     <!--</dxr:RibbonPage>-->
 
@@ -206,10 +217,10 @@
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
                                 <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="30" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
-                                    </dxe:TextEditSettings>
-                                </dxg:GridColumn.EditSettings>
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
+                                        </dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="PropertyCount" Header="Properties" Width="20" ReadOnly="True"/>
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
