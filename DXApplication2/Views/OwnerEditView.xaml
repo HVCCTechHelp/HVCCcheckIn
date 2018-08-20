@@ -360,9 +360,9 @@
 
                                 </dxlc:LayoutItem>
                                 <dxlc:LayoutItem Width="Auto">
-                                    <ScrollViewer Height="60" VerticalAlignment="Top">
+                                    <ScrollViewer Height="100" VerticalAlignment="Top">
                                         <TextBlock Text="{Binding AllNotes}"  
-                                  Height="200" Width="700"
+                                  Height="Auto" Width="700"
                                   />
                                     </ScrollViewer>
                                 </dxlc:LayoutItem>

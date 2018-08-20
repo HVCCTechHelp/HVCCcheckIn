@@ -492,7 +492,7 @@
                     {
                         TransactionAppliesTo.Replace(tmp, "");
                     }
-                    TotalAmount += (decimal)_duesAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("DuesAmount");
                 }
             }
@@ -519,7 +519,7 @@
                     {
                         TransactionAppliesTo.Replace(tmp, "");
                     }
-                    TotalAmount += (decimal)_feeAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("FeeAmount");
                 }
             }
@@ -571,7 +571,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    TotalAmount += (decimal)_cartAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("CartAmount");
                 }
             }
@@ -599,7 +599,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    TotalAmount += (decimal)_assessmentAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("AssessmentAmount");
                 }
             }
@@ -627,7 +627,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    TotalAmount += (decimal)_reconnectAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("ReconnectAmount");
                 }
             }
@@ -655,7 +655,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    TotalAmount += (decimal)_lienFeeAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("LienFeeAmount");
                 }
             }
@@ -683,7 +683,7 @@
                         TransactionAppliesTo.Replace(tmp, "");
                     }
 
-                    TotalAmount += (decimal)_otherAmount;
+                    TotalAmount = (decimal)CalculateTotalAmount();
                     RaisePropertyChanged("OtherAmount");
                 }
             }
@@ -806,6 +806,20 @@
 
         /* ----------------------------------- Private Methods ---------------------------------------- */
         #region Private Methods
+
+        private decimal? CalculateTotalAmount()
+        {
+            decimal? total = 0m;
+            if (null != DuesAmount) { total += DuesAmount; }
+            if (null != FeeAmount) { total += FeeAmount; }
+            if (null != CartAmount) { total += CartAmount; }
+            if (null != AssessmentAmount) { total += AssessmentAmount; }
+            if (null != ReconnectAmount) { total += ReconnectAmount; }
+            if (null != LienFeeAmount) { total += LienFeeAmount; }
+            if (null != OtherAmount) { total += OtherAmount; }
+
+            return total;
+        }
 
         /// <summary>
         /// Summary
@@ -940,6 +954,7 @@
 
                 // If this is a new transaction, insert the new transaction using the usp_Insert so we can get
                 // the transaction ID back from the database and use it as a reference in the Note record.
+                // Otherwise, updates will be processed using Linq2SQL further down...
                 if (!IsEditTransaction)
                 {
                     try
@@ -1046,6 +1061,7 @@
                         wsOff.ResolutionDate = DateTime.Now;
                         wsOff.Resolution = "Owner has paid full balance due.";
                         wsOff.IsMemberSuspended = false;
+                        wsOff.IsWaterShutoff = false;
                     }
                 }
 
@@ -1160,8 +1176,8 @@
             {
                 FinancialTransaction p = parameter as FinancialTransaction;
                 IsEditTransaction = true;
-                TransactionDate = p.TransactionDate;
 
+                // Enable the "Delete" ribbon button
                 RaisePropertyChanged("CanDeleteTransaction");
 
                 if (null != p.CreditAmount)
@@ -1182,12 +1198,6 @@
                     }
                     DebitAmount = p.DebitAmount;
                 }
-
-                TransactionMethod = p.TransactionMethod;
-                CheckNumber = p.CheckNumber;
-                ReceiptNumber = p.ReceiptNumber;
-                FiscalYear = p.FiscalYear;
-                TransactionComment = p.Comment;
 
                 // We remove the "Pool " string from the transaction description so it just leaves "Assessment".  
                 // The pool assessment ended in FY18/19.  If in the future, another assessment is added we will 
@@ -1237,6 +1247,16 @@
                             break;
                     }
                 }
+                TotalAmount = (decimal)CalculateTotalAmount();
+
+                // Assign the proper values to the VM's various properties so they will be correct if/when the user Saves the changes.
+                TransactionDate = p.TransactionDate;
+                TransactionMethod = p.TransactionMethod;
+                CheckNumber = p.CheckNumber;
+                ReceiptNumber = p.ReceiptNumber;
+                FiscalYear = p.FiscalYear;
+                TransactionComment = p.Comment;
+                TransactionAppliesTo = new StringBuilder();
             }
         }
 
