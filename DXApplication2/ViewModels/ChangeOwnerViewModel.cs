@@ -491,13 +491,13 @@
                             NewOwner.SecondaryPhone,
                             NewOwner.EmailAddress,
                             NewOwner.IsSendByEmail,
+                            NewOwner.IsCurrentOwner,
                             NewOwner.IsPrimaryRes,
                             NewOwner.IsWeekend,
                             NewOwner.IsSeasonal,
                             NewOwner.IsRental,
                             NewOwner.IsRVlot,
                             NewOwner.IsEmptyLot,
-                            true,
                             ref newOwnerID);
 
                     NewOwner = (from x in dc.Owners

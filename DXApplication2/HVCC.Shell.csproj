@@ -28,11 +28,11 @@
     <UpdateUrl>\\hvccserver\HVCCApplication\</UpdateUrl>
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
-    <MinimumRequiredVersion>2.0.1.65</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.0.1.67</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>68</ApplicationRevision>
+    <ApplicationRevision>69</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -59,16 +59,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A5F2FA357FDBBB1507141A36465841EE3605DE67</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DD983AB6A47CE79810569E705C0D1BF8CFD6CB8E</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>HVCCShell_Key.pfx</ManifestKeyFile>
+    <ManifestKeyFile>HVCC.Shell_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Images\Icons\HVCC.ico</ApplicationIcon>
@@ -514,6 +514,7 @@
     <EmbeddedResource Include="Reports\WellMeterSummaryReport.resx">
       <DependentUpon>WellMeterSummaryReport.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="HVCC.Shell_TemporaryKey.pfx" />
     <None Include="HVCCShell_Key.pfx" />
     <None Include="Models\HVCC.dbml.layout">
       <DependentUpon>HVCC.dbml</DependentUpon>
