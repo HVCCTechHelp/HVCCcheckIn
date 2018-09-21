@@ -478,54 +478,66 @@
                     // Call the Stored Procedure directly to perform the Insert.  We do this outside of the
                     // managed datacontext so we can get the OwnerID of the new record which is required for
                     // inserting Relationships for the new owner.
-                    NewOwner.Customer = SelectedProperty.Customer;
-                    dc.usp_InsertOwner(
-                            NewOwner.Customer,
-                            NewOwner.MailTo,
-                            NewOwner.Address,
-                            NewOwner.Address2,
-                            NewOwner.City,
-                            NewOwner.State,
-                            NewOwner.Zip,
-                            NewOwner.PrimaryPhone,
-                            NewOwner.SecondaryPhone,
-                            NewOwner.EmailAddress,
-                            NewOwner.IsSendByEmail,
-                            NewOwner.IsCurrentOwner,
-                            NewOwner.IsPrimaryRes,
-                            NewOwner.IsWeekend,
-                            NewOwner.IsSeasonal,
-                            NewOwner.IsRental,
-                            NewOwner.IsRVlot,
-                            NewOwner.IsEmptyLot,
-                            ref newOwnerID);
-
-                    NewOwner = (from x in dc.Owners
-                                where x.OwnerID == newOwnerID
-                                select x).FirstOrDefault();
-
-                    // We have to also add an initial FinancialTransaction record to set the new owner
-                    // account balance to $0.00 since we use the OwnerDetail View for the Grids
-                    FinancialTransaction newTrans = new FinancialTransaction();
-                    newTrans.OwnerID = NewOwner.OwnerID;
-                    newTrans.Balance = 0m;
-                    newTrans.FiscalYear = Season.TimePeriod;
-                    newTrans.CreditAmount = 0;
-                    newTrans.DebitAmount = 0;
-                    newTrans.Comment = "New account establlished for owner";
-                    newTrans.TransactionDate = DateTime.Now;
-                    newTrans.TransactionAppliesTo = "Account";
-                    newTrans.TransactionMethod = "MachineGenerated";
-                    dc.FinancialTransactions.InsertOnSubmit(newTrans);
-
-                    // Insert the Relationship collection
-                    foreach (Relationship r in RelationshipsToProcess)
+                    try
                     {
-                        r.Owner = NewOwner;
-                        r.Active = true;
-                        r.Photo = ApplDefault.Photo;
+                        NewOwner.Customer = SelectedProperty.Customer;
+                        dc.usp_InsertOwner(
+                                NewOwner.Customer,
+                                NewOwner.MailTo,
+                                NewOwner.Address,
+                                NewOwner.Address2,
+                                NewOwner.City,
+                                NewOwner.State,
+                                NewOwner.Zip,
+                                NewOwner.PrimaryPhone,
+                                NewOwner.SecondaryPhone,
+                                NewOwner.EmailAddress,
+                                NewOwner.IsSendByEmail,
+                                NewOwner.IsCurrentOwner,
+                                NewOwner.IsPrimaryRes,
+                                NewOwner.IsWeekend,
+                                NewOwner.IsSeasonal,
+                                NewOwner.IsRental,
+                                NewOwner.IsRVlot,
+                                NewOwner.IsEmptyLot,
+                                ref newOwnerID);
+
+                        NewOwner = (from x in dc.Owners
+                                    where x.OwnerID == newOwnerID
+                                    select x).FirstOrDefault();
                     }
-                    dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
+                    catch (Exception ex)
+                    {
+                        MessageBoxService.Show("Error creating Owner record:" + ex.Message);
+                        return;
+                    }
+
+                    if (0 != NewOwner.OwnerID)
+                    {
+
+                        // We have to also add an initial FinancialTransaction record to set the new owner
+                        // account balance to $0.00 since we use the OwnerDetail View for the Grids
+                        FinancialTransaction newTrans = new FinancialTransaction();
+                        newTrans.OwnerID = NewOwner.OwnerID;
+                        newTrans.Balance = 0m;
+                        newTrans.FiscalYear = Season.TimePeriod;
+                        newTrans.CreditAmount = 0;
+                        newTrans.DebitAmount = 0;
+                        newTrans.Comment = "New account establlished for owner";
+                        newTrans.TransactionDate = DateTime.Now;
+                        newTrans.TransactionAppliesTo = "Account";
+                        newTrans.TransactionMethod = "MachineGenerated";
+                        dc.FinancialTransactions.InsertOnSubmit(newTrans);
+
+                        // Insert the Relationship collection
+                        foreach (Relationship r in RelationshipsToProcess)
+                        {
+                            r.Owner = NewOwner;
+                            r.Active = true;
+                            r.Photo = ApplDefault.Photo;
+                        }
+                        dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
+                    }
                 }
             }
 
@@ -586,7 +598,7 @@
                 x.Active = true;
             }
 
-            ChangeSet cs = dc.GetChangeSet();
+            //ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             this.IsBusy = false;
             RaisePropertyChanged("IsNotBusy");
