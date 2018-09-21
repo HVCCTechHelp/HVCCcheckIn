@@ -42,9 +42,6 @@ namespace HVCC.Shell.Models
     partial void DeleteWaterWell(WaterWell instance);
     partial void UpdateWellMeterReading(WellMeterReading instance);
     partial void DeleteWellMeterReading(WellMeterReading instance);
-    partial void InsertRelationship(Relationship instance);
-    partial void UpdateRelationship(Relationship instance);
-    partial void DeleteRelationship(Relationship instance);
     partial void UpdateOwnershipChange(OwnershipChange instance);
     partial void DeleteOwnershipChange(OwnershipChange instance);
     partial void DeleteWaterShutoff(WaterShutoff instance);
@@ -71,7 +68,7 @@ namespace HVCC.Shell.Models
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}
@@ -325,6 +322,23 @@ namespace HVCC.Shell.Models
 			obj.RowId = p1.GetValueOrDefault();
 		}
 		
+		private void InsertRelationship(Relationship obj)
+		{
+			System.Nullable<int> p1 = obj.RelationshipID;
+			this.usp_InsertRelationship(((System.Nullable<int>)(obj.OwnerID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
+			obj.RelationshipID = p1.GetValueOrDefault();
+		}
+		
+		private void UpdateRelationship(Relationship obj)
+		{
+			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), ((System.Nullable<int>)(obj.OwnerID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
+		}
+		
+		private void DeleteRelationship(Relationship obj)
+		{
+			this.usp_DeleteRelationship(((System.Nullable<int>)(obj.RelationshipID)));
+		}
+		
 		private void InsertOwnershipChange(OwnershipChange obj)
 		{
 			System.Nullable<int> p1 = obj.RowId;
@@ -516,13 +530,6 @@ namespace HVCC.Shell.Models
 		public int usp_InsertProperty([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Section", DbType="Int")] System.Nullable<int> section, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Block", DbType="Int")] System.Nullable<int> block, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Lot", DbType="Int")] System.Nullable<int> lot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SubLot", DbType="VarChar(10)")] string subLot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="BillTo", DbType="VarChar(100)")] string billTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Decimal(19,4)")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsInGoodStanding", DbType="Bit")] System.Nullable<bool> isInGoodStanding, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Parcel", DbType="VarChar(50)")] string parcel, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PhysicalAddress", DbType="VarChar(50)")] string physicalAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Status", DbType="VarChar(10)")] string status, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MeterNumber", DbType="Int")] System.Nullable<int> meterNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="WaterSystemNotes", DbType="VarChar(250)")] string waterSystemNotes)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), customer, section, block, lot, subLot, billTo, balance, isInGoodStanding, parcel, physicalAddress, status, meterNumber, waterSystemNotes);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteRelationshipXOwner")]
-		public int usp_DeleteRelationshipXOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId);
 			return ((int)(result.ReturnValue));
 		}
 		

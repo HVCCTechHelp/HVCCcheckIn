@@ -519,15 +519,26 @@
                         // account balance to $0.00 since we use the OwnerDetail View for the Grids
                         FinancialTransaction newTrans = new FinancialTransaction();
                         newTrans.OwnerID = NewOwner.OwnerID;
-                        newTrans.Balance = 0m;
                         newTrans.FiscalYear = Season.TimePeriod;
+                        newTrans.Balance = 0m;
                         newTrans.CreditAmount = 0;
                         newTrans.DebitAmount = 0;
-                        newTrans.Comment = "New account establlished for owner";
                         newTrans.TransactionDate = DateTime.Now;
-                        newTrans.TransactionAppliesTo = "Account";
                         newTrans.TransactionMethod = "MachineGenerated";
+                        newTrans.TransactionAppliesTo = "Account";
+                        newTrans.Comment = "New account establlished for owner";
+                        newTrans.CheckNumber = null;
+                        newTrans.ReceiptNumber = null;
                         dc.FinancialTransactions.InsertOnSubmit(newTrans);
+                        try
+                        {
+                            dc.SubmitChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBoxService.Show("Error creating Finincial record:" + ex.Message);
+                            return;
+                        }
 
                         // Insert the Relationship collection
                         foreach (Relationship r in RelationshipsToProcess)
@@ -537,6 +548,15 @@
                             r.Photo = ApplDefault.Photo;
                         }
                         dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
+                        try
+                        {
+                            dc.SubmitChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBoxService.Show("Error creating Relationship records:" + ex.Message);
+                            return;
+                        }
                     }
                 }
             }
@@ -603,6 +623,9 @@
             this.IsBusy = false;
             RaisePropertyChanged("IsNotBusy");
             Host.Execute(HostVerb.Close, this.Caption);
+
+            String msg = String.Format("New Owner Created: {0:000000}", NewOwner.OwnerID);
+            MessageBox.Show(msg);
         }
 
         #region ICommandSink Implementation
