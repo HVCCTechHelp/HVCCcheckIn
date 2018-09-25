@@ -508,7 +508,7 @@
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxService.Show("Error creating Owner record:" + ex.Message);
+                        MessageBox.Show("Error creating Owner record:" + ex.Message);
                         return;
                     }
 
@@ -536,25 +536,26 @@
                         }
                         catch (Exception ex)
                         {
-                            MessageBoxService.Show("Error creating Finincial record:" + ex.Message);
+                            MessageBox.Show("Error creating Finincial record:" + ex.Message);
                             return;
                         }
 
                         // Insert the Relationship collection
-                        foreach (Relationship r in RelationshipsToProcess)
-                        {
-                            r.Owner = NewOwner;
-                            r.Active = true;
-                            r.Photo = ApplDefault.Photo;
-                        }
-                        dc.Relationships.InsertAllOnSubmit(RelationshipsToProcess);
                         try
                         {
+                            foreach (Relationship r in RelationshipsToProcess)
+                            {
+                                r.OwnerID = NewOwner.OwnerID;
+                                r.Active = true;
+                                r.Photo = ApplDefault.Photo;
+                                dc.Relationships.InsertOnSubmit(r);
+                            }
+                            ChangeSet cs = dc.GetChangeSet();
                             dc.SubmitChanges();
                         }
                         catch (Exception ex)
                         {
-                            MessageBoxService.Show("Error creating Relationship records:" + ex.Message);
+                            MessageBox.Show("Error creating Relationship records:" + ex.Message);
                             return;
                         }
                     }
