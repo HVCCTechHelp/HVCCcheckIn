@@ -125,6 +125,7 @@
                                                           HorizontalAlignment="Left"
                                                           AllowNullInput="False" 
                                                           NullText="Date credit/debit was applied"
+                                                          TabIndex="1"
                                                           >
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="TransactionDate" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnDataErrors="True">
@@ -144,6 +145,8 @@
                                                               AllowNullInput="False" IsTextEditable="False" 
                                                               ValidateOnEnterKeyPressed="True" ValidateOnTextInput="False"
                                                               NullText="Select One"
+                                                              TabIndex="2" 
+                                                              EditValueChanged="ceFiscalYear_EditValueChanged"
                                                               >
                                             <dxe:TextEdit.EditValue>
                                                 <Binding Path="FiscalYear" Mode="TwoWay">

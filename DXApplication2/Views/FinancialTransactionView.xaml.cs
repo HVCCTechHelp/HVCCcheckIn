@@ -161,5 +161,16 @@
             //cePoolAssessment.Visibility = Visibility.Hidden;
             //ceWaterReconnect.Visibility = Visibility.Hidden;
         }
+
+        private void ceFiscalYear_EditValueChanged(object sender, EditValueChangedEventArgs e)
+        {
+            TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
+            UIElement keyboardFocus = Keyboard.FocusedElement as UIElement;
+
+            if (keyboardFocus != null)
+            {
+                keyboardFocus.MoveFocus(tRequest);
+            }
+        }
     }
 }
