@@ -100,6 +100,12 @@
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
                         <dxr:RibbonPageGroup Caption="Property Action">
+                            
+                            <dxb:BarButtonItem x:Name="bbViewParcel" Content="View Parcel" 
+                                               Command="{Binding ViewParcelCommand}" CommandParameter="{Binding SelectedProperty}"
+                                               IsEnabled="True"
+                                               Glyph="/Images/Icons/MapLocation.jpg" 
+                                               LargeGlyph="/Images/Icons/MapLocation.jpg" />
 
                             <dxb:BarButtonItem x:Name="bbOwner" Content="Owner" 
                                                Command="{Binding ViewOwnerCommand}" CommandParameter="{Binding SelectedProperty}"
@@ -143,7 +149,7 @@
                                 AllowEditing="False"
 				                AllowPerPixelScrolling="True" 
                                 AutoWidth="True" 
-				                NavigationStyle="Cell" 
+				                NavigationStyle="Row" 
                                 ShowAutoFilterRow="True"
                                 ShowGroupPanel="True"
 				                ShowFixedTotalSummary="True" 
@@ -162,7 +168,7 @@
                                                 <dxc:Format Foreground="Green" />
                                             </dxg:FormatCondition>
                                         </dxg:TableView.FormatConditions>
-
+                                        
                                         <dxmvvm:Interaction.Behaviors>
                                             <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}" />
@@ -194,8 +200,14 @@
                                     <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50" AllowEditing="False" ReadOnly="True" />
                                     <!--<dxg:GridColumn FieldName="IsInGoodStanding" Header="GoodStanding" Width="20" Visible="False" AllowEditing="False" ReadOnly="True" ShowInColumnChooser="True" />
                                     <dxg:GridColumn FieldName="Status" Header="Status" Width="20" AllowEditing="False" ReadOnly="True" Visible="False" ShowInColumnChooser="True"/>-->
-                                    <dxg:GridColumn FieldName="PhysicalAddress" Header="Address" Width="20" Visible="False" AllowEditing="True" ReadOnly="True" ShowInColumnChooser="True"/>
-                                    <dxg:GridColumn FieldName="Parcel" Header="Parcel" Width="20" Visible="False" ShowInColumnChooser="True" AllowEditing="False"  ReadOnly="True"  />
+                                    <dxg:GridColumn FieldName="PhysicalAddress" Header="Address" Width="20" Visible="True" AllowEditing="True" ReadOnly="True" ShowInColumnChooser="True"/>
+                                    <dxg:GridColumn FieldName="Parcel" Header="Parcel" Width="20" Visible="True" ShowInColumnChooser="True" AllowEditing="False"  ReadOnly="True"  >
+                                        <dxg:GridColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <dxe:HyperlinkEdit Name="PART_Editor" AllowAutoNavigate="True" Text="{Binding RowData.Row.Name}" />
+                                            </DataTemplate>
+                                        </dxg:GridColumn.CellTemplate>
+                                    </dxg:GridColumn>
                                     <dxg:GridColumn FieldName="Address" Header="Owner Address" Width="20" Visible="False"  AllowEditing="False" ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
                                     <dxg:GridColumn FieldName="Address2" Header="Owner Address2" Width="20" Visible="False" AllowEditing="False"  ReadOnly="True" ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" />
                                     <dxg:GridColumn FieldName="City" Header="City" Width="20" Visible="False"  AllowEditing="False"  ShowInColumnChooser="{Binding ApplPermissions.CanViewOwnerNotes}" ReadOnly="True" />

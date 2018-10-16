@@ -30,7 +30,7 @@
     <PublisherName>HVCC</PublisherName>
     <MinimumRequiredVersion>2.0.1.67</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>77</ApplicationRevision>
+    <ApplicationRevision>78</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -657,6 +657,9 @@
     <Resource Include="Images\Reports\OwnershipHistory.JPG" />
     <Resource Include="Images\Reports\PropertyNotes.JPG" />
     <Resource Include="Images\Reports\Transactions.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\MapLocation.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

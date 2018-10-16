@@ -13,6 +13,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data.Linq;
+    using System.Diagnostics;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
@@ -381,6 +382,34 @@
     /// </summary>
     public partial class PropertiesDetailsViewModel /*: CommonViewModel, ICommandSink*/
     {
+        private bool _canViewParcel = true;
+        /// <summary>
+        /// View Parcel Command
+        /// </summary>
+        private ICommand _viewParcelCommand;
+        public ICommand ViewParcelCommand
+        {
+            get
+            {
+                return _viewParcelCommand ?? (_viewParcelCommand = new CommandHandler(() => ViewParcelAction(), _canViewParcel));
+            }
+        }
+
+        public void ViewParcelAction()
+        {
+            try
+            {
+                string absoluteUri = "http://parcels.lewiscountywa.gov/" + SelectedProperty.Parcel;
+                Process.Start(new ProcessStartInfo(absoluteUri));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+            }
+        }
 
         /// <summary>
         /// Refresh Command
