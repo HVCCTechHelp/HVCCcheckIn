@@ -404,7 +404,7 @@
                                         umb.OwnerID = oID;
                                         umb.MailTo = owner.MailTo;
                                         umb.QBbalance = balance;
-                                        umb.HVbalance = owner.Balance;
+                                        umb.HVbalance = (decimal)owner.Balance;
 
                                         unmatchedBalances.Add(umb);
                                     }

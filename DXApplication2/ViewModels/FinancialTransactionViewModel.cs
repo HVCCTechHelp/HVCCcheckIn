@@ -1205,48 +1205,49 @@
                 string tmp = p.TransactionAppliesTo.ToString().Replace("Pool ", "");
                 String[] substrngs = tmp.Split(' ');
 
-                foreach (string s in substrngs)
-                {
-                    String[] items = s.Split(':');
-                    string amt = items[1].Replace("$", "");
-
-                    switch (items[0])
+                    foreach (string s in substrngs)
                     {
-                        case "Dues":
-                            Decimal.TryParse(amt, out decimal duesAmount);
-                            this.DuesAmount = duesAmount;
-                            break;
-                        case "LateFee":
-                            Decimal.TryParse(amt, out decimal feeAmount);
-                            this.FeeAmount = feeAmount;
-                            break;
-                        case "GolfCart":
-                        case "CartFee":
-                            Decimal.TryParse(amt, out decimal cartAmount);
-                            int count = Decimal.ToInt32(cartAmount / SelectedFiscalYear.CartFee);
-                            this.GolfCartQuanity = count;
-                            break;
-                        case "Asessment":
-                        case "Assessment":
-                            Decimal.TryParse(amt, out decimal assessmentAmount);
-                            this.AssessmentAmount = assessmentAmount;
-                            break;
-                        case "Reconnect":
-                            Decimal.TryParse(amt, out decimal reconnectAmount);
-                            this.ReconnectAmount = reconnectAmount;
-                            break;
-                        case "LienFee":
-                            Decimal.TryParse(amt, out decimal lienFeeAmount);
-                            this.LienFeeAmount = lienFeeAmount;
-                            break;
-                        case "Other":
-                            Decimal.TryParse(amt, out decimal otherAmount);
-                            this.OtherAmount = otherAmount;
-                            break;
-                        default:
-                            break;
+                        String[] items = s.Split(':');
+                        string amt = items[1].Replace("$", "");
+
+                        switch (items[0])
+                        {
+                            case "Dues":
+                                Decimal.TryParse(amt, out decimal duesAmount);
+                                this.DuesAmount = duesAmount;
+                                break;
+                            case "LateFee":
+                                Decimal.TryParse(amt, out decimal feeAmount);
+                                this.FeeAmount = feeAmount;
+                                break;
+                            case "GolfCart":
+                            case "CartFee":
+                                Decimal.TryParse(amt, out decimal cartAmount);
+                                int count = Decimal.ToInt32(cartAmount / SelectedFiscalYear.CartFee);
+                                this.GolfCartQuanity = count;
+                                break;
+                            case "Asessment":
+                            case "Assessment":
+                                Decimal.TryParse(amt, out decimal assessmentAmount);
+                                this.AssessmentAmount = assessmentAmount;
+                                break;
+                            case "Reconnect":
+                                Decimal.TryParse(amt, out decimal reconnectAmount);
+                                this.ReconnectAmount = reconnectAmount;
+                                break;
+                            case "LienFee":
+                                Decimal.TryParse(amt, out decimal lienFeeAmount);
+                                this.LienFeeAmount = lienFeeAmount;
+                                break;
+                            case "Other":
+                                Decimal.TryParse(amt, out decimal otherAmount);
+                                this.OtherAmount = otherAmount;
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
+
                 TotalAmount = (decimal)CalculateTotalAmount();
 
                 // Assign the proper values to the VM's various properties so they will be correct if/when the user Saves the changes.
@@ -1368,6 +1369,7 @@
                             {
                                 // Remove the XRef record
                                 dc.usp_DeleteTransactionXNote(tXn.RowId);
+                                ChangeSet cs = dc.GetChangeSet();
                                 // Remove Note from Owner's table???
                                 dc.usp_DeleteNote(tXn.NoteID);
                                 // delete record from database

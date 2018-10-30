@@ -186,6 +186,7 @@
                                  Width="Auto"
                                  Height="700"
                                  HorizontalAlignment="Left"
+                                 FilterString="[IsCurrentOwner] = True"
                                  >
                             <dxg:GridControl.View>
                                 <dxg:TableView x:Name="tableViewOwners" 
@@ -238,8 +239,10 @@
                                 <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False"/>
                                 <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
-                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
+                                <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
+                                <dxg:GridColumn FieldName="IsCurrentOwner" Header="Active" Width="20" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                             </dxg:GridControl.Columns>
+
                             <dxg:GridControl.TotalSummary>
                                 <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
                                 <dxg:GridSummaryItem FieldName="PropertyCount" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />

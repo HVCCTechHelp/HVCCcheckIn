@@ -57,7 +57,7 @@
                 if (null == trytofind)
                 {
                     WaterShutoff = new WaterShutoff();
-                    WaterShutoff.OwnerID = SelectedOwner.OwnerID;
+                    WaterShutoff.OwnerID = (int)SelectedOwner.OwnerID;
                     IsNew = true;
                 }
                 else
@@ -411,7 +411,7 @@
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Water Shutoff Status changed: {0} on {1:MM/dd/yyyy}", p, d);
             note.Comment = sb.ToString().Trim();
-            note.OwnerID = SelectedOwner.OwnerID;
+            note.OwnerID = (int)SelectedOwner.OwnerID;
             dc.Notes.InsertOnSubmit(note);
         }
 
@@ -419,10 +419,10 @@
         {
             FinancialTransaction transaction = new FinancialTransaction();
 
-            transaction.OwnerID = SelectedOwner.OwnerID;
+            transaction.OwnerID = (int)SelectedOwner.OwnerID;
             transaction.FiscalYear = FiscalYear;
             transaction.DebitAmount = amount;
-            transaction.Balance = SelectedOwner.Balance + amount;
+            transaction.Balance = (int)SelectedOwner.Balance + amount;
             transaction.TransactionDate = DateTime.Now;
             transaction.TransactionMethod = "Machine Generated";
             transaction.TransactionAppliesTo = appliesTo;

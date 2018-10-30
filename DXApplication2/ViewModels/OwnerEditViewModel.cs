@@ -36,7 +36,7 @@
             if (parameter is v_OwnerDetail)
             {
                 v_OwnerDetail p = parameter as v_OwnerDetail;
-                ownerID = p.OwnerID;
+                ownerID = (int)p.OwnerID;
             }
             else if (parameter is Owner)
             {

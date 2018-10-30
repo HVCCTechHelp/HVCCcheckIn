@@ -220,7 +220,7 @@
                     Invoice invoice = new Invoice();
                     invoice.OwnerID = o.OwnerID;
                     invoice.MailTo = o.MailTo;
-                    invoice.Balance = (from y in dc.v_OwnerDetails
+                    invoice.Balance = (decimal)(from y in dc.v_OwnerDetails
                                        where y.OwnerID == o.OwnerID
                                        select y.Balance).FirstOrDefault();
 

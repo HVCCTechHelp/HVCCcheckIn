@@ -274,14 +274,14 @@
             int? transactionID = null;
             FinancialTransaction transaction = new FinancialTransaction();
 
-            decimal balance = (from x in dc.v_OwnerDetails
+            decimal? balance = (from x in dc.v_OwnerDetails
                                where x.OwnerID == selectedOwner.OwnerID
                                select x.Balance).FirstOrDefault();
 
             transaction.OwnerID = selectedOwner.OwnerID;
             transaction.FiscalYear = SelectedSeason.TimePeriod;
             transaction.DebitAmount = amount;
-            transaction.Balance = balance + amount;
+            transaction.Balance = (decimal)balance + amount;
             transaction.TransactionDate = DateTime.Now;
             transaction.TransactionMethod = "Machine Generated";
             transaction.TransactionAppliesTo = appliesTo;
@@ -677,7 +677,7 @@
 
                     // Generate the PDF Report
                     Late30Day late30 = new Late30Day();
-                    late30.OwnerID = ownerDetail.OwnerID;
+                    late30.OwnerID = (int)ownerDetail.OwnerID;
                     late30.MailTo = ownerDetail.MailTo;
                     late30.Season = CurrentSeason.TimePeriod;
                     dc.Late30Days.InsertOnSubmit(late30);
@@ -769,7 +769,7 @@
 
                     // Generate the PDF Report
                     Late60Day late60 = new Late60Day();
-                    late60.OwnerID = ownerDetail.OwnerID;
+                    late60.OwnerID = (int)ownerDetail.OwnerID;
                     late60.Season = CurrentSeason.TimePeriod;
                     dc.Late60Days.InsertOnSubmit(late60);
 
@@ -860,7 +860,7 @@
 
                     // Generate the PDF report
                     Late90Day late90 = new Late90Day();
-                    late90.OwnerID = ownerDetail.OwnerID;
+                    late90.OwnerID = (int)ownerDetail.OwnerID;
                     late90.Season = CurrentSeason.TimePeriod;
                     dc.Late90Days.InsertOnSubmit(late90);
 
