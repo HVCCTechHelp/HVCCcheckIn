@@ -149,7 +149,7 @@
                                                               EditValueChanged="ceFiscalYear_EditValueChanged"
                                                               >
                                             <dxe:TextEdit.EditValue>
-                                                <Binding Path="FiscalYear" Mode="TwoWay">
+                                                <Binding Path="FiscalYear" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
                                                         <validation:RequiredValidationRule FieldName="FiscalYear"/>
                                                     </Binding.ValidationRules>
@@ -489,8 +489,8 @@
                                                       Focusable="False"
                                                       Width="100" 
                                                       Style="{Binding TeStyle}"
-                                                      ValidateOnEnterKeyPressed="True"
-                                                      ValidateOnTextInput="False"
+                                                      ValidateOnEnterKeyPressed="False"
+                                                      ValidateOnTextInput="True"
                                                       MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"
                                                       NullText="$0.00"
                                                       ShowBorder="False">

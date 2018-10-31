@@ -37,6 +37,10 @@
                 SelectedOwner = (from x in this.dc.Owners
                                  where x.OwnerID == p.OwnerID
                                  select x).FirstOrDefault();
+
+                FiscalYear = (from x in this.dc.Seasons
+                                     where x.IsCurrent == true
+                                     select x.TimePeriod).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -366,7 +370,7 @@
             }
         }
 
-        private DateTime _transactionDate = new DateTime();
+        private DateTime _transactionDate = DateTime.Now;
         public DateTime TransactionDate
         {
             get
@@ -1205,48 +1209,48 @@
                 string tmp = p.TransactionAppliesTo.ToString().Replace("Pool ", "");
                 String[] substrngs = tmp.Split(' ');
 
-                    foreach (string s in substrngs)
-                    {
-                        String[] items = s.Split(':');
-                        string amt = items[1].Replace("$", "");
+                foreach (string s in substrngs)
+                {
+                    String[] items = s.Split(':');
+                    string amt = items[1].Replace("$", "");
 
-                        switch (items[0])
-                        {
-                            case "Dues":
-                                Decimal.TryParse(amt, out decimal duesAmount);
-                                this.DuesAmount = duesAmount;
-                                break;
-                            case "LateFee":
-                                Decimal.TryParse(amt, out decimal feeAmount);
-                                this.FeeAmount = feeAmount;
-                                break;
-                            case "GolfCart":
-                            case "CartFee":
-                                Decimal.TryParse(amt, out decimal cartAmount);
-                                int count = Decimal.ToInt32(cartAmount / SelectedFiscalYear.CartFee);
-                                this.GolfCartQuanity = count;
-                                break;
-                            case "Asessment":
-                            case "Assessment":
-                                Decimal.TryParse(amt, out decimal assessmentAmount);
-                                this.AssessmentAmount = assessmentAmount;
-                                break;
-                            case "Reconnect":
-                                Decimal.TryParse(amt, out decimal reconnectAmount);
-                                this.ReconnectAmount = reconnectAmount;
-                                break;
-                            case "LienFee":
-                                Decimal.TryParse(amt, out decimal lienFeeAmount);
-                                this.LienFeeAmount = lienFeeAmount;
-                                break;
-                            case "Other":
-                                Decimal.TryParse(amt, out decimal otherAmount);
-                                this.OtherAmount = otherAmount;
-                                break;
-                            default:
-                                break;
-                        }
+                    switch (items[0])
+                    {
+                        case "Dues":
+                            Decimal.TryParse(amt, out decimal duesAmount);
+                            this.DuesAmount = duesAmount;
+                            break;
+                        case "LateFee":
+                            Decimal.TryParse(amt, out decimal feeAmount);
+                            this.FeeAmount = feeAmount;
+                            break;
+                        case "GolfCart":
+                        case "CartFee":
+                            Decimal.TryParse(amt, out decimal cartAmount);
+                            int count = Decimal.ToInt32(cartAmount / SelectedFiscalYear.CartFee);
+                            this.GolfCartQuanity = count;
+                            break;
+                        case "Asessment":
+                        case "Assessment":
+                            Decimal.TryParse(amt, out decimal assessmentAmount);
+                            this.AssessmentAmount = assessmentAmount;
+                            break;
+                        case "Reconnect":
+                            Decimal.TryParse(amt, out decimal reconnectAmount);
+                            this.ReconnectAmount = reconnectAmount;
+                            break;
+                        case "LienFee":
+                            Decimal.TryParse(amt, out decimal lienFeeAmount);
+                            this.LienFeeAmount = lienFeeAmount;
+                            break;
+                        case "Other":
+                            Decimal.TryParse(amt, out decimal otherAmount);
+                            this.OtherAmount = otherAmount;
+                            break;
+                        default:
+                            break;
                     }
+                }
 
                 TotalAmount = (decimal)CalculateTotalAmount();
 
@@ -1305,7 +1309,7 @@
         /// </summary>
         /// 
         private bool _canDeleteTransaction = false;
-       
+
         public bool CanDeleteTransaction
         {
             get
@@ -1435,16 +1439,16 @@
         public bool CkIsValid()
         {
             if (                                                                    // The following conditions must be met to pass validation
-                   ((CreditAmount > 0 && null == DebitAmount))                      // must have a non-zero amount in either Credit or Debit
-                || (DebitAmount > 0 && (null == CreditAmount))                      // must have a non-zero amount in either Debit or Credit
-                && ((TotalAmount == CreditAmount)                                   // the calculated total must equal Credit amount, or
-                || (TotalAmount == DebitAmount))                                    // the calculated total must equal Debit amount
-                && (DateTime.Now > TransactionDate)                                 // the transaction must match todays date
+                   ((CreditAmount > 0 && null == DebitAmount)                       // must have a non-zero amount in either Credit or Debit
+                   || (DebitAmount > 0 && null == CreditAmount))                    // must have a non-zero amount in either Debit or Credit
+                && ((TotalAmount == CreditAmount) || (TotalAmount == DebitAmount))  // the calculated total must equal Credit amount, or
+                                                                                    // the calculated total must equal Debit amount
+                //&& (DateTime.Now > TransactionDate)                                 // the transaction must match todays date
                 && !String.IsNullOrEmpty(FiscalYear)                                // the FiscalYear may not be empty
                 && !String.IsNullOrEmpty(TransactionMethod)                         // the TransactionMethod may not be empty
                 && !String.IsNullOrEmpty(TransactionComment)                        // the Comment may not be empty
-                && !(null != CreditAmount && !String.IsNullOrEmpty(CheckNumber))    // the CheckNumber may not be empty if Credit is not null
-                && !(null != CreditAmount && !String.IsNullOrEmpty(ReceiptNumber))  // the ReceiptNumber may not be empty if Credit is not null
+                && (null != CreditAmount && !String.IsNullOrEmpty(CheckNumber))    // the CheckNumber may not be empty if Credit is not null
+                && (null != CreditAmount && !String.IsNullOrEmpty(ReceiptNumber))  // the ReceiptNumber may not be empty if Credit is not null
                )
             {
                 return true;
@@ -1498,7 +1502,7 @@
             {
                 //// If invoked, will throw validation error if property is null/blank
 
-                //StringBuilder errorMsg = new StringBuilder();
+                StringBuilder errorMsg = new StringBuilder();
 
                 if (columnName == BindableBase.GetPropertyName(() => CreditAmount))
                 {
@@ -1527,7 +1531,16 @@
                 }
                 else if (columnName == BindableBase.GetPropertyName(() => TotalAmount))
                 {
-                    errorMsg.Append(RequiredValidationRule.CheckDecimalInput(() => "TotalAmount", TotalAmount));
+                    bool tf = false;
+                    if (null != CreditAmount)
+                    {
+                        if (TotalAmount == CreditAmount) { tf = true; }
+                    }
+                    else
+                    {
+                        if (TotalAmount == DebitAmount) { tf = true; }
+                    }
+                    errorMsg.Append(RequiredValidationRule.CheckTotalInput(() => "TotalAmount", tf));
                     return errorMsg.ToString();
                 }
                 else if (columnName == BindableBase.GetPropertyName(() => FiscalYear))

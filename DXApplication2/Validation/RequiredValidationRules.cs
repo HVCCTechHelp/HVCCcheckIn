@@ -36,8 +36,10 @@
                     break;
                 case "CreditAmount":
                 case "DebitAmount":
-                case "TotalAmount":
                     error = CheckDecimalInput(FieldName, value);
+                    break;
+                case "TotalAmount":
+                    error = CheckTotalInput(FieldName, value);
                     break;
                 case "State":
                     error = CkStateAbbreviation(FieldName, value);
@@ -148,6 +150,53 @@
             else
             {
                 return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Validates that the total value matches either the credit or debit amount
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="nullValue"></param>
+        /// <returns></returns>
+        public static string CheckTotalInput(string fieldName, object fieldValue, object nullValue = null)
+        {
+            bool? value = fieldValue as bool?;
+            string errorMessage = string.Empty;
+            if (true == value)
+            {
+                errorMessage = string.Empty;
+            }
+            else
+            {
+                errorMessage = "Total amount must match credit or debit amount";
+            }
+            return errorMessage;
+        }
+
+
+        /// <summary>
+        /// Validates that the TotalAmount field passes/fails validation based on ture (pass) or false (fail)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="nullValue"></param>
+        /// <returns></returns>
+        public static string CheckTotalInput<T>(Expression<Func<T>> expression, object fieldValue, object nullValue = null)
+        {
+            //// Determine which field (property) we are validating
+            //string fieldName = BindableBase.GetPropertyName(expression);   // Is hit...
+            bool? value = fieldValue as bool?;
+            if (true == value)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return CheckTotalInput("TotalAmount", value, nullValue);
             }
         }
 

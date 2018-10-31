@@ -164,6 +164,8 @@
 
         private void ceFiscalYear_EditValueChanged(object sender, EditValueChangedEventArgs e)
         {
+            // Once the user has made a selection from the list, the cursor focus is moved to the next
+            // control on the form. This forces validation to take place on this control.
             TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
             UIElement keyboardFocus = Keyboard.FocusedElement as UIElement;
 
