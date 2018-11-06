@@ -34,7 +34,7 @@
         <ResourceDictionary>
             <converters:BooleanToVisibility x:Key="BoolToVis" />
             <converters:InverseBooleanToVisibility x:Key="InverseBoolToVis" />
-            <converters:InvertBoolean x:Key="Invert" />
+            <converters:InvertBoolean x:Key="InverseBool" />
             <converters:BalanceValueToTypeConverter x:Key="BalanceValueToType" />
             <converters:BitmapToByteArrayConverter x:Key="BitmapToByteArray"/>
             <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
@@ -421,7 +421,7 @@
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutGroup Orientation="Horizontal" >
                                         <dxlc:LayoutItem Label="Primary Res:">
-                                          <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsPrimaryRes, Mode=TwoWay}"/>  
+                                            <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsPrimaryRes, Mode=TwoWay}"/>
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Label="Weekend:">
                                             <dxe:CheckEdit IsChecked="{Binding SelectedOwner.IsWeekend, Mode=TwoWay}"/>
@@ -551,7 +551,7 @@
 
 
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" x:Name="lgCheckIn">
-                        <dxlc:LayoutGroup View="GroupBox" Header="Check-In" Margin="400,0,0,0" Height="145"
+                        <dxlc:LayoutGroup View="GroupBox" Header="Check-In" Margin="365,0,0,0" Height="150"
                               Visibility="{Binding ApplPermissions.CanCheckIn, Mode=OneWay, Converter={StaticResource BoolToVis}}"
                               VerticalAlignment="Top" 
                               Orientation="Vertical"
@@ -651,7 +651,7 @@
                             </dxlc:LayoutGroup>
                         </dxlc:LayoutGroup>
 
-                        <dxlc:LayoutGroup View="GroupBox" Header="Golf Cart" x:Name="lgGolfCart" Height="145" Width="150"  
+                        <dxlc:LayoutGroup View="GroupBox" Header="Golf Cart" x:Name="lgGolfCart" Height="150" Width="400"  
                                           Orientation="Vertical"
                                           HorizontalAlignment="Left"
                                           IsCollapsible="True" 
@@ -661,15 +661,42 @@
                             <dxlc:LayoutItem >
                                 <Image Source="{Binding CartImage}" Height="64" Width="64" />
                             </dxlc:LayoutItem>
-                            <dxlc:LayoutItem Label="Paid On: " >
-                                <dxe:TextEdit x:Name="txGolfPaidDate" EditValue="{Binding GolfCart.PaymentDate}"
+                            <dxlc:LayoutGroup Orientation="Horizontal" HorizontalAlignment="Left" Width="250" Margin="0,-5,0,0">
+                                <dxlc:LayoutItem  Label="          Paid: " >
+                                    <dxe:CheckEdit  IsChecked="{Binding GolfCart.IsPaid, Mode=TwoWay}"
+                                                    IsReadOnly="{Binding GolfCart.IsPaid}" 
+                                                    Width="25" HorizontalAlignment="Left"/>
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem HorizontalAlignment="Left">
+                                    <dxe:TextEdit x:Name="txGolfPaidDate" EditValue="{Binding GolfCart.PaymentDate}"
                                               IsReadOnly="True"
+                                              Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom"
                                               MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d" ShowBorder="False"/>
-                            </dxlc:LayoutItem>
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem Label="Qty: " Margin="5,0,0,0" HorizontalAlignment="Left">
+                                    <dxe:TextEdit x:Name="txGolfQty" EditValue="{Binding GolfCart.Quanity}"
+                                              IsReadOnly="{Binding GolfCart.IsPaid}"
+                                              ShowBorder="{Binding GolfCart.IsPaid, Converter={StaticResource InverseBool}}"
+                                              Width="25" Height="20" HorizontalAlignment="Left"/>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:LayoutGroup Orientation="Horizontal" HorizontalAlignment="Left" Width="188"  Margin="0,-10,0,0">
+                                <dxlc:LayoutItem Label="Picked Up: ">
+                                    <dxe:CheckEdit  IsChecked="{Binding GolfCart.IsReceived, Mode=TwoWay}"
+                                                    IsReadOnly="{Binding GolfCart.IsReceived}"
+                                                    Width="25" HorizontalAlignment="Left"/>
+                                </dxlc:LayoutItem>
+                                <dxlc:LayoutItem HorizontalAlignment="Left">
+                                    <dxe:TextEdit x:Name="txGolfRecdDate" EditValue="{Binding GolfCart.ReceivedDate}"
+                                                  IsReadOnly="True"
+                                                  Width="75" VerticalAlignment="Bottom"
+                                                  MaskType="DateTime" MaskUseAsDisplayFormat="True" Mask="d" ShowBorder="False"/>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
                         </dxlc:LayoutGroup>
                     </dxlc:LayoutGroup>
 
-                    <dxlc:LayoutGroup View="GroupBox" Header="Relationships" Width="1100" 
+                    <dxlc:LayoutGroup View="GroupBox" Header="Relationships" Width="1105" 
                               VerticalAlignment="Top" 
                               HorizontalAlignment="Left"
                               IsCollapsible="True" 

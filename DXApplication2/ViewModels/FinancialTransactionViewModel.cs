@@ -693,8 +693,8 @@
             }
         }
 
-        private decimal _totalAmount = 0m;
-        public decimal TotalAmount
+        private decimal? _totalAmount = 0m;
+        public decimal? TotalAmount
         {
             get
             {
@@ -1439,16 +1439,24 @@
         public bool CkIsValid()
         {
             if (                                                                    // The following conditions must be met to pass validation
-                   ((CreditAmount > 0 && null == DebitAmount)                       // must have a non-zero amount in either Credit or Debit
-                   || (DebitAmount > 0 && null == CreditAmount))                    // must have a non-zero amount in either Debit or Credit
-                && ((TotalAmount == CreditAmount) || (TotalAmount == DebitAmount))  // the calculated total must equal Credit amount, or
-                                                                                    // the calculated total must equal Debit amount
-                //&& (DateTime.Now > TransactionDate)                                 // the transaction must match todays date
+                (  // For Payment (Credit).....
+                   (CreditAmount > 0 && null == DebitAmount)                        // must have a non-zero amount in either Credit or Debit
+                && (TotalAmount == CreditAmount)                                    // the calculated total must equal Credit/Debit amount
+                //&& (DateTime.Now > TransactionDate)                               // the transaction must match todays date
                 && !String.IsNullOrEmpty(FiscalYear)                                // the FiscalYear may not be empty
                 && !String.IsNullOrEmpty(TransactionMethod)                         // the TransactionMethod may not be empty
                 && !String.IsNullOrEmpty(TransactionComment)                        // the Comment may not be empty
-                && (null != CreditAmount && !String.IsNullOrEmpty(CheckNumber))    // the CheckNumber may not be empty if Credit is not null
-                && (null != CreditAmount && !String.IsNullOrEmpty(ReceiptNumber))  // the ReceiptNumber may not be empty if Credit is not null
+                && ((null != CreditAmount) && (!String.IsNullOrEmpty(CheckNumber))) // the CheckNumber may not be empty if Credit is not null
+                && ((null != CreditAmount) && (!String.IsNullOrEmpty(ReceiptNumber))// the ReceiptNumber may not be empty if Credit is not null
+                ) 
+                ||
+                (  // For Invoice (Debit)........
+                   (DebitAmount > 0 && null == CreditAmount))                       // must have a non-zero amount in either Debit or Credit
+                && (TotalAmount == DebitAmount)                                     // the calculated total must equal Credit/Debit amount
+                && !String.IsNullOrEmpty(FiscalYear)                                // the FiscalYear may not be empty
+                && !String.IsNullOrEmpty(TransactionMethod)                         // the TransactionMethod may not be empty
+                && !String.IsNullOrEmpty(TransactionComment)                        // the Comment may not be empty
+                )
                )
             {
                 return true;

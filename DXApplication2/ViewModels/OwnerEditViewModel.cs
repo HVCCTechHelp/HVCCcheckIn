@@ -446,7 +446,35 @@
             }
         }
 
+        private GolfCart _golfCart = null;
         public GolfCart GolfCart
+        {
+            get
+            {
+                return this._golfCart;
+            }
+            set
+            {
+                // When GolfCart is changed, we unregister the previous PropertyChanged
+                // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
+                // We use this PropertyChanged trigger to handle GolfCart changes.
+                if (this._golfCart != null)
+                {
+                    this._golfCart.PropertyChanged -= GolfCart_PropertyChanged;
+                }
+
+                if (value != this._golfCart)
+                {
+                    this._golfCart = value;
+                    // Once the new value is assigned, we register a new PropertyChanged event listner.
+                    this._golfCart.PropertyChanged += GolfCart_PropertyChanged;
+                    RaisePropertyChanged("GolfCart");
+                }
+            }
+        }
+
+        /// </summary>
+        public bool HasRegisteredCart
         {
             get
             {
@@ -457,25 +485,16 @@
                                 select a).LastOrDefault();
                     if (null != cart)
                     {
-                        return cart;
+                        GolfCart = cart;
+                        return true;
                     }
-                    return null;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error Getting Cart Info: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return false;
                 }
-            }
-        }
-
-        /// </summary>
-        public bool HasRegisteredCart
-        {
-            get
-            {
-                if (null == GolfCart) { return false; }
-                else { return true; }
+                return false;
             }
         }
 
@@ -682,6 +701,31 @@
             //ChangeSet cs = this.dc.GetChangeSet();
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
+        }
+
+        /// <summary>
+        /// GolfCart PropertyChanged event handler.  When a property of the GolfCart object is
+        /// changed, the PropertyChanged event is fired, and processed by this handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GolfCart_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var x = e.PropertyName;
+
+            // We listen for changes to the IsPaid/IsReceived value of the GolfCart object 
+            switch (e.PropertyName)
+            {
+                case "IsPaid":
+                    GolfCart.PaymentDate = DateTime.Now;
+                    break;
+                case "IsReceived":
+                    GolfCart.ReceivedDate = DateTime.Now;
+                    break;
+                default:
+                    break;
+            }
+                RaisePropertyChanged("DataChanged");
         }
 
         #endregion
