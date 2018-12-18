@@ -68,7 +68,7 @@ namespace HVCC.Shell.Models
     #endregion
 		
 		public HVCCDataContext() : 
-				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionString, mappingSource)
+				base(global::HVCC.Shell.Properties.Settings.Default.HVCCConnectionStringDEV, mappingSource)
 		{
 			OnCreated();
 		}
@@ -629,13 +629,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetInvoiceForOwner")]
-		public ISingleResult<usp_GetInvoiceForOwnerResult> usp_GetInvoiceForOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID);
-			return ((ISingleResult<usp_GetInvoiceForOwnerResult>)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertGolfCart")]
 		public int usp_InsertGolfCart([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Year", DbType="VarChar(50)")] string year, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Quanity", DbType="Int")] System.Nullable<int> quanity, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsPaid", DbType="Bit")] System.Nullable<bool> isPaid, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PaymentDate", DbType="Date")] System.Nullable<System.DateTime> paymentDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
 		{
@@ -779,6 +772,13 @@ namespace HVCC.Shell.Models
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), customer, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, isPrimaryRes, isWeekend, isSeasonal, isRental, isRVlot, isEmptyLot, ownerID);
 			ownerID = ((System.Nullable<int>)(result.GetParameterValue(18)));
 			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetInvoiceForOwner")]
+		public ISingleResult<usp_GetInvoiceForOwnerResult> usp_GetInvoiceForOwner([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PreviousYear", DbType="VarChar(50)")] string previousYear)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, previousYear);
+			return ((ISingleResult<usp_GetInvoiceForOwnerResult>)(result.ReturnValue));
 		}
 	}
 	
@@ -9874,6 +9874,8 @@ namespace HVCC.Shell.Models
 		
 		private System.Nullable<decimal> _Total;
 		
+		private string _PreviousYear;
+		
 		public usp_GetInvoiceForOwnerResult()
 		{
 		}
@@ -10114,6 +10116,22 @@ namespace HVCC.Shell.Models
 				if ((this._Total != value))
 				{
 					this._Total = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PreviousYear", DbType="VarChar(50)")]
+		public string PreviousYear
+		{
+			get
+			{
+				return this._PreviousYear;
+			}
+			set
+			{
+				if ((this._PreviousYear != value))
+				{
+					this._PreviousYear = value;
 				}
 			}
 		}

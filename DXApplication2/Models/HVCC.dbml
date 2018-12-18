@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HVCC_DEV" Class="HVCCDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=HVCCSERVER\SQLEXPRESS;Initial Catalog=HVCC_DEV;Integrated Security=True" SettingsObjectName="HVCC.Shell.Properties.Settings" SettingsPropertyName="HVCCConnectionStringDEV" Provider="System.Data.SqlClient" />
   <Table Name="dbo.WaterMeterReadings" Member="WaterMeterReadings">
     <Type Name="WaterMeterReading">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -895,26 +895,6 @@
     <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <ElementType Name="usp_GetInvoiceForOwnerResult">
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="MailTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Address" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Address2" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="State" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
-      <Column Name="Zip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="Item" Type="System.String" DbType="VarChar(52) NOT NULL" CanBeNull="false" />
-      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Rate" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="IsAssessment" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-    </ElementType>
-  </Function>
   <Function Id="FunctionId11" Name="dbo.usp_InsertGolfCart" Method="usp_InsertGolfCart">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
@@ -1059,5 +1039,27 @@
     <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PreviousYear" Parameter="previousYear" Type="System.String" DbType="VarChar(50)" />
+    <ElementType Name="usp_GetInvoiceForOwnerResult">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Address2" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="Zip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Item" Type="System.String" DbType="VarChar(52) NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="IsAssessment" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="PreviousYear" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </ElementType>
   </Function>
 </Database>

@@ -18,6 +18,7 @@
     using System.Windows;
     using System.Text;
     using System.Globalization;
+    using System.IO;
 
     public partial class AdministrationViewModel : CommonViewModel, ICommandSink
     {
@@ -273,22 +274,22 @@
         {
             int? transactionID = null;
             FinancialTransaction transaction = new FinancialTransaction();
-
-            decimal? balance = (from x in dc.v_OwnerDetails
-                               where x.OwnerID == selectedOwner.OwnerID
-                               select x.Balance).FirstOrDefault();
-
-            transaction.OwnerID = selectedOwner.OwnerID;
-            transaction.FiscalYear = SelectedSeason.TimePeriod;
-            transaction.DebitAmount = amount;
-            transaction.Balance = (decimal)balance + amount;
-            transaction.TransactionDate = DateTime.Now;
-            transaction.TransactionMethod = "Machine Generated";
-            transaction.TransactionAppliesTo = appliesTo;
-            transaction.Comment = comment;
-
             try
             {
+
+                decimal? balance = (from x in dc.v_OwnerDetails
+                                    where x.OwnerID == selectedOwner.OwnerID
+                                    select x.Balance).FirstOrDefault();
+
+                transaction.OwnerID = selectedOwner.OwnerID;
+                transaction.FiscalYear = SelectedSeason.TimePeriod;
+                transaction.DebitAmount = amount;
+                transaction.Balance = (decimal)balance + amount;
+                transaction.TransactionDate = DateTime.Now;
+                transaction.TransactionMethod = "Machine Generated";
+                transaction.TransactionAppliesTo = appliesTo;
+                transaction.Comment = comment;
+
                 dc.usp_InsertFinancialTransaction(
                             transaction.OwnerID,
                             transaction.FiscalYear,
@@ -463,6 +464,9 @@
         /// <param name="type"></param>
         public void GenerateAnnualInvoicesAction()
         {
+            ///
+            /// See Stored Procedure: 	[dbo].[usp_GetInvoiceForOwner]  
+            /// 
             string fileName = string.Empty;
             var list = (from a in this.dc.v_OwnerDetails
                         select a);
@@ -475,6 +479,7 @@
                 fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
                 Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
                 report.Parameters["selectedOwner"].Value = o.OwnerID;
+                report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
                 report.CreateDocument();
                 report.ExportToPdf(fileName);
             }
@@ -550,41 +555,109 @@
                             where x.IsCurrentOwner == true
                             select x);
                 Owners = new ObservableCollection<Owner>(list);
-                foreach (Owner o in Owners)
+
+                int propertyCount = 0;
+                int cartCount = 0;
+
+                using (var StreamWriter = new StreamWriter(@"D:\Invoices\InvoiceList.csv"))
                 {
-                    StringBuilder sb = new StringBuilder();
-                    int propertyCount = o.Properties.Count();
-                    int cartCount = o.GolfCarts.Count();
-                    decimal amount = SelectedSeason.AnnualDues * propertyCount;
-                    sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+                    StringBuilder sb2 = new StringBuilder();
+                    sb2.Append("OwnerID|Lot1|Lot2|Lot3|Lot4|Lot5|Lot6|Assessment|GolfCart|Total");
+                    StreamWriter.WriteLine(sb2.ToString());
 
-                    // Check to see if Special Assessment needs to be applied.
-                    decimal assessedAmt = 0m;
-                    foreach (Property p in o.Properties)
+                    foreach (Owner o in Owners)
                     {
-                        if (p.IsAssessment)
+                        propertyCount = 0;
+                        cartCount = 0;
+                        StringBuilder sb = new StringBuilder();
+
+                        ///
+                        /// StringBuilder2 is used to create a CSV file of invoice information....
+                        /// 
+                        sb2.Clear();
+                        sb2.AppendFormat("{0}|", o.OwnerID.ToString().PadLeft(6, '0'));
+
+                        propertyCount = o.Properties.Count();
+                        decimal amount = SelectedSeason.AnnualDues * propertyCount;
+                        sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+
+                        ///
+                        /// Check to see if Special Assessment needs to be applied.
+                        /// 
+                        decimal assessedAmt = 0m;
+                        foreach (Property p in o.Properties)
                         {
-                            assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
+                            sb2.AppendFormat("{0}|", p.Customer);
+                            if (p.IsAssessment)
+                            {
+                                assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
+                            }
                         }
-                    }
-                    if (assessedAmt > 0)
-                    {
-                        sb.AppendFormat(" {0} Asessment:{1}", SelectedSeason.Assessment, assessedAmt.ToString("C", CultureInfo.CurrentCulture));
-                    }
+                        if (assessedAmt > 0)
+                        {
+                            sb.AppendFormat(" {0} Asessment:{1}", SelectedSeason.Assessment, assessedAmt.ToString("C", CultureInfo.CurrentCulture));
+                            sb2.AppendFormat("{0}|", assessedAmt.ToString("C", CultureInfo.CurrentCulture));
+                        }
+                        else
+                        {
+                            sb2.Append("|");
+                        }
 
-                    if (cartCount > 0)
-                    {
-                        amount += SelectedSeason.CartFee * cartCount;
-                        sb.AppendFormat(" GolfCart:{0}", (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-                    }
+                        ///
+                        /// To ensure our CSV file has the same number of columns for every row, we have to null
+                        /// pad the row upto (6) properties worth of columns.
+                        /// 
+                        for (int i = 0; i < (6 - propertyCount); i++)
+                        {
+                            sb2.Append("|");
+                        }
 
-                    string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    AddNote(o, note);
-                    GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
-                    ChangeSet cs = dc.GetChangeSet();
+                        ///
+                        /// Check to see if the owner purchased a cart sticker for the previous season.  
+                        /// We use 'CurrentSeason' as the previous because we haven't made the new season (SelectedSeason) the active
+                        /// season yet.
+                        /// 
+                        cartCount = (from x in o.GolfCarts
+                                     where x.Year == CurrentSeason.TimePeriod
+                                     select x.Quanity).FirstOrDefault();
+
+                        if (0 < cartCount)
+                        {
+                            amount += SelectedSeason.CartFee * cartCount;
+                            sb.AppendFormat(" GolfCart:{0}", (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
+                            sb2.AppendFormat("{0}|", (SelectedSeason.CartFee * cartCount));
+                        }
+                        else
+                        {
+                            ///
+                            /// If they don't own a cart, we have to pad the columns
+                            /// 
+                            sb2.Append("|");
+                        }
+
+                        ///
+                        /// Create the transaction note, then add the Note and Invoice transaction to the database
+                        /// 
+                        string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
+                        AddNote(o, note);
+                        GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
+
+                        ///
+                        /// Add the total amount of the invoice and write the full line to the output file
+                        /// 
+                        sb2.AppendFormat("{0}", amount.ToString());
+                        StreamWriter.WriteLine(sb2.ToString());
+                    }
+                    //ChangeSet cs = dc.GetChangeSet();
+                    ///
+                    /// Close the spreadsheet file.....
+                    /// 
+                    StreamWriter.Close();
                 }
 
-                // Update the Seasons table so we move the settings forward for the current and next season
+                ///
+                /// Update the Seasons table so we move the settings forward for the current and next season
+                /// 
                 SelectedSeason.IsCurrent = true;
                 SelectedSeason.IsNext = false;
                 SelectedSeason.IsDuesApplied = true;
@@ -595,7 +668,6 @@
                 dc.SubmitChanges();
                 MessageBox.Show("Dues have been applied");
             }
-            //}
         }
 
         /// <summary>
