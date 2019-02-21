@@ -476,12 +476,15 @@
             RaisePropertyChanged("IsBusy");
             foreach (v_OwnerDetail o in OwnersList)
             {
-                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
-                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-                report.Parameters["selectedOwner"].Value = o.OwnerID;
-                report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
-                report.CreateDocument();
-                report.ExportToPdf(fileName);
+                if (true == o.IsCurrentOwner)
+                {
+                    fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                    Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                    report.Parameters["selectedOwner"].Value = o.OwnerID;
+                    report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
+                    report.CreateDocument();
+                    report.ExportToPdf(fileName);
+                }
             }
             RaisePropertyChanged("IsNotBusy");
         }
@@ -567,6 +570,20 @@
 
                     foreach (Owner o in Owners)
                     {
+                        ///
+                        /// See Stored Procedure: 	[dbo].[usp_GetInvoiceForOwner]  
+                        /// 
+                        string fileName = string.Empty;
+                        if (true == o.IsCurrentOwner)
+                        {
+                            fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                            Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                            report.Parameters["selectedOwner"].Value = o.OwnerID;
+                            report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
+                            report.CreateDocument();
+                            report.ExportToPdf(fileName);
+                        }
+
                         propertyCount = 0;
                         cartCount = 0;
                         StringBuilder sb = new StringBuilder();
@@ -645,7 +662,11 @@
                         ///
                         /// Add the total amount of the invoice and write the full line to the output file
                         /// 
-                        sb2.AppendFormat("{0}", amount.ToString());
+                        decimal? newTotalDue = (from x in dc.v_OwnerDetails
+                                                where x.OwnerID == o.OwnerID
+                                                select x.Balance).FirstOrDefault();
+
+                        sb2.AppendFormat("{0}", newTotalDue.ToString());
                         StreamWriter.WriteLine(sb2.ToString());
                     }
                     //ChangeSet cs = dc.GetChangeSet();
