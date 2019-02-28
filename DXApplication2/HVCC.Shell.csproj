@@ -105,6 +105,7 @@
     <Reference Include="DevExpress.Utils.v17.1.UI, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Carousel.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Charts.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Controls.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Core.v17.1" />
     <Reference Include="DevExpress.Data.v17.1" />
     <Reference Include="DevExpress.Xpf.Docking.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
@@ -181,6 +182,7 @@
     <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\DataBaseRole.cs" />
     <Compile Include="Helpers\Helpers.cs" />
+    <Compile Include="Models\Financials.cs" />
     <Compile Include="Models\HVCC.designer.cs">
       <DependentUpon>HVCC.dbml</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -244,11 +246,23 @@
     <Compile Include="Reports\FacilitiesUsageReport.Designer.cs">
       <DependentUpon>FacilitiesUsageReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Reports\PaymentReceiptReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PaymentReceiptReport.Designer.cs">
+      <DependentUpon>PaymentReceiptReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Reports\PropertyNotesReport.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PropertyNotesReport.Designer.cs">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\StandardInvoiceReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StandardInvoiceReport.Designer.cs">
+      <DependentUpon>StandardInvoiceReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Reports\TransactionReceipt.cs">
       <SubType>Component</SubType>
@@ -281,23 +295,20 @@
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="ViewModels\AdministrationViewModel.cs" />
     <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
-    <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
-    <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
     <Compile Include="ViewModels\FacilityUsageGraphViewModel.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\OwnerEditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\FinancialTransactionViewModel.cs" />
     <Compile Include="ViewModels\OwnershipHistoryViewModel.cs" />
     <Compile Include="ViewModels\OwnersViewModel.cs" />
-    <Compile Include="ViewModels\FinancialTransactionViewModel.cs" />
     <Compile Include="ViewModels\OwnerBalanceUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
     <Compile Include="ViewModels\ReportCarouselViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
-    <Compile Include="ViewModels\___WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
     <Compile Include="ViewModels\WaterShutoffEditViewModel.cs" />
     <Compile Include="ViewModels\WaterShutoffViewModel.cs" />
@@ -317,6 +328,9 @@
     <Compile Include="Views\OwnerEditView.xaml.cs">
       <DependentUpon>OwnerEditView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FinancialTransactionView.xaml.cs">
+      <DependentUpon>FinancialTransactionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OwnershipHistoryView.xaml.cs">
       <DependentUpon>OwnershipHistoryView.xaml</DependentUpon>
     </Compile>
@@ -325,9 +339,6 @@
     </Compile>
     <Compile Include="Views\GolfCartView.xaml.cs">
       <DependentUpon>GolfCartView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FinancialTransactionView.xaml.cs">
-      <DependentUpon>FinancialTransactionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OwnerBalanceUpdatedView.xaml.cs">
       <DependentUpon>OwnerBalanceUpdatedView.xaml</DependentUpon>
@@ -394,6 +405,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FinancialTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\OwnershipHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -403,10 +418,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GolfCartView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\FinancialTransactionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -499,8 +510,14 @@
     <EmbeddedResource Include="Reports\FacilitiesUsageReport.resx">
       <DependentUpon>FacilitiesUsageReport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PaymentReceiptReport.resx">
+      <DependentUpon>PaymentReceiptReport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PropertyNotesReport.resx">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StandardInvoiceReport.resx">
+      <DependentUpon>StandardInvoiceReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\TransactionReceipt.resx">
       <DependentUpon>TransactionReceipt.cs</DependentUpon>
@@ -660,6 +677,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\MapLocation.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\invoice.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\payment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\PaidLeaf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\QBCash.png" />
+    <Resource Include="Images\Icons\QBcheck.png" />
+    <Resource Include="Images\Icons\QBMemo.png" />
+    <Resource Include="Images\Icons\QBOrder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

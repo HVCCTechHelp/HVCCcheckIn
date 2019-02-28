@@ -119,7 +119,7 @@
         }
         public static IMvvmBinder GetNewFinancialTransactionView(object arg)
         {
-            ////IDataContext dc = new UnitTextConnectionDataContext();
+            //IDataContext dc = new UnitTextConnectionDataContext();
             IDataContext dc = new HVCC.Shell.Models.HVCCDataContext() as IDataContext;
             IViewModel vm = new FinancialTransactionViewModel(dc, arg) { Caption = "Financial Transaction" };
             IView v = new HVCC.Shell.Views.FinancialTransactionView(vm);

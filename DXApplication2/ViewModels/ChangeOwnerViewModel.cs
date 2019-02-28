@@ -475,14 +475,17 @@
                     NewOwner.PropertyChanged -=
                          new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
 
-                    // Call the Stored Procedure directly to perform the Insert.  We do this outside of the
-                    // managed datacontext so we can get the OwnerID of the new record which is required for
-                    // inserting Relationships for the new owner.
+                    /// (THIS CAN BE CHANGED)
+                    /// Call the Stored Procedure directly to perform the Insert.  We do this outside of the
+                    /// managed datacontext so we can get the OwnerID of the new record which is required for
+                    /// inserting Relationships for the new owner.
+                    /// 
                     try
                     {
                         NewOwner.Customer = SelectedProperty.Customer;
                         dc.usp_InsertOwner(
                                 NewOwner.Customer,
+                                NewOwner.AccountBalance,
                                 NewOwner.MailTo,
                                 NewOwner.Address,
                                 NewOwner.Address2,
@@ -517,19 +520,36 @@
 
                         // We have to also add an initial FinancialTransaction record to set the new owner
                         // account balance to $0.00 since we use the OwnerDetail View for the Grids
-                        FinancialTransaction newTrans = new FinancialTransaction();
-                        newTrans.OwnerID = NewOwner.OwnerID;
-                        newTrans.FiscalYear = Season.TimePeriod;
-                        newTrans.Balance = 0m;
-                        newTrans.CreditAmount = 0;
-                        newTrans.DebitAmount = 0;
-                        newTrans.TransactionDate = DateTime.Now;
-                        newTrans.TransactionMethod = "MachineGenerated";
-                        newTrans.TransactionAppliesTo = "Account";
-                        newTrans.Comment = "New account establlished for owner";
-                        newTrans.CheckNumber = null;
-                        newTrans.ReceiptNumber = null;
-                        dc.FinancialTransactions.InsertOnSubmit(newTrans);
+                        //FinancialTransaction newTrans = new FinancialTransaction();
+                        //newTrans.OwnerID = NewOwner.OwnerID;
+                        //newTrans.FiscalYear = Season.TimePeriod;
+                        //newTrans.Balance = 0m;
+                        //newTrans.CreditAmount = 0;
+                        //newTrans.DebitAmount = 0;
+                        //newTrans.TransactionDate = DateTime.Now;
+                        //newTrans.TransactionMethod = "MachineGenerated";
+                        //newTrans.TransactionAppliesTo = "Account";
+                        //newTrans.Comment = "New account establlished for owner";
+                        //newTrans.CheckNumber = null;
+                        //newTrans.ReceiptNumber = null;
+                        //dc.FinancialTransactions.InsertOnSubmit(newTrans);
+
+                        /// Create the initial financial record as a payment with $0.00
+                        /// 
+                        Payment thePayment = new Payment();
+                        thePayment.OwnerID = NewOwner.OwnerID;
+                        thePayment.GUID = Guid.NewGuid();
+                        thePayment.PaymentDate = DateTime.Now;
+                        thePayment.PaymentMethod = "CreditMemo";
+                        thePayment.CheckNumber = null;
+                        thePayment.ReceiptNumber = null;
+                        thePayment.IsApplied = true;
+                        thePayment.Memo = "QuickBooks balance when account was established";
+                        thePayment.EquityBalance = 0m;
+                        thePayment.Amount = 0m;
+
+                        dc.Payments.InsertOnSubmit(thePayment);
+
                         try
                         {
                             dc.SubmitChanges();

@@ -114,11 +114,11 @@
                                                Glyph="/Images/Icons/payment_32x32.png" 
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
 
-                            <dxb:BarButtonItem x:Name="bbWaterShutoff" Content="Water Shutoff" 
+                            <!--<dxb:BarButtonItem x:Name="bbWaterShutoff" Content="Water Shutoff" 
                                                Command="{Binding WaterShutoffCommand}" CommandParameter="{Binding SelectedOwner}"
                                                IsEnabled="{Binding ApplPermissions.CanEditOwner}"
                                                Glyph="/Images/Icons/Water-Shut-Off-Notice.jpg" 
-                                               LargeGlyph="/Images/Icons/Water-Shut-Off-Notice.jpg" />
+                                               LargeGlyph="/Images/Icons/Water-Shut-Off-Notice.jpg" />-->
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 
@@ -456,7 +456,7 @@
                                 <!--{Binding ApplPermissions.CanEditOwner, Converter={StaticResource InverseBoolToVis}}"-->
                                 <dxlc:LayoutGroup Orientation="Vertical">
                                     <dxlc:LayoutItem Label="Account Balance: " HorizontalAlignment="Right">
-                                        <dxe:TextEdit Text="{Binding AccountBalance, Mode=TwoWay}" 
+                                        <dxe:TextEdit Text="{Binding SelectedOwner.AccountBalance, Mode=TwoWay}" 
                                           Margin="5,0,0,0"
                                           HorizontalAlignment="Right"
                                           FontWeight="Bold" 
@@ -469,7 +469,7 @@
                                         />
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutItem>
-                                        <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
+                                        <!--<dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
                                      IsEnabled="True"
                                      ItemsSource="{Binding FinancialTransactions}"
                                      SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}"
@@ -491,13 +491,8 @@
                                                             <dxc:Format Foreground="Green" />
                                                         </dxg:FormatCondition>
                                                     </dxg:TableView.FormatConditions>
-                                                    <!--<dxmvvm:Interaction.Behaviors>
-                                                <dxmvvm:EventToCommand EventName="RowDoubleClick" 
-                                               Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}" />
-                                            </dxmvvm:Interaction.Behaviors>-->
                                                 </dxg:TableView>
                                             </dxg:GridControl.View>
-                                            <!-- columns of the detail grid -->
                                             <dxg:GridControl.Columns>
                                                 <dxg:GridColumn FieldName="TransactionDate" Header="Date" 
                                             Width="50" 
@@ -537,6 +532,71 @@
                                                     </dxg:GridColumn.EditSettings>
                                                 </dxg:GridColumn>
                                             </dxg:GridControl.Columns>
+                                        </dxg:GridControl>-->
+                                        <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
+                                         IsEnabled="True"
+                                         Width="Auto"
+                                         ItemsSource="{Binding FinancialTransactions}"
+                                         SelectedItem="{Binding SelectedTransaction}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                         >
+                                            <dxg:GridControl.View>
+                                                <dxg:TableView x:Name="tableViewTransactions" 
+                                               AllowEditing="False"
+                                               AllowPerPixelScrolling="True" 
+                                               AutoWidth="True" 
+                                               Height="100"
+                                               NavigationStyle="Row" 
+                                               ShowGroupPanel="False"
+                                               HorizontalScrollbarVisibility="Visible"
+                                               EnableImmediatePosting="True"
+                                               >
+                                                    <dxg:TableView.FormatConditions>
+                                                        <dxg:FormatCondition Expression="[BalanceDue] &gt; 0.0" FieldName="BalanceDue" ApplyToRow="True">
+                                                            <dxc:Format Background="#FFFF9B98" TextDecorations="{x:Null}"/>
+                                                        </dxg:FormatCondition>
+                                                        <dxg:FormatCondition Expression="[EquityBalance] &gt; 0.0" FieldName="EquityBalance" ApplyToRow="True">
+                                                            <dxc:Format Background="#FFA5FF99"/>
+                                                        </dxg:FormatCondition>
+                                                    </dxg:TableView.FormatConditions>
+                                                </dxg:TableView>
+                                            </dxg:GridControl.View>
+                                            <!-- columns of the detail grid -->
+                                            <dxg:GridColumn FieldName="Date" Header="Date" 
+                                            Width="100"
+                                            Fixed="Left"
+                                            SortOrder="Descending" 
+                                            SortIndex="0"
+                                            >
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:DateEditSettings DisplayFormat="d" />
+                                                </dxg:GridColumn.EditSettings>
+                                            </dxg:GridColumn>
+                                            <dxg:GridColumn FieldName="Type" Header="Type" Width="100" />
+                                            <dxg:GridColumn FieldName="Amount" Header="Amount" 
+                                            Width="75" 
+                                            Visible="True"
+                                            >
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"/>
+                                                </dxg:GridColumn.EditSettings>
+                                            </dxg:GridColumn>
+                                            <dxg:GridColumn FieldName="BalanceDue" Header="Balance Due" 
+                                            Width="75" 
+                                            Visible="True"
+                                            >
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"/>
+                                                </dxg:GridColumn.EditSettings>
+                                            </dxg:GridColumn>
+                                            <dxg:GridColumn FieldName="EquityBalance" Header="Equity Balance" 
+                                            Width="75" 
+                                            Visible="True"
+                                            >
+                                                <dxg:GridColumn.EditSettings>
+                                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"/>
+                                                </dxg:GridColumn.EditSettings>
+                                            </dxg:GridColumn>
                                         </dxg:GridControl>
                                     </dxlc:LayoutItem >
                                     <dxlc:LayoutItem>
@@ -833,6 +893,7 @@
                                             <dxe:ImageEditPasteToolButton />
                                             <dxe:ImageEditToolSeparator />
                                             <dxe:ImageEditClearToolButton />
+                                            <dxe:ImageEditSaveToolButton IsEnabled="True"/>
                                         </StackPanel>
                                     </ControlTemplate>
                                 </dxe:ImageEdit.MenuTemplate>

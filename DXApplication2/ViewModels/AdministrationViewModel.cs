@@ -19,6 +19,8 @@
     using System.Text;
     using System.Globalization;
     using System.IO;
+    using HVCC.Shell.Models.Financial;
+    using HVCC.Shell.Common.Converters;
 
     public partial class AdministrationViewModel : CommonViewModel, ICommandSink
     {
@@ -170,7 +172,30 @@
             }
         }
 
+        private DateTime MayFirst
+        {
+            get
+            {
+                int year = DateTime.Now.Year;
+                DateTime mayFirst = new DateTime(year, 5, 1);
+                return mayFirst;
+            }
+        }
+
         public ObservableCollection<Owner> Owners { get; set; }
+
+        private Invoice _theInvoice = null;
+        public Invoice TheInvoice
+        {
+            get { return _theInvoice; }
+            set
+            {
+                if (_theInvoice != value)
+                {
+                    _theInvoice = value;
+                }
+            }
+        }
 
         public bool IsApply30DayLate
         {
@@ -270,97 +295,165 @@
             return noteID;
         }
 
-        private int? GenerateFinancialTransaction(Owner selectedOwner, decimal amount, string appliesTo, string comment)
+        private void GenerateInvoice(Owner selectedOwner)
         {
-            int? transactionID = null;
-            FinancialTransaction transaction = new FinancialTransaction();
-            try
+            TheInvoice = new Invoice();
+            TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+            TheInvoice.GUID = Guid.NewGuid();
+            TheInvoice.OwnerID = selectedOwner.OwnerID;
+            TheInvoice.IssuedDate = DateTime.Now;
+            TheInvoice.DueDate = MayFirst;
+            TheInvoice.TermsDays = -1;  /// -1 Indicates "Due by May 1st"
+            //TheInvoice.Amount = amount;
+            //TheInvoice.BalanceDue = amount;
+            TheInvoice.PaymentsApplied = 0;
+            TheInvoice.IsPaid = false;
+
+            /// Create the InvoiceItem
+            /// 
+            InvoiceItem invoiceItem = new InvoiceItem();
+            StringBuilder description = new StringBuilder();
+            description.AppendLine("Membership dues for May 1 to Apr 30");
+            description.Append("Lot(s)# ");
+            foreach (Property p in selectedOwner.Properties)
             {
-
-                decimal? balance = (from x in dc.v_OwnerDetails
-                                    where x.OwnerID == selectedOwner.OwnerID
-                                    select x.Balance).FirstOrDefault();
-
-                transaction.OwnerID = selectedOwner.OwnerID;
-                transaction.FiscalYear = SelectedSeason.TimePeriod;
-                transaction.DebitAmount = amount;
-                transaction.Balance = (decimal)balance + amount;
-                transaction.TransactionDate = DateTime.Now;
-                transaction.TransactionMethod = "Machine Generated";
-                transaction.TransactionAppliesTo = appliesTo;
-                transaction.Comment = comment;
-
-                dc.usp_InsertFinancialTransaction(
-                            transaction.OwnerID,
-                            transaction.FiscalYear,
-                            transaction.Balance,
-                            transaction.CreditAmount,
-                            transaction.DebitAmount,
-                            transaction.TransactionDate,
-                            transaction.TransactionMethod,
-                            transaction.TransactionAppliesTo,
-                            transaction.Comment,
-                            transaction.CheckNumber,
-                            transaction.ReceiptNumber,
-                            ref transactionID
-                );
+                description.Append(p.Customer);
+                if (selectedOwner.Properties.Count() > 1)
+                {
+                    description.Append(", ");
+                }
             }
-            catch (Exception ex)
+            /// Remove the trailing comma from the string.
+            /// 
+            char[] remove = { ' ', ',' }; ;
+
+            invoiceItem.Item = String.Format("Dues {0}", CurrentSeason.TimePeriod);
+            invoiceItem.Description = description.ToString().TrimEnd(remove);
+            invoiceItem.Quanity = selectedOwner.Properties.Count();
+            invoiceItem.Rate = SelectedSeason.AnnualDues;
+            invoiceItem.Amount = invoiceItem.Quanity * invoiceItem.Rate;
+            TheInvoice.InvoiceItems.Add(invoiceItem);
+
+            /// Check to see if the owner purchased a cart sticker for the previous season.  
+            /// We use 'CurrentSeason' as the previous because we haven't made the new season (SelectedSeason) the active
+            /// season yet.
+            /// 
+            int cartCount = (from x in selectedOwner.GolfCarts
+                         where x.Year == CurrentSeason.TimePeriod
+                         select x.Quanity).FirstOrDefault();
+
+            if (0 < cartCount)
             {
-                MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                invoiceItem = new InvoiceItem();
+                invoiceItem.Item = "Golf Cart Sticker";
+                invoiceItem.Description = "Annual fee for Golf Cart Sticker";
+                invoiceItem.Quanity = cartCount;
+                invoiceItem.Rate = SelectedSeason.AnnualDues;
+                invoiceItem.Amount = invoiceItem.Quanity * invoiceItem.Rate;
+                TheInvoice.InvoiceItems.Add(invoiceItem);
             }
-            return transactionID;
+            /// Seralize the InvoiceItems collection to an XML string.
+            /// 
+            var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+            TheInvoice.ItemDetails = xmlString;
 
-            // Check to see if there is a WaterShutoff record for the Owner.  If there
-            // is not, we will generate one here.  If there is, it is updated to reflect the
-            // current past due status.
-            //if (comment.Contains("30")
-            //    || comment.Contains("60")
-            //    || comment.Contains("90"))
-            //{
-            //    WaterShutoff wsOff = (from x in dc.WaterShutoffs
-            //                          where x.OwnerID == selectedOwner.OwnerID
-            //                          && x.IsResolved == false
-            //                          select x).FirstOrDefault();
 
-            //    // No WaterShutoff record found, so we will create one.
-            //    if (null == wsOff)
-            //    {
-            //        WaterShutoff waterShutoff = new WaterShutoff();
-            //        waterShutoff.OwnerID = selectedOwner.OwnerID;
-            //        if (comment.Contains("30"))
-            //        {
-            //            waterShutoff.IsLate30 = true;
-            //            waterShutoff.FirstNotificationDate = DateTime.Now;
-            //            this.dc.WaterShutoffs.InsertOnSubmit(waterShutoff);
-            //        }
-            //    }
-            //    // There is an existing record, so it needs to be updated.....
-            //    else
-            //    {
-            //        if (comment.Contains("60"))
-            //        {
-            //            wsOff.IsLate60 = true;
-            //            wsOff.IsMemberSuspended = true;
-            //            wsOff.SuspensionDate = DateTime.Now;
-            //            wsOff.SecondNotificationDate = DateTime.Now;
-            //        }
-            //        else
-            //        {
-            //            wsOff.IsLate90 = true;
-            //            if (!wsOff.IsMemberSuspended)
-            //            {
-            //                wsOff.IsMemberSuspended = true;
-            //                wsOff.SuspensionDate = DateTime.Now;
-            //            }
-            //            wsOff.IsShutoffNoticeIssued = true;
-            //            wsOff.ShutoffNoticeIssuedDate = DateTime.Now;
-            //        }
-            //    }
-            //    ChangeSet cs = dc.GetChangeSet();
-            //    dc.SubmitChanges();
-            //}
+            dc.Invoices.InsertOnSubmit(TheInvoice);
+            dc.SubmitChanges();
         }
+
+
+        //private int? GenerateFinancialTransaction(Owner selectedOwner, decimal amount, string appliesTo, string comment)
+        //{
+        //    int? transactionID = null;
+        //    FinancialTransaction transaction = new FinancialTransaction();
+        //    try
+        //    {
+
+        //        decimal? balance = (from x in dc.v_OwnerDetails
+        //                            where x.OwnerID == selectedOwner.OwnerID
+        //                            select x.Balance).FirstOrDefault();
+
+        //        transaction.OwnerID = selectedOwner.OwnerID;
+        //        transaction.FiscalYear = SelectedSeason.TimePeriod;
+        //        transaction.DebitAmount = amount;
+        //        transaction.Balance = (decimal)balance + amount;
+        //        transaction.TransactionDate = DateTime.Now;
+        //        transaction.TransactionMethod = "Machine Generated";
+        //        transaction.TransactionAppliesTo = appliesTo;
+        //        transaction.Comment = comment;
+
+        //        dc.usp_InsertFinancialTransaction(
+        //                    transaction.OwnerID,
+        //                    transaction.FiscalYear,
+        //                    transaction.Balance,
+        //                    transaction.CreditAmount,
+        //                    transaction.DebitAmount,
+        //                    transaction.TransactionDate,
+        //                    transaction.TransactionMethod,
+        //                    transaction.TransactionAppliesTo,
+        //                    transaction.Comment,
+        //                    transaction.CheckNumber,
+        //                    transaction.ReceiptNumber,
+        //                    ref transactionID
+        //        );
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //    return transactionID;
+
+        //    // Check to see if there is a WaterShutoff record for the Owner.  If there
+        //    // is not, we will generate one here.  If there is, it is updated to reflect the
+        //    // current past due status.
+        //    //if (comment.Contains("30")
+        //    //    || comment.Contains("60")
+        //    //    || comment.Contains("90"))
+        //    //{
+        //    //    WaterShutoff wsOff = (from x in dc.WaterShutoffs
+        //    //                          where x.OwnerID == selectedOwner.OwnerID
+        //    //                          && x.IsResolved == false
+        //    //                          select x).FirstOrDefault();
+
+        //    //    // No WaterShutoff record found, so we will create one.
+        //    //    if (null == wsOff)
+        //    //    {
+        //    //        WaterShutoff waterShutoff = new WaterShutoff();
+        //    //        waterShutoff.OwnerID = selectedOwner.OwnerID;
+        //    //        if (comment.Contains("30"))
+        //    //        {
+        //    //            waterShutoff.IsLate30 = true;
+        //    //            waterShutoff.FirstNotificationDate = DateTime.Now;
+        //    //            this.dc.WaterShutoffs.InsertOnSubmit(waterShutoff);
+        //    //        }
+        //    //    }
+        //    //    // There is an existing record, so it needs to be updated.....
+        //    //    else
+        //    //    {
+        //    //        if (comment.Contains("60"))
+        //    //        {
+        //    //            wsOff.IsLate60 = true;
+        //    //            wsOff.IsMemberSuspended = true;
+        //    //            wsOff.SuspensionDate = DateTime.Now;
+        //    //            wsOff.SecondNotificationDate = DateTime.Now;
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            wsOff.IsLate90 = true;
+        //    //            if (!wsOff.IsMemberSuspended)
+        //    //            {
+        //    //                wsOff.IsMemberSuspended = true;
+        //    //                wsOff.SuspensionDate = DateTime.Now;
+        //    //            }
+        //    //            wsOff.IsShutoffNoticeIssued = true;
+        //    //            wsOff.ShutoffNoticeIssuedDate = DateTime.Now;
+        //    //        }
+        //    //    }
+        //    //    ChangeSet cs = dc.GetChangeSet();
+        //    //    dc.SubmitChanges();
+        //    //}
+        //}
     }
 
     /*================================================================================================================================================*/
@@ -476,12 +569,15 @@
             RaisePropertyChanged("IsBusy");
             foreach (v_OwnerDetail o in OwnersList)
             {
-                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
-                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
-                report.Parameters["selectedOwner"].Value = o.OwnerID;
-                report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
-                report.CreateDocument();
-                report.ExportToPdf(fileName);
+                if (true == o.IsCurrentOwner)
+                {
+                    fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", o.OwnerID);
+                    Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                    report.Parameters["selectedOwner"].Value = o.OwnerID;
+                    report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
+                    report.CreateDocument();
+                    report.ExportToPdf(fileName);
+                }
             }
             RaisePropertyChanged("IsNotBusy");
         }
@@ -551,10 +647,10 @@
                 CurrentSeason.IsNext = false;
                 CurrentSeason.IsVisible = false;
 
-                var list = (from x in dc.Owners
+                var currentOwnerList = (from x in dc.Owners
                             where x.IsCurrentOwner == true
                             select x);
-                Owners = new ObservableCollection<Owner>(list);
+                Owners = new ObservableCollection<Owner>(currentOwnerList);
 
                 int propertyCount = 0;
                 int cartCount = 0;
@@ -565,27 +661,38 @@
                     sb2.Append("OwnerID|Lot1|Lot2|Lot3|Lot4|Lot5|Lot6|Assessment|GolfCart|Total");
                     StreamWriter.WriteLine(sb2.ToString());
 
-                    foreach (Owner o in Owners)
+                    foreach (Owner owner in Owners)
                     {
+                        /// See Stored Procedure: 	[dbo].[usp_GetInvoiceForOwner]  
+                        /// 
+                        string fileName = string.Empty;
+                        if (true == owner.IsCurrentOwner)
+                        {
+                            fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", owner.OwnerID);
+                            Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                            report.Parameters["selectedOwner"].Value = owner.OwnerID;
+                            report.Parameters["previousYear"].Value = CurrentSeason.TimePeriod;
+                            report.CreateDocument();
+                            report.ExportToPdf(fileName);
+                        }
+
                         propertyCount = 0;
                         cartCount = 0;
                         StringBuilder sb = new StringBuilder();
 
-                        ///
                         /// StringBuilder2 is used to create a CSV file of invoice information....
                         /// 
                         sb2.Clear();
-                        sb2.AppendFormat("{0}|", o.OwnerID.ToString().PadLeft(6, '0'));
+                        sb2.AppendFormat("{0}|", owner.OwnerID.ToString().PadLeft(6, '0'));
 
-                        propertyCount = o.Properties.Count();
+                        propertyCount = owner.Properties.Count();
                         decimal amount = SelectedSeason.AnnualDues * propertyCount;
                         sb.AppendFormat("Dues:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
 
-                        ///
                         /// Check to see if Special Assessment needs to be applied.
                         /// 
                         decimal assessedAmt = 0m;
-                        foreach (Property p in o.Properties)
+                        foreach (Property p in owner.Properties)
                         {
                             sb2.AppendFormat("{0}|", p.Customer);
                             if (p.IsAssessment)
@@ -603,7 +710,6 @@
                             sb2.Append("|");
                         }
 
-                        ///
                         /// To ensure our CSV file has the same number of columns for every row, we have to null
                         /// pad the row upto (6) properties worth of columns.
                         /// 
@@ -617,7 +723,7 @@
                         /// We use 'CurrentSeason' as the previous because we haven't made the new season (SelectedSeason) the active
                         /// season yet.
                         /// 
-                        cartCount = (from x in o.GolfCarts
+                        cartCount = (from x in owner.GolfCarts
                                      where x.Year == CurrentSeason.TimePeriod
                                      select x.Quanity).FirstOrDefault();
 
@@ -629,23 +735,26 @@
                         }
                         else
                         {
-                            ///
                             /// If they don't own a cart, we have to pad the columns
                             /// 
                             sb2.Append("|");
                         }
 
-                        ///
                         /// Create the transaction note, then add the Note and Invoice transaction to the database
                         /// 
                         string note = String.Format("Annual dues, assessments and cart fees of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                        AddNote(o, note);
-                        GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
+                        AddNote(owner, note);
+                        GenerateInvoice(owner);
+                        //GenerateFinancialTransaction(o, amount, sb.ToString(), "Annual dues, assessments and cart fees applied");
 
                         ///
                         /// Add the total amount of the invoice and write the full line to the output file
                         /// 
-                        sb2.AppendFormat("{0}", amount.ToString());
+                        decimal? newTotalDue = (from x in dc.v_OwnerDetails
+                                                where x.OwnerID == owner.OwnerID
+                                                select x.Balance).FirstOrDefault();
+
+                        sb2.AppendFormat("{0}", newTotalDue.ToString());
                         StreamWriter.WriteLine(sb2.ToString());
                     }
                     //ChangeSet cs = dc.GetChangeSet();
@@ -730,7 +839,7 @@
 
                     string note = String.Format("30 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     noteID = AddNote(owner, note);
-                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
 
                     // Add the XRef record Transaction <-> Note
                     try
@@ -822,7 +931,7 @@
 
                     string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     noteID = AddNote(owner, note);
-                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
 
                     // Add the XRef record Transaction <-> Note
                     try
@@ -913,7 +1022,7 @@
 
                     string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     noteID = AddNote(owner, note);
-                    transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
 
                     // Add the XRef record Transaction <-> Note
                     try

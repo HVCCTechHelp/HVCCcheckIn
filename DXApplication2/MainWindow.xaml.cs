@@ -136,7 +136,6 @@
                             }
                         }
                         break;
-
                     // If there are water meter reading exceptions we create a new document panel to display them in a grid.
                     //case "MeterExceptions":
                     //    CreateMeterExceptionsDocPanel();

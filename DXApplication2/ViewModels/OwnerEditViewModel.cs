@@ -61,13 +61,15 @@
 
             try
             {
-                // Fetch the Owner record and its Relationships from the database so the 
-                // datacontext will be scoped to this ViewModel.
+                /// Fetch the Owner record and its Relationships from the database so the 
+                /// datacontext will be scoped to this ViewModel.
+                /// 
                 SelectedOwner = (from x in this.dc.Owners
                                  where x.OwnerID == ownerID
                                  select x).FirstOrDefault();
 
-                //// Set the focused row in the Properties grid to the first item.
+                /// Set the focused row in the Properties grid to the first item.
+                /// 
                 SelectedProperty = Properties[0];
 
                 // Fetch the collection of avtive Relationships for this owner
@@ -79,12 +81,14 @@
                 Relationships = new ObservableCollection<Relationship>(rList);
                 CkFacilityUsage();
 
-                // Set the focus to either the first relationship in the collection, or to the
-                // RelationshipID if one was passed in.
+                /// Set the focus to either the first relationship in the collection, or to the
+                /// RelationshipID if one was passed in.
+                /// 
                 if (0 == relationshipID)
                 {
-                    // Set the focused row in the Relationships grid to the first item in the Owner's
-                    // Relationship collection.
+                    /// Set the focused row in the Relationships grid to the first item in the Owner's
+                    /// Relationship collection.
+                    /// 
                     SelectedRelationship = Relationships[0];
                 }
                 else
@@ -104,7 +108,8 @@
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
 
-            // Register an event handler for SelectedOwner property changed.
+            /// Register an event handler for SelectedOwner property changed.
+            /// 
             SelectedOwner.PropertyChanged +=
                  new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
 
@@ -231,24 +236,52 @@
         }
 
         /// <summary>
-        /// A collection of properties 
+        /// A collection of financial transactions 
         /// </summary>
-        public ObservableCollection<FinancialTransaction> FinancialTransactions
+        //public ObservableCollection<FinancialTransaction> FinancialTransactions
+        //{
+        //    get
+        //    {
+        //        var list = (from x in dc.FinancialTransactions
+        //                    where x.OwnerID == SelectedOwner.OwnerID
+        //                    select x);
+
+        //        ObservableCollection<FinancialTransaction> ftCollection = new ObservableCollection<FinancialTransaction>(list);
+        //        AccountBalance = ftCollection[ftCollection.Count() - 1].Balance;
+        //        return ftCollection;
+        //    }
+        //}
+        public ObservableCollection<v_OwnerTransaction> FinancialTransactions
         {
             get
             {
-                var list = (from x in dc.FinancialTransactions
+                var list = (from x in dc.v_OwnerTransactions
                             where x.OwnerID == SelectedOwner.OwnerID
                             select x);
 
-                ObservableCollection<FinancialTransaction> ftCollection = new ObservableCollection<FinancialTransaction>(list);
-                AccountBalance = ftCollection[ftCollection.Count() - 1].Balance;
-                return ftCollection;
+                return new ObservableCollection<v_OwnerTransaction>(list);
             }
         }
 
-        private FinancialTransaction _selectedTransaction = null;
-        public FinancialTransaction SelectedTransaction
+        //private FinancialTransaction _selectedTransaction = null;
+        //public FinancialTransaction SelectedTransaction
+        //{
+        //    get
+        //    {
+        //        return _selectedTransaction;
+        //    }
+        //    set
+        //    {
+        //        if (_selectedTransaction != value)
+        //        {
+        //            _selectedTransaction = value;
+        //            RaisePropertyChanged("SelectedTransaction");
+        //        }
+        //    }
+        //}
+
+        private v_OwnerTransaction _selectedTransaction = null;
+        public v_OwnerTransaction SelectedTransaction
         {
             get
             {
@@ -306,7 +339,6 @@
         {
             get
             {
-                //this._relationships.CollectionChanged += _relationships_CollectionChanged;
                 return this._relationships;
             }
             set
@@ -441,7 +473,7 @@
         {
             get
             {
-                if (AccountBalance <= 0) return true;
+                if (SelectedOwner.AccountBalance <= 0) return true;
                 else return false;
             }
         }
@@ -503,7 +535,7 @@
             get
             {
                 string _image = String.Empty;
-                if (GolfCart.Year == CurrentSeason.TimePeriod)
+                if (GolfCart.Year == CurrentSeason.TimePeriod && GolfCart.IsPaid)
                 {
                     _image = @"/Images/Icons/GolfCart_Icon.png";
                 }
@@ -921,7 +953,7 @@
             {
                 MessageBoxResult results = MessageBoxResult.Cancel;
 
-                if (AccountBalance > 0)
+                if (SelectedOwner.AccountBalance > 0)
                 {
                     results = MessageBox.Show("This member's privileges are suspended.\nAsk them to make a payment before allowing them to check in.\n Click OK to continue Checking In, or Cancel to not Check In"
                         , "Warning"
@@ -1157,7 +1189,7 @@
         }
 
         /// <summary>
-        /// Print Command
+        /// Financial Transaction Command
         /// </summary>
         private ICommand _financialTransactionCommand;
         public ICommand FinancialTransactionCommand
@@ -1169,7 +1201,7 @@
         }
 
         /// <summary>
-        /// Grid row double click event to command action
+        /// Financial Transaction Action
         /// </summary>
         /// <param name="type"></param>
         public void FinancialTransactionAction(object parameter)

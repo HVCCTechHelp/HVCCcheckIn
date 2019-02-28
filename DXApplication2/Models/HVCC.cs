@@ -1,23 +1,280 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ComponentModel;
+using DevExpress.XtraEditors.DXErrorProvider;
+using HVCC.Shell.Models.Financial;
 using HVCC.Shell.Common.Interfaces;
+using System.Collections;
 
 namespace HVCC.Shell.Models
 {
+    //partial class Invoice
+    //{
+    //}
+
     partial class HVCCDataContext : IDataContext
     {
     }
-}
 
-namespace HVCC.Shell.Models
-{
-    using DevExpress.XtraEditors.DXErrorProvider;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Windows.Media.Imaging;
-    using HVCC.Shell.Helpers;
-    using System.ComponentModel;
-    using System.Collections.Specialized;
+    /// <summary>
+    /// Extends definition of Invoice
+    /// </summary>
+ #region Invoice
+    public partial class Invoice : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        /// <summary>
+        /// PaymentAmount is only used for referential calculations associated to an invoice
+        /// </summary>
+        private decimal _paymentAmount = 0;
+        public decimal PaymentAmount
+        {
+            get
+            {
+                return _paymentAmount;
+            }
+            set
+            {
+                if (_paymentAmount != value)
+                {
+                    _paymentAmount = value;
+                    RaisePropertyChanged("PaymentAmount");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if a payment has been applied to the invoice
+        /// </summary>
+        private bool _isPaymentApplied = false;
+        public bool IsPaymentApplied
+        {
+            get
+            {
+                return _isPaymentApplied;
+            }
+            set
+            {
+                if (_isPaymentApplied != value)
+                {
+                    _isPaymentApplied = value;
+                    RaisePropertyChanged("IsPaymentApplied");
+                }
+            }
+        }
+
+        /// <summary>
+        /// I collection of billable items that comprise the invoice
+        /// </summary>
+        private ObservableCollection<InvoiceItem> _invoiceItems = null;
+        public ObservableCollection<InvoiceItem> InvoiceItems
+        {
+            get
+            {
+                return _invoiceItems;
+            }
+            set
+            {
+                if (_invoiceItems != value)
+                {
+                    _invoiceItems = value;
+                    RaisePropertyChanged("InvoiceItems");
+                }
+            }
+        }
+
+        public Owner Owner { get; set; }
+        public Season Season { get; set; }
+      
+        /// <summary>
+        /// A collection of payments that are either associated to the invoice, or have equity to apply to an invoice
+        /// </summary>
+        private ObservableCollection<Payment> _payments = null;
+        public ObservableCollection<Payment> Payments
+        {
+            get
+            {
+                return _payments;
+            }
+            set
+            {
+                if (_payments != value)
+                {
+                    _payments = value;
+                    RaisePropertyChanged("Payments");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the invoice has associated payments, or there are payments available to apply to invoice
+        /// </summary>
+        public bool HasPayments
+        {
+            get
+            {
+                if (null == Payments || 0 == Payments.Count())
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the invoice has payment to invoice cross reference records
+        /// </summary>
+        public bool HasPXIs
+        {
+            get
+            {
+                if (null == this.Payment_X_Invoices || 0 == this.Payment_X_Invoices.Count())
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Method to provide a memberwise clone of the object
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        /* --------------------------- INotify Property Change Implementation ----------------------------- */
+        /// <summary>
+        /// INotifyPropertyChanged Implementation
+        /// </summary>
+        #region INotifyPropertyChagned implementaiton
+        /// <summary>
+        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property being changed</param>
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+    }
+
+#endregion
+
+    public partial class Payment : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        public Owner Owner { get; set; } // Owner exists here as a convnence for the Xtra Report....
+
+        /// <summary>
+        /// A collection of invoices that this payment has been applied to, or open invoices that the payment may be applied to
+        /// </summary>
+        private ObservableCollection<Invoice> _invoices = null;
+        public ObservableCollection<Invoice> Invoices
+        {
+            get
+            {
+                return _invoices;
+            }
+            set
+            {
+                if (_invoices != value)
+                {
+                    _invoices = value;
+                    RaisePropertyChanged("Invoices");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the payment has associated invoices, or if there are unpaid invoices the payment could be applied to
+        /// </summary>
+        public bool HasInvoices
+        {
+            get
+            {
+                if (null == Invoices || 0 == Invoices.Count())
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the payment has payment to invoice cross reference records
+        /// </summary>
+        public bool HasPXIs
+        {
+            get
+            {
+                if (null == this.Payment_X_Invoices || 0 == this.Payment_X_Invoices.Count())
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        private PaymentMessage _paymentMsg = new PaymentMessage() { Visibility = System.Windows.Visibility.Hidden, Header = string.Empty, Label = string.Empty, TextBlock = string.Empty };
+        public PaymentMessage PaymentMsg
+        {
+            get
+            {
+                return _paymentMsg;
+            }
+            set
+            {
+                if (value != _paymentMsg)
+                {
+                    _paymentMsg = value;
+                }
+            }
+        }
+
+        /* --------------------------- INotify Property Change Implementation ----------------------------- */
+        /// <summary>
+        /// INotifyPropertyChanged Implementation
+        /// </summary>
+        #region INotifyPropertyChagned implementaiton
+        /// <summary>
+        /// EventHandler: OnPropertyChanged raises a handler to notify a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property being changed</param>
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
+    }
 
     #region Extend Owner Model
 
@@ -139,87 +396,7 @@ namespace HVCC.Shell.Models
             }
         }
 
-        private int _poolMembers = 0;
-        public int PoolMembers
-        {
-            get
-            {
-                return this._poolMembers;
-            }
-            set
-            {
-                if (value != _poolMembers)
-                {
-                    _poolMembers = value;
-                }
-                RaisePropertyChanged("PoolMembers");
-            }
-        }
 
-        private int _poolGuests = 0;
-        public int PoolGuests
-        {
-            get
-            {
-                return this._poolGuests;
-            }
-            set
-            {
-                if (value != _poolGuests)
-                {
-                    _poolGuests = value;
-                }
-                RaisePropertyChanged("PoolGuests");
-            }
-        }
-
-        private int _golfMembers = 0;
-        public int GolfMembers
-        {
-            get
-            {
-                return this._golfMembers;
-            }
-            set
-            {
-                if (value != this._golfMembers)
-                {
-                    this._golfMembers = value;
-                }
-                RaisePropertyChanged("GolfMembers");
-            }
-        }
-
-        private int _golfGuests = 0;
-        public int GolfGuests
-        {
-            get
-            {
-                return this._golfGuests;
-            }
-            set
-            {
-                if (value != this._golfGuests)
-                {
-                    this._golfGuests = value;
-                }
-                RaisePropertyChanged("GolfGuests");
-            }
-        }
-
-        private decimal _previousBalance = 0;
-        public decimal PreviousBalance
-        {
-            get { return _previousBalance; }
-            set
-            {
-                if (_previousBalance != value)
-                {
-                    _previousBalance = value;
-                    RaisePropertyChanged("PreviousBalance");
-                }
-            }
-        }
 
         /* --------------------------- INotify Property Change Implementation ----------------------------- */
         /// <summary>

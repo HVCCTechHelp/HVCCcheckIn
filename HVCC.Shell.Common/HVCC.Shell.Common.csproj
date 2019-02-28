@@ -84,6 +84,7 @@
     <Compile Include="Converters\InvertBoolean.cs" />
     <Compile Include="Converters\NullToCollapsed.cs" />
     <Compile Include="Converters\RowClickConverter.cs" />
+    <Compile Include="Converters\XmlConverter.cs" />
     <Compile Include="ExportService.cs" />
     <Compile Include="CommandSink.cs" />
     <Compile Include="Interfaces\IDataContext.cs" />
@@ -107,6 +108,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Resources\Enumerations.cs" />
     <Compile Include="ViewModels\CommonViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

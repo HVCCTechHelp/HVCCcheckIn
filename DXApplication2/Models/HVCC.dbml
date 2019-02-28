@@ -263,23 +263,6 @@
       <Column Name="CanViewAdministration" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.Seasons" Member="Seasons">
-    <Type Name="Season">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="TimePeriod" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="IsCurrent" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsNext" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="AnnualDues" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="CartFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="IsDuesApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate30Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate60Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate90Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.v_ActiveRelationships" Member="v_ActiveRelationships">
     <Type Name="v_ActiveRelationship">
       <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -435,82 +418,6 @@
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
   </Table>
-  <Table Name="dbo.Owners" Member="Owners">
-    <Type Name="Owner">
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="State" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
-      <Column Name="Zip" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="EmailAddress" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
-      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsPrimaryRes" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsWeekend" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsSeasonal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsRental" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsRVlot" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsEmptyLot" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
-      <Association Name="Owner_WaterShutoff" Member="WaterShutoffs" ThisKey="OwnerID" OtherKey="OwnerID" Type="WaterShutoff" />
-      <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
-      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
-      <Association Name="Owner_Late90Day" Member="Late90Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late90Day" />
-      <Association Name="Owner_Late60Day" Member="Late60Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late60Day" />
-      <Association Name="Owner_Late30Day" Member="Late30Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late30Day" />
-      <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
-      <Association Name="Owner_FinancialTransaction" Member="FinancialTransactions" ThisKey="OwnerID" OtherKey="OwnerID" Type="FinancialTransaction" />
-    </Type>
-    <InsertFunction FunctionId="FunctionId14">
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="mailTo" Member="MailTo" />
-      <Argument Parameter="address" Member="Address" />
-      <Argument Parameter="address2" Member="Address2" />
-      <Argument Parameter="city" Member="City" />
-      <Argument Parameter="state" Member="State" />
-      <Argument Parameter="zip" Member="Zip" />
-      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
-      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
-      <Argument Parameter="emailAddress" Member="EmailAddress" />
-      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
-      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
-      <Argument Parameter="isPrimaryRes" Member="IsPrimaryRes" />
-      <Argument Parameter="isWeekend" Member="IsWeekend" />
-      <Argument Parameter="isSeasonal" Member="IsSeasonal" />
-      <Argument Parameter="isRental" Member="IsRental" />
-      <Argument Parameter="isRVlot" Member="IsRVlot" />
-      <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
-      <Argument Parameter="ownerID" Member="OwnerID" />
-    </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId15">
-      <Argument Parameter="ownerID" Member="OwnerID" />
-      <Argument Parameter="customer" Member="Customer" />
-      <Argument Parameter="mailTo" Member="MailTo" />
-      <Argument Parameter="address" Member="Address" />
-      <Argument Parameter="address2" Member="Address2" />
-      <Argument Parameter="city" Member="City" />
-      <Argument Parameter="state" Member="State" />
-      <Argument Parameter="zip" Member="Zip" />
-      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
-      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
-      <Argument Parameter="emailAddress" Member="EmailAddress" />
-      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
-      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
-      <Argument Parameter="isPrimaryRes" Member="IsPrimaryRes" />
-      <Argument Parameter="isWeekend" Member="IsWeekend" />
-      <Argument Parameter="isSeasonal" Member="IsSeasonal" />
-      <Argument Parameter="isRental" Member="IsRental" />
-      <Argument Parameter="isRVlot" Member="IsRVlot" />
-      <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
-    </UpdateFunction>
-  </Table>
   <Table Name="dbo.Late90Days" Member="Late90Days">
     <Type Name="Late90Day">
       <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -520,7 +427,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late90Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId16">
+    <InsertFunction FunctionId="FunctionId14">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="season" Member="Season" />
       <Argument Parameter="rowID" Member="RowId" />
@@ -535,7 +442,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late60Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId17">
+    <InsertFunction FunctionId="FunctionId15">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="season" Member="Season" />
       <Argument Parameter="rowID" Member="RowId" />
@@ -551,7 +458,7 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Owner_Late30Day" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId18">
+    <InsertFunction FunctionId="FunctionId16">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="mailTo" Member="MailTo" />
       <Argument Parameter="season" Member="Season" />
@@ -583,12 +490,12 @@
       <Association Name="Note_TransactionXNote" Member="TransactionXNotes" ThisKey="RowID" OtherKey="NoteID" Type="TransactionXNote" />
       <Association Name="Owner_Note" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId19">
+    <InsertFunction FunctionId="FunctionId17">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="comment" Member="Comment" />
       <Argument Parameter="rowID" Member="RowID" />
     </InsertFunction>
-    <DeleteFunction FunctionId="FunctionId20">
+    <DeleteFunction FunctionId="FunctionId18">
       <Argument Parameter="rowId" Member="RowID" />
     </DeleteFunction>
   </Table>
@@ -602,12 +509,12 @@
       <Association Name="Note_TransactionXNote" Member="Note" ThisKey="NoteID" OtherKey="RowID" Type="Note" IsForeignKey="true" />
       <Association Name="FinancialTransaction_TransactionXNote" Member="FinancialTransaction" ThisKey="TransactionID" OtherKey="RowId" Type="FinancialTransaction" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId21">
+    <InsertFunction FunctionId="FunctionId19">
       <Argument Parameter="transactionID" Member="TransactionID" />
       <Argument Parameter="noteID" Member="NoteID" />
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
-    <DeleteFunction FunctionId="FunctionId22">
+    <DeleteFunction FunctionId="FunctionId20">
       <Argument Parameter="rowId" Member="RowId" />
     </DeleteFunction>
   </Table>
@@ -630,7 +537,7 @@
       <Association Name="FinancialTransaction_TransactionXNote" Member="TransactionXNotes" ThisKey="RowId" OtherKey="TransactionID" Type="TransactionXNote" />
       <Association Name="Owner_FinancialTransaction" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
-    <InsertFunction FunctionId="FunctionId23">
+    <InsertFunction FunctionId="FunctionId21">
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="fiscalYEar" Member="FiscalYear" />
       <Argument Parameter="balance" Member="Balance" />
@@ -644,7 +551,7 @@
       <Argument Parameter="receiptNumber" Member="ReceiptNumber" />
       <Argument Parameter="rowID" Member="RowId" />
     </InsertFunction>
-    <UpdateFunction FunctionId="FunctionId24">
+    <UpdateFunction FunctionId="FunctionId22">
       <Argument Parameter="rowId" Member="RowId" />
       <Argument Parameter="ownerID" Member="OwnerID" />
       <Argument Parameter="fiscalYear" Member="FiscalYear" />
@@ -658,25 +565,200 @@
       <Argument Parameter="checkNumber" Member="CheckNumber" />
       <Argument Parameter="receiptNumber" Member="ReceiptNumber" />
     </UpdateFunction>
-    <DeleteFunction FunctionId="FunctionId25">
+    <DeleteFunction FunctionId="FunctionId23">
       <Argument Parameter="rowId" Member="RowId" />
     </DeleteFunction>
   </Table>
+  <Table Name="dbo.Seasons" Member="Seasons">
+    <Type Name="Season">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TimePeriod" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="IsCurrent" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsNext" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="AnnualDues" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="CartFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="IsDuesApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate30Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate60Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate90Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Owners" Member="Owners">
+    <Type Name="Owner">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AccountBalance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EmailAddress" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsPrimaryRes" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsWeekend" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsSeasonal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsRental" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsRVlot" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEmptyLot" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Owner_Relationship" Member="Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Relationship" />
+      <Association Name="Owner_WaterShutoff" Member="WaterShutoffs" ThisKey="OwnerID" OtherKey="OwnerID" Type="WaterShutoff" />
+      <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
+      <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
+      <Association Name="Owner_Late90Day" Member="Late90Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late90Day" />
+      <Association Name="Owner_Late60Day" Member="Late60Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late60Day" />
+      <Association Name="Owner_Late30Day" Member="Late30Days" ThisKey="OwnerID" OtherKey="OwnerID" Type="Late30Day" />
+      <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
+      <Association Name="Owner_FinancialTransaction" Member="FinancialTransactions" ThisKey="OwnerID" OtherKey="OwnerID" Type="FinancialTransaction" />
+    </Type>
+    <InsertFunction FunctionId="FunctionId24">
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="accountBalance" Member="AccountBalance" />
+      <Argument Parameter="mailTo" Member="MailTo" />
+      <Argument Parameter="address" Member="Address" />
+      <Argument Parameter="address2" Member="Address2" />
+      <Argument Parameter="city" Member="City" />
+      <Argument Parameter="state" Member="State" />
+      <Argument Parameter="zip" Member="Zip" />
+      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
+      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
+      <Argument Parameter="emailAddress" Member="EmailAddress" />
+      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
+      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
+      <Argument Parameter="isPrimaryRes" Member="IsPrimaryRes" />
+      <Argument Parameter="isWeekend" Member="IsWeekend" />
+      <Argument Parameter="isSeasonal" Member="IsSeasonal" />
+      <Argument Parameter="isRental" Member="IsRental" />
+      <Argument Parameter="isRVlot" Member="IsRVlot" />
+      <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
+      <Argument Parameter="ownerID" Member="OwnerID" />
+    </InsertFunction>
+    <UpdateFunction FunctionId="FunctionId25">
+      <Argument Parameter="ownerID" Member="OwnerID" />
+      <Argument Parameter="customer" Member="Customer" />
+      <Argument Parameter="accountBalance" Member="AccountBalance" />
+      <Argument Parameter="mailTo" Member="MailTo" />
+      <Argument Parameter="address" Member="Address" />
+      <Argument Parameter="address2" Member="Address2" />
+      <Argument Parameter="city" Member="City" />
+      <Argument Parameter="state" Member="State" />
+      <Argument Parameter="zip" Member="Zip" />
+      <Argument Parameter="primaryPhone" Member="PrimaryPhone" />
+      <Argument Parameter="secondaryPhone" Member="SecondaryPhone" />
+      <Argument Parameter="emailAddress" Member="EmailAddress" />
+      <Argument Parameter="isSendByEmail" Member="IsSendByEmail" />
+      <Argument Parameter="isCurrentOwner" Member="IsCurrentOwner" />
+      <Argument Parameter="isPrimaryRes" Member="IsPrimaryRes" />
+      <Argument Parameter="isWeekend" Member="IsWeekend" />
+      <Argument Parameter="isSeasonal" Member="IsSeasonal" />
+      <Argument Parameter="isRental" Member="IsRental" />
+      <Argument Parameter="isRVlot" Member="IsRVlot" />
+      <Argument Parameter="isEmptyLot" Member="IsEmptyLot" />
+    </UpdateFunction>
+  </Table>
+  <Table Name="dbo.v_OwnerTransactions" Member="v_OwnerTransactions">
+    <Type Name="v_OwnerTransaction">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.String" DbType="VarChar(7) NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DueDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Aging" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="BalanceDue" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="EquityBalance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="PaidOrApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Memo" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ListOfItems" Member="ListOfItems">
+    <Type Name="ListOfItem">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ItemCategory" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Item" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Invoices" Member="Invoices">
+    <Type Name="Invoice">
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IssuedDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DueDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="TermsDescriptive" Type="System.String" DbType="VarChar(25) NOT NULL" CanBeNull="false" />
+      <Column Name="TermsDays" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentsApplied" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="BalanceDue" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Aging" Type="System.Int32" DbType="Int" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ItemDetails" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Memo" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Invoice_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="InvoiceID" Type="Payment_X_Invoice" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Payments" Member="Payments">
+    <Type Name="Payment">
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="AmountAppliedToInvoices" Type="System.Decimal" DbType="Money" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="EquityBalance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentMethod" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CheckNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="ReceiptNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="IsApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Memo" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Payment_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="PaymentID" Type="Payment_X_Invoice" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Payment_X_Invoice" Member="Payment_X_Invoices">
+    <Type Name="Payment_X_Invoice">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PmtGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="InvGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentAmount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Invoice_Payment_X_Invoice" Member="Invoice" ThisKey="InvoiceID" OtherKey="TransactionID" Type="Invoice" IsForeignKey="true" />
+      <Association Name="Payment_Payment_X_Invoice" Member="Payment" ThisKey="PaymentID" OtherKey="TransactionID" Type="Payment" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.v_OwnerDetails" Member="v_OwnerDetails">
     <Type Name="v_OwnerDetail">
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Balance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="MailTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Address" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Address2" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="State" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
-      <Column Name="Zip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="PrimaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="EmailAddress" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
-      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsSendByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsCurrentOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="PropertyCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
@@ -737,7 +819,7 @@
     <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId20" Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
+  <Function Id="FunctionId18" Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
@@ -927,68 +1009,46 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId16" Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
+  <Function Id="FunctionId14" Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId17" Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
+  <Function Id="FunctionId15" Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId18" Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
+  <Function Id="FunctionId16" Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId15" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
-    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsPrimaryRes" Parameter="isPrimaryRes" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsWeekend" Parameter="isWeekend" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsSeasonal" Parameter="isSeasonal" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRental" Parameter="isRental" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId25" Name="dbo.usp_DeleteFinancialTransaction" Method="usp_DeleteFinancialTransaction">
+  <Function Id="FunctionId23" Name="dbo.usp_DeleteFinancialTransaction" Method="usp_DeleteFinancialTransaction">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId19" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
+  <Function Id="FunctionId17" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId21" Name="dbo.usp_InsertTransactionXNote" Method="usp_InsertTransactionXNote">
+  <Function Id="FunctionId19" Name="dbo.usp_InsertTransactionXNote" Method="usp_InsertTransactionXNote">
     <Parameter Name="TransactionID" Parameter="transactionID" Type="System.Int32" DbType="Int" />
     <Parameter Name="NoteID" Parameter="noteID" Type="System.Int32" DbType="Int" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId22" Name="dbo.usp_DeleteTransactionXNote" Method="usp_DeleteTransactionXNote">
+  <Function Id="FunctionId20" Name="dbo.usp_DeleteTransactionXNote" Method="usp_DeleteTransactionXNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId23" Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
+  <Function Id="FunctionId21" Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="FiscalYEar" Parameter="fiscalYEar" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
@@ -1003,7 +1063,7 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Id="FunctionId24" Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
+  <Function Id="FunctionId22" Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="FiscalYear" Parameter="fiscalYear" Type="System.String" DbType="VarChar(20)" />
@@ -1016,28 +1076,6 @@
     <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(100)" />
     <Parameter Name="CheckNumber" Parameter="checkNumber" Type="System.String" DbType="VarChar(20)" />
     <Parameter Name="ReceiptNumber" Parameter="receiptNumber" Type="System.String" DbType="VarChar(20)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Id="FunctionId14" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
-    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsPrimaryRes" Parameter="isPrimaryRes" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsWeekend" Parameter="isWeekend" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsSeasonal" Parameter="isSeasonal" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRental" Parameter="isRental" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
@@ -1061,5 +1099,51 @@
       <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="PreviousYear" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
     </ElementType>
+  </Function>
+  <Function Id="FunctionId24" Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="AccountBalance" Parameter="accountBalance" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
+    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
+    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsPrimaryRes" Parameter="isPrimaryRes" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsWeekend" Parameter="isWeekend" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsSeasonal" Parameter="isSeasonal" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsRental" Parameter="isRental" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Id="FunctionId25" Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="AccountBalance" Parameter="accountBalance" Type="System.Decimal" DbType="Money" />
+    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
+    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
+    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
+    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsPrimaryRes" Parameter="isPrimaryRes" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsWeekend" Parameter="isWeekend" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsSeasonal" Parameter="isSeasonal" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsRental" Parameter="isRental" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
+    <Return Type="System.Int32" />
   </Function>
 </Database>

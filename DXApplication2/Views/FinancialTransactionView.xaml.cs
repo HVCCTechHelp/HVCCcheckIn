@@ -9,11 +9,11 @@
     using System.Windows.Input;
 
     /// <summary>
-    /// Interaction logic for PostPaymentViw.xaml
+    /// Interaction logic for FinancialTransactionView.xaml
     /// </summary>
     public partial class FinancialTransactionView : UserControl, IView
     {
-        ApplicationPermission appPermissions;
+        //ApplicationPermission appPermissions;
         public IViewModel ViewModel
         {
             get { return this.DataContext as IViewModel; }
@@ -25,8 +25,16 @@
             InitializeComponent();
             this.DataContext = vm;
             //this.Loaded += OnLoaded;
-            appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+            //appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+            EventManager.RegisterClassHandler(typeof(TextEdit), FrameworkElement.GotFocusEvent, 
+                new RoutedEventHandler((s, e) =>
+                {
+                    TextEdit editor = (TextEdit)s;
+                    editor.Dispatcher.BeginInvoke(new SimpleDelegate(editor.SelectAll));
+                }));
         }
+        delegate void SimpleDelegate();
+
         public object SaveState()
         {
             //throw new NotImplementedException();
@@ -43,8 +51,13 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="routedEventArgs"></param>
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        //private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        //{
+        //}
+
+        private void FinancialTransactionView_Loaded(object sender, RoutedEventArgs e)
         {
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -63,7 +76,6 @@
         //    }
         //}
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -74,104 +86,18 @@
             this.tableViewTransactions.PostEditor();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void editform_Validate(object sender, ValidationEventArgs e)
+        private void TextEdit_LostFocus(object sender, RoutedEventArgs e)
         {
-            //// The ImageEdit control doesn't validate the image by default, therefore
-            //// we manually validate the control here so validation is passed.
-            if (sender is ImageEdit)
+            /// Force the grid to update to reflect the amount of the payment applied to an invoice.
+            this.paymentGrid.RefreshData();
+        }
+
+        private void lgPayment_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
             {
-                if (((ImageEdit)sender).HasImage)
-                {
-                    e.IsValid = true;
-                }
-                else
-                {
-                    e.IsValid = false;
-                }
-            }
-            // Validate the RelationToOwner ComboBox
-            if (sender is ComboBoxEdit)
-            {
-                if (string.IsNullOrEmpty((string)e.Value))
-                {
-                    e.IsValid = false;
-                }
-                else
-                {
-                    e.IsValid = true;
-                }
-            }
-            e.Handled = true;
-        }
-
-        /// <summary>
-        /// Executed when the View is loaded. Force an update on the controls that require validation.  
-        /// This will force them to fail validation if data is missing or invalid.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FinancialTransaction_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Force an update on the controls that require validation.  This will force
-            // them to be invalid if data is missing.
-            teCredit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teDebit.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            ceFiscalYear.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            deTransactionDate.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            ceCreditMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            ceDebitMethod.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teCheck.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teReceipt.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teTotal.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-            teComment.GetBindingExpression(DevExpress.Xpf.Editors.TextEdit.EditValueProperty).UpdateSource();
-
-            deTransactionDate.Focus();
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private void teCredit_GotFocus(object sender, RoutedEventArgs e)
-        {
-            teCredit.NullText = string.Empty;
-            teDebit.Visibility = Visibility.Hidden;
-            lbDebit.Visibility = Visibility.Hidden;
-            lbDebitMethod.Visibility = Visibility.Hidden;
-            ceDebitMethod.Visibility = Visibility.Hidden;
-            lbOR.Visibility = Visibility.Hidden;
-        }
-
-        private void teDebit_GotFocus(object sender, RoutedEventArgs e)
-        {
-            teDebit.NullText = string.Empty;
-            teCredit.Visibility = Visibility.Hidden;
-            lbCredit.Visibility = Visibility.Hidden;
-            lbCreditMethod.Visibility = Visibility.Hidden;
-            ceCreditMethod.Visibility = Visibility.Hidden;
-            lbCheck.Visibility = Visibility.Hidden;
-            lbReceipt.Visibility = Visibility.Hidden;
-            teCheck.Visibility = Visibility.Hidden;
-            teReceipt.Visibility = Visibility.Hidden;
-            lbOR.Visibility = Visibility.Hidden;
-            //ceGolfCart.Visibility = Visibility.Hidden;
-            //ceWaterReconnect.Visibility = Visibility.Hidden;
-            //cePoolAssessment.Visibility = Visibility.Hidden;
-            //ceWaterReconnect.Visibility = Visibility.Hidden;
-        }
-
-        private void ceFiscalYear_EditValueChanged(object sender, EditValueChangedEventArgs e)
-        {
-            // Once the user has made a selection from the list, the cursor focus is moved to the next
-            // control on the form. This forces validation to take place on this control.
-            TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
-            UIElement keyboardFocus = Keyboard.FocusedElement as UIElement;
-
-            if (keyboardFocus != null)
-            {
-                keyboardFocus.MoveFocus(tRequest);
+                this.tePayment.Focus();
+                Keyboard.Focus(tePayment);
             }
         }
     }

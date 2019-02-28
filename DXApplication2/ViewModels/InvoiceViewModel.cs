@@ -173,8 +173,8 @@
 
         public ObservableCollection<Owner> Owners { get; set; }
 
-        private ObservableCollection<Invoice> _invoices = null;
-        public ObservableCollection<Invoice> Invoices
+        private ObservableCollection<x_Invoice> _invoices = null;
+        public ObservableCollection<x_Invoice> Invoices
         {
             get
             {
@@ -207,7 +207,7 @@
 
                 HeaderText = string.Format("Invoice List for {0}", FiscalYear);
 
-                ObservableCollection<Invoice> invoiceList = new ObservableCollection<Invoice>();
+                ObservableCollection<x_Invoice> invoiceList = new ObservableCollection<x_Invoice>();
 
                 var list = (from x in dc.Owners
                             where x.IsCurrentOwner == true
@@ -217,7 +217,7 @@
                 foreach (Owner o in Owners)
                 {
 
-                    Invoice invoice = new Invoice();
+                    x_Invoice invoice = new x_Invoice();
                     invoice.OwnerID = o.OwnerID;
                     invoice.MailTo = o.MailTo;
                     invoice.Balance = (decimal)(from y in dc.v_OwnerDetails
@@ -433,7 +433,7 @@
     #endregion
 }
 
-public class Invoice
+public class x_Invoice
 {
     public int OwnerID { get; set; }
     public string MailTo { get; set; }

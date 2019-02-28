@@ -94,6 +94,12 @@
                                                Glyph="/Images/Icons/Financal-16x16.png" 
                                                LargeGlyph="/Images/Icons/Financal-32x32.png"
                                                ToolTip="Bulk update dues balance information" />
+
+                            <dxb:BarButtonItem x:Name="bbFinancialTransaction" Content="Financial Transaction" 
+                                               Command="{Binding FinancialTransactionCommand}" CommandParameter="{Binding SelectedOwner}"
+                                               IsEnabled="{Binding IsOwnerSelected}"
+                                               Glyph="/Images/Icons/payment_32x32.png" 
+                                               LargeGlyph="/Images/Icons/payment_32x32.png" />
                         </dxr:RibbonPageGroup>
 
                         <dxr:RibbonPageGroup Caption="Views">

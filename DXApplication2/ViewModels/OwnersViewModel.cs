@@ -72,6 +72,23 @@
             }
         }
 
+        private bool _isOwnerSelected = false;
+        public bool IsOwnerSelected
+        {
+            get
+            {
+                return _isOwnerSelected;
+            }
+            set
+            {
+                if (_isOwnerSelected != value)
+                {
+                    _isOwnerSelected = value;
+                    RaisePropertiesChanged("IsOwnerSelected");
+                }
+            }
+        }
+
         /// <summary>
         /// Controls enable/disbale state of the Refresh ribbion action button
         /// </summary>
@@ -124,6 +141,7 @@
                     // To ensure there is a focused row selected in the detail (Properties) grid,
                     // set the SelectedProperty to the first item.
                     //SelectedProperty = _selectedOwner.Properties[0];
+                    IsOwnerSelected = true;
                     RaisePropertyChanged("SelectedOwner");
                 }
             }
@@ -275,6 +293,32 @@
     /// </summary>
     public partial class OwnersViewModel
     {
+        /// <summary>
+        /// Financial Transaction Command
+        /// </summary>
+        private ICommand _financialTransactionCommand;
+        public ICommand FinancialTransactionCommand
+        {
+            get
+            {
+                return _financialTransactionCommand ?? (_financialTransactionCommand = new CommandHandlerWparm((object parameter) => FinancialTransactionAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Financial Transaction Action
+        /// </summary>
+        /// <param name="type"></param>
+        public void FinancialTransactionAction(object parameter)
+        {
+            v_OwnerDetail p = parameter as v_OwnerDetail;
+            Owner owner = (from x in dc.Owners
+                       where x.OwnerID == p.OwnerID
+                       select x).FirstOrDefault();
+            IsBusy = true;
+            Host.Execute(HostVerb.Open, "FinancialTransaction", owner);
+        }
+
         /// <summary>
         /// RowDoubleClick Event to Command
         /// </summary>
