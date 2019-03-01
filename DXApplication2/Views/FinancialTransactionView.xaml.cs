@@ -24,7 +24,7 @@
         {
             InitializeComponent();
             this.DataContext = vm;
-            //this.Loaded += OnLoaded;
+            this.Loaded += OnLoaded;
             //appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
             EventManager.RegisterClassHandler(typeof(TextEdit), FrameworkElement.GotFocusEvent, 
                 new RoutedEventHandler((s, e) =>
@@ -33,6 +33,7 @@
                     editor.Dispatcher.BeginInvoke(new SimpleDelegate(editor.SelectAll));
                 }));
         }
+
         delegate void SimpleDelegate();
 
         public object SaveState()
@@ -51,9 +52,10 @@
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="routedEventArgs"></param>
-        //private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
-        //{
-        //}
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            this.tePayment.Focus();
+        }
 
         private void FinancialTransactionView_Loaded(object sender, RoutedEventArgs e)
         {
