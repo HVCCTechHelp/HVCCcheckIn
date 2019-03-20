@@ -130,7 +130,7 @@
             this.xrLabel7,
             this.xrLabel8,
             this.xrLabel9});
-            this.Detail.HeightF = 150F;
+            this.Detail.HeightF = 141.6667F;
             this.Detail.KeepTogether = true;
             this.Detail.Name = "Detail";
             this.Detail.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
@@ -641,7 +641,7 @@
             this.xrTable2,
             this.xrPanel1});
             this.groupHeaderBand1.GroupUnion = DevExpress.XtraReports.UI.GroupUnion.WithFirstDetail;
-            this.groupHeaderBand1.HeightF = 75F;
+            this.groupHeaderBand1.HeightF = 71.00002F;
             this.groupHeaderBand1.Name = "groupHeaderBand1";
             // 
             // xrTable2

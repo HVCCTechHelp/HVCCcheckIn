@@ -443,8 +443,12 @@ namespace HVCC.Shell.Models
 
     #region Extend Relationship Model
 
+    /// <summary>
+    /// Extends the Relationship Class
+    /// </summary>
     public partial class Relationship : ICloneable
     {
+        public bool HasMutipleAssociations = false;
 
         private bool _isPool = false;
         public bool IsPool

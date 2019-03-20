@@ -16,6 +16,7 @@
     using HVCC.Shell.Common.Interfaces;
     using System.Data.Linq;
     using System.Collections.ObjectModel;
+    using HVCC.Shell.Validation;
 
     public class Helper
     {
@@ -130,22 +131,42 @@
 
             try
             {
-                // Check to see if this Relationship is in the database (has a non-zero ID), 
-                // or is pending insertion (has a zero ID).  We only want to process new
-                // relationships.
+                /// Before we add this new relationship, check to see if the owner is registered to 
+                /// mutiple Owner records under different 'MailTo' names.
+                /// 
+                IEnumerable<Owner_X_Relationship> oXr = (from r in dc.Owner_X_Relationships
+                                      where r.OwnerID == owner.OwnerID
+                                      select r);
+                foreach (Owner_X_Relationship x in oXr)
+                {
+                    IEnumerable<Owner_X_Relationship> associations = (from p in dc.Owner_X_Relationships
+                                                                      where p.RelationshipID == x.RelationshipID
+                                                                      select p);
+                    if (associations.Count() > 1)
+                    {
+                        relationship.HasMutipleAssociations = true;
+                        throw new RelationshipAddException();
+                    }
+                }
+
+                /// Check to see if this Relationship is in the database (has a non-zero ID), 
+                /// or is pending insertion (has a zero ID).  We only want to process new
+                /// relationships.
                 if (0 == relationship.RelationshipID)
                 {
                     // Add the default HVCC image to the relationship record.  
                     relationship.Photo = LoadDefalutImage(dc);
                     relationship.Active = true;
-                    relationship.OwnerID = owner.OwnerID;
+                    //relationship.OwnerID = owner.OwnerID;
                     dc.Relationships.InsertOnSubmit(relationship);
+                    Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = relationship.RelationshipID, OwnerID = owner.OwnerID };
+                    dc.Owner_X_Relationships.InsertOnSubmit(OXR);
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error activating new Relationship/n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error activating new Relationship. " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
@@ -162,24 +183,38 @@
 
             try
             {
-                //// Check to see if this Relationship is in the database (has a non-zero ID), 
-                //// or is pending insertion (has a zero ID).
+                /// Test to see if the relationship is associated to more than one Owner record.
+                /// 
+                IEnumerable<Owner_X_Relationship> associations = (from p in dc.Owner_X_Relationships
+                                                                  where p.RelationshipID == relationship.RelationshipID
+                                                                  select p);
+                if (associations.Count() > 1)
+                {
+                    relationship.HasMutipleAssociations = true;
+                    throw new RelationshipContraintException(relationship.RelationshipID);
+                }
+
+                /// Check to see if this Relationship is in the database (has a non-zero ID), 
+                /// or is pending insertion (has a zero ID).
+                /// 
                 if (0 != relationship.RelationshipID 
-                    && !relationship.RelationToOwner.Contains("Owner")
+                    && (!relationship.RelationToOwner.Contains("Owner") || !relationship.RelationToOwner.Contains("Representative"))
                     && string.IsNullOrEmpty(action))
                 {
 
-                    // Test to see if the relationship being removed has any FacilitiesUage records.
-                    // If not, we can delete the relationship record. Otherwise, we have to set
-                    // the records to inactive.
+                    /// Test to see if the relationship being removed has any FacilitiesUage records.
+                    /// If not, we can delete the relationship record. Otherwise, we have to set
+                    /// the records to inactive.
+                    /// 
                     IEnumerable<FacilityUsage> fuList = (from x in dc.FacilityUsages
                                                          where x.RelationshipId == relationship.RelationshipID
                                                          select x);
 
-                    // If no facility usage records are returned, it is safe to just delete the
-                    // Relationship record. Since the passed in Relationship object (relationship)
-                    // is not attached to an enity set (it is local to the VM), we need to query the Relationship
-                    // table.
+                    /// If no facility usage records are returned, it is safe to just delete the
+                    /// Relationship record. Since the passed in Relationship object (relationship)
+                    /// is not attached to an enity set (it is local to the VM), we need to query the Relationship
+                    /// table.
+                    /// 
                     if (0 == fuList.Count())
                     {
                         dc.Relationships.DeleteOnSubmit(relationship);
@@ -200,10 +235,10 @@
                 else
                 {
 
-                    // This is a pending insert, so we can simply remove the record from the in-memory
-                    // store.  We raise a PropertiesList property change event to force any/all bound
-                    // views to be updated.
-                    //selectedProperty.Relationships.Remove(relationship);
+                    /// This is a pending insert, so we can simply remove the record from the in-memory
+                    /// store.  We raise a PropertiesList property change event to force any/all bound
+                    /// views to be updated.
+                    /// 
                     dc.Relationships.DeleteOnSubmit(relationship);
                 }
                 ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......

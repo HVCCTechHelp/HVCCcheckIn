@@ -483,6 +483,7 @@
                     try
                     {
                         NewOwner.Customer = SelectedProperty.Customer;
+                        NewOwner.AccountBalance = 0m;
                         dc.usp_InsertOwner(
                                 NewOwner.Customer,
                                 NewOwner.AccountBalance,
@@ -518,22 +519,6 @@
                     if (0 != NewOwner.OwnerID)
                     {
 
-                        // We have to also add an initial FinancialTransaction record to set the new owner
-                        // account balance to $0.00 since we use the OwnerDetail View for the Grids
-                        //FinancialTransaction newTrans = new FinancialTransaction();
-                        //newTrans.OwnerID = NewOwner.OwnerID;
-                        //newTrans.FiscalYear = Season.TimePeriod;
-                        //newTrans.Balance = 0m;
-                        //newTrans.CreditAmount = 0;
-                        //newTrans.DebitAmount = 0;
-                        //newTrans.TransactionDate = DateTime.Now;
-                        //newTrans.TransactionMethod = "MachineGenerated";
-                        //newTrans.TransactionAppliesTo = "Account";
-                        //newTrans.Comment = "New account establlished for owner";
-                        //newTrans.CheckNumber = null;
-                        //newTrans.ReceiptNumber = null;
-                        //dc.FinancialTransactions.InsertOnSubmit(newTrans);
-
                         /// Create the initial financial record as a payment with $0.00
                         /// 
                         Payment thePayment = new Payment();
@@ -560,15 +545,19 @@
                             return;
                         }
 
-                        // Insert the Relationship collection
+                        /// Insert the Relationship collection and create the XRef
+                        /// 
                         try
                         {
                             foreach (Relationship r in RelationshipsToProcess)
                             {
-                                r.OwnerID = NewOwner.OwnerID;
+                                //r.OwnerID = NewOwner.OwnerID;
                                 r.Active = true;
                                 r.Photo = ApplDefault.Photo;
                                 dc.Relationships.InsertOnSubmit(r);
+
+                                Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = r.RelationshipID, OwnerID = NewOwner.OwnerID };
+                                dc.Owner_X_Relationships.InsertOnSubmit(OXR);
                             }
                             ChangeSet cs = dc.GetChangeSet();
                             dc.SubmitChanges();
@@ -613,33 +602,53 @@
             var plist = (from x in dc.Properties
                          where x.OwnerID == PreviousOwner.OwnerID
                          select x);
+
             // If the previous owner only owned one property, then we can deactivate them, and their associated
             // relationship records.
             if (1 == plist.Count())
             {
                 PreviousOwner.IsCurrentOwner = false;
 
-                var rlist = (from r in dc.Relationships
-                            where r.OwnerID == PreviousOwner.OwnerID
-                            select r);
-                foreach (Relationship x in rlist)
+                /// Get the list of Owner_X_Relationships
+                /// 
+                IEnumerable<Owner_X_Relationship> OXRs = (from x in dc.Owner_X_Relationships
+                                                          where x.OwnerID == PreviousOwner.OwnerID
+                                                          select x);
+                foreach (Owner_X_Relationship oxr in OXRs)
                 {
-                    x.Active = false;
+                    Relationship[] rlist = (from x in dc.Relationships
+                                      where x.RelationshipID == oxr.RelationshipID
+                                      select x).ToArray();
+                    if (1 == rlist.Count())
+                    {
+                        rlist[0].Active = false;
+                    }
+
                 }
+                /// -OLD-
+                //var rlist = (from r in dc.Relationships
+                //            where r.OwnerID == PreviousOwner.OwnerID
+                //            select r);
+                //foreach (Relationship x in rlist)
+                //{
+                //    x.Active = false;
+                //}
             }
 
             // Change the Property Owner to the NewOwner
             NewOwner.IsCurrentOwner = true;
             SelectedProperty.Owner = NewOwner;
-            var list = (from r in dc.Relationships
-                        where r.OwnerID == NewOwner.OwnerID
-                        select r);
-            foreach (Relationship x in list)
-            {
-                x.Active = true;
-            }
 
-            //ChangeSet cs = dc.GetChangeSet();
+            /// -OLD-
+            //var list = (from r in dc.Relationships
+            //            where r.OwnerID == NewOwner.OwnerID
+            //            select r);
+            //foreach (Relationship x in list)
+            //{
+            //    x.Active = true;
+            //}
+
+            ChangeSet cs2 = dc.GetChangeSet();
             this.dc.SubmitChanges();
             this.IsBusy = false;
             RaisePropertyChanged("IsNotBusy");

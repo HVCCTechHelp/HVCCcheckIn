@@ -102,7 +102,7 @@
                                                 />
                         </dxr:RibbonPageGroup>
                         
-                        <dxr:RibbonPageGroup Caption="Special">
+                        <!--<dxr:RibbonPageGroup Caption="Special">
                             <dxb:BarButtonItem x:Name="beSpecial" Content="Import"
                                                Command="{Binding ImportBalancesCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
@@ -110,7 +110,7 @@
                                                LargeGlyph="{dxc:DXImage Image=TopDown_32x32.png}"
                                                ToolTip="Import old balances" />
 
-                        </dxr:RibbonPageGroup>
+                        </dxr:RibbonPageGroup>-->
                     </dxr:RibbonPage>
 
                 </dxr:RibbonDefaultPageCategory>

@@ -304,10 +304,10 @@
             TheInvoice.IssuedDate = DateTime.Now;
             TheInvoice.DueDate = MayFirst;
             TheInvoice.TermsDays = -1;  /// -1 Indicates "Due by May 1st"
-            //TheInvoice.Amount = amount;
-            //TheInvoice.BalanceDue = amount;
             TheInvoice.PaymentsApplied = 0;
             TheInvoice.IsPaid = false;
+            TheInvoice.Amount = CurrentSeason.AnnualDues * -1;
+            TheInvoice.BalanceDue = Math.Abs(TheInvoice.Amount);
 
             /// Create the InvoiceItem
             /// 
@@ -356,7 +356,6 @@
             /// 
             var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
             TheInvoice.ItemDetails = xmlString;
-
 
             dc.Invoices.InsertOnSubmit(TheInvoice);
             dc.SubmitChanges();
@@ -518,6 +517,33 @@
     /*================================================================================================================================================*/
     public partial class AdministrationViewModel : CommonViewModel
     {
+        //private ICommand _convertOwners;
+        //public ICommand ConvertOwnersCommand
+        //{
+        //    get
+        //    {
+        //        return _convertOwners ?? (_convertOwners = new CommandHandler(() => ConvertOwnersAction(), true));
+        //    }
+        //}
+        //public void ConvertOwnersAction()
+        //{
+        //    IsBusy = true;
+        //    ObservableCollection<Relationship> Relationships;
+        //    var list = (from x in dc.Relationships
+        //                select x);
+
+        //    Relationships = new ObservableCollection<Relationship>(list);
+        //    foreach (Relationship r in Relationships)
+        //    {
+        //        Owner_X_Relationship oXr = new Owner_X_Relationship();
+        //        oXr.OwnerID = r.OwnerID;
+        //        oXr.RelationshipID = r.RelationshipID;
+        //        dc.Owner_X_Relationships.InsertOnSubmit(oXr);
+        //    }
+        //    dc.SubmitChanges();
+        //    IsBusy = false;
+        //}
+
         /// <summary>
         /// View Notes about Properties
         /// </summary>
@@ -830,7 +856,8 @@
                     decimal amount = 20.00m;
                     sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
 
-                    // If they haven't paid their assessment.....
+                    /// If they haven't paid their assessment.....
+                    /// 
                     //if (assessment == true)
                     //{
                     //    amount += SelectedSeason.AssessmentAmount * propertyCount;
@@ -839,22 +866,24 @@
 
                     string note = String.Format("30 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
                     noteID = AddNote(owner, note);
-                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+                    // TO_DO:   CHECK ON THIS>.........
+                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 30 days late");
 
-                    // Add the XRef record Transaction <-> Note
-                    try
-                    {
-                        TransactionXNote tXn = new TransactionXNote();
-                        int? tXnID = null;
-                        dc.usp_InsertTransactionXNote(
-                            transactionID,
-                            noteID,
-                            ref tXnID);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    /// Add the XRef record Transaction <-> Note
+                    /// 
+                    //try
+                    //{
+                    //    TransactionXNote tXn = new TransactionXNote();
+                    //    int? tXnID = null;
+                    //    dc.usp_InsertTransactionXNote(
+                    //        transactionID,
+                    //        noteID,
+                    //        ref tXnID);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //}
 
                     // Generate the PDF Report
                     Late30Day late30 = new Late30Day();

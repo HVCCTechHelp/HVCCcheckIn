@@ -64,7 +64,6 @@ namespace HVCC.Shell.Models
     partial void InsertSeason(Season instance);
     partial void UpdateSeason(Season instance);
     partial void DeleteSeason(Season instance);
-    partial void DeleteOwner(Owner instance);
     partial void InsertListOfItem(ListOfItem instance);
     partial void UpdateListOfItem(ListOfItem instance);
     partial void DeleteListOfItem(ListOfItem instance);
@@ -77,6 +76,13 @@ namespace HVCC.Shell.Models
     partial void InsertPayment_X_Invoice(Payment_X_Invoice instance);
     partial void UpdatePayment_X_Invoice(Payment_X_Invoice instance);
     partial void DeletePayment_X_Invoice(Payment_X_Invoice instance);
+    partial void InsertOwner(Owner instance);
+    partial void UpdateOwner(Owner instance);
+    partial void DeleteOwner(Owner instance);
+    partial void InsertOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void UpdateOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void DeleteOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void DeleteRelationship(Relationship instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -149,14 +155,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Relationship> Relationships
-		{
-			get
-			{
-				return this.GetTable<Relationship>();
-			}
-		}
-		
 		public System.Data.Linq.Table<OwnershipChange> OwnershipChanges
 		{
 			get
@@ -189,27 +187,11 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<v_ActiveRelationship> v_ActiveRelationships
-		{
-			get
-			{
-				return this.GetTable<v_ActiveRelationship>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Property> Properties
 		{
 			get
 			{
 				return this.GetTable<Property>();
-			}
-		}
-		
-		public System.Data.Linq.Table<v_PropertyDetail> v_PropertyDetails
-		{
-			get
-			{
-				return this.GetTable<v_PropertyDetail>();
 			}
 		}
 		
@@ -301,14 +283,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Owner> Owners
-		{
-			get
-			{
-				return this.GetTable<Owner>();
-			}
-		}
-		
 		public System.Data.Linq.Table<v_OwnerTransaction> v_OwnerTransactions
 		{
 			get
@@ -349,11 +323,51 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<v_ActiveRelationship> v_ActiveRelationships
+		{
+			get
+			{
+				return this.GetTable<v_ActiveRelationship>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Owner> Owners
+		{
+			get
+			{
+				return this.GetTable<Owner>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Owner_X_Relationship> Owner_X_Relationships
+		{
+			get
+			{
+				return this.GetTable<Owner_X_Relationship>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Relationship> Relationships
+		{
+			get
+			{
+				return this.GetTable<Relationship>();
+			}
+		}
+		
 		public System.Data.Linq.Table<v_OwnerDetail> v_OwnerDetails
 		{
 			get
 			{
 				return this.GetTable<v_OwnerDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<v_PropertyDetail> v_PropertyDetails
+		{
+			get
+			{
+				return this.GetTable<v_PropertyDetail>();
 			}
 		}
 		
@@ -372,23 +386,6 @@ namespace HVCC.Shell.Models
 			System.Nullable<int> p1 = obj.RowId;
 			this.usp_InsertWellMeterReading(((System.Nullable<int>)(obj.WellNumber)), ((System.Nullable<System.DateTime>)(obj.MeterReadingDate)), ((System.Nullable<long>)(obj.MeterReading)), obj.MeterUnitOfMeasure, ((System.Nullable<long>)(obj.ThroughputInGallons)), ref p1);
 			obj.RowId = p1.GetValueOrDefault();
-		}
-		
-		private void InsertRelationship(Relationship obj)
-		{
-			System.Nullable<int> p1 = obj.RelationshipID;
-			this.usp_InsertRelationship(((System.Nullable<int>)(obj.OwnerID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
-			obj.RelationshipID = p1.GetValueOrDefault();
-		}
-		
-		private void UpdateRelationship(Relationship obj)
-		{
-			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), ((System.Nullable<int>)(obj.OwnerID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
-		}
-		
-		private void DeleteRelationship(Relationship obj)
-		{
-			this.usp_DeleteRelationship(((System.Nullable<int>)(obj.RelationshipID)));
 		}
 		
 		private void InsertOwnershipChange(OwnershipChange obj)
@@ -496,16 +493,16 @@ namespace HVCC.Shell.Models
 			this.usp_DeleteFinancialTransaction(((System.Nullable<int>)(obj.RowId)));
 		}
 		
-		private void InsertOwner(Owner obj)
+		private void InsertRelationship(Relationship obj)
 		{
-			System.Nullable<int> p1 = obj.OwnerID;
-			this.usp_InsertOwner(obj.Customer, ((System.Nullable<decimal>)(obj.AccountBalance)), obj.MailTo, obj.Address, obj.Address2, obj.City, obj.State, obj.Zip, obj.PrimaryPhone, obj.SecondaryPhone, obj.EmailAddress, ((System.Nullable<bool>)(obj.IsSendByEmail)), ((System.Nullable<bool>)(obj.IsCurrentOwner)), ((System.Nullable<bool>)(obj.IsPrimaryRes)), ((System.Nullable<bool>)(obj.IsWeekend)), ((System.Nullable<bool>)(obj.IsSeasonal)), ((System.Nullable<bool>)(obj.IsRental)), ((System.Nullable<bool>)(obj.IsRVlot)), ((System.Nullable<bool>)(obj.IsEmptyLot)), ref p1);
-			obj.OwnerID = p1.GetValueOrDefault();
+			System.Nullable<int> p1 = obj.RelationshipID;
+			this.usp_InsertRelationship(obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
+			obj.RelationshipID = p1.GetValueOrDefault();
 		}
 		
-		private void UpdateOwner(Owner obj)
+		private void UpdateRelationship(Relationship obj)
 		{
-			this.usp_UpdateOwner(((System.Nullable<int>)(obj.OwnerID)), obj.Customer, ((System.Nullable<decimal>)(obj.AccountBalance)), obj.MailTo, obj.Address, obj.Address2, obj.City, obj.State, obj.Zip, obj.PrimaryPhone, obj.SecondaryPhone, obj.EmailAddress, ((System.Nullable<bool>)(obj.IsSendByEmail)), ((System.Nullable<bool>)(obj.IsCurrentOwner)), ((System.Nullable<bool>)(obj.IsPrimaryRes)), ((System.Nullable<bool>)(obj.IsWeekend)), ((System.Nullable<bool>)(obj.IsSeasonal)), ((System.Nullable<bool>)(obj.IsRental)), ((System.Nullable<bool>)(obj.IsRVlot)), ((System.Nullable<bool>)(obj.IsEmptyLot)));
+			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -582,21 +579,6 @@ namespace HVCC.Shell.Models
 		public int usp_InsertProperty([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Section", DbType="Int")] System.Nullable<int> section, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Block", DbType="Int")] System.Nullable<int> block, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Lot", DbType="Int")] System.Nullable<int> lot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SubLot", DbType="VarChar(10)")] string subLot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="BillTo", DbType="VarChar(100)")] string billTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Decimal(19,4)")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsInGoodStanding", DbType="Bit")] System.Nullable<bool> isInGoodStanding, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Parcel", DbType="VarChar(50)")] string parcel, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PhysicalAddress", DbType="VarChar(50)")] string physicalAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Status", DbType="VarChar(10)")] string status, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MeterNumber", DbType="Int")] System.Nullable<int> meterNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="WaterSystemNotes", DbType="VarChar(250)")] string waterSystemNotes)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), customer, section, block, lot, subLot, billTo, balance, isInGoodStanding, parcel, physicalAddress, status, meterNumber, waterSystemNotes);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertRelationship")]
-		public int usp_InsertRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] ref System.Nullable<int> relationshipId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, fName, lName, relationToOwner, photo, relationshipId);
-			relationshipId = ((System.Nullable<int>)(result.GetParameterValue(5)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateRelationship")]
-		public int usp_UdateRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId, ownerID, fName, lName, relationToOwner, photo);
 			return ((int)(result.ReturnValue));
 		}
 		
@@ -832,6 +814,21 @@ namespace HVCC.Shell.Models
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsEmptyLot", DbType="Bit")] System.Nullable<bool> isEmptyLot)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, accountBalance, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, isPrimaryRes, isWeekend, isSeasonal, isRental, isRVlot, isEmptyLot);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertRelationship")]
+		public int usp_InsertRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] ref System.Nullable<int> relationshipId)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), fName, lName, relationToOwner, photo, relationshipId);
+			relationshipId = ((System.Nullable<int>)(result.GetParameterValue(4)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateRelationship")]
+		public int usp_UdateRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId, fName, lName, relationToOwner, photo);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -1797,301 +1794,6 @@ namespace HVCC.Shell.Models
 						this._WellNumber = default(int);
 					}
 					this.SendPropertyChanged("WaterWell");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Relationships")]
-	public partial class Relationship : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RelationshipID;
-		
-		private int _OwnerID;
-		
-		private string _FName;
-		
-		private string _LName;
-		
-		private string _RelationToOwner;
-		
-		private System.Data.Linq.Binary _Photo;
-		
-		private System.Nullable<bool> _Active;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-		private EntityRef<Owner> _Owner;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRelationshipIDChanging(int value);
-    partial void OnRelationshipIDChanged();
-    partial void OnOwnerIDChanging(int value);
-    partial void OnOwnerIDChanged();
-    partial void OnFNameChanging(string value);
-    partial void OnFNameChanged();
-    partial void OnLNameChanging(string value);
-    partial void OnLNameChanged();
-    partial void OnRelationToOwnerChanging(string value);
-    partial void OnRelationToOwnerChanged();
-    partial void OnPhotoChanging(System.Data.Linq.Binary value);
-    partial void OnPhotoChanged();
-    partial void OnActiveChanging(System.Nullable<bool> value);
-    partial void OnActiveChanged();
-    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastModifiedChanged();
-    partial void OnLastModifiedByChanging(string value);
-    partial void OnLastModifiedByChanged();
-    #endregion
-		
-		public Relationship()
-		{
-			this._Owner = default(EntityRef<Owner>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RelationshipID
-		{
-			get
-			{
-				return this._RelationshipID;
-			}
-			set
-			{
-				if ((this._RelationshipID != value))
-				{
-					this.OnRelationshipIDChanging(value);
-					this.SendPropertyChanging();
-					this._RelationshipID = value;
-					this.SendPropertyChanged("RelationshipID");
-					this.OnRelationshipIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					if (this._Owner.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._OwnerID = value;
-					this.SendPropertyChanged("OwnerID");
-					this.OnOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string FName
-		{
-			get
-			{
-				return this._FName;
-			}
-			set
-			{
-				if ((this._FName != value))
-				{
-					this.OnFNameChanging(value);
-					this.SendPropertyChanging();
-					this._FName = value;
-					this.SendPropertyChanged("FName");
-					this.OnFNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string LName
-		{
-			get
-			{
-				return this._LName;
-			}
-			set
-			{
-				if ((this._LName != value))
-				{
-					this.OnLNameChanging(value);
-					this.SendPropertyChanging();
-					this._LName = value;
-					this.SendPropertyChanged("LName");
-					this.OnLNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string RelationToOwner
-		{
-			get
-			{
-				return this._RelationToOwner;
-			}
-			set
-			{
-				if ((this._RelationToOwner != value))
-				{
-					this.OnRelationToOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._RelationToOwner = value;
-					this.SendPropertyChanged("RelationToOwner");
-					this.OnRelationToOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Photo", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Photo
-		{
-			get
-			{
-				return this._Photo;
-			}
-			set
-			{
-				if ((this._Photo != value))
-				{
-					this.OnPhotoChanging(value);
-					this.SendPropertyChanging();
-					this._Photo = value;
-					this.SendPropertyChanged("Photo");
-					this.OnPhotoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
-		public System.Nullable<bool> Active
-		{
-			get
-			{
-				return this._Active;
-			}
-			set
-			{
-				if ((this._Active != value))
-				{
-					this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this.OnLastModifiedChanging(value);
-					this.SendPropertyChanging();
-					this._LastModified = value;
-					this.SendPropertyChanged("LastModified");
-					this.OnLastModifiedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this.OnLastModifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._LastModifiedBy = value;
-					this.SendPropertyChanged("LastModifiedBy");
-					this.OnLastModifiedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Relationship", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
-		public Owner Owner
-		{
-			get
-			{
-				return this._Owner.Entity;
-			}
-			set
-			{
-				Owner previousValue = this._Owner.Entity;
-				if (((previousValue != value) 
-							|| (this._Owner.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Owner.Entity = null;
-						previousValue.Relationships.Remove(this);
-					}
-					this._Owner.Entity = value;
-					if ((value != null))
-					{
-						value.Relationships.Add(this);
-						this._OwnerID = value.OwnerID;
-					}
-					else
-					{
-						this._OwnerID = default(int);
-					}
-					this.SendPropertyChanged("Owner");
 				}
 			}
 		}
@@ -4081,159 +3783,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_ActiveRelationships")]
-	public partial class v_ActiveRelationship
-	{
-		
-		private int _RelationshipID;
-		
-		private int _OwnerID;
-		
-		private string _FName;
-		
-		private string _LName;
-		
-		private string _RelationToOwner;
-		
-		private string _MailTo;
-		
-		private System.Nullable<bool> _Active;
-		
-		private System.Nullable<bool> _IsCurrentOwner;
-		
-		public v_ActiveRelationship()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", DbType="Int NOT NULL")]
-		public int RelationshipID
-		{
-			get
-			{
-				return this._RelationshipID;
-			}
-			set
-			{
-				if ((this._RelationshipID != value))
-				{
-					this._RelationshipID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					this._OwnerID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string FName
-		{
-			get
-			{
-				return this._FName;
-			}
-			set
-			{
-				if ((this._FName != value))
-				{
-					this._FName = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string LName
-		{
-			get
-			{
-				return this._LName;
-			}
-			set
-			{
-				if ((this._LName != value))
-				{
-					this._LName = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string RelationToOwner
-		{
-			get
-			{
-				return this._RelationToOwner;
-			}
-			set
-			{
-				if ((this._RelationToOwner != value))
-				{
-					this._RelationToOwner = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string MailTo
-		{
-			get
-			{
-				return this._MailTo;
-			}
-			set
-			{
-				if ((this._MailTo != value))
-				{
-					this._MailTo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
-		public System.Nullable<bool> Active
-		{
-			get
-			{
-				return this._Active;
-			}
-			set
-			{
-				if ((this._Active != value))
-				{
-					this._Active = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
-		public System.Nullable<bool> IsCurrentOwner
-		{
-			get
-			{
-				return this._IsCurrentOwner;
-			}
-			set
-			{
-				if ((this._IsCurrentOwner != value))
-				{
-					this._IsCurrentOwner = value;
-				}
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Properties")]
 	public partial class Property : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -4774,519 +4323,6 @@ namespace HVCC.Shell.Models
 		{
 			this.SendPropertyChanging();
 			entity.Property = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_PropertyDetails")]
-	public partial class v_PropertyDetail
-	{
-		
-		private int _PropertyID;
-		
-		private int _OwnerID;
-		
-		private string _Customer;
-		
-		private int _Section;
-		
-		private int _Block;
-		
-		private int _Lot;
-		
-		private string _SubLot;
-		
-		private System.Nullable<decimal> _Balance;
-		
-		private string _Parcel;
-		
-		private string _PhysicalAddress;
-		
-		private string _Status;
-		
-		private string _CommonNotes;
-		
-		private bool _IsAssessment;
-		
-		private System.Nullable<int> _MeterNumber;
-		
-		private string _WaterSystemNotes;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-		private decimal _OwnerBalance;
-		
-		private string _MailTo;
-		
-		private string _Address;
-		
-		private string _Address2;
-		
-		private string _City;
-		
-		private string _State;
-		
-		private string _Zip;
-		
-		private string _EmailAddress;
-		
-		private bool _IsSendByEmail;
-		
-		private string _PrimaryPhone;
-		
-		private string _SecondaryPhone;
-		
-		public v_PropertyDetail()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
-		public int PropertyID
-		{
-			get
-			{
-				return this._PropertyID;
-			}
-			set
-			{
-				if ((this._PropertyID != value))
-				{
-					this._PropertyID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					this._OwnerID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Customer
-		{
-			get
-			{
-				return this._Customer;
-			}
-			set
-			{
-				if ((this._Customer != value))
-				{
-					this._Customer = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Section", DbType="Int NOT NULL")]
-		public int Section
-		{
-			get
-			{
-				return this._Section;
-			}
-			set
-			{
-				if ((this._Section != value))
-				{
-					this._Section = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Block", DbType="Int NOT NULL")]
-		public int Block
-		{
-			get
-			{
-				return this._Block;
-			}
-			set
-			{
-				if ((this._Block != value))
-				{
-					this._Block = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lot", DbType="Int NOT NULL")]
-		public int Lot
-		{
-			get
-			{
-				return this._Lot;
-			}
-			set
-			{
-				if ((this._Lot != value))
-				{
-					this._Lot = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubLot", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string SubLot
-		{
-			get
-			{
-				return this._SubLot;
-			}
-			set
-			{
-				if ((this._SubLot != value))
-				{
-					this._SubLot = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
-		public System.Nullable<decimal> Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
-			set
-			{
-				if ((this._Balance != value))
-				{
-					this._Balance = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parcel", DbType="VarChar(50)")]
-		public string Parcel
-		{
-			get
-			{
-				return this._Parcel;
-			}
-			set
-			{
-				if ((this._Parcel != value))
-				{
-					this._Parcel = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhysicalAddress", DbType="VarChar(50)")]
-		public string PhysicalAddress
-		{
-			get
-			{
-				return this._PhysicalAddress;
-			}
-			set
-			{
-				if ((this._PhysicalAddress != value))
-				{
-					this._PhysicalAddress = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(40)")]
-		public string Status
-		{
-			get
-			{
-				return this._Status;
-			}
-			set
-			{
-				if ((this._Status != value))
-				{
-					this._Status = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommonNotes", DbType="VarChar(400)")]
-		public string CommonNotes
-		{
-			get
-			{
-				return this._CommonNotes;
-			}
-			set
-			{
-				if ((this._CommonNotes != value))
-				{
-					this._CommonNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAssessment", DbType="Bit NOT NULL")]
-		public bool IsAssessment
-		{
-			get
-			{
-				return this._IsAssessment;
-			}
-			set
-			{
-				if ((this._IsAssessment != value))
-				{
-					this._IsAssessment = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeterNumber", DbType="Int")]
-		public System.Nullable<int> MeterNumber
-		{
-			get
-			{
-				return this._MeterNumber;
-			}
-			set
-			{
-				if ((this._MeterNumber != value))
-				{
-					this._MeterNumber = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WaterSystemNotes", DbType="VarChar(250)")]
-		public string WaterSystemNotes
-		{
-			get
-			{
-				return this._WaterSystemNotes;
-			}
-			set
-			{
-				if ((this._WaterSystemNotes != value))
-				{
-					this._WaterSystemNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this._LastModified = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this._LastModifiedBy = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerBalance", DbType="Money NOT NULL")]
-		public decimal OwnerBalance
-		{
-			get
-			{
-				return this._OwnerBalance;
-			}
-			set
-			{
-				if ((this._OwnerBalance != value))
-				{
-					this._OwnerBalance = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string MailTo
-		{
-			get
-			{
-				return this._MailTo;
-			}
-			set
-			{
-				if ((this._MailTo != value))
-				{
-					this._MailTo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Address
-		{
-			get
-			{
-				return this._Address;
-			}
-			set
-			{
-				if ((this._Address != value))
-				{
-					this._Address = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
-		public string Address2
-		{
-			get
-			{
-				return this._Address2;
-			}
-			set
-			{
-				if ((this._Address2 != value))
-				{
-					this._Address2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string City
-		{
-			get
-			{
-				return this._City;
-			}
-			set
-			{
-				if ((this._City != value))
-				{
-					this._City = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
-			set
-			{
-				if ((this._State != value))
-				{
-					this._State = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
-			set
-			{
-				if ((this._Zip != value))
-				{
-					this._Zip = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
-			set
-			{
-				if ((this._EmailAddress != value))
-				{
-					this._EmailAddress = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit NOT NULL")]
-		public bool IsSendByEmail
-		{
-			get
-			{
-				return this._IsSendByEmail;
-			}
-			set
-			{
-				if ((this._IsSendByEmail != value))
-				{
-					this._IsSendByEmail = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
-		public string PrimaryPhone
-		{
-			get
-			{
-				return this._PrimaryPhone;
-			}
-			set
-			{
-				if ((this._PrimaryPhone != value))
-				{
-					this._PrimaryPhone = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
-		public string SecondaryPhone
-		{
-			get
-			{
-				return this._SecondaryPhone;
-			}
-			set
-			{
-				if ((this._SecondaryPhone != value))
-				{
-					this._SecondaryPhone = value;
-				}
-			}
 		}
 	}
 	
@@ -8164,824 +7200,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owners")]
-	public partial class Owner : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _OwnerID;
-		
-		private string _Customer;
-		
-		private System.Nullable<decimal> _AccountBalance;
-		
-		private string _MailTo;
-		
-		private string _Address;
-		
-		private string _Address2;
-		
-		private string _City;
-		
-		private string _State;
-		
-		private string _Zip;
-		
-		private string _EmailAddress;
-		
-		private bool _IsSendByEmail;
-		
-		private string _PrimaryPhone;
-		
-		private string _SecondaryPhone;
-		
-		private System.Nullable<bool> _IsCurrentOwner;
-		
-		private System.Nullable<bool> _IsPrimaryRes;
-		
-		private System.Nullable<bool> _IsWeekend;
-		
-		private System.Nullable<bool> _IsSeasonal;
-		
-		private System.Nullable<bool> _IsRental;
-		
-		private System.Nullable<bool> _IsRVlot;
-		
-		private System.Nullable<bool> _IsEmptyLot;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-		private EntitySet<Relationship> _Relationships;
-		
-		private EntitySet<WaterShutoff> _WaterShutoffs;
-		
-		private EntitySet<Property> _Properties;
-		
-		private EntitySet<GolfCart> _GolfCarts;
-		
-		private EntitySet<Late90Day> _Late90Days;
-		
-		private EntitySet<Late60Day> _Late60Days;
-		
-		private EntitySet<Late30Day> _Late30Days;
-		
-		private EntitySet<Note> _Notes;
-		
-		private EntitySet<FinancialTransaction> _FinancialTransactions;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnOwnerIDChanging(int value);
-    partial void OnOwnerIDChanged();
-    partial void OnCustomerChanging(string value);
-    partial void OnCustomerChanged();
-    partial void OnAccountBalanceChanging(System.Nullable<decimal> value);
-    partial void OnAccountBalanceChanged();
-    partial void OnMailToChanging(string value);
-    partial void OnMailToChanged();
-    partial void OnAddressChanging(string value);
-    partial void OnAddressChanged();
-    partial void OnAddress2Changing(string value);
-    partial void OnAddress2Changed();
-    partial void OnCityChanging(string value);
-    partial void OnCityChanged();
-    partial void OnStateChanging(string value);
-    partial void OnStateChanged();
-    partial void OnZipChanging(string value);
-    partial void OnZipChanged();
-    partial void OnEmailAddressChanging(string value);
-    partial void OnEmailAddressChanged();
-    partial void OnIsSendByEmailChanging(bool value);
-    partial void OnIsSendByEmailChanged();
-    partial void OnPrimaryPhoneChanging(string value);
-    partial void OnPrimaryPhoneChanged();
-    partial void OnSecondaryPhoneChanging(string value);
-    partial void OnSecondaryPhoneChanged();
-    partial void OnIsCurrentOwnerChanging(System.Nullable<bool> value);
-    partial void OnIsCurrentOwnerChanged();
-    partial void OnIsPrimaryResChanging(System.Nullable<bool> value);
-    partial void OnIsPrimaryResChanged();
-    partial void OnIsWeekendChanging(System.Nullable<bool> value);
-    partial void OnIsWeekendChanged();
-    partial void OnIsSeasonalChanging(System.Nullable<bool> value);
-    partial void OnIsSeasonalChanged();
-    partial void OnIsRentalChanging(System.Nullable<bool> value);
-    partial void OnIsRentalChanged();
-    partial void OnIsRVlotChanging(System.Nullable<bool> value);
-    partial void OnIsRVlotChanged();
-    partial void OnIsEmptyLotChanging(System.Nullable<bool> value);
-    partial void OnIsEmptyLotChanged();
-    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastModifiedChanged();
-    partial void OnLastModifiedByChanging(string value);
-    partial void OnLastModifiedByChanged();
-    #endregion
-		
-		public Owner()
-		{
-			this._Relationships = new EntitySet<Relationship>(new Action<Relationship>(this.attach_Relationships), new Action<Relationship>(this.detach_Relationships));
-			this._WaterShutoffs = new EntitySet<WaterShutoff>(new Action<WaterShutoff>(this.attach_WaterShutoffs), new Action<WaterShutoff>(this.detach_WaterShutoffs));
-			this._Properties = new EntitySet<Property>(new Action<Property>(this.attach_Properties), new Action<Property>(this.detach_Properties));
-			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
-			this._Late90Days = new EntitySet<Late90Day>(new Action<Late90Day>(this.attach_Late90Days), new Action<Late90Day>(this.detach_Late90Days));
-			this._Late60Days = new EntitySet<Late60Day>(new Action<Late60Day>(this.attach_Late60Days), new Action<Late60Day>(this.detach_Late60Days));
-			this._Late30Days = new EntitySet<Late30Day>(new Action<Late30Day>(this.attach_Late30Days), new Action<Late30Day>(this.detach_Late30Days));
-			this._Notes = new EntitySet<Note>(new Action<Note>(this.attach_Notes), new Action<Note>(this.detach_Notes));
-			this._FinancialTransactions = new EntitySet<FinancialTransaction>(new Action<FinancialTransaction>(this.attach_FinancialTransactions), new Action<FinancialTransaction>(this.detach_FinancialTransactions));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					this.OnOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._OwnerID = value;
-					this.SendPropertyChanged("OwnerID");
-					this.OnOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Customer
-		{
-			get
-			{
-				return this._Customer;
-			}
-			set
-			{
-				if ((this._Customer != value))
-				{
-					this.OnCustomerChanging(value);
-					this.SendPropertyChanging();
-					this._Customer = value;
-					this.SendPropertyChanged("Customer");
-					this.OnCustomerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccountBalance", DbType="Money")]
-		public System.Nullable<decimal> AccountBalance
-		{
-			get
-			{
-				return this._AccountBalance;
-			}
-			set
-			{
-				if ((this._AccountBalance != value))
-				{
-					this.OnAccountBalanceChanging(value);
-					this.SendPropertyChanging();
-					this._AccountBalance = value;
-					this.SendPropertyChanged("AccountBalance");
-					this.OnAccountBalanceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string MailTo
-		{
-			get
-			{
-				return this._MailTo;
-			}
-			set
-			{
-				if ((this._MailTo != value))
-				{
-					this.OnMailToChanging(value);
-					this.SendPropertyChanging();
-					this._MailTo = value;
-					this.SendPropertyChanged("MailTo");
-					this.OnMailToChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Address
-		{
-			get
-			{
-				return this._Address;
-			}
-			set
-			{
-				if ((this._Address != value))
-				{
-					this.OnAddressChanging(value);
-					this.SendPropertyChanging();
-					this._Address = value;
-					this.SendPropertyChanged("Address");
-					this.OnAddressChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
-		public string Address2
-		{
-			get
-			{
-				return this._Address2;
-			}
-			set
-			{
-				if ((this._Address2 != value))
-				{
-					this.OnAddress2Changing(value);
-					this.SendPropertyChanging();
-					this._Address2 = value;
-					this.SendPropertyChanged("Address2");
-					this.OnAddress2Changed();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string City
-		{
-			get
-			{
-				return this._City;
-			}
-			set
-			{
-				if ((this._City != value))
-				{
-					this.OnCityChanging(value);
-					this.SendPropertyChanging();
-					this._City = value;
-					this.SendPropertyChanged("City");
-					this.OnCityChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
-			set
-			{
-				if ((this._State != value))
-				{
-					this.OnStateChanging(value);
-					this.SendPropertyChanging();
-					this._State = value;
-					this.SendPropertyChanged("State");
-					this.OnStateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
-			set
-			{
-				if ((this._Zip != value))
-				{
-					this.OnZipChanging(value);
-					this.SendPropertyChanging();
-					this._Zip = value;
-					this.SendPropertyChanged("Zip");
-					this.OnZipChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
-			set
-			{
-				if ((this._EmailAddress != value))
-				{
-					this.OnEmailAddressChanging(value);
-					this.SendPropertyChanging();
-					this._EmailAddress = value;
-					this.SendPropertyChanged("EmailAddress");
-					this.OnEmailAddressChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit NOT NULL")]
-		public bool IsSendByEmail
-		{
-			get
-			{
-				return this._IsSendByEmail;
-			}
-			set
-			{
-				if ((this._IsSendByEmail != value))
-				{
-					this.OnIsSendByEmailChanging(value);
-					this.SendPropertyChanging();
-					this._IsSendByEmail = value;
-					this.SendPropertyChanged("IsSendByEmail");
-					this.OnIsSendByEmailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
-		public string PrimaryPhone
-		{
-			get
-			{
-				return this._PrimaryPhone;
-			}
-			set
-			{
-				if ((this._PrimaryPhone != value))
-				{
-					this.OnPrimaryPhoneChanging(value);
-					this.SendPropertyChanging();
-					this._PrimaryPhone = value;
-					this.SendPropertyChanged("PrimaryPhone");
-					this.OnPrimaryPhoneChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
-		public string SecondaryPhone
-		{
-			get
-			{
-				return this._SecondaryPhone;
-			}
-			set
-			{
-				if ((this._SecondaryPhone != value))
-				{
-					this.OnSecondaryPhoneChanging(value);
-					this.SendPropertyChanging();
-					this._SecondaryPhone = value;
-					this.SendPropertyChanged("SecondaryPhone");
-					this.OnSecondaryPhoneChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
-		public System.Nullable<bool> IsCurrentOwner
-		{
-			get
-			{
-				return this._IsCurrentOwner;
-			}
-			set
-			{
-				if ((this._IsCurrentOwner != value))
-				{
-					this.OnIsCurrentOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._IsCurrentOwner = value;
-					this.SendPropertyChanged("IsCurrentOwner");
-					this.OnIsCurrentOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimaryRes", DbType="Bit")]
-		public System.Nullable<bool> IsPrimaryRes
-		{
-			get
-			{
-				return this._IsPrimaryRes;
-			}
-			set
-			{
-				if ((this._IsPrimaryRes != value))
-				{
-					this.OnIsPrimaryResChanging(value);
-					this.SendPropertyChanging();
-					this._IsPrimaryRes = value;
-					this.SendPropertyChanged("IsPrimaryRes");
-					this.OnIsPrimaryResChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWeekend", DbType="Bit")]
-		public System.Nullable<bool> IsWeekend
-		{
-			get
-			{
-				return this._IsWeekend;
-			}
-			set
-			{
-				if ((this._IsWeekend != value))
-				{
-					this.OnIsWeekendChanging(value);
-					this.SendPropertyChanging();
-					this._IsWeekend = value;
-					this.SendPropertyChanged("IsWeekend");
-					this.OnIsWeekendChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSeasonal", DbType="Bit")]
-		public System.Nullable<bool> IsSeasonal
-		{
-			get
-			{
-				return this._IsSeasonal;
-			}
-			set
-			{
-				if ((this._IsSeasonal != value))
-				{
-					this.OnIsSeasonalChanging(value);
-					this.SendPropertyChanging();
-					this._IsSeasonal = value;
-					this.SendPropertyChanged("IsSeasonal");
-					this.OnIsSeasonalChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsRental", DbType="Bit")]
-		public System.Nullable<bool> IsRental
-		{
-			get
-			{
-				return this._IsRental;
-			}
-			set
-			{
-				if ((this._IsRental != value))
-				{
-					this.OnIsRentalChanging(value);
-					this.SendPropertyChanging();
-					this._IsRental = value;
-					this.SendPropertyChanged("IsRental");
-					this.OnIsRentalChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsRVlot", DbType="Bit")]
-		public System.Nullable<bool> IsRVlot
-		{
-			get
-			{
-				return this._IsRVlot;
-			}
-			set
-			{
-				if ((this._IsRVlot != value))
-				{
-					this.OnIsRVlotChanging(value);
-					this.SendPropertyChanging();
-					this._IsRVlot = value;
-					this.SendPropertyChanged("IsRVlot");
-					this.OnIsRVlotChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEmptyLot", DbType="Bit")]
-		public System.Nullable<bool> IsEmptyLot
-		{
-			get
-			{
-				return this._IsEmptyLot;
-			}
-			set
-			{
-				if ((this._IsEmptyLot != value))
-				{
-					this.OnIsEmptyLotChanging(value);
-					this.SendPropertyChanging();
-					this._IsEmptyLot = value;
-					this.SendPropertyChanged("IsEmptyLot");
-					this.OnIsEmptyLotChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this.OnLastModifiedChanging(value);
-					this.SendPropertyChanging();
-					this._LastModified = value;
-					this.SendPropertyChanged("LastModified");
-					this.OnLastModifiedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this.OnLastModifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._LastModifiedBy = value;
-					this.SendPropertyChanged("LastModifiedBy");
-					this.OnLastModifiedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Relationship", Storage="_Relationships", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Relationship> Relationships
-		{
-			get
-			{
-				return this._Relationships;
-			}
-			set
-			{
-				this._Relationships.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_WaterShutoff", Storage="_WaterShutoffs", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<WaterShutoff> WaterShutoffs
-		{
-			get
-			{
-				return this._WaterShutoffs;
-			}
-			set
-			{
-				this._WaterShutoffs.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Property", Storage="_Properties", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Property> Properties
-		{
-			get
-			{
-				return this._Properties;
-			}
-			set
-			{
-				this._Properties.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_GolfCart", Storage="_GolfCarts", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<GolfCart> GolfCarts
-		{
-			get
-			{
-				return this._GolfCarts;
-			}
-			set
-			{
-				this._GolfCarts.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late90Day", Storage="_Late90Days", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Late90Day> Late90Days
-		{
-			get
-			{
-				return this._Late90Days;
-			}
-			set
-			{
-				this._Late90Days.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late60Day", Storage="_Late60Days", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Late60Day> Late60Days
-		{
-			get
-			{
-				return this._Late60Days;
-			}
-			set
-			{
-				this._Late60Days.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late30Day", Storage="_Late30Days", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Late30Day> Late30Days
-		{
-			get
-			{
-				return this._Late30Days;
-			}
-			set
-			{
-				this._Late30Days.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Note", Storage="_Notes", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Note> Notes
-		{
-			get
-			{
-				return this._Notes;
-			}
-			set
-			{
-				this._Notes.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_FinancialTransactions", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<FinancialTransaction> FinancialTransactions
-		{
-			get
-			{
-				return this._FinancialTransactions;
-			}
-			set
-			{
-				this._FinancialTransactions.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Relationships(Relationship entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Relationships(Relationship entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_WaterShutoffs(WaterShutoff entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_WaterShutoffs(WaterShutoff entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_Properties(Property entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Properties(Property entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_GolfCarts(GolfCart entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_GolfCarts(GolfCart entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_Late90Days(Late90Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Late90Days(Late90Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_Late60Days(Late60Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Late60Days(Late60Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_Late30Days(Late30Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Late30Days(Late30Day entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_Notes(Note entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Notes(Note entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
-		private void attach_FinancialTransactions(FinancialTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_FinancialTransactions(FinancialTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_OwnerTransactions")]
 	public partial class v_OwnerTransaction
 	{
@@ -10511,6 +8729,1427 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_ActiveRelationships")]
+	public partial class v_ActiveRelationship
+	{
+		
+		private int _RelationshipID;
+		
+		private string _FName;
+		
+		private string _LName;
+		
+		private string _RelationToOwner;
+		
+		private System.Nullable<bool> _Active;
+		
+		private int _OwnerID;
+		
+		private string _MailTo;
+		
+		private System.Nullable<bool> _IsCurrentOwner;
+		
+		public v_ActiveRelationship()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", DbType="Int NOT NULL")]
+		public int RelationshipID
+		{
+			get
+			{
+				return this._RelationshipID;
+			}
+			set
+			{
+				if ((this._RelationshipID != value))
+				{
+					this._RelationshipID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string FName
+		{
+			get
+			{
+				return this._FName;
+			}
+			set
+			{
+				if ((this._FName != value))
+				{
+					this._FName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string LName
+		{
+			get
+			{
+				return this._LName;
+			}
+			set
+			{
+				if ((this._LName != value))
+				{
+					this._LName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string RelationToOwner
+		{
+			get
+			{
+				return this._RelationToOwner;
+			}
+			set
+			{
+				if ((this._RelationToOwner != value))
+				{
+					this._RelationToOwner = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
+		public System.Nullable<bool> Active
+		{
+			get
+			{
+				return this._Active;
+			}
+			set
+			{
+				if ((this._Active != value))
+				{
+					this._Active = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this._MailTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
+		public System.Nullable<bool> IsCurrentOwner
+		{
+			get
+			{
+				return this._IsCurrentOwner;
+			}
+			set
+			{
+				if ((this._IsCurrentOwner != value))
+				{
+					this._IsCurrentOwner = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owners")]
+	public partial class Owner : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _OwnerID;
+		
+		private System.Nullable<decimal> _AccountBalance;
+		
+		private string _Customer;
+		
+		private string _MailTo;
+		
+		private string _Address;
+		
+		private string _Address2;
+		
+		private string _City;
+		
+		private string _State;
+		
+		private string _Zip;
+		
+		private string _EmailAddress;
+		
+		private bool _IsSendByEmail;
+		
+		private string _PrimaryPhone;
+		
+		private string _SecondaryPhone;
+		
+		private System.Nullable<bool> _IsCurrentOwner;
+		
+		private System.Nullable<bool> _IsPrimaryRes;
+		
+		private System.Nullable<bool> _IsWeekend;
+		
+		private System.Nullable<bool> _IsSeasonal;
+		
+		private System.Nullable<bool> _IsRental;
+		
+		private System.Nullable<bool> _IsRVlot;
+		
+		private System.Nullable<bool> _IsEmptyLot;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private EntitySet<WaterShutoff> _WaterShutoffs;
+		
+		private EntitySet<Property> _Properties;
+		
+		private EntitySet<GolfCart> _GolfCarts;
+		
+		private EntitySet<Late90Day> _Late90Days;
+		
+		private EntitySet<Late60Day> _Late60Days;
+		
+		private EntitySet<Late30Day> _Late30Days;
+		
+		private EntitySet<Note> _Notes;
+		
+		private EntitySet<FinancialTransaction> _FinancialTransactions;
+		
+		private EntitySet<Owner_X_Relationship> _Owner_X_Relationships;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnOwnerIDChanging(int value);
+    partial void OnOwnerIDChanged();
+    partial void OnAccountBalanceChanging(System.Nullable<decimal> value);
+    partial void OnAccountBalanceChanged();
+    partial void OnCustomerChanging(string value);
+    partial void OnCustomerChanged();
+    partial void OnMailToChanging(string value);
+    partial void OnMailToChanged();
+    partial void OnAddressChanging(string value);
+    partial void OnAddressChanged();
+    partial void OnAddress2Changing(string value);
+    partial void OnAddress2Changed();
+    partial void OnCityChanging(string value);
+    partial void OnCityChanged();
+    partial void OnStateChanging(string value);
+    partial void OnStateChanged();
+    partial void OnZipChanging(string value);
+    partial void OnZipChanged();
+    partial void OnEmailAddressChanging(string value);
+    partial void OnEmailAddressChanged();
+    partial void OnIsSendByEmailChanging(bool value);
+    partial void OnIsSendByEmailChanged();
+    partial void OnPrimaryPhoneChanging(string value);
+    partial void OnPrimaryPhoneChanged();
+    partial void OnSecondaryPhoneChanging(string value);
+    partial void OnSecondaryPhoneChanged();
+    partial void OnIsCurrentOwnerChanging(System.Nullable<bool> value);
+    partial void OnIsCurrentOwnerChanged();
+    partial void OnIsPrimaryResChanging(System.Nullable<bool> value);
+    partial void OnIsPrimaryResChanged();
+    partial void OnIsWeekendChanging(System.Nullable<bool> value);
+    partial void OnIsWeekendChanged();
+    partial void OnIsSeasonalChanging(System.Nullable<bool> value);
+    partial void OnIsSeasonalChanged();
+    partial void OnIsRentalChanging(System.Nullable<bool> value);
+    partial void OnIsRentalChanged();
+    partial void OnIsRVlotChanging(System.Nullable<bool> value);
+    partial void OnIsRVlotChanged();
+    partial void OnIsEmptyLotChanging(System.Nullable<bool> value);
+    partial void OnIsEmptyLotChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public Owner()
+		{
+			this._WaterShutoffs = new EntitySet<WaterShutoff>(new Action<WaterShutoff>(this.attach_WaterShutoffs), new Action<WaterShutoff>(this.detach_WaterShutoffs));
+			this._Properties = new EntitySet<Property>(new Action<Property>(this.attach_Properties), new Action<Property>(this.detach_Properties));
+			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
+			this._Late90Days = new EntitySet<Late90Day>(new Action<Late90Day>(this.attach_Late90Days), new Action<Late90Day>(this.detach_Late90Days));
+			this._Late60Days = new EntitySet<Late60Day>(new Action<Late60Day>(this.attach_Late60Days), new Action<Late60Day>(this.detach_Late60Days));
+			this._Late30Days = new EntitySet<Late30Day>(new Action<Late30Day>(this.attach_Late30Days), new Action<Late30Day>(this.detach_Late30Days));
+			this._Notes = new EntitySet<Note>(new Action<Note>(this.attach_Notes), new Action<Note>(this.detach_Notes));
+			this._FinancialTransactions = new EntitySet<FinancialTransaction>(new Action<FinancialTransaction>(this.attach_FinancialTransactions), new Action<FinancialTransaction>(this.detach_FinancialTransactions));
+			this._Owner_X_Relationships = new EntitySet<Owner_X_Relationship>(new Action<Owner_X_Relationship>(this.attach_Owner_X_Relationships), new Action<Owner_X_Relationship>(this.detach_Owner_X_Relationships));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this.OnOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._OwnerID = value;
+					this.SendPropertyChanged("OwnerID");
+					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccountBalance", DbType="Money")]
+		public System.Nullable<decimal> AccountBalance
+		{
+			get
+			{
+				return this._AccountBalance;
+			}
+			set
+			{
+				if ((this._AccountBalance != value))
+				{
+					this.OnAccountBalanceChanging(value);
+					this.SendPropertyChanging();
+					this._AccountBalance = value;
+					this.SendPropertyChanged("AccountBalance");
+					this.OnAccountBalanceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this.OnCustomerChanging(value);
+					this.SendPropertyChanging();
+					this._Customer = value;
+					this.SendPropertyChanged("Customer");
+					this.OnCustomerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this.OnMailToChanging(value);
+					this.SendPropertyChanging();
+					this._MailTo = value;
+					this.SendPropertyChanged("MailTo");
+					this.OnMailToChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Address
+		{
+			get
+			{
+				return this._Address;
+			}
+			set
+			{
+				if ((this._Address != value))
+				{
+					this.OnAddressChanging(value);
+					this.SendPropertyChanging();
+					this._Address = value;
+					this.SendPropertyChanged("Address");
+					this.OnAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
+		public string Address2
+		{
+			get
+			{
+				return this._Address2;
+			}
+			set
+			{
+				if ((this._Address2 != value))
+				{
+					this.OnAddress2Changing(value);
+					this.SendPropertyChanging();
+					this._Address2 = value;
+					this.SendPropertyChanged("Address2");
+					this.OnAddress2Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+			set
+			{
+				if ((this._City != value))
+				{
+					this.OnCityChanging(value);
+					this.SendPropertyChanging();
+					this._City = value;
+					this.SendPropertyChanged("City");
+					this.OnCityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
+		public string State
+		{
+			get
+			{
+				return this._State;
+			}
+			set
+			{
+				if ((this._State != value))
+				{
+					this.OnStateChanging(value);
+					this.SendPropertyChanging();
+					this._State = value;
+					this.SendPropertyChanged("State");
+					this.OnStateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+			set
+			{
+				if ((this._Zip != value))
+				{
+					this.OnZipChanging(value);
+					this.SendPropertyChanging();
+					this._Zip = value;
+					this.SendPropertyChanged("Zip");
+					this.OnZipChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
+		public string EmailAddress
+		{
+			get
+			{
+				return this._EmailAddress;
+			}
+			set
+			{
+				if ((this._EmailAddress != value))
+				{
+					this.OnEmailAddressChanging(value);
+					this.SendPropertyChanging();
+					this._EmailAddress = value;
+					this.SendPropertyChanged("EmailAddress");
+					this.OnEmailAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit NOT NULL")]
+		public bool IsSendByEmail
+		{
+			get
+			{
+				return this._IsSendByEmail;
+			}
+			set
+			{
+				if ((this._IsSendByEmail != value))
+				{
+					this.OnIsSendByEmailChanging(value);
+					this.SendPropertyChanging();
+					this._IsSendByEmail = value;
+					this.SendPropertyChanged("IsSendByEmail");
+					this.OnIsSendByEmailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
+		public string PrimaryPhone
+		{
+			get
+			{
+				return this._PrimaryPhone;
+			}
+			set
+			{
+				if ((this._PrimaryPhone != value))
+				{
+					this.OnPrimaryPhoneChanging(value);
+					this.SendPropertyChanging();
+					this._PrimaryPhone = value;
+					this.SendPropertyChanged("PrimaryPhone");
+					this.OnPrimaryPhoneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
+		public string SecondaryPhone
+		{
+			get
+			{
+				return this._SecondaryPhone;
+			}
+			set
+			{
+				if ((this._SecondaryPhone != value))
+				{
+					this.OnSecondaryPhoneChanging(value);
+					this.SendPropertyChanging();
+					this._SecondaryPhone = value;
+					this.SendPropertyChanged("SecondaryPhone");
+					this.OnSecondaryPhoneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
+		public System.Nullable<bool> IsCurrentOwner
+		{
+			get
+			{
+				return this._IsCurrentOwner;
+			}
+			set
+			{
+				if ((this._IsCurrentOwner != value))
+				{
+					this.OnIsCurrentOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._IsCurrentOwner = value;
+					this.SendPropertyChanged("IsCurrentOwner");
+					this.OnIsCurrentOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimaryRes", DbType="Bit")]
+		public System.Nullable<bool> IsPrimaryRes
+		{
+			get
+			{
+				return this._IsPrimaryRes;
+			}
+			set
+			{
+				if ((this._IsPrimaryRes != value))
+				{
+					this.OnIsPrimaryResChanging(value);
+					this.SendPropertyChanging();
+					this._IsPrimaryRes = value;
+					this.SendPropertyChanged("IsPrimaryRes");
+					this.OnIsPrimaryResChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWeekend", DbType="Bit")]
+		public System.Nullable<bool> IsWeekend
+		{
+			get
+			{
+				return this._IsWeekend;
+			}
+			set
+			{
+				if ((this._IsWeekend != value))
+				{
+					this.OnIsWeekendChanging(value);
+					this.SendPropertyChanging();
+					this._IsWeekend = value;
+					this.SendPropertyChanged("IsWeekend");
+					this.OnIsWeekendChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSeasonal", DbType="Bit")]
+		public System.Nullable<bool> IsSeasonal
+		{
+			get
+			{
+				return this._IsSeasonal;
+			}
+			set
+			{
+				if ((this._IsSeasonal != value))
+				{
+					this.OnIsSeasonalChanging(value);
+					this.SendPropertyChanging();
+					this._IsSeasonal = value;
+					this.SendPropertyChanged("IsSeasonal");
+					this.OnIsSeasonalChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsRental", DbType="Bit")]
+		public System.Nullable<bool> IsRental
+		{
+			get
+			{
+				return this._IsRental;
+			}
+			set
+			{
+				if ((this._IsRental != value))
+				{
+					this.OnIsRentalChanging(value);
+					this.SendPropertyChanging();
+					this._IsRental = value;
+					this.SendPropertyChanged("IsRental");
+					this.OnIsRentalChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsRVlot", DbType="Bit")]
+		public System.Nullable<bool> IsRVlot
+		{
+			get
+			{
+				return this._IsRVlot;
+			}
+			set
+			{
+				if ((this._IsRVlot != value))
+				{
+					this.OnIsRVlotChanging(value);
+					this.SendPropertyChanging();
+					this._IsRVlot = value;
+					this.SendPropertyChanged("IsRVlot");
+					this.OnIsRVlotChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEmptyLot", DbType="Bit")]
+		public System.Nullable<bool> IsEmptyLot
+		{
+			get
+			{
+				return this._IsEmptyLot;
+			}
+			set
+			{
+				if ((this._IsEmptyLot != value))
+				{
+					this.OnIsEmptyLotChanging(value);
+					this.SendPropertyChanging();
+					this._IsEmptyLot = value;
+					this.SendPropertyChanged("IsEmptyLot");
+					this.OnIsEmptyLotChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_WaterShutoff", Storage="_WaterShutoffs", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<WaterShutoff> WaterShutoffs
+		{
+			get
+			{
+				return this._WaterShutoffs;
+			}
+			set
+			{
+				this._WaterShutoffs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Property", Storage="_Properties", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Property> Properties
+		{
+			get
+			{
+				return this._Properties;
+			}
+			set
+			{
+				this._Properties.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_GolfCart", Storage="_GolfCarts", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<GolfCart> GolfCarts
+		{
+			get
+			{
+				return this._GolfCarts;
+			}
+			set
+			{
+				this._GolfCarts.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late90Day", Storage="_Late90Days", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Late90Day> Late90Days
+		{
+			get
+			{
+				return this._Late90Days;
+			}
+			set
+			{
+				this._Late90Days.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late60Day", Storage="_Late60Days", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Late60Day> Late60Days
+		{
+			get
+			{
+				return this._Late60Days;
+			}
+			set
+			{
+				this._Late60Days.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Late30Day", Storage="_Late30Days", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Late30Day> Late30Days
+		{
+			get
+			{
+				return this._Late30Days;
+			}
+			set
+			{
+				this._Late30Days.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Note", Storage="_Notes", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Note> Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				this._Notes.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_FinancialTransaction", Storage="_FinancialTransactions", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<FinancialTransaction> FinancialTransactions
+		{
+			get
+			{
+				return this._FinancialTransactions;
+			}
+			set
+			{
+				this._FinancialTransactions.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner_X_Relationships", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Owner_X_Relationship> Owner_X_Relationships
+		{
+			get
+			{
+				return this._Owner_X_Relationships;
+			}
+			set
+			{
+				this._Owner_X_Relationships.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_WaterShutoffs(WaterShutoff entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_WaterShutoffs(WaterShutoff entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Properties(Property entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Properties(Property entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_GolfCarts(GolfCart entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_GolfCarts(GolfCart entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Late90Days(Late90Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Late90Days(Late90Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Late60Days(Late60Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Late60Days(Late60Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Late30Days(Late30Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Late30Days(Late30Day entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Notes(Note entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Notes(Note entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_FinancialTransactions(FinancialTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_FinancialTransactions(FinancialTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Owner_X_Relationships(Owner_X_Relationship entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Owner_X_Relationships(Owner_X_Relationship entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owner_X_Relationships")]
+	public partial class Owner_X_Relationship : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowID;
+		
+		private int _OwnerID;
+		
+		private int _RelationshipID;
+		
+		private EntityRef<Owner> _Owner;
+		
+		private EntityRef<Relationship> _Relationship;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIDChanging(int value);
+    partial void OnRowIDChanged();
+    partial void OnOwnerIDChanging(int value);
+    partial void OnOwnerIDChanged();
+    partial void OnRelationshipIDChanging(int value);
+    partial void OnRelationshipIDChanged();
+    #endregion
+		
+		public Owner_X_Relationship()
+		{
+			this._Owner = default(EntityRef<Owner>);
+			this._Relationship = default(EntityRef<Relationship>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this.OnRowIDChanging(value);
+					this.SendPropertyChanging();
+					this._RowID = value;
+					this.SendPropertyChanged("RowID");
+					this.OnRowIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					if (this._Owner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._OwnerID = value;
+					this.SendPropertyChanged("OwnerID");
+					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", DbType="Int NOT NULL")]
+		public int RelationshipID
+		{
+			get
+			{
+				return this._RelationshipID;
+			}
+			set
+			{
+				if ((this._RelationshipID != value))
+				{
+					if (this._Relationship.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRelationshipIDChanging(value);
+					this.SendPropertyChanging();
+					this._RelationshipID = value;
+					this.SendPropertyChanged("RelationshipID");
+					this.OnRelationshipIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
+		public Owner Owner
+		{
+			get
+			{
+				return this._Owner.Entity;
+			}
+			set
+			{
+				Owner previousValue = this._Owner.Entity;
+				if (((previousValue != value) 
+							|| (this._Owner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Owner.Entity = null;
+						previousValue.Owner_X_Relationships.Remove(this);
+					}
+					this._Owner.Entity = value;
+					if ((value != null))
+					{
+						value.Owner_X_Relationships.Add(this);
+						this._OwnerID = value.OwnerID;
+					}
+					else
+					{
+						this._OwnerID = default(int);
+					}
+					this.SendPropertyChanged("Owner");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_Owner_X_Relationship", Storage="_Relationship", ThisKey="RelationshipID", OtherKey="RelationshipID", IsForeignKey=true)]
+		public Relationship Relationship
+		{
+			get
+			{
+				return this._Relationship.Entity;
+			}
+			set
+			{
+				Relationship previousValue = this._Relationship.Entity;
+				if (((previousValue != value) 
+							|| (this._Relationship.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Relationship.Entity = null;
+						previousValue.Owner_X_Relationships.Remove(this);
+					}
+					this._Relationship.Entity = value;
+					if ((value != null))
+					{
+						value.Owner_X_Relationships.Add(this);
+						this._RelationshipID = value.RelationshipID;
+					}
+					else
+					{
+						this._RelationshipID = default(int);
+					}
+					this.SendPropertyChanged("Relationship");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Relationships")]
+	public partial class Relationship : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RelationshipID;
+		
+		private string _FName;
+		
+		private string _LName;
+		
+		private string _RelationToOwner;
+		
+		private System.Data.Linq.Binary _Photo;
+		
+		private System.Nullable<bool> _Active;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private EntitySet<Owner_X_Relationship> _Owner_X_Relationships;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRelationshipIDChanging(int value);
+    partial void OnRelationshipIDChanged();
+    partial void OnFNameChanging(string value);
+    partial void OnFNameChanged();
+    partial void OnLNameChanging(string value);
+    partial void OnLNameChanged();
+    partial void OnRelationToOwnerChanging(string value);
+    partial void OnRelationToOwnerChanged();
+    partial void OnPhotoChanging(System.Data.Linq.Binary value);
+    partial void OnPhotoChanged();
+    partial void OnActiveChanging(System.Nullable<bool> value);
+    partial void OnActiveChanged();
+    partial void OnLastModifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastModifiedChanged();
+    partial void OnLastModifiedByChanging(string value);
+    partial void OnLastModifiedByChanged();
+    #endregion
+		
+		public Relationship()
+		{
+			this._Owner_X_Relationships = new EntitySet<Owner_X_Relationship>(new Action<Owner_X_Relationship>(this.attach_Owner_X_Relationships), new Action<Owner_X_Relationship>(this.detach_Owner_X_Relationships));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RelationshipID
+		{
+			get
+			{
+				return this._RelationshipID;
+			}
+			set
+			{
+				if ((this._RelationshipID != value))
+				{
+					this.OnRelationshipIDChanging(value);
+					this.SendPropertyChanging();
+					this._RelationshipID = value;
+					this.SendPropertyChanged("RelationshipID");
+					this.OnRelationshipIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string FName
+		{
+			get
+			{
+				return this._FName;
+			}
+			set
+			{
+				if ((this._FName != value))
+				{
+					this.OnFNameChanging(value);
+					this.SendPropertyChanging();
+					this._FName = value;
+					this.SendPropertyChanged("FName");
+					this.OnFNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string LName
+		{
+			get
+			{
+				return this._LName;
+			}
+			set
+			{
+				if ((this._LName != value))
+				{
+					this.OnLNameChanging(value);
+					this.SendPropertyChanging();
+					this._LName = value;
+					this.SendPropertyChanged("LName");
+					this.OnLNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationToOwner", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string RelationToOwner
+		{
+			get
+			{
+				return this._RelationToOwner;
+			}
+			set
+			{
+				if ((this._RelationToOwner != value))
+				{
+					this.OnRelationToOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._RelationToOwner = value;
+					this.SendPropertyChanged("RelationToOwner");
+					this.OnRelationToOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Photo", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary Photo
+		{
+			get
+			{
+				return this._Photo;
+			}
+			set
+			{
+				if ((this._Photo != value))
+				{
+					this.OnPhotoChanging(value);
+					this.SendPropertyChanging();
+					this._Photo = value;
+					this.SendPropertyChanged("Photo");
+					this.OnPhotoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
+		public System.Nullable<bool> Active
+		{
+			get
+			{
+				return this._Active;
+			}
+			set
+			{
+				if ((this._Active != value))
+				{
+					this.OnActiveChanging(value);
+					this.SendPropertyChanging();
+					this._Active = value;
+					this.SendPropertyChanged("Active");
+					this.OnActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this.OnLastModifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastModified = value;
+					this.SendPropertyChanged("LastModified");
+					this.OnLastModifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this.OnLastModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._LastModifiedBy = value;
+					this.SendPropertyChanged("LastModifiedBy");
+					this.OnLastModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_Owner_X_Relationship", Storage="_Owner_X_Relationships", ThisKey="RelationshipID", OtherKey="RelationshipID")]
+		public EntitySet<Owner_X_Relationship> Owner_X_Relationships
+		{
+			get
+			{
+				return this._Owner_X_Relationships;
+			}
+			set
+			{
+				this._Owner_X_Relationships.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Owner_X_Relationships(Owner_X_Relationship entity)
+		{
+			this.SendPropertyChanging();
+			entity.Relationship = this;
+		}
+		
+		private void detach_Owner_X_Relationships(Owner_X_Relationship entity)
+		{
+			this.SendPropertyChanging();
+			entity.Relationship = null;
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_OwnerDetails")]
 	public partial class v_OwnerDetail
 	{
@@ -10785,6 +10424,519 @@ namespace HVCC.Shell.Models
 				if ((this._PropertyCount != value))
 				{
 					this._PropertyCount = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_PropertyDetails")]
+	public partial class v_PropertyDetail
+	{
+		
+		private int _PropertyID;
+		
+		private int _OwnerID;
+		
+		private string _Customer;
+		
+		private int _Section;
+		
+		private int _Block;
+		
+		private int _Lot;
+		
+		private string _SubLot;
+		
+		private System.Nullable<decimal> _Balance;
+		
+		private string _Parcel;
+		
+		private string _PhysicalAddress;
+		
+		private string _Status;
+		
+		private string _CommonNotes;
+		
+		private bool _IsAssessment;
+		
+		private System.Nullable<int> _MeterNumber;
+		
+		private string _WaterSystemNotes;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private System.Nullable<decimal> _OwnerBalance;
+		
+		private string _MailTo;
+		
+		private string _Address;
+		
+		private string _Address2;
+		
+		private string _City;
+		
+		private string _State;
+		
+		private string _Zip;
+		
+		private string _EmailAddress;
+		
+		private System.Nullable<bool> _IsSendByEmail;
+		
+		private string _PrimaryPhone;
+		
+		private string _SecondaryPhone;
+		
+		public v_PropertyDetail()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					this._PropertyID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Section", DbType="Int NOT NULL")]
+		public int Section
+		{
+			get
+			{
+				return this._Section;
+			}
+			set
+			{
+				if ((this._Section != value))
+				{
+					this._Section = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Block", DbType="Int NOT NULL")]
+		public int Block
+		{
+			get
+			{
+				return this._Block;
+			}
+			set
+			{
+				if ((this._Block != value))
+				{
+					this._Block = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lot", DbType="Int NOT NULL")]
+		public int Lot
+		{
+			get
+			{
+				return this._Lot;
+			}
+			set
+			{
+				if ((this._Lot != value))
+				{
+					this._Lot = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubLot", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		public string SubLot
+		{
+			get
+			{
+				return this._SubLot;
+			}
+			set
+			{
+				if ((this._SubLot != value))
+				{
+					this._SubLot = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
+		public System.Nullable<decimal> Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+			set
+			{
+				if ((this._Balance != value))
+				{
+					this._Balance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parcel", DbType="VarChar(50)")]
+		public string Parcel
+		{
+			get
+			{
+				return this._Parcel;
+			}
+			set
+			{
+				if ((this._Parcel != value))
+				{
+					this._Parcel = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhysicalAddress", DbType="VarChar(50)")]
+		public string PhysicalAddress
+		{
+			get
+			{
+				return this._PhysicalAddress;
+			}
+			set
+			{
+				if ((this._PhysicalAddress != value))
+				{
+					this._PhysicalAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(40)")]
+		public string Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this._Status = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommonNotes", DbType="VarChar(400)")]
+		public string CommonNotes
+		{
+			get
+			{
+				return this._CommonNotes;
+			}
+			set
+			{
+				if ((this._CommonNotes != value))
+				{
+					this._CommonNotes = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAssessment", DbType="Bit NOT NULL")]
+		public bool IsAssessment
+		{
+			get
+			{
+				return this._IsAssessment;
+			}
+			set
+			{
+				if ((this._IsAssessment != value))
+				{
+					this._IsAssessment = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeterNumber", DbType="Int")]
+		public System.Nullable<int> MeterNumber
+		{
+			get
+			{
+				return this._MeterNumber;
+			}
+			set
+			{
+				if ((this._MeterNumber != value))
+				{
+					this._MeterNumber = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WaterSystemNotes", DbType="VarChar(250)")]
+		public string WaterSystemNotes
+		{
+			get
+			{
+				return this._WaterSystemNotes;
+			}
+			set
+			{
+				if ((this._WaterSystemNotes != value))
+				{
+					this._WaterSystemNotes = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this._LastModified = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this._LastModifiedBy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerBalance", DbType="Money")]
+		public System.Nullable<decimal> OwnerBalance
+		{
+			get
+			{
+				return this._OwnerBalance;
+			}
+			set
+			{
+				if ((this._OwnerBalance != value))
+				{
+					this._OwnerBalance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100)")]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this._MailTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50)")]
+		public string Address
+		{
+			get
+			{
+				return this._Address;
+			}
+			set
+			{
+				if ((this._Address != value))
+				{
+					this._Address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
+		public string Address2
+		{
+			get
+			{
+				return this._Address2;
+			}
+			set
+			{
+				if ((this._Address2 != value))
+				{
+					this._Address2 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50)")]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+			set
+			{
+				if ((this._City != value))
+				{
+					this._City = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4)")]
+		public string State
+		{
+			get
+			{
+				return this._State;
+			}
+			set
+			{
+				if ((this._State != value))
+				{
+					this._State = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20)")]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+			set
+			{
+				if ((this._Zip != value))
+				{
+					this._Zip = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
+		public string EmailAddress
+		{
+			get
+			{
+				return this._EmailAddress;
+			}
+			set
+			{
+				if ((this._EmailAddress != value))
+				{
+					this._EmailAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit")]
+		public System.Nullable<bool> IsSendByEmail
+		{
+			get
+			{
+				return this._IsSendByEmail;
+			}
+			set
+			{
+				if ((this._IsSendByEmail != value))
+				{
+					this._IsSendByEmail = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
+		public string PrimaryPhone
+		{
+			get
+			{
+				return this._PrimaryPhone;
+			}
+			set
+			{
+				if ((this._PrimaryPhone != value))
+				{
+					this._PrimaryPhone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
+		public string SecondaryPhone
+		{
+			get
+			{
+				return this._SecondaryPhone;
+			}
+			set
+			{
+				if ((this._SecondaryPhone != value))
+				{
+					this._SecondaryPhone = value;
 				}
 			}
 		}

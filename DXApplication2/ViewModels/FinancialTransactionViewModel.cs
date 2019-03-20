@@ -221,7 +221,7 @@
                     if (_selectedTransaction.Type == "Invoice") { WhatIsBeingProcessed = TransactionType.Invoice; }
                     if (_selectedTransaction.Type == "Payment") { WhatIsBeingProcessed = TransactionType.Payment; }
                     RaisePropertyChanged("SelectedTransaction");
-                    RaisePropertyChanged("CanDeleteTransaction");
+                    CanDeleteTransaction = true;
                 }
             }
         }
@@ -438,7 +438,7 @@
                 // Only allow deletions of an existing record that is not in a dirty state.
                 //if (this.SelectedTransaction != null && this.SelectedTransactionIndex == 0 && !IsEditTransaction && ApplPermissions.CanViewAdministration)
                 //{
-                return _canDeleteTransaction = true;
+                return _canDeleteTransaction;
                 //}
 
                 //return _canDeleteTransaction = false;

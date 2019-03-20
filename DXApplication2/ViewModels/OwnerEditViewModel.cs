@@ -72,13 +72,28 @@
                 /// 
                 SelectedProperty = Properties[0];
 
-                // Fetch the collection of avtive Relationships for this owner
-                var rList = (from x in this.dc.Relationships
-                             where x.OwnerID == SelectedOwner.OwnerID
-                             && x.Active == true
-                             select x);
+                /// Fetch the collection of relationships associated to this owner
+                /// by using the Owner_X_Relationships.  We add each relationship object
+                /// to the private collection to avoid firing a Collection_Changed event.
+                /// 
+                _relationships = new ObservableCollection<Relationship>();
+                foreach (Owner_X_Relationship oXr in SelectedOwner.Owner_X_Relationships)
+                {
+                    Relationship r = (from x in this.dc.Relationships
+                                      where x.RelationshipID == oXr.RelationshipID
+                                      select x).FirstOrDefault();
+                    _relationships.Add(r);
+                }
+                _relationships.CollectionChanged += _relationships_CollectionChanged;
 
-                Relationships = new ObservableCollection<Relationship>(rList);
+                // -OLD-
+                // Fetch the collection of avtive Relationships for this owner
+                //var rList = (from x in this.dc.Relationships
+                //             where x.OwnerID == SelectedOwner.OwnerID
+                //             && x.Active == true
+                //             select x);
+
+                //Relationships = new ObservableCollection<Relationship>(rList);
                 CkFacilityUsage();
 
                 /// Set the focus to either the first relationship in the collection, or to the
@@ -238,19 +253,6 @@
         /// <summary>
         /// A collection of financial transactions 
         /// </summary>
-        //public ObservableCollection<FinancialTransaction> FinancialTransactions
-        //{
-        //    get
-        //    {
-        //        var list = (from x in dc.FinancialTransactions
-        //                    where x.OwnerID == SelectedOwner.OwnerID
-        //                    select x);
-
-        //        ObservableCollection<FinancialTransaction> ftCollection = new ObservableCollection<FinancialTransaction>(list);
-        //        AccountBalance = ftCollection[ftCollection.Count() - 1].Balance;
-        //        return ftCollection;
-        //    }
-        //}
         public ObservableCollection<v_OwnerTransaction> FinancialTransactions
         {
             get
@@ -262,23 +264,6 @@
                 return new ObservableCollection<v_OwnerTransaction>(list);
             }
         }
-
-        //private FinancialTransaction _selectedTransaction = null;
-        //public FinancialTransaction SelectedTransaction
-        //{
-        //    get
-        //    {
-        //        return _selectedTransaction;
-        //    }
-        //    set
-        //    {
-        //        if (_selectedTransaction != value)
-        //        {
-        //            _selectedTransaction = value;
-        //            RaisePropertyChanged("SelectedTransaction");
-        //        }
-        //    }
-        //}
 
         private v_OwnerTransaction _selectedTransaction = null;
         public v_OwnerTransaction SelectedTransaction
@@ -704,9 +689,10 @@
                 case "Reset":
                     break;
 
-                // When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
-                // When new names are added to the Relationships collection, they too result in an "Add" action.
-                // Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
+                /// When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
+                /// When new names are added to the Relationships collection, they too result in an "Add" action.
+                /// Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
+                ///
                 case "Add":
                     var newItems = e.NewItems;
                     foreach (Relationship r in newItems)
@@ -730,7 +716,7 @@
                     break;
             }
             //int i = Relationships.Count();
-            //ChangeSet cs = this.dc.GetChangeSet();
+            ChangeSet cs = this.dc.GetChangeSet();
             CanSaveExecute = IsDirty;
             RaisePropertyChanged("DataChanged");
         }
@@ -895,15 +881,22 @@
         /// </summary>
         private void SaveExecute()
         {
-            this.IsBusy = true;
-            this.dc.SubmitChanges();
-            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Notes);
-            AllNotes = GetOwnerNotes();
-            NewNote = string.Empty;
-            this.IsBusy = false;
-            RaisePropertyChanged("DataChanged");
-            CanSaveExecute = IsDirty;
-            //Host.Execute(HostVerb.Close, this.Caption);
+            try
+            {
+                this.IsBusy = true;
+                this.dc.SubmitChanges();
+                dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Notes);
+                AllNotes = GetOwnerNotes();
+                NewNote = string.Empty;
+                this.IsBusy = false;
+                RaisePropertyChanged("DataChanged");
+                CanSaveExecute = IsDirty;
+                //Host.Execute(HostVerb.Close, this.Caption);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #region ICommandSink Implementation
@@ -1134,8 +1127,10 @@
         public void RemoveRelationshipAction(object parameter)
         {
             Relationship r = parameter as Relationship;
-            Helper.RemoveRelationship(this.dc, r);
-            this.Relationships.Remove(r);
+            if (Helper.RemoveRelationship(this.dc, r))
+            {
+                this.Relationships.Remove(r);
+            }
             CanSaveExecute = IsDirty;
         }
 
