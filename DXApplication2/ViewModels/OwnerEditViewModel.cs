@@ -26,6 +26,7 @@
         public OwnerEditViewModel(IDataContext dc, object parameter)
         {
             this.dc = dc as HVCCDataContext;
+
             this.Host = HVCC.Shell.Host.Instance;
 
             // This V/VM can be invoked by several different Views. Therefore, we have conditions for
@@ -86,14 +87,6 @@
                 }
                 _relationships.CollectionChanged += _relationships_CollectionChanged;
 
-                // -OLD-
-                // Fetch the collection of avtive Relationships for this owner
-                //var rList = (from x in this.dc.Relationships
-                //             where x.OwnerID == SelectedOwner.OwnerID
-                //             && x.Active == true
-                //             select x);
-
-                //Relationships = new ObservableCollection<Relationship>(rList);
                 CkFacilityUsage();
 
                 /// Set the focus to either the first relationship in the collection, or to the
@@ -884,6 +877,7 @@
             try
             {
                 this.IsBusy = true;
+                ChangeSet cs = dc.GetChangeSet();
                 this.dc.SubmitChanges();
                 dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Notes);
                 AllNotes = GetOwnerNotes();

@@ -25,7 +25,7 @@
             HVCCDataContext dc = datacontext as HVCCDataContext;
 
             ApplicationDefault defaults = (from p in dc.ApplicationDefaults
-                                   select p).FirstOrDefault();
+                                           select p).FirstOrDefault();
 
             return defaults.Photo;
         }
@@ -53,7 +53,7 @@
         /// </summary>
         /// <param name="customer"></param>
         /// <returns></returns>
-        public static Property ConvertCustomerToProperty( string customer)
+        public static Property ConvertCustomerToProperty(string customer)
         {
             Property propRecord = new Property();
             string custFormat = "xx-xx-xxx";
@@ -85,7 +85,7 @@
                 propRecord.SubLot = subFields[1];
             }
             //// Special Case:  The string is in the format "xx-xx-xxx-xx"
-            else if(customer.Length > custFormat.Length && fields.Count() == 4)
+            else if (customer.Length > custFormat.Length && fields.Count() == 4)
             {
                 propRecord.Section = Int32.Parse(fields[0]);
                 propRecord.Block = Int32.Parse(fields[1]);
@@ -105,7 +105,7 @@
             {
                 propRecord.Section = Int32.Parse(fields[0]);
                 propRecord.Block = Int32.Parse(fields[1]);
-                propRecord.Lot = Int32.Parse(fields[2].Substring(0,2));
+                propRecord.Lot = Int32.Parse(fields[2].Substring(0, 2));
                 propRecord.SubLot = fields[2][2].ToString();
             }
             //// Normal Case:  string is in the format "xx-xx-xxx"
@@ -125,7 +125,7 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public static bool AddRelationship(IDataContext datacontext, Owner owner, Relationship relationship) 
+        public static bool AddRelationship(IDataContext datacontext, Owner owner, Relationship relationship)
         {
             HVCCDataContext dc = datacontext as HVCCDataContext;
 
@@ -135,8 +135,8 @@
                 /// mutiple Owner records under different 'MailTo' names.
                 /// 
                 IEnumerable<Owner_X_Relationship> oXr = (from r in dc.Owner_X_Relationships
-                                      where r.OwnerID == owner.OwnerID
-                                      select r);
+                                                         where r.OwnerID == owner.OwnerID
+                                                         select r);
                 foreach (Owner_X_Relationship x in oXr)
                 {
                     IEnumerable<Owner_X_Relationship> associations = (from p in dc.Owner_X_Relationships
@@ -154,13 +154,12 @@
                 /// relationships.
                 if (0 == relationship.RelationshipID)
                 {
-                    // Add the default HVCC image to the relationship record.  
+                    /// Add the default HVCC image to the relationship record.  
                     relationship.Photo = LoadDefalutImage(dc);
                     relationship.Active = true;
-                    //relationship.OwnerID = owner.OwnerID;
+                    Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = relationship.RelationshipID, Owner = owner, OwnerID = owner.OwnerID };
+                    relationship.Owner_X_Relationships.Add(OXR);
                     dc.Relationships.InsertOnSubmit(relationship);
-                    Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = relationship.RelationshipID, OwnerID = owner.OwnerID };
-                    dc.Owner_X_Relationships.InsertOnSubmit(OXR);
                 }
                 return true;
             }
@@ -197,7 +196,7 @@
                 /// Check to see if this Relationship is in the database (has a non-zero ID), 
                 /// or is pending insertion (has a zero ID).
                 /// 
-                if (0 != relationship.RelationshipID 
+                if (0 != relationship.RelationshipID
                     && (!relationship.RelationToOwner.Contains("Owner") || !relationship.RelationToOwner.Contains("Representative"))
                     && string.IsNullOrEmpty(action))
                 {
@@ -218,20 +217,24 @@
                     if (0 == fuList.Count())
                     {
                         dc.Relationships.DeleteOnSubmit(relationship);
+                        dc.Owner_X_Relationships.DeleteAllOnSubmit(relationship.Owner_X_Relationships);
                     }
-                    // Otherwise, to deactivate the Relationship (related to F.U. records) we just
-                    // set the Active flag false.
+                    /// Otherwise, to deactivate the Relationship (related to F.U. records) we just
+                    /// set the Active flag false.
+                    /// 
                     else
                     {
                         relationship.Active = false;
                     }
                 }
-                // If this is an Ownership Change, we just make the relationship inactive
+                /// If this is an Ownership Change, we just make the relationship inactive
+                /// 
                 else if (null != action && action.Contains("ChangeOwner"))
                 {
                     relationship.Active = false;
                 }
-                // Otherwise, the RelationshipID is 0, so it is a pending insert
+                /// Otherwise, the RelationshipID is 0, so it is a pending insert
+                /// 
                 else
                 {
 
@@ -241,7 +244,7 @@
                     /// 
                     dc.Relationships.DeleteOnSubmit(relationship);
                 }
-                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
+                //ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
                 return true;
             }
             catch (Exception ex)

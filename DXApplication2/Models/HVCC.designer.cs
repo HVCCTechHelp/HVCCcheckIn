@@ -76,12 +76,12 @@ namespace HVCC.Shell.Models
     partial void InsertPayment_X_Invoice(Payment_X_Invoice instance);
     partial void UpdatePayment_X_Invoice(Payment_X_Invoice instance);
     partial void DeletePayment_X_Invoice(Payment_X_Invoice instance);
-    partial void InsertOwner(Owner instance);
-    partial void UpdateOwner(Owner instance);
     partial void DeleteOwner(Owner instance);
     partial void InsertOwner_X_Relationship(Owner_X_Relationship instance);
     partial void UpdateOwner_X_Relationship(Owner_X_Relationship instance);
     partial void DeleteOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void InsertRelationship(Relationship instance);
+    partial void UpdateRelationship(Relationship instance);
     partial void DeleteRelationship(Relationship instance);
     #endregion
 		
@@ -331,6 +331,22 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
+		public System.Data.Linq.Table<v_OwnerDetail> v_OwnerDetails
+		{
+			get
+			{
+				return this.GetTable<v_OwnerDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<v_PropertyDetail> v_PropertyDetails
+		{
+			get
+			{
+				return this.GetTable<v_PropertyDetail>();
+			}
+		}
+		
 		public System.Data.Linq.Table<Owner> Owners
 		{
 			get
@@ -352,22 +368,6 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<Relationship>();
-			}
-		}
-		
-		public System.Data.Linq.Table<v_OwnerDetail> v_OwnerDetails
-		{
-			get
-			{
-				return this.GetTable<v_OwnerDetail>();
-			}
-		}
-		
-		public System.Data.Linq.Table<v_PropertyDetail> v_PropertyDetails
-		{
-			get
-			{
-				return this.GetTable<v_PropertyDetail>();
 			}
 		}
 		
@@ -493,16 +493,16 @@ namespace HVCC.Shell.Models
 			this.usp_DeleteFinancialTransaction(((System.Nullable<int>)(obj.RowId)));
 		}
 		
-		private void InsertRelationship(Relationship obj)
+		private void InsertOwner(Owner obj)
 		{
-			System.Nullable<int> p1 = obj.RelationshipID;
-			this.usp_InsertRelationship(obj.FName, obj.LName, obj.RelationToOwner, obj.Photo, ref p1);
-			obj.RelationshipID = p1.GetValueOrDefault();
+			System.Nullable<int> p1 = obj.OwnerID;
+			this.usp_InsertOwner(obj.Customer, ((System.Nullable<decimal>)(obj.AccountBalance)), obj.MailTo, obj.Address, obj.Address2, obj.City, obj.State, obj.Zip, obj.PrimaryPhone, obj.SecondaryPhone, obj.EmailAddress, ((System.Nullable<bool>)(obj.IsSendByEmail)), ((System.Nullable<bool>)(obj.IsCurrentOwner)), ((System.Nullable<bool>)(obj.IsPrimaryRes)), ((System.Nullable<bool>)(obj.IsWeekend)), ((System.Nullable<bool>)(obj.IsSeasonal)), ((System.Nullable<bool>)(obj.IsRental)), ((System.Nullable<bool>)(obj.IsRVlot)), ((System.Nullable<bool>)(obj.IsEmptyLot)), ref p1);
+			obj.OwnerID = p1.GetValueOrDefault();
 		}
 		
-		private void UpdateRelationship(Relationship obj)
+		private void UpdateOwner(Owner obj)
 		{
-			this.usp_UdateRelationship(((System.Nullable<int>)(obj.RelationshipID)), obj.FName, obj.LName, obj.RelationToOwner, obj.Photo);
+			this.usp_UpdateOwner(((System.Nullable<int>)(obj.OwnerID)), obj.Customer, ((System.Nullable<decimal>)(obj.AccountBalance)), obj.MailTo, obj.Address, obj.Address2, obj.City, obj.State, obj.Zip, obj.PrimaryPhone, obj.SecondaryPhone, obj.EmailAddress, ((System.Nullable<bool>)(obj.IsSendByEmail)), ((System.Nullable<bool>)(obj.IsCurrentOwner)), ((System.Nullable<bool>)(obj.IsPrimaryRes)), ((System.Nullable<bool>)(obj.IsWeekend)), ((System.Nullable<bool>)(obj.IsSeasonal)), ((System.Nullable<bool>)(obj.IsRental)), ((System.Nullable<bool>)(obj.IsRVlot)), ((System.Nullable<bool>)(obj.IsEmptyLot)));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_GetPropertyById")]
@@ -814,21 +814,6 @@ namespace HVCC.Shell.Models
 					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsEmptyLot", DbType="Bit")] System.Nullable<bool> isEmptyLot)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, accountBalance, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, isPrimaryRes, isWeekend, isSeasonal, isRental, isRVlot, isEmptyLot);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertRelationship")]
-		public int usp_InsertRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] ref System.Nullable<int> relationshipId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), fName, lName, relationToOwner, photo, relationshipId);
-			relationshipId = ((System.Nullable<int>)(result.GetParameterValue(4)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateRelationship")]
-		public int usp_UdateRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FName", DbType="VarChar(50)")] string fName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LName", DbType="VarChar(50)")] string lName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationToOwner", DbType="VarChar(50)")] string relationToOwner, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Photo", DbType="VarBinary(MAX)")] System.Data.Linq.Binary photo)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId, fName, lName, relationToOwner, photo);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -8882,6 +8867,798 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_OwnerDetails")]
+	public partial class v_OwnerDetail
+	{
+		
+		private int _OwnerID;
+		
+		private System.Nullable<decimal> _Balance;
+		
+		private string _Customer;
+		
+		private string _MailTo;
+		
+		private string _Address;
+		
+		private string _Address2;
+		
+		private string _City;
+		
+		private string _State;
+		
+		private string _Zip;
+		
+		private string _PrimaryPhone;
+		
+		private string _SecondaryPhone;
+		
+		private string _EmailAddress;
+		
+		private bool _IsSendByEmail;
+		
+		private System.Nullable<bool> _IsCurrentOwner;
+		
+		private System.Nullable<int> _PropertyCount;
+		
+		public v_OwnerDetail()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
+		public System.Nullable<decimal> Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+			set
+			{
+				if ((this._Balance != value))
+				{
+					this._Balance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this._MailTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Address
+		{
+			get
+			{
+				return this._Address;
+			}
+			set
+			{
+				if ((this._Address != value))
+				{
+					this._Address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
+		public string Address2
+		{
+			get
+			{
+				return this._Address2;
+			}
+			set
+			{
+				if ((this._Address2 != value))
+				{
+					this._Address2 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+			set
+			{
+				if ((this._City != value))
+				{
+					this._City = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
+		public string State
+		{
+			get
+			{
+				return this._State;
+			}
+			set
+			{
+				if ((this._State != value))
+				{
+					this._State = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+			set
+			{
+				if ((this._Zip != value))
+				{
+					this._Zip = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
+		public string PrimaryPhone
+		{
+			get
+			{
+				return this._PrimaryPhone;
+			}
+			set
+			{
+				if ((this._PrimaryPhone != value))
+				{
+					this._PrimaryPhone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
+		public string SecondaryPhone
+		{
+			get
+			{
+				return this._SecondaryPhone;
+			}
+			set
+			{
+				if ((this._SecondaryPhone != value))
+				{
+					this._SecondaryPhone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
+		public string EmailAddress
+		{
+			get
+			{
+				return this._EmailAddress;
+			}
+			set
+			{
+				if ((this._EmailAddress != value))
+				{
+					this._EmailAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit NOT NULL")]
+		public bool IsSendByEmail
+		{
+			get
+			{
+				return this._IsSendByEmail;
+			}
+			set
+			{
+				if ((this._IsSendByEmail != value))
+				{
+					this._IsSendByEmail = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
+		public System.Nullable<bool> IsCurrentOwner
+		{
+			get
+			{
+				return this._IsCurrentOwner;
+			}
+			set
+			{
+				if ((this._IsCurrentOwner != value))
+				{
+					this._IsCurrentOwner = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyCount", DbType="Int")]
+		public System.Nullable<int> PropertyCount
+		{
+			get
+			{
+				return this._PropertyCount;
+			}
+			set
+			{
+				if ((this._PropertyCount != value))
+				{
+					this._PropertyCount = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_PropertyDetails")]
+	public partial class v_PropertyDetail
+	{
+		
+		private int _PropertyID;
+		
+		private int _OwnerID;
+		
+		private string _Customer;
+		
+		private int _Section;
+		
+		private int _Block;
+		
+		private int _Lot;
+		
+		private string _SubLot;
+		
+		private System.Nullable<decimal> _Balance;
+		
+		private string _Parcel;
+		
+		private string _PhysicalAddress;
+		
+		private string _Status;
+		
+		private string _CommonNotes;
+		
+		private bool _IsAssessment;
+		
+		private System.Nullable<int> _MeterNumber;
+		
+		private string _WaterSystemNotes;
+		
+		private System.Nullable<System.DateTime> _LastModified;
+		
+		private string _LastModifiedBy;
+		
+		private System.Nullable<decimal> _OwnerBalance;
+		
+		private string _MailTo;
+		
+		private string _Address;
+		
+		private string _Address2;
+		
+		private string _City;
+		
+		private string _State;
+		
+		private string _Zip;
+		
+		private string _EmailAddress;
+		
+		private System.Nullable<bool> _IsSendByEmail;
+		
+		private string _PrimaryPhone;
+		
+		private string _SecondaryPhone;
+		
+		public v_PropertyDetail()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
+		public int PropertyID
+		{
+			get
+			{
+				return this._PropertyID;
+			}
+			set
+			{
+				if ((this._PropertyID != value))
+				{
+					this._PropertyID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					this._OwnerID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Customer
+		{
+			get
+			{
+				return this._Customer;
+			}
+			set
+			{
+				if ((this._Customer != value))
+				{
+					this._Customer = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Section", DbType="Int NOT NULL")]
+		public int Section
+		{
+			get
+			{
+				return this._Section;
+			}
+			set
+			{
+				if ((this._Section != value))
+				{
+					this._Section = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Block", DbType="Int NOT NULL")]
+		public int Block
+		{
+			get
+			{
+				return this._Block;
+			}
+			set
+			{
+				if ((this._Block != value))
+				{
+					this._Block = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lot", DbType="Int NOT NULL")]
+		public int Lot
+		{
+			get
+			{
+				return this._Lot;
+			}
+			set
+			{
+				if ((this._Lot != value))
+				{
+					this._Lot = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubLot", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		public string SubLot
+		{
+			get
+			{
+				return this._SubLot;
+			}
+			set
+			{
+				if ((this._SubLot != value))
+				{
+					this._SubLot = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
+		public System.Nullable<decimal> Balance
+		{
+			get
+			{
+				return this._Balance;
+			}
+			set
+			{
+				if ((this._Balance != value))
+				{
+					this._Balance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parcel", DbType="VarChar(50)")]
+		public string Parcel
+		{
+			get
+			{
+				return this._Parcel;
+			}
+			set
+			{
+				if ((this._Parcel != value))
+				{
+					this._Parcel = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhysicalAddress", DbType="VarChar(50)")]
+		public string PhysicalAddress
+		{
+			get
+			{
+				return this._PhysicalAddress;
+			}
+			set
+			{
+				if ((this._PhysicalAddress != value))
+				{
+					this._PhysicalAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(40)")]
+		public string Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this._Status = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommonNotes", DbType="VarChar(400)")]
+		public string CommonNotes
+		{
+			get
+			{
+				return this._CommonNotes;
+			}
+			set
+			{
+				if ((this._CommonNotes != value))
+				{
+					this._CommonNotes = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAssessment", DbType="Bit NOT NULL")]
+		public bool IsAssessment
+		{
+			get
+			{
+				return this._IsAssessment;
+			}
+			set
+			{
+				if ((this._IsAssessment != value))
+				{
+					this._IsAssessment = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeterNumber", DbType="Int")]
+		public System.Nullable<int> MeterNumber
+		{
+			get
+			{
+				return this._MeterNumber;
+			}
+			set
+			{
+				if ((this._MeterNumber != value))
+				{
+					this._MeterNumber = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WaterSystemNotes", DbType="VarChar(250)")]
+		public string WaterSystemNotes
+		{
+			get
+			{
+				return this._WaterSystemNotes;
+			}
+			set
+			{
+				if ((this._WaterSystemNotes != value))
+				{
+					this._WaterSystemNotes = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastModified
+		{
+			get
+			{
+				return this._LastModified;
+			}
+			set
+			{
+				if ((this._LastModified != value))
+				{
+					this._LastModified = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
+		public string LastModifiedBy
+		{
+			get
+			{
+				return this._LastModifiedBy;
+			}
+			set
+			{
+				if ((this._LastModifiedBy != value))
+				{
+					this._LastModifiedBy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerBalance", DbType="Money")]
+		public System.Nullable<decimal> OwnerBalance
+		{
+			get
+			{
+				return this._OwnerBalance;
+			}
+			set
+			{
+				if ((this._OwnerBalance != value))
+				{
+					this._OwnerBalance = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100)")]
+		public string MailTo
+		{
+			get
+			{
+				return this._MailTo;
+			}
+			set
+			{
+				if ((this._MailTo != value))
+				{
+					this._MailTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50)")]
+		public string Address
+		{
+			get
+			{
+				return this._Address;
+			}
+			set
+			{
+				if ((this._Address != value))
+				{
+					this._Address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
+		public string Address2
+		{
+			get
+			{
+				return this._Address2;
+			}
+			set
+			{
+				if ((this._Address2 != value))
+				{
+					this._Address2 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50)")]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+			set
+			{
+				if ((this._City != value))
+				{
+					this._City = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4)")]
+		public string State
+		{
+			get
+			{
+				return this._State;
+			}
+			set
+			{
+				if ((this._State != value))
+				{
+					this._State = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20)")]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+			set
+			{
+				if ((this._Zip != value))
+				{
+					this._Zip = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
+		public string EmailAddress
+		{
+			get
+			{
+				return this._EmailAddress;
+			}
+			set
+			{
+				if ((this._EmailAddress != value))
+				{
+					this._EmailAddress = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit")]
+		public System.Nullable<bool> IsSendByEmail
+		{
+			get
+			{
+				return this._IsSendByEmail;
+			}
+			set
+			{
+				if ((this._IsSendByEmail != value))
+				{
+					this._IsSendByEmail = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
+		public string PrimaryPhone
+		{
+			get
+			{
+				return this._PrimaryPhone;
+			}
+			set
+			{
+				if ((this._PrimaryPhone != value))
+				{
+					this._PrimaryPhone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
+		public string SecondaryPhone
+		{
+			get
+			{
+				return this._SecondaryPhone;
+			}
+			set
+			{
+				if ((this._SecondaryPhone != value))
+				{
+					this._SecondaryPhone = value;
+				}
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owners")]
 	public partial class Owner : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -10147,798 +10924,6 @@ namespace HVCC.Shell.Models
 		{
 			this.SendPropertyChanging();
 			entity.Relationship = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_OwnerDetails")]
-	public partial class v_OwnerDetail
-	{
-		
-		private int _OwnerID;
-		
-		private System.Nullable<decimal> _Balance;
-		
-		private string _Customer;
-		
-		private string _MailTo;
-		
-		private string _Address;
-		
-		private string _Address2;
-		
-		private string _City;
-		
-		private string _State;
-		
-		private string _Zip;
-		
-		private string _PrimaryPhone;
-		
-		private string _SecondaryPhone;
-		
-		private string _EmailAddress;
-		
-		private bool _IsSendByEmail;
-		
-		private System.Nullable<bool> _IsCurrentOwner;
-		
-		private System.Nullable<int> _PropertyCount;
-		
-		public v_OwnerDetail()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					this._OwnerID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
-		public System.Nullable<decimal> Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
-			set
-			{
-				if ((this._Balance != value))
-				{
-					this._Balance = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Customer
-		{
-			get
-			{
-				return this._Customer;
-			}
-			set
-			{
-				if ((this._Customer != value))
-				{
-					this._Customer = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string MailTo
-		{
-			get
-			{
-				return this._MailTo;
-			}
-			set
-			{
-				if ((this._MailTo != value))
-				{
-					this._MailTo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Address
-		{
-			get
-			{
-				return this._Address;
-			}
-			set
-			{
-				if ((this._Address != value))
-				{
-					this._Address = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
-		public string Address2
-		{
-			get
-			{
-				return this._Address2;
-			}
-			set
-			{
-				if ((this._Address2 != value))
-				{
-					this._Address2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string City
-		{
-			get
-			{
-				return this._City;
-			}
-			set
-			{
-				if ((this._City != value))
-				{
-					this._City = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
-			set
-			{
-				if ((this._State != value))
-				{
-					this._State = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
-			set
-			{
-				if ((this._Zip != value))
-				{
-					this._Zip = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
-		public string PrimaryPhone
-		{
-			get
-			{
-				return this._PrimaryPhone;
-			}
-			set
-			{
-				if ((this._PrimaryPhone != value))
-				{
-					this._PrimaryPhone = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
-		public string SecondaryPhone
-		{
-			get
-			{
-				return this._SecondaryPhone;
-			}
-			set
-			{
-				if ((this._SecondaryPhone != value))
-				{
-					this._SecondaryPhone = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
-			set
-			{
-				if ((this._EmailAddress != value))
-				{
-					this._EmailAddress = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit NOT NULL")]
-		public bool IsSendByEmail
-		{
-			get
-			{
-				return this._IsSendByEmail;
-			}
-			set
-			{
-				if ((this._IsSendByEmail != value))
-				{
-					this._IsSendByEmail = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsCurrentOwner", DbType="Bit")]
-		public System.Nullable<bool> IsCurrentOwner
-		{
-			get
-			{
-				return this._IsCurrentOwner;
-			}
-			set
-			{
-				if ((this._IsCurrentOwner != value))
-				{
-					this._IsCurrentOwner = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyCount", DbType="Int")]
-		public System.Nullable<int> PropertyCount
-		{
-			get
-			{
-				return this._PropertyCount;
-			}
-			set
-			{
-				if ((this._PropertyCount != value))
-				{
-					this._PropertyCount = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.v_PropertyDetails")]
-	public partial class v_PropertyDetail
-	{
-		
-		private int _PropertyID;
-		
-		private int _OwnerID;
-		
-		private string _Customer;
-		
-		private int _Section;
-		
-		private int _Block;
-		
-		private int _Lot;
-		
-		private string _SubLot;
-		
-		private System.Nullable<decimal> _Balance;
-		
-		private string _Parcel;
-		
-		private string _PhysicalAddress;
-		
-		private string _Status;
-		
-		private string _CommonNotes;
-		
-		private bool _IsAssessment;
-		
-		private System.Nullable<int> _MeterNumber;
-		
-		private string _WaterSystemNotes;
-		
-		private System.Nullable<System.DateTime> _LastModified;
-		
-		private string _LastModifiedBy;
-		
-		private System.Nullable<decimal> _OwnerBalance;
-		
-		private string _MailTo;
-		
-		private string _Address;
-		
-		private string _Address2;
-		
-		private string _City;
-		
-		private string _State;
-		
-		private string _Zip;
-		
-		private string _EmailAddress;
-		
-		private System.Nullable<bool> _IsSendByEmail;
-		
-		private string _PrimaryPhone;
-		
-		private string _SecondaryPhone;
-		
-		public v_PropertyDetail()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyID", DbType="Int NOT NULL")]
-		public int PropertyID
-		{
-			get
-			{
-				return this._PropertyID;
-			}
-			set
-			{
-				if ((this._PropertyID != value))
-				{
-					this._PropertyID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					this._OwnerID = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Customer
-		{
-			get
-			{
-				return this._Customer;
-			}
-			set
-			{
-				if ((this._Customer != value))
-				{
-					this._Customer = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Section", DbType="Int NOT NULL")]
-		public int Section
-		{
-			get
-			{
-				return this._Section;
-			}
-			set
-			{
-				if ((this._Section != value))
-				{
-					this._Section = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Block", DbType="Int NOT NULL")]
-		public int Block
-		{
-			get
-			{
-				return this._Block;
-			}
-			set
-			{
-				if ((this._Block != value))
-				{
-					this._Block = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lot", DbType="Int NOT NULL")]
-		public int Lot
-		{
-			get
-			{
-				return this._Lot;
-			}
-			set
-			{
-				if ((this._Lot != value))
-				{
-					this._Lot = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubLot", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string SubLot
-		{
-			get
-			{
-				return this._SubLot;
-			}
-			set
-			{
-				if ((this._SubLot != value))
-				{
-					this._SubLot = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Balance", DbType="Money")]
-		public System.Nullable<decimal> Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
-			set
-			{
-				if ((this._Balance != value))
-				{
-					this._Balance = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parcel", DbType="VarChar(50)")]
-		public string Parcel
-		{
-			get
-			{
-				return this._Parcel;
-			}
-			set
-			{
-				if ((this._Parcel != value))
-				{
-					this._Parcel = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhysicalAddress", DbType="VarChar(50)")]
-		public string PhysicalAddress
-		{
-			get
-			{
-				return this._PhysicalAddress;
-			}
-			set
-			{
-				if ((this._PhysicalAddress != value))
-				{
-					this._PhysicalAddress = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(40)")]
-		public string Status
-		{
-			get
-			{
-				return this._Status;
-			}
-			set
-			{
-				if ((this._Status != value))
-				{
-					this._Status = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommonNotes", DbType="VarChar(400)")]
-		public string CommonNotes
-		{
-			get
-			{
-				return this._CommonNotes;
-			}
-			set
-			{
-				if ((this._CommonNotes != value))
-				{
-					this._CommonNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAssessment", DbType="Bit NOT NULL")]
-		public bool IsAssessment
-		{
-			get
-			{
-				return this._IsAssessment;
-			}
-			set
-			{
-				if ((this._IsAssessment != value))
-				{
-					this._IsAssessment = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeterNumber", DbType="Int")]
-		public System.Nullable<int> MeterNumber
-		{
-			get
-			{
-				return this._MeterNumber;
-			}
-			set
-			{
-				if ((this._MeterNumber != value))
-				{
-					this._MeterNumber = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WaterSystemNotes", DbType="VarChar(250)")]
-		public string WaterSystemNotes
-		{
-			get
-			{
-				return this._WaterSystemNotes;
-			}
-			set
-			{
-				if ((this._WaterSystemNotes != value))
-				{
-					this._WaterSystemNotes = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModified", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastModified
-		{
-			get
-			{
-				return this._LastModified;
-			}
-			set
-			{
-				if ((this._LastModified != value))
-				{
-					this._LastModified = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastModifiedBy", DbType="VarChar(40)")]
-		public string LastModifiedBy
-		{
-			get
-			{
-				return this._LastModifiedBy;
-			}
-			set
-			{
-				if ((this._LastModifiedBy != value))
-				{
-					this._LastModifiedBy = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerBalance", DbType="Money")]
-		public System.Nullable<decimal> OwnerBalance
-		{
-			get
-			{
-				return this._OwnerBalance;
-			}
-			set
-			{
-				if ((this._OwnerBalance != value))
-				{
-					this._OwnerBalance = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MailTo", DbType="VarChar(100)")]
-		public string MailTo
-		{
-			get
-			{
-				return this._MailTo;
-			}
-			set
-			{
-				if ((this._MailTo != value))
-				{
-					this._MailTo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address", DbType="VarChar(50)")]
-		public string Address
-		{
-			get
-			{
-				return this._Address;
-			}
-			set
-			{
-				if ((this._Address != value))
-				{
-					this._Address = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Address2", DbType="VarChar(50)")]
-		public string Address2
-		{
-			get
-			{
-				return this._Address2;
-			}
-			set
-			{
-				if ((this._Address2 != value))
-				{
-					this._Address2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50)")]
-		public string City
-		{
-			get
-			{
-				return this._City;
-			}
-			set
-			{
-				if ((this._City != value))
-				{
-					this._City = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="VarChar(4)")]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
-			set
-			{
-				if ((this._State != value))
-				{
-					this._State = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="VarChar(20)")]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
-			set
-			{
-				if ((this._Zip != value))
-				{
-					this._Zip = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="VarChar(200)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
-			set
-			{
-				if ((this._EmailAddress != value))
-				{
-					this._EmailAddress = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSendByEmail", DbType="Bit")]
-		public System.Nullable<bool> IsSendByEmail
-		{
-			get
-			{
-				return this._IsSendByEmail;
-			}
-			set
-			{
-				if ((this._IsSendByEmail != value))
-				{
-					this._IsSendByEmail = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrimaryPhone", DbType="VarChar(20)")]
-		public string PrimaryPhone
-		{
-			get
-			{
-				return this._PrimaryPhone;
-			}
-			set
-			{
-				if ((this._PrimaryPhone != value))
-				{
-					this._PrimaryPhone = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SecondaryPhone", DbType="VarChar(20)")]
-		public string SecondaryPhone
-		{
-			get
-			{
-				return this._SecondaryPhone;
-			}
-			set
-			{
-				if ((this._SecondaryPhone != value))
-				{
-					this._SecondaryPhone = value;
-				}
-			}
 		}
 	}
 	

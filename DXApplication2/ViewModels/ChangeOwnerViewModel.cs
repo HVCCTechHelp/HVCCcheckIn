@@ -625,14 +625,6 @@
                     }
 
                 }
-                /// -OLD-
-                //var rlist = (from r in dc.Relationships
-                //            where r.OwnerID == PreviousOwner.OwnerID
-                //            select r);
-                //foreach (Relationship x in rlist)
-                //{
-                //    x.Active = false;
-                //}
             }
 
             // Change the Property Owner to the NewOwner
