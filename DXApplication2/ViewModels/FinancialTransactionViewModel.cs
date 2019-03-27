@@ -27,6 +27,15 @@
 
     public partial class FinancialTransactionViewModel : CommonViewModel, ICommandSink
     {
+
+        public string UserName
+        {
+            get
+            {
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            }
+        }
+
         public FinancialTransactionViewModel(IDataContext dc, object parameter)
         {
             IsBusy = true;
@@ -831,6 +840,8 @@
                         gc.IsReceived = false;
                         gc.ReceivedDate = null;
                         gc.Quanity = item.Quanity;
+                        gc.LastModifiedBy = UserName;
+                        gc.LastModified = DateTime.Now;
                         dc.GolfCarts.InsertOnSubmit(gc);
 
                         ChangeSet cs = dc.GetChangeSet();
@@ -1034,6 +1045,8 @@
                         /// 
                         if (IsTransactionState == TransactionState.New)
                         {
+                            ThePayment.LastModifiedBy = UserName;
+                            ThePayment.LastModified = DateTime.Now;
                             dc.Payments.InsertOnSubmit(ThePayment);
                             AllPayments.Add(ThePayment);
                         }
@@ -1220,6 +1233,8 @@
                     /// 
                     if (0 == TheInvoice.TransactionID && IsTransactionState == TransactionState.New)
                     {
+                        TheInvoice.LastModifiedBy = UserName;
+                        TheInvoice.LastModified = DateTime.Now;
                         dc.Invoices.InsertOnSubmit(TheInvoice);
                         AllInvoices.Add(TheInvoice);
                     }
@@ -1403,8 +1418,7 @@
                 /// to update the account balance when the use commits the save changes.
                 /// ?? - need to varify this assumption....
                 /// 
-                SelectedOwner.AccountBalance = PaymentsAppliedAmount;
-                SelectedOwner.AccountBalance += InvoiceAppliedAmount;
+                SelectedOwner.AccountBalance = Financial.GetAccountBalance(SelectedOwner);
 
                 ChangeSet cs = dc.GetChangeSet();
                 dc.SubmitChanges();
@@ -1666,6 +1680,9 @@
                 TheInvoice.Payments = GetAvailablePaymentsForOwner();
                 TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
             }
+            TheInvoice.LastModified = DateTime.Now;
+            TheInvoice.LastModifiedBy = UserName;
+
             /// Register a change notiification for the Invoice Items collection so changes
             /// are processed.
             /// 
@@ -1712,6 +1729,9 @@
                 ThePayment.Invoices = GetOpenInvoicesForOwner();
                 this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
             }
+            ThePayment.LastModified = DateTime.Now;
+            ThePayment.LastModifiedBy = UserName;
+
             /// NOTE: Transaction edits are processed in the RowDoubleClickAction method
         }
 
@@ -1796,6 +1816,8 @@
         /// <param name="type"></param>
         public void DeleteTransactionAction(object parameter)
         {
+            CanDeleteTransaction = false;
+
             v_OwnerTransaction t = parameter as v_OwnerTransaction;
 
             TransactionType transactionType = TransactionType.None;
@@ -2136,7 +2158,7 @@
                     /// The collection is then used by the Xtra report to show each invoice item.
                     /// 
                     TheInvoice = o as Invoice;
-                    TheInvoice.Owner = SelectedOwner;
+                    //TheInvoice.Owner = SelectedOwner;
                     TheInvoice.Season = CurrentSeason;
                     TheInvoice.InvoiceItems = DeserializeInvoiceItems();
                 }
@@ -2164,7 +2186,7 @@
                 foreach (Object p in payments)
                 {
                     ThePayment = p as Payment;
-                    ThePayment.Owner = SelectedOwner;
+                    //ThePayment.Owner = SelectedOwner;
                 }
 
                 /// Assign the 'payment' entity set to the report's datasource property
@@ -2178,262 +2200,263 @@
         /// <summary>
         ///  
         /// </summary>
-        private ICommand _importBalancesCommand;
-        public ICommand ImportBalancesCommand
-        {
-            get
-            {
-                return _importBalancesCommand ?? (_importBalancesCommand = new CommandHandlerWparm((object parameter) => ImportBalancesAction(parameter), true));
-            }
-        }
+        //private ICommand _importBalancesCommand;
+        //public ICommand ImportBalancesCommand
+        //{
+        //    get
+        //    {
+        //        return _importBalancesCommand ?? (_importBalancesCommand = new CommandHandlerWparm((object parameter) => ImportBalancesAction(parameter), true));
+        //    }
+        //}
 
-        public ObservableCollection<Owner> Owners { get; set; }
-        public ObservableCollection<FinancialTransaction> OwnerTransactions { get; set; }
+        //public ObservableCollection<Owner> Owners { get; set; }
+
+        //public ObservableCollection<FinancialTransaction> OwnerTransactions { get; set; }
 
         /// <summary>
         /// Clears the elements of the financial transaction edit form
         /// </summary>
         /// <param name="type"></param>
-        public void ImportBalancesAction(object parameter)
-        {
-            Owners = new ObservableCollection<Owner>();
-            OwnerTransactions = new ObservableCollection<FinancialTransaction>();
+        //public void ImportBalancesAction(object parameter)
+        //{
+        //    Owners = new ObservableCollection<Owner>();
+        //    OwnerTransactions = new ObservableCollection<FinancialTransaction>();
 
-            var _owners = (from x in dc.Owners
-                           where x.IsCurrentOwner == true
-                           //where x.OwnerID == 000549 //000742  //000087 //000082
-                           select x);
-            Owners = new ObservableCollection<Owner>(_owners);
+        //    var _owners = (from x in dc.Owners
+        //                   where x.IsCurrentOwner == true
+        //                   //where x.OwnerID == 000549 //000742  //000087 //000082
+        //                   select x);
+        //    Owners = new ObservableCollection<Owner>(_owners);
 
-            IsBusy = true;
+        //    IsBusy = true;
 
-            foreach (Owner selectedOwner in Owners)
-            {
-                ProcessingOwnerID =  selectedOwner.OwnerID;
+        //    foreach (Owner selectedOwner in Owners)
+        //    {
+        //        ProcessingOwnerID =  selectedOwner.OwnerID;
 
-                this.SelectedOwner = (from x in this.dc.Owners
-                                      where x.OwnerID == ProcessingOwnerID
-                                      select x).FirstOrDefault();
+        //        this.SelectedOwner = (from x in this.dc.Owners
+        //                              where x.OwnerID == ProcessingOwnerID
+        //                              select x).FirstOrDefault();
 
-                this.SelectedOwner.AccountBalance = 0;
+        //        this.SelectedOwner.AccountBalance = 0;
 
-                var _transactions = (from t in dc.FinancialTransactions
-                                     where t.OwnerID == SelectedOwner.OwnerID
-                                     select t);
+        //        var _transactions = (from t in dc.FinancialTransactions
+        //                             where t.OwnerID == SelectedOwner.OwnerID
+        //                             select t);
 
-                AllInvoices = new ObservableCollection<Invoice>();
-                AllPayments = new ObservableCollection<Payment>();
+        //        AllInvoices = new ObservableCollection<Invoice>();
+        //        AllPayments = new ObservableCollection<Payment>();
 
-                ObservableCollection<FinancialTransaction> tList = new ObservableCollection<FinancialTransaction>();
-                tList = new ObservableCollection<FinancialTransaction>(_transactions);
+        //        ObservableCollection<FinancialTransaction> tList = new ObservableCollection<FinancialTransaction>();
+        //        tList = new ObservableCollection<FinancialTransaction>(_transactions);
 
-                ChangeSet cs = dc.GetChangeSet();
-                decimal accountBalance = 0m;
-                foreach (FinancialTransaction x in tList)
-                {
+        //        ChangeSet cs = dc.GetChangeSet();
+        //        decimal accountBalance = 0m;
+        //        foreach (FinancialTransaction x in tList)
+        //        {
 
-                    IsTransactionState = TransactionState.New;
-                    TheInvoice = new Invoice();
-                    InvoiceItem invoiceItem = new InvoiceItem();
-                    TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
-                    TheInvoice.Payments = new ObservableCollection<Payment>();
+        //            IsTransactionState = TransactionState.New;
+        //            TheInvoice = new Invoice();
+        //            InvoiceItem invoiceItem = new InvoiceItem();
+        //            TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+        //            TheInvoice.Payments = new ObservableCollection<Payment>();
 
-                    ThePayment = new Payment();
-                    ThePayment.Invoices = new ObservableCollection<Invoice>();
-                    PendingPmtAmount = 0;
+        //            ThePayment = new Payment();
+        //            ThePayment.Invoices = new ObservableCollection<Invoice>();
+        //            PendingPmtAmount = 0;
 
-                    if ("Opening Balance" == x.TransactionAppliesTo)
-                    {
-                        if (x.Balance > 0) /// They have an outstanding ballance owed
-                        {
-                            accountBalance = x.Balance;
-                            invoiceItem = new InvoiceItem()
-                            {
-                                Item = "Opening Balance"
-                            ,
-                                Description = "QuickBooks balance when account was established"
-                            ,
-                                Quanity = 1
-                            ,
-                                Rate = TheInvoice.Amount
-                            ,
-                                Amount = TheInvoice.Amount
-                            };
-                            TheInvoice.InvoiceItems.Add(invoiceItem);
+        //            if ("Opening Balance" == x.TransactionAppliesTo)
+        //            {
+        //                if (x.Balance > 0) /// They have an outstanding ballance owed
+        //                {
+        //                    accountBalance = x.Balance;
+        //                    invoiceItem = new InvoiceItem()
+        //                    {
+        //                        Item = "Opening Balance"
+        //                    ,
+        //                        Description = "QuickBooks balance when account was established"
+        //                    ,
+        //                        Quanity = 1
+        //                    ,
+        //                        Rate = TheInvoice.Amount
+        //                    ,
+        //                        Amount = TheInvoice.Amount
+        //                    };
+        //                    TheInvoice.InvoiceItems.Add(invoiceItem);
 
-                            TheInvoice.OwnerID = SelectedOwner.OwnerID;
-                            TheInvoice.BalanceDue = x.Balance;
-                            TheInvoice.TermsDays = 0;
-                            TheInvoice.TermsDescriptive = "Due Now";
-                            TheInvoice.DueDate = x.TransactionDate;
-                            TheInvoice.GUID = Guid.NewGuid();
-                            TheInvoice.IsPaid = false;
-                            TheInvoice.IssuedDate = x.TransactionDate;
-                            TheInvoice.PaymentsApplied = 0m;
-                            TheInvoice.ItemDetails = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
-                            TheInvoice.Memo = x.Comment;
-                            TheInvoice.Payments = GetAvailablePaymentsForOwner();
-                            TheInvoice.Amount = x.Balance;
+        //                    TheInvoice.OwnerID = SelectedOwner.OwnerID;
+        //                    TheInvoice.BalanceDue = x.Balance;
+        //                    TheInvoice.TermsDays = 0;
+        //                    TheInvoice.TermsDescriptive = "Due Now";
+        //                    TheInvoice.DueDate = x.TransactionDate;
+        //                    TheInvoice.GUID = Guid.NewGuid();
+        //                    TheInvoice.IsPaid = false;
+        //                    TheInvoice.IssuedDate = x.TransactionDate;
+        //                    TheInvoice.PaymentsApplied = 0m;
+        //                    TheInvoice.ItemDetails = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+        //                    TheInvoice.Memo = x.Comment;
+        //                    TheInvoice.Payments = GetAvailablePaymentsForOwner();
+        //                    TheInvoice.Amount = x.Balance;
 
-                            this.SelectedOwner.AccountBalance = accountBalance;
+        //                    this.SelectedOwner.AccountBalance = accountBalance;
 
-                        AllInvoices.Add(TheInvoice);
-                            dc.Invoices.InsertOnSubmit(TheInvoice);
-                        }
-                        else /// (x.Balance >= 0)  They have a zero balance or credit balance
-                        {
-                            accountBalance = x.Balance;
+        //                AllInvoices.Add(TheInvoice);
+        //                    dc.Invoices.InsertOnSubmit(TheInvoice);
+        //                }
+        //                else /// (x.Balance >= 0)  They have a zero balance or credit balance
+        //                {
+        //                    accountBalance = x.Balance;
 
-                            ThePayment.OwnerID = SelectedOwner.OwnerID;
-                            ThePayment.GUID = Guid.NewGuid();
-                            ThePayment.PaymentDate = x.TransactionDate;
-                            ThePayment.PaymentMethod = x.TransactionMethod;
-                            ThePayment.ReceiptNumber = x.ReceiptNumber;
-                            ThePayment.Memo = "QuickBooks balance when account was established";
-                            if (x.Balance == 0)
-                            {
-                                ThePayment.IsApplied = true;
-                            }
-                            else
-                            {
-                                ThePayment.IsApplied = false;
-                            }
-                            ThePayment.Amount = Math.Abs((decimal)x.Balance);
+        //                    ThePayment.OwnerID = SelectedOwner.OwnerID;
+        //                    ThePayment.GUID = Guid.NewGuid();
+        //                    ThePayment.PaymentDate = x.TransactionDate;
+        //                    ThePayment.PaymentMethod = x.TransactionMethod;
+        //                    ThePayment.ReceiptNumber = x.ReceiptNumber;
+        //                    ThePayment.Memo = "QuickBooks balance when account was established";
+        //                    if (x.Balance == 0)
+        //                    {
+        //                        ThePayment.IsApplied = true;
+        //                    }
+        //                    else
+        //                    {
+        //                        ThePayment.IsApplied = false;
+        //                    }
+        //                    ThePayment.Amount = Math.Abs((decimal)x.Balance);
 
-                            this.SelectedOwner.AccountBalance = accountBalance;
+        //                    this.SelectedOwner.AccountBalance = accountBalance;
 
-                        AllPayments.Add(ThePayment);
-                            dc.Payments.InsertOnSubmit(ThePayment);
-                        }
-                        cs = dc.GetChangeSet();
-                        dc.SubmitChanges();
-                    }
-                    /// It's an Invoice......
-                    else if ((null != x.DebitAmount || x.DebitAmount > 0) && (null == x.CreditAmount || 0m == x.CreditAmount))
-                    {
-                        string[] sItems = x.TransactionAppliesTo.Split(' ');
-                        foreach (string i in sItems)
-                        {
-                            invoiceItem = new InvoiceItem();
+        //                AllPayments.Add(ThePayment);
+        //                    dc.Payments.InsertOnSubmit(ThePayment);
+        //                }
+        //                cs = dc.GetChangeSet();
+        //                dc.SubmitChanges();
+        //            }
+        //            /// It's an Invoice......
+        //            else if ((null != x.DebitAmount || x.DebitAmount > 0) && (null == x.CreditAmount || 0m == x.CreditAmount))
+        //            {
+        //                string[] sItems = x.TransactionAppliesTo.Split(' ');
+        //                foreach (string i in sItems)
+        //                {
+        //                    invoiceItem = new InvoiceItem();
 
-                            string[] a = i.Split(':');
-                            invoiceItem.Item = a[0];
-                            invoiceItem.Amount = Decimal.Parse(a[1].Replace('$', '0'));
-                            invoiceItem.Rate = 1.0m;
-                            switch (invoiceItem.Item)
-                            {
-                                case "Account":
-                                    invoiceItem.Rate = 0m;
-                                    invoiceItem.Quanity = 1;
-                                    break;
-                                case "Dues":
-                                    invoiceItem.Rate = 378.00m;
-                                    break;
-                                case "Assessment":
-                                    invoiceItem.Rate = 55.00m;
-                                    break;
-                                case "LateFee":
-                                    invoiceItem.Rate = 20.00m;
-                                    break;
-                                case "GolfCart":
-                                case "CartFee":
-                                    invoiceItem.Rate = 50.00m;
-                                    break;
-                                case "Reconnect":
-                                    invoiceItem.Rate = 150.00m;
-                                    break;
-                                case "LienFee":
-                                    invoiceItem.Rate = 150.00m;
-                                    break;
-                                case "Other":
-                                    invoiceItem.Rate = invoiceItem.Amount;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            /// If this is a new account, the values will be zero...
-                            /// 
-                            if (0m != invoiceItem.Rate || 0m != invoiceItem.Amount)
-                            {
-                                int mod = (int)(invoiceItem.Amount % invoiceItem.Rate);
-                                if (mod != 0)
-                                {
-                                    invoiceItem.Rate = invoiceItem.Amount;
-                                    invoiceItem.Quanity = 1;
-                                }
-                                else
-                                {
-                                    invoiceItem.Quanity = (int)(invoiceItem.Amount / invoiceItem.Rate);
-                                }
-                            }
-                            TheInvoice.InvoiceItems.Add(invoiceItem);
-                        }
+        //                    string[] a = i.Split(':');
+        //                    invoiceItem.Item = a[0];
+        //                    invoiceItem.Amount = Decimal.Parse(a[1].Replace('$', '0'));
+        //                    invoiceItem.Rate = 1.0m;
+        //                    switch (invoiceItem.Item)
+        //                    {
+        //                        case "Account":
+        //                            invoiceItem.Rate = 0m;
+        //                            invoiceItem.Quanity = 1;
+        //                            break;
+        //                        case "Dues":
+        //                            invoiceItem.Rate = 378.00m;
+        //                            break;
+        //                        case "Assessment":
+        //                            invoiceItem.Rate = 55.00m;
+        //                            break;
+        //                        case "LateFee":
+        //                            invoiceItem.Rate = 20.00m;
+        //                            break;
+        //                        case "GolfCart":
+        //                        case "CartFee":
+        //                            invoiceItem.Rate = 50.00m;
+        //                            break;
+        //                        case "Reconnect":
+        //                            invoiceItem.Rate = 150.00m;
+        //                            break;
+        //                        case "LienFee":
+        //                            invoiceItem.Rate = 150.00m;
+        //                            break;
+        //                        case "Other":
+        //                            invoiceItem.Rate = invoiceItem.Amount;
+        //                            break;
+        //                        default:
+        //                            break;
+        //                    }
+        //                    /// If this is a new account, the values will be zero...
+        //                    /// 
+        //                    if (0m != invoiceItem.Rate || 0m != invoiceItem.Amount)
+        //                    {
+        //                        int mod = (int)(invoiceItem.Amount % invoiceItem.Rate);
+        //                        if (mod != 0)
+        //                        {
+        //                            invoiceItem.Rate = invoiceItem.Amount;
+        //                            invoiceItem.Quanity = 1;
+        //                        }
+        //                        else
+        //                        {
+        //                            invoiceItem.Quanity = (int)(invoiceItem.Amount / invoiceItem.Rate);
+        //                        }
+        //                    }
+        //                    TheInvoice.InvoiceItems.Add(invoiceItem);
+        //                }
 
-                        TheInvoice.OwnerID = SelectedOwner.OwnerID;
-                        TheInvoice.TermsDays = 0;
-                        TheInvoice.TermsDescriptive = "Due Now";
-                        TheInvoice.DueDate = x.TransactionDate;
-                        TheInvoice.GUID = Guid.NewGuid();
-                        TheInvoice.IsPaid = false;
-                        TheInvoice.IssuedDate = x.TransactionDate;
-                        TheInvoice.ItemDetails = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
-                        TheInvoice.Memo = x.Comment;
-                        TheInvoice.PaymentsApplied = 0m;
+        //                TheInvoice.OwnerID = SelectedOwner.OwnerID;
+        //                TheInvoice.TermsDays = 0;
+        //                TheInvoice.TermsDescriptive = "Due Now";
+        //                TheInvoice.DueDate = x.TransactionDate;
+        //                TheInvoice.GUID = Guid.NewGuid();
+        //                TheInvoice.IsPaid = false;
+        //                TheInvoice.IssuedDate = x.TransactionDate;
+        //                TheInvoice.ItemDetails = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+        //                TheInvoice.Memo = x.Comment;
+        //                TheInvoice.PaymentsApplied = 0m;
 
-                        /// When the invoice amount is changed, it will be added to the DC's transaction, and
-                        /// payment processing will be attempted.  
-                        /// 
-                        TheInvoice.Payments = GetAvailablePaymentsForOwner();
-                        TheInvoice.Amount = (decimal)x.DebitAmount;
+        //                /// When the invoice amount is changed, it will be added to the DC's transaction, and
+        //                /// payment processing will be attempted.  
+        //                /// 
+        //                TheInvoice.Payments = GetAvailablePaymentsForOwner();
+        //                TheInvoice.Amount = (decimal)x.DebitAmount;
 
-                        this.SelectedOwner.AccountBalance += TheInvoice.Amount;
-                        //cs = dc.GetChangeSet();
-                        dc.SubmitChanges();
-                    }
-                    /// Else it's a payment.....
-                    /// Payments are automaticly applied to open invoices, so we do not have to worry about
-                    /// applying payments here.
-                    /// 
-                    else if ((null != x.CreditAmount || x.CreditAmount > 0) && (null == x.DebitAmount || 0m == x.DebitAmount))
-                    {
-                        ThePayment.OwnerID = SelectedOwner.OwnerID;
-                        ThePayment.GUID = Guid.NewGuid();
-                        ThePayment.PaymentDate = x.TransactionDate;
-                        ThePayment.PaymentMethod = x.TransactionMethod;
-                        ThePayment.ReceiptNumber = x.ReceiptNumber;
-                        ThePayment.Memo = x.Comment;
-                        ThePayment.IsApplied = false;
+        //                this.SelectedOwner.AccountBalance += TheInvoice.Amount;
+        //                //cs = dc.GetChangeSet();
+        //                dc.SubmitChanges();
+        //            }
+        //            /// Else it's a payment.....
+        //            /// Payments are automaticly applied to open invoices, so we do not have to worry about
+        //            /// applying payments here.
+        //            /// 
+        //            else if ((null != x.CreditAmount || x.CreditAmount > 0) && (null == x.DebitAmount || 0m == x.DebitAmount))
+        //            {
+        //                ThePayment.OwnerID = SelectedOwner.OwnerID;
+        //                ThePayment.GUID = Guid.NewGuid();
+        //                ThePayment.PaymentDate = x.TransactionDate;
+        //                ThePayment.PaymentMethod = x.TransactionMethod;
+        //                ThePayment.ReceiptNumber = x.ReceiptNumber;
+        //                ThePayment.Memo = x.Comment;
+        //                ThePayment.IsApplied = false;
 
-                        /// When the payment amount changes, it will be added to the DC transaction, and
-                        /// invoice processing will be attempted.
-                        /// 
-                        ThePayment.Invoices = GetOpenInvoicesForOwner();
-                        ThePayment.Amount = (decimal)x.CreditAmount;
+        //                /// When the payment amount changes, it will be added to the DC transaction, and
+        //                /// invoice processing will be attempted.
+        //                /// 
+        //                ThePayment.Invoices = GetOpenInvoicesForOwner();
+        //                ThePayment.Amount = (decimal)x.CreditAmount;
 
-                        this.SelectedOwner.AccountBalance += ThePayment.Amount;
-                        //cs = dc.GetChangeSet();
-                        dc.SubmitChanges();
-                    }
-                    else
-                    {
-                        ;
-                    }
+        //                this.SelectedOwner.AccountBalance += ThePayment.Amount;
+        //                //cs = dc.GetChangeSet();
+        //                dc.SubmitChanges();
+        //            }
+        //            else
+        //            {
+        //                ;
+        //            }
 
-                    TheInvoice.Payments = null;
-                    TheInvoice.InvoiceItems = null;
-                    TheInvoice = null;
+        //            TheInvoice.Payments = null;
+        //            TheInvoice.InvoiceItems = null;
+        //            TheInvoice = null;
 
-                    ThePayment.Invoices = null;
-                    ThePayment = null;
+        //            ThePayment.Invoices = null;
+        //            ThePayment = null;
 
-                }
+        //        }
 
-                AllInvoices = null;
-                AllPayments = null;
-            }
-            bool foo = IsDirty;
-            IsBusy = false;
-        }
+        //        AllInvoices = null;
+        //        AllPayments = null;
+        //    }
+        //    bool foo = IsDirty;
+        //    IsBusy = false;
+        //}
 
         /// <summary>
         ///  Command Template

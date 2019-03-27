@@ -21,9 +21,18 @@
     using System.IO;
     using HVCC.Shell.Models.Financial;
     using HVCC.Shell.Common.Converters;
+    using DevExpress.XtraReports.UI;
 
     public partial class AdministrationViewModel : CommonViewModel, ICommandSink
     {
+        public string UserName
+        {
+            get
+            {
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -201,18 +210,19 @@
         {
             get
             {
-                string[] strings = SelectedSeason.TimePeriod.Split('-');
-                int yyyy;
-                Int32.TryParse(strings[0], out yyyy);
-                DateTime startDate = new DateTime(yyyy, 5, 31, 0, 0, 0);
-                DateTime endDate = new DateTime(yyyy, 6, 7, 0, 0, 0);
-                if (DateTime.Now >= startDate
-                    && DateTime.Now <= endDate
-                    && !SelectedSeason.IsLate30Applied)
-                {
-                    return true;
-                }
-                return false;
+                //string[] strings = SelectedSeason.TimePeriod.Split('-');
+                //int yyyy;
+                //Int32.TryParse(strings[0], out yyyy);
+                //DateTime startDate = new DateTime(yyyy, 5, 1, 0, 0, 0);
+                //DateTime endDate = new DateTime(yyyy, 5, 15, 0, 0, 0);
+                //if (DateTime.Now >= startDate
+                //    && DateTime.Now <= endDate
+                //    && !SelectedSeason.IsLate30Applied)
+                //{
+                //    return true;
+                //}
+                //return false;
+                return true;
             }
         }
         public bool IsApply60DayLate
@@ -222,8 +232,8 @@
                 string[] strings = SelectedSeason.TimePeriod.Split('-');
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
-                DateTime startDate = new DateTime(yyyy, 7, 1, 0, 0, 0);
-                DateTime endDate = new DateTime(yyyy, 7, 7, 0, 0, 0);
+                DateTime startDate = new DateTime(yyyy, 6, 1, 0, 0, 0);
+                DateTime endDate = new DateTime(yyyy, 6, 15, 0, 0, 0);
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
                     && !SelectedSeason.IsLate60Applied)
@@ -240,8 +250,8 @@
                 string[] strings = SelectedSeason.TimePeriod.Split('-');
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
-                DateTime startDate = new DateTime(yyyy, 8, 1, 0, 0, 0);
-                DateTime endDate = new DateTime(yyyy, 8, 7, 0, 0, 0);
+                DateTime startDate = new DateTime(yyyy, 7, 1, 0, 0, 0);
+                DateTime endDate = new DateTime(yyyy, 7, 15, 0, 0, 0);
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
                     && !SelectedSeason.IsLate90Applied)
@@ -298,6 +308,8 @@
         private void GenerateInvoice(Owner selectedOwner)
         {
             TheInvoice = new Invoice();
+            TheInvoice.LastModifiedBy = UserName;
+            TheInvoice.LastModified = DateTime.Now;
             TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
             TheInvoice.GUID = Guid.NewGuid();
             TheInvoice.OwnerID = selectedOwner.OwnerID;
@@ -339,8 +351,8 @@
             /// season yet.
             /// 
             int cartCount = (from x in selectedOwner.GolfCarts
-                         where x.Year == CurrentSeason.TimePeriod
-                         select x.Quanity).FirstOrDefault();
+                             where x.Year == CurrentSeason.TimePeriod
+                             select x.Quanity).FirstOrDefault();
 
             if (0 < cartCount)
             {
@@ -360,7 +372,6 @@
             dc.Invoices.InsertOnSubmit(TheInvoice);
             dc.SubmitChanges();
         }
-
 
         //private int? GenerateFinancialTransaction(Owner selectedOwner, decimal amount, string appliesTo, string comment)
         //{
@@ -517,33 +528,6 @@
     /*================================================================================================================================================*/
     public partial class AdministrationViewModel : CommonViewModel
     {
-        //private ICommand _convertOwners;
-        //public ICommand ConvertOwnersCommand
-        //{
-        //    get
-        //    {
-        //        return _convertOwners ?? (_convertOwners = new CommandHandler(() => ConvertOwnersAction(), true));
-        //    }
-        //}
-        //public void ConvertOwnersAction()
-        //{
-        //    IsBusy = true;
-        //    ObservableCollection<Relationship> Relationships;
-        //    var list = (from x in dc.Relationships
-        //                select x);
-
-        //    Relationships = new ObservableCollection<Relationship>(list);
-        //    foreach (Relationship r in Relationships)
-        //    {
-        //        Owner_X_Relationship oXr = new Owner_X_Relationship();
-        //        oXr.OwnerID = r.OwnerID;
-        //        oXr.RelationshipID = r.RelationshipID;
-        //        dc.Owner_X_Relationships.InsertOnSubmit(oXr);
-        //    }
-        //    dc.SubmitChanges();
-        //    IsBusy = false;
-        //}
-
         /// <summary>
         /// View Notes about Properties
         /// </summary>
@@ -629,7 +613,6 @@
             Host.Execute(HostVerb.Open, "Invoices");
         }
 
-
         /// <summary>
         /// Apply annual dues, cart fees and assessments Command
         /// </summary>
@@ -674,8 +657,8 @@
                 CurrentSeason.IsVisible = false;
 
                 var currentOwnerList = (from x in dc.Owners
-                            where x.IsCurrentOwner == true
-                            select x);
+                                        where x.IsCurrentOwner == true
+                                        select x);
                 Owners = new ObservableCollection<Owner>(currentOwnerList);
 
                 int propertyCount = 0;
@@ -813,104 +796,9 @@
         {
             get
             {
-                return _applyLate30DaysCommand ?? (_applyLate30DaysCommand = new CommandHandler(() => ApplyLate30DaysAction(), true));
+                return _applyLate30DaysCommand ?? (_applyLate30DaysCommand = new CommandHandlerWparm((object parameter) => ApplyLateFeeAction(parameter), true));
             }
         }
-
-        /// <summary>
-        /// 30 Day Late command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void ApplyLate30DaysAction()
-        {
-            int? transactionID = null;
-            int? noteID = null;
-
-            DateTime now = DateTime.Now;
-
-            string[] strings = SelectedSeason.TimePeriod.Split('-');
-            int yyyy;
-            Int32.TryParse(strings[0], out yyyy);
-            DateTime startOfAnnual = new DateTime(yyyy, 5, 1, 0, 0, 0);
-            if (!IsApply30DayLate)
-            {
-                MessageBox.Show("You cannot apply fees before June 1st, or after June 7th");
-            }
-            else
-            {
-                IsBusy = true;
-
-                // Get the list of Owners who are now 30 days late paying dues.  If they owe
-                // $100 or less, we let them go for now.
-                var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 100.00m
-                            select x);
-
-                foreach (v_OwnerDetail ownerDetail in list)
-                {
-                    Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == ownerDetail.OwnerID
-                                   select x).FirstOrDefault();
-
-                    StringBuilder sb = new StringBuilder();
-                    decimal amount = 20.00m;
-                    sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-
-                    /// If they haven't paid their assessment.....
-                    /// 
-                    //if (assessment == true)
-                    //{
-                    //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-                    //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-                    //}
-
-                    string note = String.Format("30 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    noteID = AddNote(owner, note);
-                    // TO_DO:   CHECK ON THIS>.........
-                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 30 days late");
-
-                    /// Add the XRef record Transaction <-> Note
-                    /// 
-                    //try
-                    //{
-                    //    TransactionXNote tXn = new TransactionXNote();
-                    //    int? tXnID = null;
-                    //    dc.usp_InsertTransactionXNote(
-                    //        transactionID,
-                    //        noteID,
-                    //        ref tXnID);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //}
-
-                    // Generate the PDF Report
-                    Late30Day late30 = new Late30Day();
-                    late30.OwnerID = (int)ownerDetail.OwnerID;
-                    late30.MailTo = ownerDetail.MailTo;
-                    late30.Season = CurrentSeason.TimePeriod;
-                    dc.Late30Days.InsertOnSubmit(late30);
-
-                    ChangeSet cs = dc.GetChangeSet();
-                    this.dc.SubmitChanges();
-
-                    string fileName = string.Format(@"D:\LateNotices\30Day\30Day-{0}.PDF", ownerDetail.OwnerID);
-                    Reports.PastDue30Days report = new Reports.PastDue30Days();
-                    report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
-                    report.Parameters["InvoiceDate"].Value = DateTime.Now;
-                    report.CreateDocument();
-                    report.ExportToPdf(fileName);
-                }
-
-                SelectedSeason.IsLate30Applied = true;
-                this.dc.SubmitChanges();
-                MessageBox.Show("Fees have been applied");
-            }
-
-            IsBusy = false;
-        }
-
         /// <summary>
         /// Apply 60 Days Late fee Command
         /// </summary>
@@ -919,89 +807,9 @@
         {
             get
             {
-                return _applyLate60DaysCommand ?? (_applyLate60DaysCommand = new CommandHandler(() => ApplyLate60DaysAction(), true));
+                return _applyLate60DaysCommand ?? (_applyLate60DaysCommand = new CommandHandlerWparm((object parameter) => ApplyLateFeeAction(parameter), true));
             }
         }
-
-        /// <summary>
-        /// 60 Day Late command action
-        /// </summary>
-        /// <param name="type"></param>
-        public void ApplyLate60DaysAction()
-        {
-            int? transactionID = null;
-            int? noteID = null;
-
-            if (!IsApply60DayLate)
-            {
-                MessageBox.Show("You cannot apply fees before July 1st, or after July 7th");
-            }
-            else
-            {
-                IsBusy = true;
-
-                var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 100.00m
-                            select x);
-                foreach (v_OwnerDetail ownerDetail in list)
-                {
-                    Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == ownerDetail.OwnerID
-                                   select x).FirstOrDefault();
-
-                    StringBuilder sb = new StringBuilder();
-                    decimal amount = 20.00m;
-                    sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-                    //if (assessment == true)
-                    //{
-                    //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-                    //}
-                    //sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-
-                    string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    noteID = AddNote(owner, note);
-                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
-
-                    // Add the XRef record Transaction <-> Note
-                    try
-                    {
-                        TransactionXNote tXn = new TransactionXNote();
-                        int? tXnID = null;
-                        dc.usp_InsertTransactionXNote(
-                            transactionID,
-                            noteID,
-                            ref tXnID);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-
-                    // Generate the PDF Report
-                    Late60Day late60 = new Late60Day();
-                    late60.OwnerID = (int)ownerDetail.OwnerID;
-                    late60.Season = CurrentSeason.TimePeriod;
-                    dc.Late60Days.InsertOnSubmit(late60);
-
-                    ChangeSet cs = dc.GetChangeSet();
-                    this.dc.SubmitChanges();
-
-                    string fileName = string.Format(@"D:\LateNotices\60Day\60Day-{0}.PDF", ownerDetail.OwnerID);
-                    Reports.PastDue60Days report = new Reports.PastDue60Days();
-                    report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
-                    report.Parameters["InvoiceDate"].Value = DateTime.Now;
-                    report.CreateDocument();
-                    report.ExportToPdf(fileName);
-                }
-
-                IsBusy = false;
-
-                SelectedSeason.IsLate60Applied = true;
-                this.dc.SubmitChanges();
-                MessageBox.Show("Fees have been applied");
-            }
-        }
-
         /// <summary>
         /// Apply 90 Days Late fee Command
         /// </summary>
@@ -1010,87 +818,322 @@
         {
             get
             {
-                return _applyLate90DaysCommand ?? (_applyLate90DaysCommand = new CommandHandler(() => ApplyLate90DaysAction(), true));
+                return _applyLate90DaysCommand ?? (_applyLate90DaysCommand = new CommandHandlerWparm((object parameter) => ApplyLateFeeAction(parameter), true));
             }
         }
+
+        /// <summary>
+        /// Apply Late Fee command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void ApplyLateFeeAction(object parameter)
+        {
+            int daysLate = Convert.ToInt32(parameter);
+            int? noteID = null;
+            decimal amount = 20.00m;
+            DateTime now = DateTime.Now;
+
+            string[] strings = SelectedSeason.TimePeriod.Split('-');
+            int yyyy;
+            Int32.TryParse(strings[0], out yyyy);
+            DateTime startOfAnnual = new DateTime(yyyy, 5, 1, 0, 0, 0);
+
+            IsBusy = true;
+
+            /// Get the list of Owners who are now late paying dues. 
+            /// 
+            var list = (from p in this.dc.Invoices
+                        where p.ItemDetails.Contains("<item>Dues")
+                        && p.IsPaid == false
+                        select p);
+
+            foreach (Invoice invoice in list)
+            {
+                Owner owner = (from o in dc.Owners
+                               where o.OwnerID == invoice.OwnerID
+                               select o).FirstOrDefault();
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+
+                string note = String.Format("{0} Day Late Fee of {1} applied", daysLate.ToString(), amount.ToString("C", CultureInfo.CurrentCulture));
+
+                /// Generate a new invoice for the late fee.
+                /// 
+                TheInvoice = new Invoice();
+                TheInvoice.LastModifiedBy = UserName;
+                TheInvoice.LastModified = DateTime.Now;
+
+                owner.Invoices.Add(TheInvoice);
+                owner.LastModifiedBy = UserName;
+                owner.LastModified = DateTime.Now;
+                
+                TheInvoice.GUID = Guid.NewGuid();
+                TheInvoice.OwnerID = owner.OwnerID;
+                TheInvoice.IssuedDate = now;
+                TheInvoice.DueDate = now;
+                TheInvoice.TermsDays = 0;  /// -1 Indicates "Due by May 1st", 0 = "Due Now"
+                TheInvoice.TermsDescriptive = "Due Now";
+                TheInvoice.Amount = amount;
+                TheInvoice.BalanceDue = amount;
+                TheInvoice.PaymentsApplied = 0;
+                TheInvoice.IsPaid = false;
+                TheInvoice.Memo = note;
+                TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+                string desc = String.Format("{0} Day Late Fee", daysLate.ToString());
+                TheInvoice.InvoiceItems.Add(new InvoiceItem { Item = "Late Payment Fee", Description = desc, Quanity = 1, Rate = amount }
+                    );
+
+                /// Seralize the InvoiceItems collection to an XML string.
+                /// 
+                var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+                TheInvoice.ItemDetails = xmlString;
+
+                /// Create a LatePayment record
+                /// 
+                LatePayment late = new LatePayment();
+                late.LastModified = DateTime.Now;
+                late.LastModifiedBy = UserName;
+                late.OwnerID = owner.OwnerID;
+                late.Season = CurrentSeason.TimePeriod;
+                if (30 == daysLate)
+                {
+                    late.Is30Late = true;
+                    SelectedSeason.IsLate30Applied = true;
+                }
+                if (60 == daysLate)
+                {
+                    late.Is30Late = true;
+                    SelectedSeason.IsLate60Applied = true;
+                }
+                if (90 == daysLate)
+                {
+                    late.Is30Late = true;
+                    SelectedSeason.IsLate90Applied = true;
+                }
+
+                /// Update Owner Account Balance
+                /// 
+                owner.AccountBalance = Financial.GetAccountBalance(owner);
+
+                dc.LatePayments.InsertOnSubmit(late);
+                noteID = AddNote(owner, note);
+                ChangeSet cs = dc.GetChangeSet();
+                this.dc.SubmitChanges();
+
+                /// Generate the PDF Report
+                /// 
+                XtraReport report = null;
+                string fileName = string.Format(@"D:\LateNotices\{0}Day\{0}Day-{1}.PDF", daysLate.ToString(), owner.OwnerID);
+                if (30 == daysLate)
+                {
+                    report = new Reports.PastDue30Days();
+                }
+                if (60 == daysLate)
+                {
+                    report = new Reports.PastDue60Days();
+                }
+                if (90 == daysLate)
+                {
+                    report = new Reports.PastDue90Days();
+                }
+                report.Parameters["OwnerID"].Value = owner.OwnerID;
+                report.Parameters["InvoiceID"].Value = TheInvoice.TransactionID;
+                report.Parameters["InvoiceDate"].Value = DateTime.Now;
+                report.CreateDocument();
+                report.ExportToPdf(fileName);
+            }
+
+            MessageBox.Show("Late Fees have been applied");
+            //}
+
+            IsBusy = false;
+        }
+
+        /// <summary>
+        /// Apply 60 Days Late fee Command
+        /// </summary>
+        //private ICommand _applyLate60DaysCommand;
+        //public ICommand ApplyLate60DaysCommand
+        //{
+        //    get
+        //    {
+        //        return _applyLate60DaysCommand ?? (_applyLate60DaysCommand = new CommandHandler(() => ApplyLate60DaysAction(), true));
+        //    }
+        //}
+
+        /// <summary>
+        /// 60 Day Late command action
+        /// </summary>
+        /// <param name="type"></param>
+        //public void ApplyLate60DaysAction()
+        //{
+        //    int? transactionID = null;
+        //    int? noteID = null;
+
+        //    if (!IsApply60DayLate)
+        //    {
+        //        MessageBox.Show("You cannot apply fees before July 1st, or after July 7th");
+        //    }
+        //    else
+        //    {
+        //        IsBusy = true;
+
+        //        var list = (from x in this.dc.v_OwnerDetails
+        //                    where x.Balance > 100.00m
+        //                    select x);
+        //        foreach (v_OwnerDetail ownerDetail in list)
+        //        {
+        //            Owner owner = (from x in dc.Owners
+        //                           where x.OwnerID == ownerDetail.OwnerID
+        //                           select x).FirstOrDefault();
+
+        //            StringBuilder sb = new StringBuilder();
+        //            decimal amount = 20.00m;
+        //            sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+        //            //if (assessment == true)
+        //            //{
+        //            //    amount += SelectedSeason.AssessmentAmount * propertyCount;
+        //            //}
+        //            //sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
+
+        //            string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
+        //            noteID = AddNote(owner, note);
+        //            //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+
+        //            /// Add the XRef record Transaction <-> Note
+        //            /// 
+        //            // --OLD--
+        //            //try
+        //            //{
+        //            //    TransactionXNote tXn = new TransactionXNote();
+        //            //    int? tXnID = null;
+        //            //    dc.usp_InsertTransactionXNote(
+        //            //        transactionID,
+        //            //        noteID,
+        //            //        ref tXnID);
+        //            //}
+        //            //catch (Exception ex)
+        //            //{
+        //            //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            //}
+
+        //            // Generate the PDF Report
+        //            Late60Day late60 = new Late60Day();
+        //            late60.OwnerID = (int)ownerDetail.OwnerID;
+        //            late60.Season = CurrentSeason.TimePeriod;
+        //            dc.Late60Days.InsertOnSubmit(late60);
+
+        //            ChangeSet cs = dc.GetChangeSet();
+        //            this.dc.SubmitChanges();
+
+        //            string fileName = string.Format(@"D:\LateNotices\60Day\60Day-{0}.PDF", ownerDetail.OwnerID);
+        //            Reports.PastDue60Days report = new Reports.PastDue60Days();
+        //            report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
+        //            report.Parameters["InvoiceDate"].Value = DateTime.Now;
+        //            report.CreateDocument();
+        //            report.ExportToPdf(fileName);
+        //        }
+
+        //        IsBusy = false;
+
+        //        SelectedSeason.IsLate60Applied = true;
+        //        this.dc.SubmitChanges();
+        //        MessageBox.Show("Fees have been applied");
+        //    }
+        //}
+
+        /// <summary>
+        /// Apply 90 Days Late fee Command
+        /// </summary>
+        //private ICommand _applyLate90DaysCommand;
+        //public ICommand ApplyLate90DaysCommand
+        //{
+        //    get
+        //    {
+        //        return _applyLate90DaysCommand ?? (_applyLate90DaysCommand = new CommandHandler(() => ApplyLate90DaysAction(), true));
+        //    }
+        //}
 
         /// <summary>
         /// 90 Day Late command action
         /// </summary>
         /// <param name="type"></param>
-        public void ApplyLate90DaysAction()
-        {
-            int? transactionID = null;
-            int? noteID = null;
+        //public void ApplyLate90DaysAction()
+        //{
+        //    int? transactionID = null;
+        //    int? noteID = null;
 
-            if (!IsApply90DayLate)
-            {
-                MessageBox.Show("You cannot apply fees before Aug 1st, or after Aug 7th");
-            }
-            else
-            {
-                IsBusy = true;
+        //    if (!IsApply90DayLate)
+        //    {
+        //        MessageBox.Show("You cannot apply fees before Aug 1st, or after Aug 7th");
+        //    }
+        //    else
+        //    {
+        //        IsBusy = true;
 
-                var list = (from x in this.dc.v_OwnerDetails
-                            where x.Balance > 100.00m
-                            select x);
-                foreach (v_OwnerDetail ownerDetail in list)
-                {
-                    Owner owner = (from x in dc.Owners
-                                   where x.OwnerID == ownerDetail.OwnerID
-                                   select x).FirstOrDefault();
+        //        var list = (from x in this.dc.v_OwnerDetails
+        //                    where x.Balance > 100.00m
+        //                    select x);
+        //        foreach (v_OwnerDetail ownerDetail in list)
+        //        {
+        //            Owner owner = (from x in dc.Owners
+        //                           where x.OwnerID == ownerDetail.OwnerID
+        //                           select x).FirstOrDefault();
 
-                    StringBuilder sb = new StringBuilder();
-                    decimal amount = 20.00m;
-                    sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-                    //if (assessment == true)
-                    //{
-                    //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-                    //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-                    //}
+        //            StringBuilder sb = new StringBuilder();
+        //            decimal amount = 20.00m;
+        //            sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+        //            //if (assessment == true)
+        //            //{
+        //            //    amount += SelectedSeason.AssessmentAmount * propertyCount;
+        //            //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
+        //            //}
 
-                    string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-                    noteID = AddNote(owner, note);
-                    //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
+        //            string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
+        //            noteID = AddNote(owner, note);
+        //            //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
 
-                    // Add the XRef record Transaction <-> Note
-                    try
-                    {
-                        TransactionXNote tXn = new TransactionXNote();
-                        int? tXnID = null;
-                        dc.usp_InsertTransactionXNote(
-                            transactionID,
-                            noteID,
-                            ref tXnID);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+        //            /// Add the XRef record Transaction <-> Note
+        //            /// 
+        //            //--OLD--
+        //            //try
+        //            //{
+        //            //    TransactionXNote tXn = new TransactionXNote();
+        //            //    int? tXnID = null;
+        //            //    dc.usp_InsertTransactionXNote(
+        //            //        transactionID,
+        //            //        noteID,
+        //            //        ref tXnID);
+        //            //}
+        //            //catch (Exception ex)
+        //            //{
+        //            //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            //}
 
-                    // Generate the PDF report
-                    Late90Day late90 = new Late90Day();
-                    late90.OwnerID = (int)ownerDetail.OwnerID;
-                    late90.Season = CurrentSeason.TimePeriod;
-                    dc.Late90Days.InsertOnSubmit(late90);
+        //            // Generate the PDF report
+        //            Late90Day late90 = new Late90Day();
+        //            late90.OwnerID = (int)ownerDetail.OwnerID;
+        //            late90.Season = CurrentSeason.TimePeriod;
+        //            dc.Late90Days.InsertOnSubmit(late90);
 
-                    ChangeSet cs = dc.GetChangeSet();
-                    this.dc.SubmitChanges();
+        //            ChangeSet cs = dc.GetChangeSet();
+        //            this.dc.SubmitChanges();
 
-                    string fileName = string.Format(@"D:\LateNotices\90Day\90Day-{0}.PDF", ownerDetail.OwnerID);
-                    Reports.PastDue90Days report = new Reports.PastDue90Days();
-                    report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
-                    report.Parameters["InvoiceDate"].Value = DateTime.Now;
-                    report.CreateDocument();
-                    report.ExportToPdf(fileName);
-                }
-                IsBusy = false;
+        //            string fileName = string.Format(@"D:\LateNotices\90Day\90Day-{0}.PDF", ownerDetail.OwnerID);
+        //            Reports.PastDue90Days report = new Reports.PastDue90Days();
+        //            report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
+        //            report.Parameters["InvoiceDate"].Value = DateTime.Now;
+        //            report.CreateDocument();
+        //            report.ExportToPdf(fileName);
+        //        }
+        //        IsBusy = false;
 
-                SelectedSeason.IsLate90Applied = true;
-                this.dc.SubmitChanges();
-                MessageBox.Show("Fees have been applied");
-            }
-        }
+        //        SelectedSeason.IsLate90Applied = true;
+        //        this.dc.SubmitChanges();
+        //        MessageBox.Show("Fees have been applied");
+        //    }
+        //}
     }
 
     /*================================================================================================================================================*/

@@ -123,6 +123,13 @@
 
             IsBusy = false;
         }
+        public string UserName
+        {
+            get
+            {
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            }
+        }
 
         public ApplicationPermission ApplPermissions { get; set; }
         public ApplicationDefault ApplDefault { get; set; }
@@ -394,41 +401,41 @@
             }
         }
 
-        private decimal? _accountBalance = null;
-        public decimal? AccountBalance
-        {
-            get
-            {
-                if (null == _accountBalance)
-                {
-                    try
-                    {
-                        var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
+        //private decimal? _accountBalance = null;
+        //public decimal? AccountBalance
+        //{
+        //    get
+        //    {
+        //        if (null == _accountBalance)
+        //        {
+        //            try
+        //            {
+        //                var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
 
-                        if (b.Balance > 0)
-                        {
-                            TextColor = new SolidColorBrush(Colors.DarkRed);
-                        }
-                        _accountBalance = b.Balance;
-                        RaisePropertyChanged("AccountBalance");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        _accountBalance = null;
-                    }
-                }
-                return _accountBalance;
-            }
-            set
-            {
-                if (value != _accountBalance)
-                {
-                    _accountBalance = value;
-                    RaisePropertyChanged("AccountBalance");
-                }
-            }
-        }
+        //                if (b.Balance > 0)
+        //                {
+        //                    TextColor = new SolidColorBrush(Colors.DarkRed);
+        //                }
+        //                _accountBalance = b.Balance;
+        //                RaisePropertyChanged("AccountBalance");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //                _accountBalance = null;
+        //            }
+        //        }
+        //        return _accountBalance;
+        //    }
+        //    set
+        //    {
+        //        if (value != _accountBalance)
+        //        {
+        //            _accountBalance = value;
+        //            RaisePropertyChanged("AccountBalance");
+        //        }
+        //    }
+        //}
 
         private SolidColorBrush _textColor = new SolidColorBrush(Colors.Black);
         public SolidColorBrush TextColor
@@ -876,6 +883,8 @@
         {
             try
             {
+                SelectedOwner.LastModified = DateTime.Now;
+                SelectedOwner.LastModifiedBy = UserName;
                 this.IsBusy = true;
                 ChangeSet cs = dc.GetChangeSet();
                 this.dc.SubmitChanges();

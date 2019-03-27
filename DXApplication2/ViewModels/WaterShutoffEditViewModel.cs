@@ -417,17 +417,18 @@
 
         private void GenerateFinancialTransaction(decimal amount, string appliesTo, string comment)
         {
-            FinancialTransaction transaction = new FinancialTransaction();
+            //--OLD--
+            //FinancialTransaction transaction = new FinancialTransaction();
 
-            transaction.OwnerID = (int)SelectedOwner.OwnerID;
-            transaction.FiscalYear = FiscalYear;
-            transaction.DebitAmount = amount;
-            transaction.Balance = (int)SelectedOwner.Balance + amount;
-            transaction.TransactionDate = DateTime.Now;
-            transaction.TransactionMethod = "Machine Generated";
-            transaction.TransactionAppliesTo = appliesTo;
-            transaction.Comment = comment;
-            dc.FinancialTransactions.InsertOnSubmit(transaction);
+            //transaction.OwnerID = (int)SelectedOwner.OwnerID;
+            //transaction.FiscalYear = FiscalYear;
+            //transaction.DebitAmount = amount;
+            //transaction.Balance = (int)SelectedOwner.Balance + amount;
+            //transaction.TransactionDate = DateTime.Now;
+            //transaction.TransactionMethod = "Machine Generated";
+            //transaction.TransactionAppliesTo = appliesTo;
+            //transaction.Comment = comment;
+            //dc.FinancialTransactions.InsertOnSubmit(transaction);
         }
     }
 

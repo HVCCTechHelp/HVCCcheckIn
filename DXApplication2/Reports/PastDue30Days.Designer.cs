@@ -69,6 +69,7 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText3 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.InvoiceID = new DevExpress.XtraReports.Parameters.Parameter();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
@@ -227,7 +228,7 @@
             // 
             this.xrLabel16.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel16.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.OwnerID", "INV-{0}-30")});
+            new DevExpress.XtraReports.UI.XRBinding(this.InvoiceID, "Text", "INV-{0}")});
             this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(115.9999F, 30.39585F);
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -259,7 +260,7 @@
             // 
             this.xrLabel12.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel12.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.OwnerID", "OID-{0}")});
+            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.OwnerID", "{0}")});
             this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(209.9999F, 30.39583F);
             this.xrLabel12.Name = "xrLabel12";
             this.xrLabel12.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -466,6 +467,13 @@
             this.xrLabel18.Text = "Water Termination Policy";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
+            // InvoiceID
+            // 
+            this.InvoiceID.Description = "InvoiceID";
+            this.InvoiceID.Name = "InvoiceID";
+            this.InvoiceID.Type = typeof(int);
+            this.InvoiceID.ValueInfo = "0";
+            // 
             // PastDue30Days
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -482,7 +490,8 @@
             this.Margins = new System.Drawing.Printing.Margins(46, 55, 25, 20);
             this.Parameters.AddRange(new DevExpress.XtraReports.Parameters.Parameter[] {
             this.OwnerID,
-            this.InvoiceDate});
+            this.InvoiceDate,
+            this.InvoiceID});
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
             this.DetailCaption3,
@@ -539,5 +548,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel18;
         private DevExpress.XtraReports.UI.XRRichText xrRichText4;
         private DevExpress.XtraReports.UI.XRRichText xrRichText5;
+        private DevExpress.XtraReports.Parameters.Parameter InvoiceID;
     }
 }

@@ -318,16 +318,16 @@ namespace HVCC.Shell.Models.Financial
             if (transactionType == TransactionType.Payment)
             {
                 pxi = (from x in thePayment.Payment_X_Invoices
-                                         where x.PaymentID == thePayment.TransactionID
-                                         && x.InvoiceID == theInvoice.TransactionID
-                                         select x).FirstOrDefault();
+                       where x.PaymentID == thePayment.TransactionID
+                       && x.InvoiceID == theInvoice.TransactionID
+                       select x).FirstOrDefault();
             }
             else
             {
                 pxi = (from x in theInvoice.Payment_X_Invoices
-                                         where x.PaymentID == thePayment.TransactionID
-                                         && x.InvoiceID == theInvoice.TransactionID
-                                         select x).FirstOrDefault();
+                       where x.PaymentID == thePayment.TransactionID
+                       && x.InvoiceID == theInvoice.TransactionID
+                       select x).FirstOrDefault();
             }
 
             theInvoice.BalanceDue += pxi.PaymentAmount;
@@ -344,6 +344,16 @@ namespace HVCC.Shell.Models.Financial
                 thePayment.IsApplied = false;
             }
             return pxi;
+        }
+
+        public static decimal GetAccountBalance(Owner owner)
+        {
+            decimal payments = 0m;
+            decimal invoices = 0m;
+            
+            foreach (Payment p in owner.Payments) { payments += p.Amount; }
+            foreach (Invoice i in owner.Invoices) { invoices += i.Amount; }
+            return (payments + invoices);
         }
     }
 }

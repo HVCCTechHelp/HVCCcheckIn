@@ -84,7 +84,7 @@ namespace HVCC.Shell.Models
             }
         }
 
-        public Owner Owner { get; set; }
+        //public Owner Owner { get; set; }
         public Season Season { get; set; }
       
         /// <summary>
@@ -177,7 +177,7 @@ namespace HVCC.Shell.Models
 
     public partial class Payment : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
     {
-        public Owner Owner { get; set; } // Owner exists here as a convnence for the Xtra Report....
+        //public Owner Owner { get; set; } // Owner exists here as a convnence for the Xtra Report....
 
         /// <summary>
         /// A collection of invoices that this payment has been applied to, or open invoices that the payment may be applied to
