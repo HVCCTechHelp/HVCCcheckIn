@@ -84,64 +84,7 @@ namespace HVCC.Shell.Models
             }
         }
 
-        //public Owner Owner { get; set; }
         public Season Season { get; set; }
-      
-        /// <summary>
-        /// A collection of payments that are either associated to the invoice, or have equity to apply to an invoice
-        /// </summary>
-        private ObservableCollection<Payment> _payments = null;
-        public ObservableCollection<Payment> Payments
-        {
-            get
-            {
-                return _payments;
-            }
-            set
-            {
-                if (_payments != value)
-                {
-                    _payments = value;
-                    RaisePropertyChanged("Payments");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the invoice has associated payments, or there are payments available to apply to invoice
-        /// </summary>
-        public bool HasPayments
-        {
-            get
-            {
-                if (null == Payments || 0 == Payments.Count())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the invoice has payment to invoice cross reference records
-        /// </summary>
-        public bool HasPXIs
-        {
-            get
-            {
-                if (null == this.Payment_X_Invoices || 0 == this.Payment_X_Invoices.Count())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
 
         /// <summary>
         /// Method to provide a memberwise clone of the object
@@ -177,64 +120,6 @@ namespace HVCC.Shell.Models
 
     public partial class Payment : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
     {
-        //public Owner Owner { get; set; } // Owner exists here as a convnence for the Xtra Report....
-
-        /// <summary>
-        /// A collection of invoices that this payment has been applied to, or open invoices that the payment may be applied to
-        /// </summary>
-        private ObservableCollection<Invoice> _invoices = null;
-        public ObservableCollection<Invoice> Invoices
-        {
-            get
-            {
-                return _invoices;
-            }
-            set
-            {
-                if (_invoices != value)
-                {
-                    _invoices = value;
-                    RaisePropertyChanged("Invoices");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the payment has associated invoices, or if there are unpaid invoices the payment could be applied to
-        /// </summary>
-        public bool HasInvoices
-        {
-            get
-            {
-                if (null == Invoices || 0 == Invoices.Count())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the payment has payment to invoice cross reference records
-        /// </summary>
-        public bool HasPXIs
-        {
-            get
-            {
-                if (null == this.Payment_X_Invoices || 0 == this.Payment_X_Invoices.Count())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
         private PaymentMessage _paymentMsg = new PaymentMessage() { Visibility = System.Windows.Visibility.Hidden, Header = string.Empty, Label = string.Empty, TextBlock = string.Empty };
         public PaymentMessage PaymentMsg
         {

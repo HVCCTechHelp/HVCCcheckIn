@@ -590,37 +590,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertLate90")]
-		public int usp_InsertLate90([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Season", DbType="VarChar(20)")] string season, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, season, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(2)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertLate60")]
-		public int usp_InsertLate60([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Season", DbType="VarChar(20)")] string season, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, season, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(2)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertLate30")]
-		public int usp_InsertLate30([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Season", DbType="VarChar(20)")] string season, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, mailTo, season, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(3)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteFinancialTransaction")]
-		public int usp_DeleteFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId);
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertNote")]
 		public int usp_InsertNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(250)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
 		{
@@ -629,26 +598,10 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertTransactionXNote")]
-		public int usp_InsertTransactionXNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionID", DbType="Int")] System.Nullable<int> transactionID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NoteID", DbType="Int")] System.Nullable<int> noteID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), transactionID, noteID, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(2)));
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteTransactionXNote")]
 		public int usp_DeleteTransactionXNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertFinancialTransaction")]
-		public int usp_InsertFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYEar", DbType="VarChar(20)")] string fiscalYEar, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="Date")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(100)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CheckNumber", DbType="VarChar(20)")] string checkNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ReceiptNumber", DbType="VarChar(20)")] string receiptNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowID", DbType="Int")] ref System.Nullable<int> rowID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, fiscalYEar, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment, checkNumber, receiptNumber, rowID);
-			rowID = ((System.Nullable<int>)(result.GetParameterValue(11)));
 			return ((int)(result.ReturnValue));
 		}
 		
@@ -691,33 +644,6 @@ namespace HVCC.Shell.Models
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), customer, accountBalance, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, isPrimaryRes, isWeekend, isSeasonal, isRental, isRVlot, isEmptyLot, ownerID);
 			ownerID = ((System.Nullable<int>)(result.GetParameterValue(19)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateOwner")]
-		public int usp_UpdateOwner(
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="AccountBalance", DbType="Money")] System.Nullable<decimal> accountBalance, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="MailTo", DbType="VarChar(100)")] string mailTo, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address", DbType="VarChar(50)")] string address, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Address2", DbType="VarChar(50)")] string address2, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="City", DbType="VarChar(50)")] string city, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="State", DbType="VarChar(4)")] string state, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="Zip", DbType="VarChar(20)")] string zip, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrimaryPhone", DbType="VarChar(20)")] string primaryPhone, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="SecondaryPhone", DbType="VarChar(20)")] string secondaryPhone, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="EmailAddress", DbType="VarChar(200)")] string emailAddress, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSendByEmail", DbType="Bit")] System.Nullable<bool> isSendByEmail, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsCurrentOwner", DbType="Bit")] System.Nullable<bool> isCurrentOwner, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsPrimaryRes", DbType="Bit")] System.Nullable<bool> isPrimaryRes, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsWeekend", DbType="Bit")] System.Nullable<bool> isWeekend, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsSeasonal", DbType="Bit")] System.Nullable<bool> isSeasonal, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsRental", DbType="Bit")] System.Nullable<bool> isRental, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsRVlot", DbType="Bit")] System.Nullable<bool> isRVlot, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsEmptyLot", DbType="Bit")] System.Nullable<bool> isEmptyLot)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), ownerID, customer, accountBalance, mailTo, address, address2, city, state, zip, primaryPhone, secondaryPhone, emailAddress, isSendByEmail, isCurrentOwner, isPrimaryRes, isWeekend, isSeasonal, isRental, isRVlot, isEmptyLot);
 			return ((int)(result.ReturnValue));
 		}
 	}

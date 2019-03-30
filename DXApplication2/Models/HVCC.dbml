@@ -832,58 +832,14 @@
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_InsertLate90" Method="usp_InsertLate90">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_InsertLate60" Method="usp_InsertLate60">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_InsertLate30" Method="usp_InsertLate30">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Season" Parameter="season" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_DeleteFinancialTransaction" Method="usp_DeleteFinancialTransaction">
-    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
   <Function Id="FunctionId11" Name="dbo.usp_InsertNote" Method="usp_InsertNote">
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
     <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(250)" />
     <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_InsertTransactionXNote" Method="usp_InsertTransactionXNote">
-    <Parameter Name="TransactionID" Parameter="transactionID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="NoteID" Parameter="noteID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
   <Function Name="dbo.usp_DeleteTransactionXNote" Method="usp_DeleteTransactionXNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_InsertFinancialTransaction" Method="usp_InsertFinancialTransaction">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="FiscalYEar" Parameter="fiscalYEar" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="CreditAmount" Parameter="creditAmount" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="DebitAmount" Parameter="debitAmount" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="TransactionDate" Parameter="transactionDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="TransactionMethod" Parameter="transactionMethod" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="TransactionAppliesTo" Parameter="transactionAppliesTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="CheckNumber" Parameter="checkNumber" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="ReceiptNumber" Parameter="receiptNumber" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="RowID" Parameter="rowID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
@@ -944,29 +900,6 @@
     <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_UpdateOwner" Method="usp_UpdateOwner">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="AccountBalance" Parameter="accountBalance" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="MailTo" Parameter="mailTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Address" Parameter="address" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Address2" Parameter="address2" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="City" Parameter="city" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="State" Parameter="state" Type="System.String" DbType="VarChar(4)" />
-    <Parameter Name="Zip" Parameter="zip" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="PrimaryPhone" Parameter="primaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="SecondaryPhone" Parameter="secondaryPhone" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="EmailAddress" Parameter="emailAddress" Type="System.String" DbType="VarChar(200)" />
-    <Parameter Name="IsSendByEmail" Parameter="isSendByEmail" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsCurrentOwner" Parameter="isCurrentOwner" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsPrimaryRes" Parameter="isPrimaryRes" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsWeekend" Parameter="isWeekend" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsSeasonal" Parameter="isSeasonal" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRental" Parameter="isRental" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsRVlot" Parameter="isRVlot" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

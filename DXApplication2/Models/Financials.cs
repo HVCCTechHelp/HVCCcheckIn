@@ -232,6 +232,8 @@ namespace HVCC.Shell.Models.Financial
                     ThePayment.PaymentMsg.TextBlock = "The payment amount is less than the amount owed on the account. The payment will reflect a balance due.";
                 }
 
+                //--HERE-- We may not need to check for existing PXI if it is deleted if/when we unapply a payment
+
                 /// Depending on the transaction type, we have to add it to the correct
                 /// object for Linq2SQL to insert it so we do not get a Foreign Key error.
                 ///
@@ -310,26 +312,8 @@ namespace HVCC.Shell.Models.Financial
         /// </summary>
         /// <param name="thePayment"></param>
         /// <param name="theInvoice"></param>
-        public static Payment_X_Invoice UnapplyPayment(Payment thePayment, Invoice theInvoice, TransactionType transactionType)
+        public static void UnapplyPayment(Payment_X_Invoice pxi, Payment thePayment, Invoice theInvoice)
         {
-            /// Retrieve the PxI so the invoice amount paid value can be referenced.
-            /// 
-            Payment_X_Invoice pxi = null;
-            if (transactionType == TransactionType.Payment)
-            {
-                pxi = (from x in thePayment.Payment_X_Invoices
-                       where x.PaymentID == thePayment.TransactionID
-                       && x.InvoiceID == theInvoice.TransactionID
-                       select x).FirstOrDefault();
-            }
-            else
-            {
-                pxi = (from x in theInvoice.Payment_X_Invoices
-                       where x.PaymentID == thePayment.TransactionID
-                       && x.InvoiceID == theInvoice.TransactionID
-                       select x).FirstOrDefault();
-            }
-
             theInvoice.BalanceDue += pxi.PaymentAmount;
             theInvoice.PaymentsApplied -= pxi.PaymentAmount;
             theInvoice.PaymentAmount = 0;
@@ -343,9 +327,13 @@ namespace HVCC.Shell.Models.Financial
             {
                 thePayment.IsApplied = false;
             }
-            return pxi;
         }
 
+        /// <summary>
+        /// Recalculates and returns the current account balance for the Owner
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <returns></returns>
         public static decimal GetAccountBalance(Owner owner)
         {
             decimal payments = 0m;

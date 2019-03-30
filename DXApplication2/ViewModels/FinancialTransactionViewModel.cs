@@ -50,13 +50,19 @@
                                   where x.OwnerID == param.OwnerID
                                   select x).FirstOrDefault();
 
+            /// Just in case the current account balance is incorrect, we recalculate
+            /// it before making any financial transactions
+            /// 
+            SelectedOwner.AccountBalance = Financial.GetAccountBalance(SelectedOwner);
+            bool foo = IsDirty;
+
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
 
             FinancialTransactions = GetTransactionHistory();
-            AllInvoices = GetAllInvoicesForOwner();
-            AllPayments = GetAllPaymentsForOwner();
+            //AllInvoices = GetAllInvoicesForOwner();
+            //AllPayments = GetAllPaymentsForOwner();
 
             CanDeleteTransaction = false;
             IsBusy = false;
@@ -145,32 +151,6 @@
             }
         }
 
-        public decimal PaymentsAppliedAmount
-        {
-            get
-            {
-                decimal sum = 0m;
-                foreach (Payment p in AllPayments)
-                {
-                    sum += p.Amount;
-                }
-                return sum;
-            }
-        }
-
-        public decimal InvoiceAppliedAmount
-        {
-            get
-            {
-                decimal sum = 0m;
-                foreach (Invoice i in AllInvoices)
-                {
-                    sum += i.Amount;
-                }
-                return sum;
-            }
-        }
-
         public TransactionState IsTransactionState { get; set; }
 
         public TransactionType WhatIsBeingProcessed { get; set; }
@@ -211,9 +191,9 @@
             }
         }
 
-        public ObservableCollection<Invoice> AllInvoices { get; set; }
+        public ObservableCollection<Payment> OpenPayments { get; set; }
+        public ObservableCollection<Invoice> OpenInvoices { get; set; }
 
-        public ObservableCollection<Payment> AllPayments { get; set; }
 
         private v_OwnerTransaction _selectedTransaction = new v_OwnerTransaction();
         public v_OwnerTransaction SelectedTransaction
@@ -348,10 +328,6 @@
                 }
             }
         }
-
-        public Payment_X_Invoice PXI { get; set; }
-
-        public ObservableCollection<Payment_X_Invoice> PXIs { get; set; }
 
         /// <summary>
         /// List of billible items for an invoice
@@ -618,44 +594,13 @@
 
         }
 
-        private ObservableCollection<Invoice> GetAllInvoicesForOwner()
-        {
-            /// Build the list of outstanding invoices on the initial spin up of the payment processing.
-            /// The list will be used later on in the process to determine what invoice(s) the payment will
-            /// be applied to. Therefore, we do not want to change the initial collection.
-            dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Invoices);
-            var list = (from x in dc.Invoices
-                        where x.OwnerID == SelectedOwner.OwnerID
-                        select x);
-            if (null == list)
-            {
-                return new ObservableCollection<Invoice>();
-            }
-            else
-            {
-                /// The paoperty ISApplyToPayment is an extention property of Invoice (not included in the Invoice
-                /// database model). Therefore, we have to set the initial value here.
-                /// 
-                foreach (Invoice i in list)
-                {
-                    i.IsPaymentApplied = false;
-                }
-                return new ObservableCollection<Invoice>(list);
-            }
-        }
-
         private ObservableCollection<Invoice> GetOpenInvoicesForOwner()
         {
             /// Build the list of outstanding invoices on the initial spin up of the payment processing.
             /// The list will be used later on in the process to determine what invoice(s) the payment will
             /// be applied to. Therefore, we do not want to change the initial collection.
-            //dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.Invoices);
-            //var list = (from x in dc.Invoices
-            //            where x.OwnerID == SelectedOwner.OwnerID &&
-            //            x.BalanceDue > 0
-            //            select x);
 
-            var list = (from x in AllInvoices
+            var list = (from x in SelectedOwner.Invoices
                         where x.BalanceDue > 0
                         select x);
 
@@ -676,34 +621,14 @@
             }
         }
 
-        private ObservableCollection<Payment> GetAllPaymentsForOwner()
-        {
-            var list = (from x in dc.Payments
-                        where x.OwnerID == SelectedOwner.OwnerID
-                        orderby x.PaymentDate
-                        select x);
-            if (null == list || 0 == list.Count())
-            {
-                return new ObservableCollection<Payment>();
-            }
-            else
-            {
-                return new ObservableCollection<Payment>(list);
-            }
-        }
-
         private ObservableCollection<Payment> GetAvailablePaymentsForOwner()
         {
-            //var list = (from x in dc.Payments
-            //            where x.OwnerID == SelectedOwner.OwnerID &&
-            //            x.EquityBalance > 0m
-            //            orderby x.PaymentDate
-            //            select x);
-
-            var list = (from x in AllPayments
-                        where x.EquityBalance > 0m
+            var list = (from x in SelectedOwner.Payments
+                        where x.OwnerID == SelectedOwner.OwnerID &&
+                        x.EquityBalance > 0m
                         orderby x.PaymentDate
                         select x);
+
             if (null == list)
             {
                 return new ObservableCollection<Payment>();
@@ -712,63 +637,6 @@
             {
                 return new ObservableCollection<Payment>(list);
             }
-        }
-
-        private ObservableCollection<Payment> GetPaymentsForInvoice(Invoice invoice)
-        {
-            /// New up a payments collection for TheInvoice
-            /// 
-            ObservableCollection<Payment> pmts = new ObservableCollection<Payment>();
-
-            /// Query the DC's PxI table for records matching the Invoice
-            /// 
-            var list = (from x in dc.Payment_X_Invoices
-                        where x.InvoiceID == invoice.TransactionID
-                        select x);
-
-            /// If PxI's were returned, we iterate the list and add the Payment
-            /// records to the Payments collection.
-            /// 
-            if (null != list)
-            {
-                foreach (Payment_X_Invoice pxi in list)
-                {
-                    Payment pmt = (from p in dc.Payments
-                                   where p.TransactionID == pxi.PaymentID
-                                   select p).FirstOrDefault();
-                    pmts.Add(pmt);
-                }
-            }
-            return pmts;
-        }
-
-        private ObservableCollection<Invoice> GetInvoicesForPayment(Payment thePayment, SortOrder sortOrder)
-        {
-            /// Sort the Payment's PXI records....
-            ///
-            IEnumerable<Payment_X_Invoice> sortedList;
-            if (sortOrder == SortOrder.Assending)
-            {
-                sortedList = ThePayment.Payment_X_Invoices.AsQueryable().OrderBy(Payment_X_Invoice => Payment_X_Invoice.InvoiceID);
-            }
-            else
-            {
-                sortedList = ThePayment.Payment_X_Invoices.AsQueryable().OrderByDescending(Payment_X_Invoice => Payment_X_Invoice.InvoiceID);
-            }
-
-            /// Reterived the Invoice(s) for the Payment using the PXI record(s) of the Payment
-            /// 
-            ObservableCollection<Invoice> invoices = new ObservableCollection<Invoice>();
-            foreach (Payment_X_Invoice pxi in sortedList)
-            {
-                Invoice inv = (from i in dc.Invoices
-                               where i.TransactionID == pxi.InvoiceID
-                               select i).FirstOrDefault();
-
-                inv.PaymentAmount = ThePayment.Amount;
-                invoices.Add(inv);
-            }
-            return invoices;
         }
 
         /// <summary>
@@ -827,6 +695,7 @@
                 /// 
                 else
                 {
+                    // TO-DO: Convert this from using a USP to using Linq2SQL runtime.
                     if (null == gc)
                     {
                         gc = new GolfCart();
@@ -844,7 +713,7 @@
                         gc.LastModified = DateTime.Now;
                         dc.GolfCarts.InsertOnSubmit(gc);
 
-                        ChangeSet cs = dc.GetChangeSet();
+                        //ChangeSet cs = dc.GetChangeSet();
                     }
                     /// If the quanity is increasing, we assume, since this is a new invoice, it isn't 
                     /// paid for...?
@@ -1036,20 +905,13 @@
                     {
                         IsTransactionState = TransactionState.EditSkip;
                     }
+                    /// Payments are stored as a negative amount by accounting principals....
+                    /// Therefore, we inverse the amount so all calculations are calculated
+                    /// using addition. If the transaction is new, we also add the new payment
+                    /// record to the datacontext's tranaction stack.
+                    /// 
                     if (ThePayment.Amount > 0)
                     {
-                        /// Payments are stored as a negative amount by accounting principals....
-                        /// Therefore, we inverse the amount so all calculations are calculated
-                        /// using addition. If the transaction is new, we also add the new payment
-                        /// record to the datacontext's tranaction stack.
-                        /// 
-                        if (IsTransactionState == TransactionState.New)
-                        {
-                            ThePayment.LastModifiedBy = UserName;
-                            ThePayment.LastModified = DateTime.Now;
-                            dc.Payments.InsertOnSubmit(ThePayment);
-                            AllPayments.Add(ThePayment);
-                        }
                         ThePayment.Amount = ThePayment.Amount * -1;
                     }
                     /// There is two different sets of logic for processing a payment depending of
@@ -1061,29 +923,32 @@
 
                         /// Apply payment if there are unpaid invoices available
                         /// 
-                        ThePayment.Invoices = GetOpenInvoicesForOwner();
-                        if (ThePayment.HasInvoices)
+                        OpenInvoices = GetOpenInvoicesForOwner();
+                        if (null != OpenInvoices && OpenInvoices.Count() > 0) 
                         {
                             int ndx = 0;
-                            while (ThePayment.EquityBalance > 0 && ThePayment.Invoices.Count() > ndx)
+                            while (ThePayment.EquityBalance > 0 && OpenInvoices.Count() > ndx)
                             {
-                                TheInvoice = ThePayment.Invoices[ndx];
-                                Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
+                                if (OpenInvoices[ndx].BalanceDue > 0)
+                                {
+                                    TheInvoice = OpenInvoices[ndx];
+                                    Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
 
-                                /// Deserialize the XML string to get the list of invoice items so it can also be copied
-                                /// to the InvoiceItems collection which is bound to a UI grid.
-                                /// 
-                                TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+                                    /// Deserialize the XML string to get the list of invoice items so it can also be copied
+                                    /// to the InvoiceItems collection which is bound to a UI grid.
+                                    /// 
+                                    TheInvoice.InvoiceItems = DeserializeInvoiceItems();
 
-                                /// Apply the payment to the invoice
-                                /// 
-                                ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
+                                    /// Apply the payment to the invoice
+                                    /// 
+                                    ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
 
-                                TheInvoice.IsPaymentApplied = true;
+                                    TheInvoice.IsPaymentApplied = true;
 
-                                /// Check to see if they paid for a Golf Cart sticker.....
-                                /// 
-                                CheckForGolfCartSticker(TransactionType.Payment);
+                                    /// Check to see if they paid for a Golf Cart sticker.....
+                                    /// 
+                                    CheckForGolfCartSticker(TransactionType.Payment);
+                                }
 
                                 /// Increment the invoice array index, and do it again
                                 /// 
@@ -1119,32 +984,28 @@
                         /// 
                         if (MessageBoxResult.Cancel == result)
                         {
-                            dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment);
+                            dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner.Payments);
+                            dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner.Invoices);
                         }
-                        /// We process invoices if any exist.
+                        /// We process (disassociate) invoices from the payment if any exist.
                         /// 
                         else
                         {
                             /// If there are invoices, they are first unapplied from the payment and the account balance
                             /// is adjusted so the new (edited) payment amount is reapplied to the invoices.
                             /// 
-                            ThePayment.Invoices = GetInvoicesForPayment(ThePayment, SortOrder.Assending);
-                            if (ThePayment.HasInvoices)
+                            if (null != ThePayment.Payment_X_Invoices && ThePayment.Payment_X_Invoices.Count() > 0) //(ThePayment.HasInvoices)
                             {
                                 /// We have to reverse the payment for each associated Invoice (in memory)
                                 /// before we apply the revised payment amount. We also have to unapply the payment
                                 /// from associated invoices in reverse order (newest to oldest).
                                 /// 
-                                int ndx = 0;
-                                while (ThePayment.Invoices.Count() > ndx)
-                                {
-                                    TheInvoice = ThePayment.Invoices[ndx];
-                                    TheInvoice.IsPaymentApplied = false;
-                                    PXI = Financial.UnapplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
-                                    dc.Payment_X_Invoices.DeleteOnSubmit(PXI);
-                                    ++ndx;
+                                foreach (Payment_X_Invoice pxi in ThePayment.Payment_X_Invoices)
+                                { 
+                                    TheInvoice = pxi.Invoice;
+                                    Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                    dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
                                 }
-                                ThePayment.Invoices.Clear();
                             }
 
                             /// Now that the old payment amount was reversed from the invoices, we
@@ -1153,11 +1014,11 @@
                             /// 
                             ThePayment.EquityBalance = Math.Abs(ThePayment.Amount);
 
-                            /// Refresh the list of open invoices the payment can be applied to.
+                            /// We don't refresh the Invoice list because it was updated when the payment was
+                            /// unapplied. If we refresh the Invoice list it will overwrite the unapply.
                             /// 
-                            ThePayment.Payment_X_Invoices.Clear();
-                            ThePayment.Invoices = GetOpenInvoicesForOwner();
-                            if (ThePayment.HasInvoices)
+                            OpenInvoices = GetOpenInvoicesForOwner();
+                            if (null != OpenInvoices && OpenInvoices.Count() > 0) //(ThePayment.HasInvoices)
                             {
                                 /// Apply the payment:
                                 /// Depending whether the new amount is greater or less
@@ -1166,12 +1027,11 @@
                                 /// the current list of associated invoices.
                                 /// 
                                 int ndx = 0;
-                                while (ThePayment.EquityBalance > 0 && ThePayment.Invoices.Count() > ndx)
+                                while (ThePayment.EquityBalance > 0 && OpenInvoices.Count() > ndx)
                                 {
-                                    TheInvoice = ThePayment.Invoices[ndx];
+                                    TheInvoice = OpenInvoices[ndx];
                                     ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
                                     Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
-                                    TheInvoice.IsPaymentApplied = true;
                                     ++ndx;
                                 }
                                 dc.Payment_X_Invoices.InsertAllOnSubmit(ThePayment.Payment_X_Invoices);
@@ -1209,6 +1069,7 @@
             {
                 case "TermsDays":
                     /// Calulate the due date
+                    /// 
                     switch (TheInvoice.TermsDays)
                     {
                         case -1:
@@ -1228,16 +1089,6 @@
                                                    select x.DescriptiveTerm).FirstOrDefault();
                     break;
                 case "Amount":
-                    /// When the amount changes we put the Invoice object on the datacontext's Insert queue
-                    /// if it is new (does not have a valid TransactionID)
-                    /// 
-                    if (0 == TheInvoice.TransactionID && IsTransactionState == TransactionState.New)
-                    {
-                        TheInvoice.LastModifiedBy = UserName;
-                        TheInvoice.LastModified = DateTime.Now;
-                        dc.Invoices.InsertOnSubmit(TheInvoice);
-                        AllInvoices.Add(TheInvoice);
-                    }
 
                     /// If this is a new invoice, we have to get the current AccountBalance for the Owner
                     /// before the invoice is applied.
@@ -1251,12 +1102,18 @@
                         IsTransactionState = TransactionState.Pending;
                     }
                     /// If we are editing a new invoice, and the Amount has changed from the initial
-                    /// value, we reset the Invoice values and AccountBalance and reprocess payments.
+                    /// value, we reset the Invoice values and reprocess payments.
                     /// 
                     else if (IsTransactionState == TransactionState.Pending)
                     {
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
+                        TheInvoice.IsPaid = false;
+                        dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner.Payments);
+                        foreach (Payment_X_Invoice pxi in TheInvoice.Payment_X_Invoices)
+                        {
+                            dc.GetTable(pxi.GetType()).DeleteOnSubmit(pxi);
+                        }
                         CheckForGolfCartSticker(TransactionType.Invoice);
                     }
                     /// This is an invoice that was previously saved and is now being edited.
@@ -1274,6 +1131,7 @@
                         /// 
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
+                        TheInvoice.IsPaid = false;
 
                         if (0 == TheInvoice.InvoiceItems.Count())
                         {
@@ -1291,43 +1149,21 @@
                         /// to being edited to unapply the payment. This keeps the AccountBalance
                         /// accurate, and it roles the payment values back to their original values.
                         /// 
-                        foreach (Payment p in InvoicePriorToEdit.Payments)
+                        foreach (Payment_X_Invoice pxi in InvoicePriorToEdit.Payment_X_Invoices)//(Payment p in InvoicePriorToEdit.Payments)
                         {
-                            ThePayment = p;
-                            PXI = Financial.UnapplyPayment(ThePayment, InvoicePriorToEdit, TransactionType.Invoice);
+                            ThePayment = (from p in SelectedOwner.Payments
+                                          where p.TransactionID == pxi.PaymentID
+                                          select p).FirstOrDefault();
+                            Financial.UnapplyPayment(pxi, ThePayment, InvoicePriorToEdit);
                         }
                     }
 
+                    OpenPayments = GetAvailablePaymentsForOwner();
                     /// Now apply payments to the invoice if there are available payments with 
                     /// an equity balance.
                     /// 
-                    if (TheInvoice.HasPayments)
+                    if (OpenPayments != null && OpenPayments.Count() > 0)//(TheInvoice.HasPayments)
                     {
-                        /// If this is a New/Pending invoice, we refresh the payments collection and 
-                        /// remove the PxI.  Both will be updated with the new values when the payment(s)
-                        /// are applied to the invoice.
-                        /// 
-                        if (IsTransactionState == TransactionState.Pending)
-                        {
-                            /// Refresh the invoice Payments collection in case the invoice items rate or quanity changed
-                            /// which in turn will change the invoice amount and raise another property_changed event.
-                            /// We also remove any PxI's from the DC's pending changeset because they will need to
-                            /// also be recreated with the current invoice values.
-                            /// 
-                            dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payments);
-
-                            /// When the invoice has PxI's, and the amount is being updated, they
-                            /// need to be removed from the DC's pending transaction. They will be recreated
-                            /// when the payment(s) are applied to the invoice.
-                            /// 
-                            if (TheInvoice.HasPXIs)
-                            {
-                                foreach (Payment_X_Invoice p in TheInvoice.Payment_X_Invoices)
-                                {
-                                    dc.GetTable(p.GetType()).DeleteOnSubmit(p);
-                                }
-                            }
-                        }
                         /// Iterate the Payments collection to apply equity balance(s)
                         /// to this invoice. Because the invoice Amount can change, by modifying
                         /// an invoice items's rate or quanity, we play it safe and refresh
@@ -1336,9 +1172,9 @@
                         /// is modified.
                         /// 
                         int ndx = 0;
-                        while (ndx < TheInvoice.Payments.Count() && TheInvoice.BalanceDue > 0)
+                        while (ndx < OpenPayments.Count() && TheInvoice.BalanceDue > 0)
                         {
-                            ThePayment = TheInvoice.Payments[ndx];
+                            ThePayment = OpenPayments[ndx];
                             ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
                             Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Invoice);
                             TheInvoice.IsPaymentApplied = true;
@@ -1363,6 +1199,7 @@
                             /// 
                             CheckForGolfCartSticker(TransactionType.Invoice);
                         }
+                        IsTransactionState = TransactionState.Pending;
                     }
                     /// There are no payments to apply to this invoice....
                     /// 
@@ -1375,7 +1212,6 @@
                     }
                     break;
             }
-
             bool foo = IsDirty;
         }
     }
@@ -1528,22 +1364,22 @@
 
                     /// If there are associated invoices...
                     /// 
-                    if (ThePayment.Payment_X_Invoices.Count() > 0)
+                    if (null != ThePayment.Payment_X_Invoices && ThePayment.Payment_X_Invoices.Count() > 0)
                     {
-                        ThePayment.Invoices = GetInvoicesForPayment(ThePayment, SortOrder.Assending);
+                        //ThePayment.Invoices = GetInvoicesForPayment(ThePayment, SortOrder.Assending);
                         /// For the invoice grid to property indicate the payment is applied we
                         /// have to set the IsApplyToPayment property which is only used for the UI.
                         /// 
-                        foreach (Invoice i in ThePayment.Invoices)
+                        foreach (Invoice i in SelectedOwner.Invoices)
                         {
-                            i.IsPaymentApplied = true;
+                            i.IsPaymentApplied = i.IsPaid;
                         }
                     }
 
                     /// If there are no associated invoices, then we need to set the transaction state to EditSkip
                     /// so the warning about affecting invoices is not displayed.
                     /// 
-                    if (0 == ThePayment.Invoices.Count())
+                    if (null != SelectedOwner.Invoices && 0 == SelectedOwner.Invoices.Count())
                     {
                         IsTransactionState = TransactionState.EditSkip;
                     }
@@ -1558,7 +1394,7 @@
 
                     /// Register the invoices collection for change notification
                     /// 
-                    this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
+                    //this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
 
                     PaymentAction(null);
                 }
@@ -1573,10 +1409,10 @@
             {
                 try
                 {
-                    /// We need to fetch the Invoice record from the database using the 
+                    /// We need to fetch the Invoice record from the entity set using the 
                     /// SelectedTransaction.TransactionID as the key value.
                     /// 
-                    TheInvoice = (from x in dc.Invoices
+                    TheInvoice = (from x in SelectedOwner.Invoices
                                   where x.TransactionID == SelectedTransaction.TransactionID
                                   select x).FirstOrDefault();
 
@@ -1584,24 +1420,6 @@
                     /// to the InvoiceItems collection which is bound to a UI grid.
                     /// 
                     TheInvoice.InvoiceItems = DeserializeInvoiceItems();
-
-                    /// If the Invoice does not have associated payments we need to new up the payments and PxI collections
-                    /// to avoid thowing a null reference error when we check for unapplied payments.
-                    /// 
-                    if (null == TheInvoice.Payments) { TheInvoice.Payments = new ObservableCollection<Payment>(); }
-                    if (null == TheInvoice.Payment_X_Invoices) { TheInvoice.Payment_X_Invoices = new EntitySet<Payment_X_Invoice>(); }
-
-                    /// If there are payments associated to this Invoice, we buffer them to the Invoice's
-                    /// payments collection. Otherwise, we look for, and buffer, unapplied payments.
-                    /// 
-                    if (TheInvoice.Payment_X_Invoices.Count() > 0)
-                    {
-                        TheInvoice.Payments = GetPaymentsForInvoice(TheInvoice);
-                    }
-                    else
-                    {
-                        TheInvoice.Payments = GetAvailablePaymentsForOwner();
-                    }
 
                     /// Clone TheInvoice so we have the payment values prior to being edited.
                     /// 
@@ -1657,15 +1475,13 @@
             IsCollapsedPayments = true;
             IsCollapsedHistoryGrid = true;
 
-            //InvoiceAppliedAmount = 0m;
-            //PaymentsAppliedAmount = 0m;
-
             /// New up an Invoice object and set the initial values.  
             /// 
             if ("New" == (string)parameter)
             {
                 IsTransactionState = TransactionState.New;
                 TheInvoice = new Invoice();
+                SelectedOwner.Invoices.Add(TheInvoice);
                 TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
                 TheInvoice.GUID = Guid.NewGuid();
                 TheInvoice.OwnerID = SelectedOwner.OwnerID;
@@ -1676,8 +1492,6 @@
                 TheInvoice.BalanceDue = 0;
                 TheInvoice.PaymentsApplied = 0;
                 TheInvoice.IsPaid = false;
-                PXIs = new ObservableCollection<Payment_X_Invoice>();
-                TheInvoice.Payments = GetAvailablePaymentsForOwner();
                 TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
             }
             TheInvoice.LastModified = DateTime.Now;
@@ -1721,13 +1535,14 @@
             {
                 IsTransactionState = TransactionState.New;
                 ThePayment = new Payment();
+                SelectedOwner.Payments.Add(ThePayment);
                 ThePayment.GUID = Guid.NewGuid();
                 ThePayment.OwnerID = SelectedOwner.OwnerID;
                 ThePayment.PaymentDate = DateTime.Now;
                 ThePayment.PaymentMethod = "Check";
-                PXIs = new ObservableCollection<Payment_X_Invoice>();
-                ThePayment.Invoices = GetOpenInvoicesForOwner();
-                this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
+                //PXIs = new ObservableCollection<Payment_X_Invoice>();
+                //ThePayment.Invoices = GetOpenInvoicesForOwner();
+                //this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
             }
             ThePayment.LastModified = DateTime.Now;
             ThePayment.LastModifiedBy = UserName;
@@ -1757,20 +1572,21 @@
             {
                 try
                 {
-                    string transactionType = parameter as string;
+                    //string transactionType = parameter as string;
 
-                    if ("Invoice" == transactionType)
-                    {
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice);
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payments);
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payment_X_Invoices);
-                    }
-                    else
-                    {
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment);
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Invoices);
-                        dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Payment_X_Invoices);
-                    }
+                    //if ("Invoice" == transactionType)
+                    //{
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice);
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payments);
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payment_X_Invoices);
+                    //}
+                    //else
+                    //{
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment);
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Invoices);
+                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Payment_X_Invoices);
+                    //}
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
                 }
                 catch (Exception ex)
                 {
@@ -1829,19 +1645,19 @@
             {
                 transactionType = TransactionType.Payment;
                 /// Since the SelectedTransaction is set by the selection from the Transaction History
-                /// grid, it will be of type v_OwnerTransaction.  Therefore, we have to retrieve the
-                /// actual Payment record from the database.
+                /// grid, it will be of type v_OwnerTransaction.  Therefore, we have to retrieve ThePayment
+                /// entity from the SelectedOwner.Payments entity set.
                 /// 
-                ThePayment = (from x in dc.Payments
+                ThePayment = (from x in SelectedOwner.Payments
                               where x.TransactionID == SelectedTransaction.TransactionID
                               select x).FirstOrDefault();
 
                 /// Check to see if there are invoices associated with the Payment. If payments exist,
                 /// raise a warning message.
                 /// 
-                ThePayment.Invoices = GetInvoicesForPayment(ThePayment, SortOrder.Decending);
+                //ThePayment.Invoices = GetInvoicesForPayment(ThePayment, SortOrder.Decending);
 
-                if (ThePayment.Invoices.Count() > 0)
+                if (null != ThePayment.Payment_X_Invoices && ThePayment.Payment_X_Invoices.Count() > 0)
                 {
                     if (null != ThePayment.Memo && ThePayment.Memo.Contains("QuickBooks"))
                     {
@@ -1871,7 +1687,7 @@
                 /// grid, it will be of type v_OwnerTransaction.  Therefore, we have to retrieve the
                 /// actual Payment record from the database.
                 /// 
-                TheInvoice = (from x in dc.Invoices
+                TheInvoice = (from x in SelectedOwner.Invoices  //(from x in dc.Invoices
                               where x.TransactionID == SelectedTransaction.TransactionID
                               select x).FirstOrDefault();
 
@@ -1880,8 +1696,7 @@
                 /// Check to see if there are payments associated with the Invoice. If payments exist,
                 /// raise a warning message.
                 /// 
-                TheInvoice.Payments = GetPaymentsForInvoice(TheInvoice);
-                if (TheInvoice.Payments.Count() > 0)
+                if (null != TheInvoice.Payment_X_Invoices && TheInvoice.Payment_X_Invoices.Count() > 0)  //(TheInvoice.Payments.Count() > 0)
                 {
                     /// 
                     ///
@@ -1915,15 +1730,27 @@
                     /// 
                     if (transactionType == TransactionType.Payment)
                     {
-                        if (ThePayment.HasInvoices)
+                        if (null != ThePayment.Payment_X_Invoices && ThePayment.Payment_X_Invoices.Count() > 0)
                         {
                             /// Unapply the payment from any associated invoices
                             /// 
-                            foreach (Invoice i in ThePayment.Invoices)
+                            //foreach (Invoice i in ThePayment.Invoices)
+                            //{
+                            int total = TheInvoice.Payment_X_Invoices.Count();
+                            int ndx = 0;
+                            while (ndx < total)
                             {
-                                TheInvoice = i;
-                                TheInvoice.InvoiceItems = DeserializeInvoiceItems();
-                                PXI = Financial.UnapplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
+                                Payment_X_Invoice pxi = ThePayment.Payment_X_Invoices[0];
+                                TheInvoice = pxi.Invoice;
+                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
+                                ThePayment.Payment_X_Invoices.Remove(pxi);
+                                ndx++;
+                                //}// while
+                                //TheInvoice = i;
+                                //TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+                                ////--HERE--
+                                //PXI = Financial.UnapplyPayment(null, ThePayment, TheInvoice, TransactionType.Payment);
 
                                 /// If the invoice being unapplied from this payment was invoiced
                                 /// for a golf cart sticker, we need to reverse (remove) the payment
@@ -1943,17 +1770,13 @@
                                     gc.IsPaid = false;
                                     gc.PaymentDate = null;
                                 }
-                            }
+                            } //foreach
 
                             /// We need to delete the PxI records associated to the payment
                             /// 
                             dc.Payments.DeleteOnSubmit(ThePayment);
+                            SelectedOwner.Payments.Remove(ThePayment);
                             dc.Payment_X_Invoices.DeleteAllOnSubmit(ThePayment.Payment_X_Invoices);
-                            AllPayments.Remove(ThePayment);
-
-                            //#if DEBUG
-                            //                            ChangeSet cs = dc.GetChangeSet();
-                            //#endif
                         }
                         else
                         {
@@ -1961,20 +1784,32 @@
                             /// Keep in mind, payments are entered as negative values.
                             /// 
                             dc.Payments.DeleteOnSubmit(ThePayment);
-                            AllPayments.Remove(ThePayment);
+                            SelectedOwner.Payments.Remove(ThePayment);
                         }
                     }
                     if (transactionType == TransactionType.Invoice)
                     {
-                        if (TheInvoice.Payments.Count() > 0)
+                        /// Diable the Invoice OnPropertyChanged event. We don't need it because we
+                        /// are deleting the invoice.
+                        /// 
+                        this._theInvoice.PropertyChanged -= TheInvoice_PropertyChanged;
+
+                        /// Remove any PxIs associated with the Invoice
+                        /// 
+                        if (null != TheInvoice.Payment_X_Invoices && TheInvoice.Payment_X_Invoices.Count() > 0) //(TheInvoice.Payments.Count() > 0)
                         {
-                            /// Unapply the invoice from any associated payments
-                            /// 
-                            foreach (Payment payment in TheInvoice.Payments)
+                            int total = TheInvoice.Payment_X_Invoices.Count();
+                            int ndx = 0;
+                            while (ndx < total)
                             {
-                                ThePayment = payment;
-                                PXI = Financial.UnapplyPayment(ThePayment, TheInvoice, TransactionType.Invoice);
+                                Payment_X_Invoice pxi = TheInvoice.Payment_X_Invoices[0];
+                                ThePayment = pxi.Payment;
+                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
+                                TheInvoice.Payment_X_Invoices.Remove(pxi);
+                                ndx++;
                             }
+
                         }
 
                         /// Check the Invoice Items collection to see if the invoice has a golf cart sticker.
@@ -2003,7 +1838,8 @@
                                                 "this transaction they are in essence getting their sticker for free. Click <OK> to delete", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
                                             if (res == MessageBoxResult.OK)
                                             {
-                                                dc.GolfCarts.DeleteOnSubmit(g);
+                                                //dc.GolfCarts.DeleteOnSubmit(g);
+                                                SelectedOwner.GolfCarts.Remove(g);
                                             }
                                         }
                                         /// It is paid for, but hasn't been picked up yet so it is safe to delete
@@ -2011,7 +1847,8 @@
                                         /// 
                                         else
                                         {
-                                            dc.GolfCarts.DeleteOnSubmit(g);
+                                            //dc.GolfCarts.DeleteOnSubmit(g);
+                                            SelectedOwner.GolfCarts.Remove(g);
                                         }
                                     }
                                 }
@@ -2019,8 +1856,8 @@
                         }
 
                         dc.Invoices.DeleteOnSubmit(TheInvoice);
-                        dc.Payment_X_Invoices.DeleteAllOnSubmit(TheInvoice.Payment_X_Invoices);
-                        AllInvoices.Remove(TheInvoice);
+                        SelectedOwner.Invoices.Remove(TheInvoice);
+                        ChangeSet cs = dc.GetChangeSet();
                     }
 
                     /// Remove the SelectedTransaction from the in memory financial transaction collection

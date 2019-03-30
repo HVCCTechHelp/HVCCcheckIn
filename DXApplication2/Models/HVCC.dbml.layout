@@ -214,7 +214,7 @@
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 5.27001057942708); (11.1510416666667 : 5.27001057942708 : JumpStart); (10.984375 : 5.27001057942708 : JumpEnd); (8.875 : 5.27001057942708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 5.27001057942708); (8.875 : 5.27001057942708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
@@ -248,7 +248,7 @@
         <classShapeMoniker Id="e63837b9-1655-42f1-976e-5a7af41cd25e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12.0468725 : 5.54002115885417); (12.0468725 : 10.5248527018229); (11.1510416666667 : 10.5248527018229 : JumpStart); (10.984375 : 10.5248527018229 : JumpEnd); (10.25 : 10.5248527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12.0468725 : 5.54002115885417); (12.0468725 : 10.5248527018229); (11.7083333333333 : 10.5248527018229 : JumpStart); (11.5416666666667 : 10.5248527018229 : JumpEnd); (10.25 : 10.5248527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Invoice" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
@@ -268,7 +268,7 @@
         <classShapeMoniker Id="e63837b9-1655-42f1-976e-5a7af41cd25e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 4.79890055338542); (11.0677083333333 : 4.79890055338542); (11.0677083333333 : 12.3036371826172); (10.34375 : 12.3036371826172); (10.34375 : 16)]" manuallyRouted="true" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 5.54002115885417); (11.625 : 5.91502115885417); (11.625 : 17.3152207073562); (10.375 : 17.3152207073562)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="Caller">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Payment" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
