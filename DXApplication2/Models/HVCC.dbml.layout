@@ -193,42 +193,42 @@
         <elementListCompartment Id="708c416f-4012-48a4-9f91-8db3407d3ebb" absoluteBounds="12.015, 0.96, 1.9700000000000002, 4.4800211588541661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(14 : 4.64501057942708); (14.875 : 4.64501057942708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(14 : 4.64501057942708); (14.875 : 4.64501057942708)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_WaterShutoff" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
         <classShapeMoniker Id="179c00fd-69ba-45a1-be40-2af6741f1d14" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(14 : 2.09375); (19.25 : 2.09375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(14 : 2.09375); (19.25 : 2.09375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Property" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
         <classShapeMoniker Id="20e64093-3627-49c0-8d4c-072b05295044" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(13.1875 : 5.54002115885417); (13.1875 : 6.875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(13.1875 : 5.54002115885417); (13.1875 : 6.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_GolfCart" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 5.27001057942708); (8.875 : 5.27001057942708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 5.27001057942708); (8.875 : 5.27001057942708)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
         <classShapeMoniker Id="4826a968-e693-4eac-9fc8-6737a6829ef5" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 1.19314697265625); (9.875 : 1.19314697265625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12 : 1.19314697265625); (9.875 : 1.19314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Owner_X_Relationship" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
         <classShapeMoniker Id="f37ded3e-8787-4430-9064-d4761e3034e9" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12.24218625 : 5.54002115885417); (12.24218625 : 11.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12.24218625 : 5.54002115885417); (12.24218625 : 11.375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_LatePayment" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
@@ -241,14 +241,14 @@
         <elementListCompartment Id="95564e15-c032-4b7b-bd7d-0a0e05d2513f" absoluteBounds="8.265, 8.335, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(9.25 : 11.7612125651042); (9.25 : 12.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(9.25 : 11.7612125651042); (9.25 : 12.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Invoice/Invoice_Payment_X_Invoice" />
       <nodes>
         <classShapeMoniker Id="592483ff-3082-4685-bdbc-2301aa545cb5" />
         <classShapeMoniker Id="e63837b9-1655-42f1-976e-5a7af41cd25e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12.0468725 : 5.54002115885417); (12.0468725 : 10.5248527018229); (11.7083333333333 : 10.5248527018229 : JumpStart); (11.5416666666667 : 10.5248527018229 : JumpEnd); (10.25 : 10.5248527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(12.0468725 : 5.54002115885417); (12.0468725 : 10.5248527018229); (11.7083333333333 : 10.5248527018229 : JumpStart); (11.5416666666667 : 10.5248527018229 : JumpEnd); (10.25 : 10.5248527018229)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Invoice" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />
@@ -261,14 +261,14 @@
         <elementListCompartment Id="cc11308f-c845-4d39-af08-1761ec5cb724" absoluteBounds="8.39, 16.46, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(9.3125 : 16); (9.3125 : 14.9054996744792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(9.3125 : 16); (9.3125 : 14.9054996744792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Payment/Payment_Payment_X_Invoice" />
       <nodes>
         <classShapeMoniker Id="758ed82e-59eb-4493-bb42-11bcac99c53b" />
         <classShapeMoniker Id="e63837b9-1655-42f1-976e-5a7af41cd25e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12 : 5.54002115885417); (11.625 : 5.91502115885417); (11.625 : 17.3152207073562); (10.375 : 17.3152207073562)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="Caller">
+    <associationConnector edgePoints="[(12 : 5.54002115885417); (11.625 : 5.91502115885417); (11.625 : 17.3152207073562); (10.375 : 17.3152207073562)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Payment" />
       <nodes>
         <classShapeMoniker Id="36c368a3-2dc6-425b-9b3f-b630e2d29db3" />

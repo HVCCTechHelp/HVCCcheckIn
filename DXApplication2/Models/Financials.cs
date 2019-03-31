@@ -205,7 +205,8 @@ namespace HVCC.Shell.Models.Financial
                     TheInvoice.IsPaid = true;
                     ThePayment.EquityBalance -= TheInvoice.PaymentAmount;
                     ThePayment.IsApplied = true;
-                    if (ThePayment.EquityBalance > 0)
+
+                    if (transactionType == TransactionType.Payment && ThePayment.EquityBalance > 0)
                     {
                         ThePayment.PaymentMsg.Visibility = Visibility.Visible;
                         ThePayment.PaymentMsg.Header = "OVER PAYMENT";
@@ -224,12 +225,16 @@ namespace HVCC.Shell.Models.Financial
                     TheInvoice.IsPaid = false;
                     ThePayment.EquityBalance -= TheInvoice.PaymentAmount;
                     ThePayment.IsApplied = true;
+
                     /// Display the Under Payment Message
                     /// 
-                    ThePayment.PaymentMsg.Visibility = Visibility.Visible;
-                    ThePayment.PaymentMsg.Header = "UNDER PAYMENT";
-                    ThePayment.PaymentMsg.Label = string.Format("Amount: {0:C}", underAmt);
-                    ThePayment.PaymentMsg.TextBlock = "The payment amount is less than the amount owed on the account. The payment will reflect a balance due.";
+                    if (transactionType == TransactionType.Payment)
+                    {
+                        ThePayment.PaymentMsg.Visibility = Visibility.Visible;
+                        ThePayment.PaymentMsg.Header = "UNDER PAYMENT";
+                        ThePayment.PaymentMsg.Label = string.Format("Amount: {0:C}", underAmt);
+                        ThePayment.PaymentMsg.TextBlock = "The payment amount is less than the amount owed on the account. The payment will reflect a balance due.";
+                    }
                 }
 
                 //--HERE-- We may not need to check for existing PXI if it is deleted if/when we unapply a payment
@@ -266,6 +271,9 @@ namespace HVCC.Shell.Models.Financial
                     {
                         /// Otherwise, we just need to update the PxI with the amount paid against
                         /// this invoice.
+                        /// 
+                        ck.InvoiceID = TheInvoice.TransactionID;
+                        ck.PaymentID = ThePayment.TransactionID;
                         ck.PaymentAmount = TheInvoice.PaymentAmount;
                     }
                 }
@@ -297,6 +305,9 @@ namespace HVCC.Shell.Models.Financial
                     {
                         /// Otherwise, we just need to update the PxI with the amount paid against
                         /// this invoice.
+                        /// 
+                        ck.InvoiceID = TheInvoice.TransactionID;
+                        ck.PaymentID = ThePayment.TransactionID;
                         ck.PaymentAmount = TheInvoice.PaymentAmount;
                     }
                 }
@@ -312,15 +323,30 @@ namespace HVCC.Shell.Models.Financial
         /// </summary>
         /// <param name="thePayment"></param>
         /// <param name="theInvoice"></param>
-        public static void UnapplyPayment(Payment_X_Invoice pxi, Payment thePayment, Invoice theInvoice)
+        public static void UnapplyPayment(Payment_X_Invoice pxi, Payment thePayment, Invoice theInvoice, bool updateInvoice)
         {
-            theInvoice.BalanceDue += pxi.PaymentAmount;
-            theInvoice.PaymentsApplied -= pxi.PaymentAmount;
-            theInvoice.PaymentAmount = 0;
-            theInvoice.IsPaid = false;
-            theInvoice.IsPaymentApplied = false;
+            /// We only update the invoice if we are processing a payment.
+            /// 
+            if (updateInvoice)
+            {
+                theInvoice.BalanceDue += pxi.PaymentAmount;
+                theInvoice.PaymentsApplied -= pxi.PaymentAmount;
+                theInvoice.PaymentAmount = 0;
+                theInvoice.IsPaid = false;
+                theInvoice.IsPaymentApplied = false;
+            }
 
+            /// We return the invoice payment amount to the payment.  However, there are conditions
+            /// where the payment is processed mutiple time (chifely, when an invoice item quanity changes).
+            /// When this condition is encountered, it can result in the equity balance being greater
+            /// than the payment amount. Therefore, when we encounter this condition, we smiply set
+            /// the equity balance to the payment amount.
+            /// 
             thePayment.EquityBalance += pxi.PaymentAmount;
+            if (thePayment.EquityBalance > Math.Abs(thePayment.Amount))
+            {
+                thePayment.EquityBalance = Math.Abs(thePayment.Amount);
+            }
             /// If the full amount of the payment was reversed, we update the IsApplied flag
             /// 
             if (thePayment.EquityBalance == Math.Abs(thePayment.Amount))

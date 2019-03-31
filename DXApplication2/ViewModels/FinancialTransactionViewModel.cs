@@ -901,7 +901,7 @@
                     /// In the case where the user entered a payment amount, then changed the amount before
                     /// it was saved we treat it as an Edit transaction (even if it is a new payment)
                     /// 
-                    if (ThePayment.Amount != PendingPmtAmount && IsTransactionState == TransactionState.Pending)
+                    if (ThePayment.Amount != PendingPmtAmount && IsTransactionState == TransactionState.PendingEdit)
                     {
                         IsTransactionState = TransactionState.EditSkip;
                     }
@@ -960,7 +960,7 @@
                         /// from executing any of the Amount property changed code a second time.
                         /// 
                         PendingPmtAmount = ThePayment.Amount;
-                        IsTransactionState = TransactionState.Pending;
+                        //IsTransactionState = TransactionState.Pending;
                         bool foo = IsDirty;
                     }
                     /// Else, we are editing the payment....
@@ -1003,7 +1003,7 @@
                                 foreach (Payment_X_Invoice pxi in ThePayment.Payment_X_Invoices)
                                 { 
                                     TheInvoice = pxi.Invoice;
-                                    Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                    Financial.UnapplyPayment(pxi, ThePayment, TheInvoice, false);
                                     dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
                                 }
                             }
@@ -1041,7 +1041,7 @@
                         /// from executing any of the Amount property changed code.
                         /// 
                         PendingPmtAmount = ThePayment.Amount;
-                        IsTransactionState = TransactionState.Pending;
+                        IsTransactionState = TransactionState.PendingEdit;
                         bool foo = IsDirty;
                     }
                     /// TransactionState == Pending: We can ignore the last property changed event.
@@ -1099,12 +1099,12 @@
                         /// 
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
-                        IsTransactionState = TransactionState.Pending;
+                        IsTransactionState = TransactionState.PendingNew;
                     }
                     /// If we are editing a new invoice, and the Amount has changed from the initial
                     /// value, we reset the Invoice values and reprocess payments.
                     /// 
-                    else if (IsTransactionState == TransactionState.Pending)
+                    else if (IsTransactionState == TransactionState.PendingNew)
                     {
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
@@ -1146,7 +1146,7 @@
                         }
 
                         /// Since TheInvoice values have changed, we use the invoice values proir
-                        /// to being edited to unapply the payment. This keeps the AccountBalance
+                        /// to being edited to unapply the payment. This keeps the ammounts
                         /// accurate, and it roles the payment values back to their original values.
                         /// 
                         foreach (Payment_X_Invoice pxi in InvoicePriorToEdit.Payment_X_Invoices)//(Payment p in InvoicePriorToEdit.Payments)
@@ -1154,7 +1154,7 @@
                             ThePayment = (from p in SelectedOwner.Payments
                                           where p.TransactionID == pxi.PaymentID
                                           select p).FirstOrDefault();
-                            Financial.UnapplyPayment(pxi, ThePayment, InvoicePriorToEdit);
+                            Financial.UnapplyPayment(pxi, ThePayment, InvoicePriorToEdit, false);
                         }
                     }
 
@@ -1185,7 +1185,7 @@
                         /// collection to the DC's pending insert transaction. Edited invoices will be processed
                         /// through the DC's pending update transaction.
                         /// 
-                        if (IsTransactionState == TransactionState.Pending)
+                        if (IsTransactionState == TransactionState.PendingNew)
                         {
                             dc.Payment_X_Invoices.InsertAllOnSubmit(TheInvoice.Payment_X_Invoices);
                         }
@@ -1199,7 +1199,7 @@
                             /// 
                             CheckForGolfCartSticker(TransactionType.Invoice);
                         }
-                        IsTransactionState = TransactionState.Pending;
+                        //IsTransactionState = TransactionState.Pending;
                     }
                     /// There are no payments to apply to this invoice....
                     /// 
@@ -1260,7 +1260,7 @@
                 dc.SubmitChanges();
                 if (WhatIsBeingProcessed == TransactionType.Invoice)
                 {
-                    RePrintAction(TheInvoice);
+                    //RePrintAction(TheInvoice);
                 }
                 if (WhatIsBeingProcessed == TransactionType.Payment)
                 {
@@ -1742,7 +1742,7 @@
                             {
                                 Payment_X_Invoice pxi = ThePayment.Payment_X_Invoices[0];
                                 TheInvoice = pxi.Invoice;
-                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice, true);
                                 dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
                                 ThePayment.Payment_X_Invoices.Remove(pxi);
                                 ndx++;
@@ -1804,7 +1804,7 @@
                             {
                                 Payment_X_Invoice pxi = TheInvoice.Payment_X_Invoices[0];
                                 ThePayment = pxi.Payment;
-                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice);
+                                Financial.UnapplyPayment(pxi, ThePayment, TheInvoice, true);
                                 dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
                                 TheInvoice.Payment_X_Invoices.Remove(pxi);
                                 ndx++;
