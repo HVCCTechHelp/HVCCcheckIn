@@ -924,7 +924,7 @@
                         /// Apply payment if there are unpaid invoices available
                         /// 
                         OpenInvoices = GetOpenInvoicesForOwner();
-                        if (null != OpenInvoices && OpenInvoices.Count() > 0) 
+                        if (null != OpenInvoices && OpenInvoices.Count() > 0)
                         {
                             int ndx = 0;
                             while (ThePayment.EquityBalance > 0 && OpenInvoices.Count() > ndx)
@@ -1001,7 +1001,7 @@
                                 /// from associated invoices in reverse order (newest to oldest).
                                 /// 
                                 foreach (Payment_X_Invoice pxi in ThePayment.Payment_X_Invoices)
-                                { 
+                                {
                                     TheInvoice = pxi.Invoice;
                                     Financial.UnapplyPayment(pxi, ThePayment, TheInvoice, false);
                                     dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
@@ -1264,7 +1264,7 @@
                 }
                 if (WhatIsBeingProcessed == TransactionType.Payment)
                 {
-                    RePrintAction(ThePayment);
+                    //RePrintAction(ThePayment);
                 }
             }
             catch (Exception ex)
@@ -1904,6 +1904,75 @@
             PropertyChangedEventArgs e = new PropertyChangedEventArgs("Remove");
             ListItem_PropertyChanged(invoiceItem, e);
         }
+
+        private ICommand _recalculateCommand;
+        public ICommand RecalculateCommand
+        {
+            get
+            {
+                return _recalculateCommand ?? (_recalculateCommand = new CommandHandler(() => RecalculateAction(), true));
+            }
+        }
+
+        public void RecalculateAction()
+        {
+            ChangeSet cs = null;
+
+            foreach (Invoice i in SelectedOwner.Invoices)
+            {
+                i.BalanceDue = i.Amount;
+                i.IsPaymentApplied = false;
+                i.PaymentAmount = 0m;
+                dc.Payment_X_Invoices.DeleteAllOnSubmit(i.Payment_X_Invoices);
+            }
+            cs = dc.GetChangeSet();
+            dc.SubmitChanges();
+
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
+            foreach (Payment p in SelectedOwner.Payments)
+            {
+                p.EquityBalance = Math.Abs(p.Amount);
+                p.IsApplied = false;
+                dc.Payment_X_Invoices.DeleteAllOnSubmit(p.Payment_X_Invoices);
+            }
+            cs = dc.GetChangeSet();
+            dc.SubmitChanges();
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
+
+            foreach (Invoice i in SelectedOwner.Invoices.OrderBy(i => i.IssuedDate))
+            {
+                TheInvoice = i;
+                OpenPayments = GetAvailablePaymentsForOwner();
+                /// Now apply payments to the invoice if there are available payments with 
+                /// an equity balance.
+                /// 
+                if (OpenPayments != null && OpenPayments.Count() > 0)//(TheInvoice.HasPayments)
+                {
+                    /// Iterate the Payments collection to apply equity balance(s)
+                    /// to this invoice. Because the invoice Amount can change, by modifying
+                    /// an invoice items's rate or quanity, we play it safe and refresh
+                    /// the payment, and clear out the PxI collection each time before applying
+                    /// a payment.  This keeps from corrupting the payment values if rate/quanity
+                    /// is modified.
+                    /// 
+                    int ndx = 0;
+                    while (ndx < OpenPayments.Count() && TheInvoice.BalanceDue > 0)
+                    {
+                        ThePayment = OpenPayments[ndx];
+                        ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
+                        Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Invoice);
+                        TheInvoice.IsPaymentApplied = true;
+                        ++ndx;
+                    }
+                    dc.Payment_X_Invoices.InsertAllOnSubmit(TheInvoice.Payment_X_Invoices);
+                }
+                cs = dc.GetChangeSet();
+                dc.SubmitChanges();
+                dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
+            }
+        }
+
+
 
         ///// <summary>
         /////  Updates the payment method when the value of the radio button group changes

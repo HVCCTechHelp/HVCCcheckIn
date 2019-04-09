@@ -480,93 +480,49 @@
                     /// managed datacontext so we can get the OwnerID of the new record which is required for
                     /// inserting Relationships for the new owner.
                     /// 
+                    NewOwner.Customer = SelectedProperty.Customer;
+                    NewOwner.AccountBalance = 0m;
+                    dc.Owners.InsertOnSubmit(NewOwner);
+
+                    /// Create the initial financial record as a payment with $0.00
+                    /// 
+                    Payment thePayment = new Payment();
+                    thePayment.OwnerID = NewOwner.OwnerID;
+                    thePayment.GUID = Guid.NewGuid();
+                    thePayment.PaymentDate = DateTime.Now;
+                    thePayment.PaymentMethod = "CreditMemo";
+                    thePayment.CheckNumber = null;
+                    thePayment.ReceiptNumber = null;
+                    thePayment.IsApplied = true;
+                    thePayment.Memo = "QuickBooks balance when account was established";
+                    thePayment.EquityBalance = 0m;
+                    thePayment.Amount = 0m;
+
+                    NewOwner.Payments.Add(thePayment);
+                    dc.Payments.InsertOnSubmit(thePayment);
+
+                    /// Insert the Relationship collection and create the XRef
+                    /// 
+                    foreach (Relationship r in RelationshipsToProcess)
+                    {
+                        Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = r.RelationshipID, OwnerID = NewOwner.OwnerID };
+
+                        r.Active = true;
+                        r.Photo = ApplDefault.Photo;
+                        r.Owner_X_Relationships.Add(OXR);
+                        NewOwner.Owner_X_Relationships.Add(OXR);
+
+                        dc.Relationships.InsertOnSubmit(r);
+                        dc.Owner_X_Relationships.InsertOnSubmit(OXR);
+                    }
                     try
                     {
-                        NewOwner.Customer = SelectedProperty.Customer;
-                        NewOwner.AccountBalance = 0m;
-                        dc.usp_InsertOwner(
-                                NewOwner.Customer,
-                                NewOwner.AccountBalance,
-                                NewOwner.MailTo,
-                                NewOwner.Address,
-                                NewOwner.Address2,
-                                NewOwner.City,
-                                NewOwner.State,
-                                NewOwner.Zip,
-                                NewOwner.PrimaryPhone,
-                                NewOwner.SecondaryPhone,
-                                NewOwner.EmailAddress,
-                                NewOwner.IsSendByEmail,
-                                NewOwner.IsCurrentOwner,
-                                NewOwner.IsPrimaryRes,
-                                NewOwner.IsWeekend,
-                                NewOwner.IsSeasonal,
-                                NewOwner.IsRental,
-                                NewOwner.IsRVlot,
-                                NewOwner.IsEmptyLot,
-                                ref newOwnerID);
-
-                        NewOwner = (from x in dc.Owners
-                                    where x.OwnerID == newOwnerID
-                                    select x).FirstOrDefault();
+                        //ChangeSet cs = dc.GetChangeSet();
+                        dc.SubmitChanges();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error creating Owner record:" + ex.Message);
-                        return;
-                    }
-
-                    if (0 != NewOwner.OwnerID)
-                    {
-
-                        /// Create the initial financial record as a payment with $0.00
-                        /// 
-                        Payment thePayment = new Payment();
-                        thePayment.OwnerID = NewOwner.OwnerID;
-                        thePayment.GUID = Guid.NewGuid();
-                        thePayment.PaymentDate = DateTime.Now;
-                        thePayment.PaymentMethod = "CreditMemo";
-                        thePayment.CheckNumber = null;
-                        thePayment.ReceiptNumber = null;
-                        thePayment.IsApplied = true;
-                        thePayment.Memo = "QuickBooks balance when account was established";
-                        thePayment.EquityBalance = 0m;
-                        thePayment.Amount = 0m;
-
-                        dc.Payments.InsertOnSubmit(thePayment);
-
-                        try
-                        {
-                            dc.SubmitChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error creating Finincial record:" + ex.Message);
-                            return;
-                        }
-
-                        /// Insert the Relationship collection and create the XRef
-                        /// 
-                        try
-                        {
-                            foreach (Relationship r in RelationshipsToProcess)
-                            {
-                                //r.OwnerID = NewOwner.OwnerID;
-                                r.Active = true;
-                                r.Photo = ApplDefault.Photo;
-                                dc.Relationships.InsertOnSubmit(r);
-
-                                Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = r.RelationshipID, OwnerID = NewOwner.OwnerID };
-                                dc.Owner_X_Relationships.InsertOnSubmit(OXR);
-                            }
-                            ChangeSet cs = dc.GetChangeSet();
-                            dc.SubmitChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error creating Relationship records:" + ex.Message);
-                            return;
-                        }
+                        MessageBox.Show("Error: " + ex.Message, "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -588,7 +544,8 @@
                    , NewOwner.Zip);
 
 
-            // Create the OwnershipChange record
+            /// Create the OwnershipChange record
+            /// 
             OwnershipChange oc = new OwnershipChange();
             oc.PropertyID = SelectedProperty.PropertyID;
             oc.PreviousOwnerID = PreviousOwner.OwnerID;
@@ -597,14 +554,16 @@
             oc.NewOwner = newBillTo;
             dc.OwnershipChanges.InsertOnSubmit(oc);
 
-            // Set the previous owner inactive. We also need to de-activate any relationships associated to the 
-            // previous owner if they do not own any other properties.
+            /// Set the previous owner inactive. We also need to de-activate any relationships associated to the 
+            /// previous owner if they do not own any other properties.
+            /// 
             var plist = (from x in dc.Properties
                          where x.OwnerID == PreviousOwner.OwnerID
                          select x);
 
-            // If the previous owner only owned one property, then we can deactivate them, and their associated
-            // relationship records.
+            /// If the previous owner only owned one property, then we can deactivate them, and their associated
+            /// relationship records.
+            /// 
             if (1 == plist.Count())
             {
                 PreviousOwner.IsCurrentOwner = false;
@@ -617,8 +576,8 @@
                 foreach (Owner_X_Relationship oxr in OXRs)
                 {
                     Relationship[] rlist = (from x in dc.Relationships
-                                      where x.RelationshipID == oxr.RelationshipID
-                                      select x).ToArray();
+                                            where x.RelationshipID == oxr.RelationshipID
+                                            select x).ToArray();
                     if (1 == rlist.Count())
                     {
                         rlist[0].Active = false;
@@ -627,27 +586,26 @@
                 }
             }
 
-            // Change the Property Owner to the NewOwner
+            /// Change the Property Owner to the NewOwner
+            /// 
             NewOwner.IsCurrentOwner = true;
             SelectedProperty.Owner = NewOwner;
 
-            /// -OLD-
-            //var list = (from r in dc.Relationships
-            //            where r.OwnerID == NewOwner.OwnerID
-            //            select r);
-            //foreach (Relationship x in list)
-            //{
-            //    x.Active = true;
-            //}
+            try
+            {
+                //ChangeSet cs2 = dc.GetChangeSet();
+                this.dc.SubmitChanges();
+                this.IsBusy = false;
+                RaisePropertyChanged("IsNotBusy");
+                Host.Execute(HostVerb.Close, this.Caption);
 
-            ChangeSet cs2 = dc.GetChangeSet();
-            this.dc.SubmitChanges();
-            this.IsBusy = false;
-            RaisePropertyChanged("IsNotBusy");
-            Host.Execute(HostVerb.Close, this.Caption);
-
-            String msg = String.Format("New Owner Created: {0:000000}", NewOwner.OwnerID);
-            MessageBox.Show(msg);
+                String msg = String.Format("New Owner Created: {0:000000}", NewOwner.OwnerID);
+                MessageBox.Show(msg);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message, "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #region ICommandSink Implementation
@@ -691,7 +649,7 @@
         {
             RowDoubleClickEventArgs p = parameter as RowDoubleClickEventArgs;
             object x = p.Source;
-            NewOwner= p.Source.FocusedRow as Owner;
+            NewOwner = p.Source.FocusedRow as Owner;
 
             RaisePropertyChanged("ApplPermissions");
 

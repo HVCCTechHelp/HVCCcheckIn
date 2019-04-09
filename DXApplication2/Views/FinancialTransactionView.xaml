@@ -102,15 +102,15 @@
                                                 />
                         </dxr:RibbonPageGroup>
                         
-                        <!--<dxr:RibbonPageGroup Caption="Special">
-                            <dxb:BarButtonItem x:Name="beSpecial" Content="Import"
-                                               Command="{Binding ImportBalancesCommand}"
+                        <dxr:RibbonPageGroup Caption="Special">
+                            <dxb:BarButtonItem x:Name="beSpecial" Content="ReCalculate"
+                                               Command="{Binding RecalculateCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="{dxc:DXImage Image=TopDown_32x32.png}" 
                                                LargeGlyph="{dxc:DXImage Image=TopDown_32x32.png}"
-                                               ToolTip="Import old balances" />
+                                               ToolTip="Recalculate Balance" />
 
-                        </dxr:RibbonPageGroup>-->
+                        </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 
                 </dxr:RibbonDefaultPageCategory>
