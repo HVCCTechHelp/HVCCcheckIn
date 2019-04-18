@@ -37,6 +37,7 @@
             this.DataContext = vm;
             //this.Loaded += OnLoaded;
             appPermissions = Host.Instance.AppPermissions as ApplicationPermission;
+            this.ViewModel.Table = this.accountTableView;
         }
 
         public object SaveState()

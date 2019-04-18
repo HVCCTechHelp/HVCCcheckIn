@@ -19,6 +19,7 @@
     using System.Windows;
     using HVCC.Shell.Helpers;
     using System.Text;
+    using HVCC.Shell.Common.Commands;
 
     public partial class OwnerBalanceUpdatedViewModel : CommonViewModel, ICommandSink
     {
@@ -229,41 +230,8 @@
         {
             get
             {
-                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => ExportAction(parameter), CanExport));
-            }
-        }
-
-        /// <summary>
-        /// Exports data grid to Excel
-        /// </summary>
-        /// <param name="type"></param>
-        public void ExportAction(object parameter) //ExportCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out ExportType type);
-
-                switch (type)
-                {
-                    case ExportType.PDF:
-                        SaveFileDialogService.Filter = "PDF files|*.pdf";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToPDF(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                    case ExportType.XLSX:
-                        SaveFileDialogService.Filter = "Excel 2007 files|*.xlsx";
-                        if (SaveFileDialogService.ShowDialog())
-                            ExportService.ExportToXLSX(this.Table, SaveFileDialogService.GetFullFileName());
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error exporting data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _exportCommand ?? (_exportCommand = new CommandHandlerWparm((object parameter) => action.ExportAction(parameter, Table, SaveFileDialogService, ExportService), CanExport));
             }
         }
 
@@ -276,37 +244,8 @@
         {
             get
             {
-                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => PrintAction(parameter), CanPrint));
-            }
-        }
-
-        /// <summary>
-        /// Prints the current document
-        /// </summary>
-        /// <param name="type"></param>
-        public void PrintAction(object parameter) //PrintCommand
-        {
-            try
-            {
-                Enum.TryParse(parameter.ToString(), out PrintType type);
-
-                switch (type)
-                {
-                    case PrintType.PREVIEW:
-                        ExportService.ShowPrintPreview(this.Table);
-                        break;
-                    case PrintType.PRINT:
-                        ExportService.Print(this.Table);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxService.Show("Error printing data:" + ex.Message);
-            }
-            finally
-            {
-                //this.IsRibbonMinimized = true;
+                CommandAction action = new CommandAction();
+                return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
 

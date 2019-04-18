@@ -87,7 +87,7 @@
                           Orientation="Vertical"
                           >
 
-                    <dxg:GridControl x:Name="propertiesGrid" 
+                    <dxg:GridControl x:Name="accountGrid" 
                              ItemsSource="{Binding OwnersUpdated}" 
                              SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                              IsEnabled="True"
@@ -95,7 +95,7 @@
                              >
 
                         <dxg:GridControl.View>
-                            <dxg:TableView x:Name="propertiesTableView" 
+                            <dxg:TableView x:Name="accountTableView" 
                                    AllowSorting="True"
                                    AutoWidth="True" 
                                    AllowEditing="True"
