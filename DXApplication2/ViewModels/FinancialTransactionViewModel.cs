@@ -192,7 +192,20 @@
         }
 
         public ObservableCollection<Payment> OpenPayments { get; set; }
-        public ObservableCollection<Invoice> OpenInvoices { get; set; }
+
+        private ObservableCollection<Invoice> _openInvoices = null;
+        public ObservableCollection<Invoice> OpenInvoices
+        {
+            get { return _openInvoices; }
+            set
+            {
+                if (value != _openInvoices)
+                {
+                    _openInvoices = value;
+                    RaisePropertyChanged("OpenInvoices");
+                }
+            }
+        }
 
 
         private v_OwnerTransaction _selectedTransaction = new v_OwnerTransaction();
@@ -665,36 +678,22 @@
                          where x.Item == "Golf Cart Sticker"
                          select x);
 
-            /// If the invoice has a cart sticker, we iterate the items collection. Most likely
-            /// there will only be one item.
+            /// If The Invoice does not have a cart sticker, we can ignore the rest....
             /// 
-            foreach (InvoiceItem item in items)
+            if (null != items)
             {
-                /// Check to see if there is an existing golf cart record for this owner and
-                /// for the current season.
+                /// If the invoice has a cart sticker, we iterate the items collection. Most likely
+                /// there will only be one item.
                 /// 
-                GolfCart gc = (from x in SelectedOwner.GolfCarts
-                               where x.Year == CurrentSeason.TimePeriod
-                               select x).FirstOrDefault();
-
-
-                /// Is a payment is being applied to a cart sticker invoice...
-                /// 
-                if (transactionType == TransactionType.Payment)
+                foreach (InvoiceItem item in items)
                 {
-                    gc.Quanity = item.Quanity;
-                    if (0 == TheInvoice.BalanceDue)
-                    {
-                        gc.PaymentDate = ThePayment.PaymentDate;
-                        gc.IsPaid = true;
-                    }
-                }
-                /// If the method was called from an update to an existing Invoice, then the 
-                /// most likey senerio is the quanity is being updated. We are only concerned
-                /// with this condition if there is an existing CG record that needs to be updated.
-                /// 
-                else
-                {
+                    /// Check to see if there is an existing golf cart record for this owner and
+                    /// for the current season.
+                    /// 
+                    GolfCart gc = (from x in SelectedOwner.GolfCarts
+                                   where x.Year == CurrentSeason.TimePeriod
+                                   select x).FirstOrDefault();
+
                     // TO-DO: Convert this from using a USP to using Linq2SQL runtime.
                     if (null == gc)
                     {
@@ -715,18 +714,39 @@
 
                         //ChangeSet cs = dc.GetChangeSet();
                     }
-                    /// If the quanity is increasing, we assume, since this is a new invoice, it isn't 
-                    /// paid for...?
+
+
+                    /// Is a payment is being applied to a cart sticker invoice...
                     /// 
-                    if (TheInvoice.BalanceDue > 0)
+                    if (transactionType == TransactionType.Payment)
                     {
-                        gc.IsPaid = false;
+                        if (0 == TheInvoice.BalanceDue)
+                        {
+                            gc.PaymentDate = ThePayment.PaymentDate;
+                            gc.IsPaid = true;
+                        }
                     }
+                    /// If the method was called from an update to an existing Invoice, then the 
+                    /// most likey senerio is the quanity is being updated. We are only concerned
+                    /// with this condition if there is an existing CG record that needs to be updated.
+                    /// 
                     else
                     {
-                        gc.IsPaid = true;
+                        /// If the quanity is increasing, we assume, since this is a new invoice, it isn't 
+                        /// paid for...?
+                        /// 
+                        gc.Quanity = item.Quanity;
+                        if (TheInvoice.BalanceDue > 0)
+                        {
+                            gc.IsPaid = false;
+                            gc.PaymentDate = null;
+                        }
+                        else
+                        {
+                            gc.IsPaid = true;
+                            gc.PaymentDate = ThePayment.PaymentDate;
+                        }
                     }
-                    gc.Quanity = item.Quanity;
                 }
             }
         }
@@ -923,44 +943,46 @@
 
                         /// Apply payment if there are unpaid invoices available
                         /// 
-                        OpenInvoices = GetOpenInvoicesForOwner();
-                        if (null != OpenInvoices && OpenInvoices.Count() > 0)
+
+                        // TO-DO: Need to find a way to update OpenInvoices so it isn't processed a second time....
+                        var list = (from x in OpenInvoices
+                                    where x.IsPaid == false
+                                    select x);
+
+                        int ndx = 0;
+                        while (ThePayment.EquityBalance > 0 && list.Count() > ndx) //OpenInvoices.Count() > ndx)
                         {
-                            int ndx = 0;
-                            while (ThePayment.EquityBalance > 0 && OpenInvoices.Count() > ndx)
+                            if (OpenInvoices[ndx].BalanceDue > 0)
                             {
-                                if (OpenInvoices[ndx].BalanceDue > 0)
-                                {
-                                    TheInvoice = OpenInvoices[ndx];
-                                    Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
+                                TheInvoice = OpenInvoices[ndx];
+                                Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
 
-                                    /// Deserialize the XML string to get the list of invoice items so it can also be copied
-                                    /// to the InvoiceItems collection which is bound to a UI grid.
-                                    /// 
-                                    TheInvoice.InvoiceItems = DeserializeInvoiceItems();
-
-                                    /// Apply the payment to the invoice
-                                    /// 
-                                    ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
-
-                                    TheInvoice.IsPaymentApplied = true;
-
-                                    /// Check to see if they paid for a Golf Cart sticker.....
-                                    /// 
-                                    CheckForGolfCartSticker(TransactionType.Payment);
-                                }
-
-                                /// Increment the invoice array index, and do it again
+                                /// Deserialize the XML string to get the list of invoice items so it can also be copied
+                                /// to the InvoiceItems collection which is bound to a UI grid.
                                 /// 
-                                ++ndx;
+                                TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+
+                                /// Apply the payment to the invoice
+                                /// 
+                                ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
+
+                                TheInvoice.IsPaymentApplied = true;
+
+                                /// Check to see if they paid for a Golf Cart sticker.....
+                                /// 
+                                CheckForGolfCartSticker(TransactionType.Payment);
                             }
+
+                            /// Increment the invoice array index, and do it again
+                            /// 
+                            ++ndx;
                         }
 
                         /// Set the transaction state to 'Pending' to avoid a RaisePropertyChanged event
                         /// from executing any of the Amount property changed code a second time.
                         /// 
                         PendingPmtAmount = ThePayment.Amount;
-                        //IsTransactionState = TransactionState.Pending;
+                        IsTransactionState = TransactionState.PendingEdit;
                         bool foo = IsDirty;
                     }
                     /// Else, we are editing the payment....
@@ -1260,11 +1282,11 @@
                 dc.SubmitChanges();
                 if (WhatIsBeingProcessed == TransactionType.Invoice)
                 {
-                    //RePrintAction(TheInvoice);
+                    RePrintAction(TheInvoice);
                 }
                 if (WhatIsBeingProcessed == TransactionType.Payment)
                 {
-                    //RePrintAction(ThePayment);
+                    RePrintAction(ThePayment);
                 }
             }
             catch (Exception ex)
@@ -1540,9 +1562,7 @@
                 ThePayment.OwnerID = SelectedOwner.OwnerID;
                 ThePayment.PaymentDate = DateTime.Now;
                 ThePayment.PaymentMethod = "Check";
-                //PXIs = new ObservableCollection<Payment_X_Invoice>();
-                //ThePayment.Invoices = GetOpenInvoicesForOwner();
-                //this.RegisterForChangedNotification<Invoice>(ThePayment.Invoices);
+                OpenInvoices = GetOpenInvoicesForOwner();
             }
             ThePayment.LastModified = DateTime.Now;
             ThePayment.LastModifiedBy = UserName;

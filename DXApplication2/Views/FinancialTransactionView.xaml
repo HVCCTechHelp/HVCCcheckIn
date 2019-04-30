@@ -493,7 +493,7 @@
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
                                          IsEnabled="True"
                                          Width="Auto"
-                                         ItemsSource="{Binding ThePayment.Invoices, Mode=TwoWay}"
+                                         ItemsSource="{Binding OpenInvoices}"
                                          SelectedItem="{Binding TheInvoice, Mode=TwoWay}"
                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                                          >
