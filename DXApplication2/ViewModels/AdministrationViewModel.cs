@@ -843,105 +843,149 @@
             /// Get the list of Owners who are now late paying dues. 
             /// 
             var list = (from p in this.dc.Invoices
-                        where p.ItemDetails.Contains("<item>Dues")
+                        where p.ItemDetails.Contains("Dues")
                         && p.IsPaid == false
+                        && p.DueDate == startOfAnnual
                         select p);
 
-            foreach (Invoice invoice in list)
+            int count = list.Count();
+
+            using (var StreamWriter = new StreamWriter(@"D:\LateNotices\"+ daysLate.ToString()+"Days-Late.csv"))
             {
-                Owner owner = (from o in dc.Owners
-                               where o.OwnerID == invoice.OwnerID
-                               select o).FirstOrDefault();
-
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-
-                string note = String.Format("{0} Day Late Fee of {1} applied", daysLate.ToString(), amount.ToString("C", CultureInfo.CurrentCulture));
-
-                /// Generate a new invoice for the late fee.
-                /// 
-                TheInvoice = new Invoice();
-                TheInvoice.LastModifiedBy = UserName;
-                TheInvoice.LastModified = DateTime.Now;
-
-                owner.Invoices.Add(TheInvoice);
-                owner.LastModifiedBy = UserName;
-                owner.LastModified = DateTime.Now;
-                
-                TheInvoice.GUID = Guid.NewGuid();
-                TheInvoice.OwnerID = owner.OwnerID;
-                TheInvoice.IssuedDate = now;
-                TheInvoice.DueDate = now;
-                TheInvoice.TermsDays = 0;  /// -1 Indicates "Due by May 1st", 0 = "Due Now"
-                TheInvoice.TermsDescriptive = "Due Now";
-                TheInvoice.Amount = amount;
-                TheInvoice.BalanceDue = amount;
-                TheInvoice.PaymentsApplied = 0;
-                TheInvoice.IsPaid = false;
-                TheInvoice.Memo = note;
-                TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
-                string desc = String.Format("{0} Day Late Fee", daysLate.ToString());
-                TheInvoice.InvoiceItems.Add(new InvoiceItem { Item = "Late Payment Fee", Description = desc, Quanity = 1, Rate = amount }
-                    );
-
-                /// Seralize the InvoiceItems collection to an XML string.
-                /// 
-                var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
-                TheInvoice.ItemDetails = xmlString;
-
-                /// Create a LatePayment record
-                /// 
-                LatePayment late = new LatePayment();
-                late.LastModified = DateTime.Now;
-                late.LastModifiedBy = UserName;
-                late.OwnerID = owner.OwnerID;
-                late.Season = CurrentSeason.TimePeriod;
-                if (30 == daysLate)
+                StringBuilder sb2 = new StringBuilder();
+                sb2.Append("OwnerID|MailTo|Address|Address2|City|State|Zip");
+                StreamWriter.WriteLine(sb2.ToString());
+                foreach (Invoice invoice in list)
                 {
-                    late.Is30Late = true;
-                    SelectedSeason.IsLate30Applied = true;
-                }
-                if (60 == daysLate)
-                {
-                    late.Is30Late = true;
-                    SelectedSeason.IsLate60Applied = true;
-                }
-                if (90 == daysLate)
-                {
-                    late.Is30Late = true;
-                    SelectedSeason.IsLate90Applied = true;
-                }
+                    Owner owner = (from o in dc.Owners
+                                   where o.OwnerID == invoice.OwnerID
+                                   select o).FirstOrDefault();
 
-                /// Update Owner Account Balance
-                /// 
-                owner.AccountBalance = Financial.GetAccountBalance(owner);
+                    /// This is a bit of a hack.....  But the condition exists where a ChangeOwner
+                    /// results in unpaid invoces for an inactive owner.  As a cleanup, we check
+                    /// for inactive owners and delete any lingering invoices.  In reality, the invoices
+                    /// were paid, but staff did not enter the payment before inactivating the owner.
+                    /// 
+                    if (false == owner.IsCurrentOwner)
+                    {
+                        var nix = (from p in this.dc.Invoices
+                                   where p.OwnerID == owner.OwnerID
+                                   && p.IsPaid == false
+                                   select p);
 
-                dc.LatePayments.InsertOnSubmit(late);
-                noteID = AddNote(owner, note);
-                ChangeSet cs = dc.GetChangeSet();
-                this.dc.SubmitChanges();
+                        dc.Invoices.DeleteAllOnSubmit(nix);
+                        owner.AccountBalance = 0;
+                        ChangeSet cs = dc.GetChangeSet();
+                        dc.SubmitChanges();
+                    }
+                    /// The else-if 'true' is just here to allow for debugging.  If you want to
+                    /// avoid applying late fees, just change 'true' to 'null'
+                    /// 
+                    else if (true == owner.IsCurrentOwner)
+                    {
 
-                /// Generate the PDF Report
-                /// 
-                XtraReport report = null;
-                string fileName = string.Format(@"D:\LateNotices\{0}Day\{0}Day-{1}.PDF", daysLate.ToString(), owner.OwnerID);
-                if (30 == daysLate)
-                {
-                    report = new Reports.PastDue30Days();
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
+
+                        string note = String.Format("{0} Day Late Fee of {1} applied", daysLate.ToString(), amount.ToString("C", CultureInfo.CurrentCulture));
+
+                        /// Generate a new invoice for the late fee.
+                        /// 
+                        TheInvoice = new Invoice();
+                        TheInvoice.LastModifiedBy = UserName;
+                        TheInvoice.LastModified = DateTime.Now;
+                        TheInvoice.GUID = Guid.NewGuid();
+                        TheInvoice.OwnerID = owner.OwnerID;
+                        TheInvoice.IssuedDate = now;
+                        TheInvoice.DueDate = now;
+                        TheInvoice.TermsDays = 0;  /// -1 Indicates "Due by May 1st", 0 = "Due Now"
+                        TheInvoice.TermsDescriptive = "Due Now";
+                        TheInvoice.Amount = amount;
+                        TheInvoice.BalanceDue = amount;
+                        TheInvoice.PaymentsApplied = 0;
+                        TheInvoice.IsPaid = false;
+                        TheInvoice.Memo = note;
+                        TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+                        string desc = String.Format("{0} Day Late Fee", daysLate.ToString());
+                        TheInvoice.InvoiceItems.Add(new InvoiceItem { Item = "Late Payment Fee", Description = desc, Quanity = 1, Rate = amount }
+                            );
+
+                        /// Seralize the InvoiceItems collection to an XML string.
+                        /// 
+                        var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+                        TheInvoice.ItemDetails = xmlString;
+
+
+                        /// Update Owner Account Balance
+                        /// 
+                        owner.AccountBalance = Financial.GetAccountBalance(owner);
+                        /// Update the Owner Record and add the new invoice
+                        /// 
+                        owner.Invoices.Add(TheInvoice);
+                        owner.LastModifiedBy = UserName;
+                        owner.LastModified = DateTime.Now;
+
+                        /// Create a LatePayment record
+                        /// 
+                        LatePayment late = new LatePayment();
+                        late.LastModified = DateTime.Now;
+                        late.LastModifiedBy = UserName;
+                        late.OwnerID = owner.OwnerID;
+                        late.Season = CurrentSeason.TimePeriod;
+                        if (30 == daysLate)
+                        {
+                            late.Is30Late = true;
+                            SelectedSeason.IsLate30Applied = true;
+                        }
+                        if (60 == daysLate)
+                        {
+                            late.Is30Late = true;
+                            SelectedSeason.IsLate60Applied = true;
+                        }
+                        if (90 == daysLate)
+                        {
+                            late.Is30Late = true;
+                            SelectedSeason.IsLate90Applied = true;
+                        }
+
+                        owner.AccountBalance += TheInvoice.Amount;
+                        dc.LatePayments.InsertOnSubmit(late);
+                        noteID = AddNote(owner, note);
+                        ChangeSet cs = dc.GetChangeSet();
+                        this.dc.SubmitChanges();
+
+                        /// Generate the PDF Report
+                        /// 
+                        XtraReport report = null;
+                        string fileName = string.Format(@"D:\LateNotices\{0}Day\{0}Day-{1}.PDF", daysLate.ToString(), owner.OwnerID);
+                        if (30 == daysLate)
+                        {
+                            report = new Reports.PastDue30Days();
+                        }
+                        if (60 == daysLate)
+                        {
+                            report = new Reports.PastDue60Days();
+                        }
+                        if (90 == daysLate)
+                        {
+                            report = new Reports.PastDue90Days();
+                        }
+                        report.Parameters["OwnerID"].Value = owner.OwnerID;
+                        report.Parameters["Balance"].Value = owner.AccountBalance;
+                        report.Parameters["InvoiceID"].Value = TheInvoice.TransactionID;
+                        report.Parameters["InvoiceDate"].Value = DateTime.Now;
+                        report.CreateDocument();
+                        report.ExportToPdf(fileName);
+
+                        /// StringBuilder2 is used to create a CSV file of invoice information....
+                        /// 
+                        sb2.Clear();
+                        sb2.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}"
+                            , owner.OwnerID.ToString().PadLeft(6, '0'), owner.MailTo, owner.Address, owner.Address2, owner.City, owner.State, owner.Zip);
+                        StreamWriter.WriteLine(sb2.ToString());
+                    }
                 }
-                if (60 == daysLate)
-                {
-                    report = new Reports.PastDue60Days();
-                }
-                if (90 == daysLate)
-                {
-                    report = new Reports.PastDue90Days();
-                }
-                report.Parameters["OwnerID"].Value = owner.OwnerID;
-                report.Parameters["InvoiceID"].Value = TheInvoice.TransactionID;
-                report.Parameters["InvoiceDate"].Value = DateTime.Now;
-                report.CreateDocument();
-                report.ExportToPdf(fileName);
+                StreamWriter.Close();
             }
 
             MessageBox.Show("Late Fees have been applied");

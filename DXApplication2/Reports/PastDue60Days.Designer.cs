@@ -69,6 +69,8 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText3 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.InvoiceID = new DevExpress.XtraReports.Parameters.Parameter();
+            this.Balance = new DevExpress.XtraReports.Parameters.Parameter();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
@@ -126,17 +128,17 @@
             this.xrLabel2.BackColor = System.Drawing.Color.White;
             this.xrLabel2.Font = new System.Drawing.Font("Times New Roman", 8F);
             this.xrLabel2.ForeColor = System.Drawing.Color.Silver;
-            this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(138.6364F, 17.22918F);
+            this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(158F, 17.22918F);
             this.xrLabel2.Multiline = true;
             this.xrLabel2.Name = "xrLabel2";
             this.xrLabel2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel2.SizeF = new System.Drawing.SizeF(610.3636F, 20.91666F);
+            this.xrLabel2.SizeF = new System.Drawing.SizeF(483.7387F, 31.33332F);
             this.xrLabel2.StylePriority.UseBackColor = false;
             this.xrLabel2.StylePriority.UseFont = false;
             this.xrLabel2.StylePriority.UseForeColor = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
-            this.xrLabel2.Text = "High Valley Country Club | Inc. PO Box 427, Packwood, WA. 98361 | Phone: 360-494-" +
-    "8432 | Email: highvalley@lewiscounty.com\r\n";
+            this.xrLabel2.Text = "High Valley Country Club Inc. | PO Box 427, Packwood, WA. 98361\r\nPhone: 360-494-8" +
+    "432 | Email: hoa_management@highvalleycc.org\r\n";
             this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrPictureBox1
@@ -151,7 +153,7 @@
             // 
             this.xrLabel1.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
             this.xrLabel1.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(150F, 51.875F);
+            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(176.0417F, 63.06256F);
             this.xrLabel1.Multiline = true;
             this.xrLabel1.Name = "xrLabel1";
             this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -160,7 +162,7 @@
             this.xrLabel1.StylePriority.UseFont = false;
             this.xrLabel1.StylePriority.UseForeColor = false;
             this.xrLabel1.StylePriority.UseTextAlignment = false;
-            this.xrLabel1.Text = "60 Days Past Due Notice\r\nFINAL NOTICE";
+            this.xrLabel1.Text = "Past Due Notice\r\nSECOND NOTICE";
             this.xrLabel1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // groupHeaderBand1
@@ -189,7 +191,7 @@
             // xrLabel5
             // 
             this.xrLabel5.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.Balance", "{0:$0.00}")});
+            new DevExpress.XtraReports.UI.XRBinding(this.Balance, "Text", "{0:$0.00}")});
             this.xrLabel5.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
             this.xrLabel5.ForeColor = System.Drawing.Color.Red;
             this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(487.25F, 328.3333F);
@@ -199,7 +201,6 @@
             this.xrLabel5.StylePriority.UseBackColor = false;
             this.xrLabel5.StylePriority.UseFont = false;
             this.xrLabel5.StylePriority.UseForeColor = false;
-            this.xrLabel5.Text = "xrLabel5";
             // 
             // xrRichText2
             // 
@@ -230,7 +231,7 @@
             // 
             this.xrLabel16.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel16.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-            new DevExpress.XtraReports.UI.XRBinding("Text", null, "v_OwnerDetails.OwnerID", "INV-{0}-30")});
+            new DevExpress.XtraReports.UI.XRBinding(this.InvoiceID, "Text", "INV-{0}-30")});
             this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(115.9999F, 30.39585F);
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -462,6 +463,20 @@
             this.xrLabel18.Text = "Water Termination Policy";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
+            // InvoiceID
+            // 
+            this.InvoiceID.Description = "Invoice Number";
+            this.InvoiceID.Name = "InvoiceID";
+            this.InvoiceID.Type = typeof(int);
+            this.InvoiceID.ValueInfo = "0";
+            // 
+            // Balance
+            // 
+            this.Balance.Description = "Account Balance";
+            this.Balance.Name = "Balance";
+            this.Balance.Type = typeof(int);
+            this.Balance.ValueInfo = "0";
+            // 
             // PastDue60Days
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -478,7 +493,9 @@
             this.Margins = new System.Drawing.Printing.Margins(46, 55, 25, 13);
             this.Parameters.AddRange(new DevExpress.XtraReports.Parameters.Parameter[] {
             this.OwnerID,
-            this.InvoiceDate});
+            this.InvoiceDate,
+            this.InvoiceID,
+            this.Balance});
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
             this.DetailCaption3,
@@ -535,5 +552,7 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel5;
         private DevExpress.XtraReports.UI.XRRichText xrRichText5;
         private DevExpress.XtraReports.UI.XRRichText xrRichText3;
+        private DevExpress.XtraReports.Parameters.Parameter Balance;
+        private DevExpress.XtraReports.Parameters.Parameter InvoiceID;
     }
 }
