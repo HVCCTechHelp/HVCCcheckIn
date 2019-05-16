@@ -147,6 +147,7 @@
                     0 == cs.Deletes.Count)
                 {
                     Caption = caption[0].TrimEnd(' ');
+                    CanSaveExecute = false;
                     return false;
                 }
                 Caption = caption[0].TrimEnd(' ') + "*";

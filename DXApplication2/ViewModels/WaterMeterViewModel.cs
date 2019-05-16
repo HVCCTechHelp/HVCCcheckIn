@@ -56,9 +56,11 @@
                     0 == cs.Deletes.Count)
                 {
                     Caption = caption[0].TrimEnd(' ');
+                    CanSaveExecute = false;
                     return false;
                 }
                 Caption = caption[0].TrimEnd(' ') + "* ";
+                CanSaveExecute = true;
                 return true;
             }
             set { }
@@ -192,10 +194,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return false;  // TO-DO : since WaterMeterUpdate is where edits are made, this may be OK
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -205,6 +205,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
@@ -418,6 +419,34 @@
                     MessageBox.Show("Error importing data at row " + RowNum + "\nMessage: " + ex.Message);
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Print Command
+        /// </summary>
+        private ICommand _deleteRowCommand;
+        public ICommand DeleteRowCommand
+        {
+            get
+            {
+                return _deleteRowCommand ?? (_deleteRowCommand = new CommandHandlerWparm((object parameter) => DeleteRowCommandAction(parameter), true));
+            }
+        }
+
+        /// <summary>
+        /// Grid row double click event to command action
+        /// </summary>
+        /// <param name="type"></param>
+        public void DeleteRowCommandAction(object parameter)
+        {
+            v_WaterMeterReading reading = parameter as v_WaterMeterReading;
+            WaterMeterReading toDelete = (from x in dc.WaterMeterReadings
+                                          where x.RowID == reading.RowID
+                                          select x).FirstOrDefault();
+
+            dc.WaterMeterReadings.DeleteOnSubmit(toDelete);
+            CanSaveExecute = IsDirty;
         }
 
     }

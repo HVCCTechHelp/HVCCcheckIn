@@ -146,6 +146,18 @@
                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedProperty}" />
                                     </dxmvvm:Interaction.Behaviors>
+
+
+                                    <dxg:TableView.RowCellMenuCustomizations>
+                                        <dxb:BarButtonItem x:Name="removeRowItem"
+                                                       Content="Remove"
+                                                       Glyph="{dx:DXImage Image=Delete_16x16.png}"
+                                                       IsVisible="{Binding DataContext.ApplPermissions.CanEditRelationship}"
+                                                       Command="{Binding DataContext.DeleteRowCommand, ElementName=WaterMeterReadings}"
+                                                       CommandParameter="{Binding DataContext.SelectedProperty, ElementName=WaterMeterReadings}"
+                                        />
+                                    </dxg:TableView.RowCellMenuCustomizations>
+
                                 </dxg:TableView>
                             </dxg:GridControl.View>
 

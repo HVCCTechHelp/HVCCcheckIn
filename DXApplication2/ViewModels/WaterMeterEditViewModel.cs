@@ -82,6 +82,7 @@
                     0 == cs.Deletes.Count)
                 {
                     Caption = caption[0].TrimEnd(' ');
+                    CanSaveExecute = false;
                     return false;
                 }
                 Caption = caption[0].TrimEnd(' ') + "* ";
@@ -344,7 +345,13 @@
             {
                 MeterReadings[i].Consumption = MeterReadings[i].MeterReading - MeterReadings[i - 1].MeterReading;
             }
-            dc.WaterMeterReadings.InsertOnSubmit(r);
+
+            /// If the RowId is zero we have a new record to insert
+            /// 
+            if (0 == r.RowID)
+            {
+                dc.WaterMeterReadings.InsertOnSubmit(r);
+            }
             ChangeSet cs = dc.GetChangeSet();
             CanSaveExecute = IsDirty;
         }
