@@ -97,7 +97,7 @@
 
                             <dxb:BarButtonItem x:Name="bbFinancialTransaction" Content="Financial Transaction" 
                                                Command="{Binding FinancialTransactionCommand}" CommandParameter="{Binding SelectedOwner}"
-                                               IsEnabled="{Binding IsOwnerSelected}"
+                                               IsEnabled="{Binding ApplPermissions.CanEditOwner}"
                                                Glyph="/Images/Icons/payment_32x32.png" 
                                                LargeGlyph="/Images/Icons/payment_32x32.png" />
                         </dxr:RibbonPageGroup>

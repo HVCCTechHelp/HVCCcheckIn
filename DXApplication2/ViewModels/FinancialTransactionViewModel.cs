@@ -45,10 +45,18 @@
             /// datacontext. Therefore, we have to get the Owner record from the database so
             /// it is local to this VM.
             /// 
-            Owner param = parameter as Owner;
-            this.SelectedOwner = (from x in this.dc.Owners
-                                  where x.OwnerID == param.OwnerID
-                                  select x).FirstOrDefault();
+            if (null == parameter)
+            {
+                MessageBox.Show("You must select an Owner record", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            else
+            {
+                Owner param = parameter as Owner;
+                this.SelectedOwner = (from x in this.dc.Owners
+                                      where x.OwnerID == param.OwnerID
+                                      select x).FirstOrDefault();
+            }
 
             /// Just in case the current account balance is incorrect, we recalculate
             /// it before making any financial transactions
@@ -1592,20 +1600,28 @@
             {
                 try
                 {
-                    //string transactionType = parameter as string;
+                    string transactionType = parameter as string;
+                    ChangeSet csi = dc.GetChangeSet();
 
-                    //if ("Invoice" == transactionType)
-                    //{
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice);
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payments);
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, TheInvoice.Payment_X_Invoices);
-                    //}
-                    //else
-                    //{
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment);
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Invoices);
-                    //    dc.Refresh(RefreshMode.OverwriteCurrentValues, ThePayment.Payment_X_Invoices);
-                    //}
+                    /// If Cancel was clicked, we have to remove any pending inserts from the DC transaction queue
+                    /// or else the DC's state will indicate IsDirty.
+                    /// 
+                    foreach (Object t in csi.Inserts)
+                    {
+                        if (t.GetType() == typeof(Invoice))
+                        {
+                            dc.Invoices.DeleteOnSubmit(t as Invoice);
+                        }
+                        else if (t.GetType() == typeof(Payment))
+                        {
+                            dc.Payments.DeleteOnSubmit(t as Payment);
+                        }
+                        else if (t.GetType() == typeof(GolfCart))
+                        {
+                            dc.GolfCarts.DeleteOnSubmit(t as GolfCart);
+                        }
+                    }
+
                     dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
                 }
                 catch (Exception ex)
@@ -1630,7 +1646,7 @@
             IsInvoiceEnabled = true;
             IsPaymentEnabled = true;
             CanSaveExecute = false;
-            //ChangeSet cs = dc.GetChangeSet();
+            ChangeSet cs = dc.GetChangeSet();
             bool foo = IsDirty;
         }
 

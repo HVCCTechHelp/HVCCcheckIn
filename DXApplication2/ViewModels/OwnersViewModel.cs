@@ -311,12 +311,20 @@
         /// <param name="type"></param>
         public void FinancialTransactionAction(object parameter)
         {
-            v_OwnerDetail p = parameter as v_OwnerDetail;
-            Owner owner = (from x in dc.Owners
-                       where x.OwnerID == p.OwnerID
-                       select x).FirstOrDefault();
-            IsBusy = true;
-            Host.Execute(HostVerb.Open, "FinancialTransaction", owner);
+            if (null == parameter)
+            {
+                MessageBox.Show("You must select an Owner record", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            else
+            {
+                v_OwnerDetail p = parameter as v_OwnerDetail;
+                Owner owner = (from x in dc.Owners
+                               where x.OwnerID == p.OwnerID
+                               select x).FirstOrDefault();
+                IsBusy = true;
+                Host.Execute(HostVerb.Open, "FinancialTransaction", owner);
+            }
         }
 
         /// <summary>

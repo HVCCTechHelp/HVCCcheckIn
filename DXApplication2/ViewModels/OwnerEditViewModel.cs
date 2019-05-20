@@ -672,6 +672,7 @@
             }
             else
             {
+                CanSaveExecute = IsDirty;
                 RaisePropertyChanged("DataChanged");
             }
         }
