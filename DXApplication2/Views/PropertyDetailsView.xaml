@@ -141,7 +141,7 @@
                              ItemsSource="{Binding PropertiesList}" 
                              SelectedItem="{Binding SelectedProperty, Mode=TwoWay}"
                              IsEnabled="True" 
-                             MaxHeight="800"
+                             MaxHeight="575"
                              >
 
                                 <dxg:GridControl.View>

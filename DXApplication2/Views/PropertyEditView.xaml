@@ -82,8 +82,8 @@
 
             </dxr:RibbonControl>
 
-            <dxlc:LayoutControl>
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="{Binding HeaderText}" Width="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <dxlc:LayoutControl Orientation="Vertical" ScrollBars="Auto" Header="{Binding HeaderText}">
 
                     <dxlc:LayoutGroup Orientation="Horizontal">
                         <dxlc:LayoutGroup View="GroupBox" Header="Property Information" 
@@ -278,41 +278,8 @@
 
                     </dxlc:LayoutGroup>
 
-                    <!--<dxlc:LayoutGroup  x:Name="lgNotes" View="GroupBox" Header="{Binding NotesHeader}"
-                              Width="800" Height="Auto" 
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Visibility="{Binding ApplPermissions.CanViewOwnerNotes, Converter={StaticResource BoolToVis}}"
-                              IsCollapsed="True"
-                              IsCollapsible="True"
-                              Orientation="Vertical"
-                              >
-                <dxlc:LayoutItem Label="New Comment: " Width="Auto" Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}">
-                    <dxe:TextEdit Text="{Binding NewNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                               HorizontalAlignment="Left" VerticalAlignment="Top"
-                                  Visibility="{Binding ApplPermissions.CanEditOwnerNotes, Converter={StaticResource BoolToVis}}" 
-                                  Style="{Binding TeStyle}"
-                                  Focusable="{Binding ApplPermissions.CanEditOwnerNotes}"
-                                  IsHitTestVisible="{Binding ApplPermissions.CanEditOwnerNotes}"
-                                AcceptsReturn="True"
-                                  Height="50" Width="700"
-                                  >
-                        <dxmvvm:Interaction.Behaviors>
-                            <dxmvvm:EventToCommand EventName="LostFocus" Command="{Binding TELostFocusCommand}" PassEventArgsToCommand="True"/>
-                        </dxmvvm:Interaction.Behaviors>
-                    </dxe:TextEdit>
-                </dxlc:LayoutItem>
-                <dxlc:LayoutItem Width="Auto">
-                    <ScrollViewer Height="60" VerticalAlignment="Top">
-                        <TextBlock Text="{Binding AllNotes}"  
-                                  Height="200" Width="700"
-                                  />
-                    </ScrollViewer>
-                </dxlc:LayoutItem>
-            </dxlc:LayoutGroup>-->
-
-                </dxlc:LayoutGroup>
-            </dxlc:LayoutControl>
+                </dxlc:LayoutControl>
+            </ScrollViewer>
         </DockPanel>
     </dxb:BarManager>
 </UserControl>

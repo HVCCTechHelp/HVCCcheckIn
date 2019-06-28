@@ -210,19 +210,19 @@
         {
             get
             {
-                //string[] strings = SelectedSeason.TimePeriod.Split('-');
-                //int yyyy;
-                //Int32.TryParse(strings[0], out yyyy);
-                //DateTime startDate = new DateTime(yyyy, 5, 1, 0, 0, 0);
-                //DateTime endDate = new DateTime(yyyy, 5, 15, 0, 0, 0);
-                //if (DateTime.Now >= startDate
-                //    && DateTime.Now <= endDate
-                //    && !SelectedSeason.IsLate30Applied)
-                //{
-                //    return true;
-                //}
-                //return false;
-                return true;
+                string[] strings = SelectedSeason.TimePeriod.Split('-');
+                int yyyy;
+                Int32.TryParse(strings[0], out yyyy);
+                DateTime startDate = new DateTime(yyyy, 5, 1, 0, 0, 0);
+                DateTime endDate = new DateTime(yyyy, 5, 15, 0, 0, 0);
+                if (DateTime.Now >= startDate
+                    && DateTime.Now <= endDate
+                    && !SelectedSeason.IsLate30Applied)
+                {
+                    return true;
+                }
+                return false;
+                //return true;
             }
         }
         public bool IsApply60DayLate
@@ -232,7 +232,7 @@
                 string[] strings = SelectedSeason.TimePeriod.Split('-');
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
-                DateTime startDate = new DateTime(yyyy, 6, 1, 0, 0, 0);
+                DateTime startDate = new DateTime(yyyy, 5, 31, 0, 0, 0);
                 DateTime endDate = new DateTime(yyyy, 6, 15, 0, 0, 0);
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
@@ -939,12 +939,12 @@
                         }
                         if (60 == daysLate)
                         {
-                            late.Is30Late = true;
+                            late.Is60Late = true;
                             SelectedSeason.IsLate60Applied = true;
                         }
                         if (90 == daysLate)
                         {
-                            late.Is30Late = true;
+                            late.Is90Late = true;
                             SelectedSeason.IsLate90Applied = true;
                         }
 

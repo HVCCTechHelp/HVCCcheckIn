@@ -30,74 +30,81 @@
         <dx:DXMessageBoxService/>
     </dxmvvm:Interaction.Behaviors>
 
-    <dxb:BarManager>
-        <dxb:BarManager.Items>
+    <dxb:BarManager >
+    <dxb:BarManager.Items>
             <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}"/>
         </dxb:BarManager.Items>
 
-        <DockPanel x:Name="dockPanel">
+    <DockPanel x:Name="dockPanel">
 
-            <dxr:RibbonControl DockPanel.Dock="Top">
-                <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage x:Name="properties" Caption="Actions">
+        <dxr:RibbonControl DockPanel.Dock="Top">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage x:Name="properties" Caption="Actions">
 
-                        <dxr:RibbonPageGroup Caption="Print/Export">
-                            <dxb:BarSubItem Content="Export" 
+                    <dxr:RibbonPageGroup Caption="Print/Export">
+                        <dxb:BarSubItem Content="Export" 
                                                     IsEnabled="{Binding CanExport}"
                                                     Glyph="{dx:DXImage Image=Export_16x16.png}" 
                                                     LargeGlyph="{dx:DXImage Image=Export_32x32.png}">
-                                <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
+                            <dxb:BarButtonItem Content="To XLSX" Command="{Binding ExportCommand}" CommandParameter="XLSX"                                                   
                                                    Glyph="{dx:DXImage Image=ExportToXLSX_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=ExportToXLSX_32x32.png}"/>
-                                <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
+                            <dxb:BarButtonItem Content="To PDF" Command="{Binding ExportCommand}" CommandParameter="PDF"
                                                    Glyph="{dx:DXImage Image=ExportToPDF_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=ExportToPDF_32x32.png}"/>
-                            </dxb:BarSubItem>
-                            <dxb:BarSubItem Content="Print"  
+                        </dxb:BarSubItem>
+                        <dxb:BarSubItem Content="Print"  
                                                     IsEnabled="{Binding CanPrint}"
                                                     Glyph="{dx:DXImage Image=Print_16x16.png}" 
                                                     LargeGlyph="{dx:DXImage Image=Print_32x32.png}">
-                                <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
+                            <dxb:BarButtonItem Content="Show preview" Command="{Binding PrintCommand}" CommandParameter="PREVIEW"
                                                    Glyph="{dx:DXImage Image=Preview_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=Preview_32x32.png}"/>
-                                <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
+                            <dxb:BarButtonItem Content="Print" Command="{Binding PrintCommand}" CommandParameter="PRINT"
                                                    Glyph="{dx:DXImage Image=Print_16x16.png}" 
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}"/>
-                            </dxb:BarSubItem>
-                        </dxr:RibbonPageGroup>
+                        </dxb:BarSubItem>
+                    </dxr:RibbonPageGroup>
 
-                        <dxr:RibbonPageGroup Caption="Property Action" >
-                            <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
+                    <dxr:RibbonPageGroup Caption="Property Action" >
+                        <dxb:BarButtonItem x:Name="bbImport" Content="Import" 
                                                Command="{Binding ImportCommand}"
                                                IsEnabled="{Binding ApplPermissions.CanImport}"
                                                Glyph="/Images/Icons/Import-16x16.png" 
                                                LargeGlyph="/Images/Icons/Import-32x32.png"
                                                ToolTip="Import Quickbooks data"/>
-                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPageGroup>
 
-                    </dxr:RibbonPage>
-                </dxr:RibbonDefaultPageCategory>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
 
-            </dxr:RibbonControl>
+        </dxr:RibbonControl>
 
-            <dxlc:LayoutControl Orientation="Vertical">
-                <dxlc:LayoutGroup x:Name="grpboxImportResults" View="GroupBox" Header="Import Results" 
+        <!--<DockPanel>-->
+        <!--<dxlc:DockLayoutControl AllowHorizontalSizing="True" AllowVerticalSizing="True" >-->
+        <!--<dxlc:LayoutControl Orientation="Vertical" dxlc:LayoutControl.AllowHorizontalSizing="True" dxlc:DockLayoutControl.Dock="Top">
+                            <dxlc:LayoutGroup x:Name="grpboxImportResults" View="GroupBox" Header="Import Results" 
                           VerticalAlignment="Top" 
                           IsCollapsible="False" 
                           Orientation="Vertical"
-                          >
+                          ScrollBars="None"
+                          >-->
 
-                    <dxg:GridControl x:Name="accountGrid" 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="700"/>
+            </Grid.RowDefinitions>
+            <dxg:GridControl x:Name="accountGrid"  Grid.Row="1"
                              ItemsSource="{Binding OwnersUpdated}" 
                              SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                             IsEnabled="True"
-                             MaxHeight="850"
+                             IsEnabled="True" 
                              >
 
-                        <dxg:GridControl.View>
-                            <dxg:TableView x:Name="accountTableView" 
+                <dxg:GridControl.View>
+                    <dxg:TableView x:Name="accountTableView" 
+                                   AllowBestFit="True"
+                                   BestFitMode="Smart"
                                    AllowSorting="True"
-                                   AutoWidth="True" 
                                    AllowEditing="True"
                                    AllowPerPixelScrolling="True"                                               
                                    NavigationStyle="Row"
@@ -106,55 +113,62 @@
                                    ShowTotalSummary="True"
                                    >
 
-                                <dxg:TableView.FormatConditions>
-                                    <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
-                                        <dxc:Format Foreground="Red"/>
-                                    </dxg:FormatCondition>
-                                    <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
-                                        <dxc:Format Foreground="Green"/>
-                                    </dxg:FormatCondition>
-                                </dxg:TableView.FormatConditions>
+                        <dxg:TableView.FormatConditions>
+                            <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                <dxc:Format Foreground="Red"/>
+                            </dxg:FormatCondition>
+                            <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                <dxc:Format Foreground="Green"/>
+                            </dxg:FormatCondition>
+                        </dxg:TableView.FormatConditions>
 
-                                <dxmvvm:Interaction.Behaviors>
-                                    <dxmvvm:EventToCommand EventName="RowDoubleClick" 
+                        <dxmvvm:Interaction.Behaviors>
+                            <dxmvvm:EventToCommand EventName="RowDoubleClick" 
                                                Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedItem}"/>
-                                </dxmvvm:Interaction.Behaviors>
+                        </dxmvvm:Interaction.Behaviors>
 
-                            </dxg:TableView>
-                        </dxg:GridControl.View>
-                        <dxg:GridControl.Columns>
-                            <dxg:GridColumn FieldName="OwnerID" Header="Owner#" Width="25"
+                    </dxg:TableView>
+                </dxg:GridControl.View>
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="OwnerID" Header="Owner#" Width="50"
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             />
-                            <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="50"  
+                    <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="250"  
                                             AllowEditing="True" 
                                             />
-                            <dxg:GridColumn FieldName="QBbalance" Header="QB Balance" Width="25"      
+                    <dxg:GridColumn FieldName="QBbalance" Header="QB Balance" Width="75"      
                                     AllowEditing="False" 
                                    ReadOnly="True"
                                     >
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                    </dxe:TextEditSettings>
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="HVbalance" Header="HV Balance" Width="25"      
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                            </dxe:TextEditSettings>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="HVbalance" Header="HV Balance" Width="75"      
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                     >
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                    </dxe:TextEditSettings>
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
-                        </dxg:GridControl.Columns>
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                            </dxe:TextEditSettings>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Header=" " Width="50*" AllowEditing="False" />
+                </dxg:GridControl.Columns>
 
-                    </dxg:GridControl>
-                </dxlc:LayoutGroup>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
+                    </dxg:GridControl.TotalSummary>
 
-            </dxlc:LayoutControl>
-            
-        </DockPanel>
+                </dxg:GridControl>
+        </Grid>
+        <!--</dxlc:LayoutGroup>
+
+                        </dxlc:LayoutControl>-->
+        <!--</dxlc:DockLayoutControl>-->
+        <!--</DockPanel>-->
+    </DockPanel>
     </dxb:BarManager>
 </UserControl>

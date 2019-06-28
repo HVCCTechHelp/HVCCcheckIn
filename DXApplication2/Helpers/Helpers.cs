@@ -216,8 +216,8 @@
                     /// 
                     if (0 == fuList.Count())
                     {
-                        dc.Relationships.DeleteOnSubmit(relationship);
                         dc.Owner_X_Relationships.DeleteAllOnSubmit(relationship.Owner_X_Relationships);
+                        dc.Relationships.DeleteOnSubmit(relationship);
                     }
                     /// Otherwise, to deactivate the Relationship (related to F.U. records) we just
                     /// set the Active flag false.
@@ -244,7 +244,7 @@
                     /// 
                     dc.Relationships.DeleteOnSubmit(relationship);
                 }
-                //ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
+                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
                 return true;
             }
             catch (Exception ex)

@@ -190,7 +190,7 @@
                                  ItemsSource="{Binding OwnersList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  SelectedItem="{Binding SelectedOwner, Mode=TwoWay}"
                                  Width="Auto"
-                                 MaxHeight="650"
+                                 MaxHeight="575"
                                  HorizontalAlignment="Left"
                                  FilterString="[IsCurrentOwner] = True"
                                  >

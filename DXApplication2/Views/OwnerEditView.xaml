@@ -27,7 +27,7 @@
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              mc:Ignorable="d"
-             Loaded="EditOwner_Loaded" Height="930.5" Width="1161"
+             Loaded="EditOwner_Loaded" 
              >
 
     <UserControl.Resources>
@@ -169,12 +169,8 @@
 
             </dxr:RibbonControl>
 
-            <dxlc:LayoutControl>
-                <dxlc:LayoutGroup x:Name="grpboxOwner" View="GroupBox" Header="{Binding HeaderText, Mode=OneWay}" 
-                          VerticalAlignment="Top" 
-                          IsCollapsible="False" 
-                          Orientation="Vertical"
-                          Width="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <dxlc:LayoutControl  Orientation="Vertical" Header="{Binding HeaderText, Mode=OneWay}" ScrollBars="Auto" >
 
                     <dxlc:LayoutGroup Orientation="Horizontal" View="Group">
                         <dxlc:LayoutGroup Orientation="Vertical" Width="700">
@@ -902,8 +898,8 @@
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
 
-                </dxlc:LayoutGroup>
-            </dxlc:LayoutControl>
+                </dxlc:LayoutControl>
+            </ScrollViewer>
         </DockPanel>
     </dxb:BarManager>
 </UserControl>

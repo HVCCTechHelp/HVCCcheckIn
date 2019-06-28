@@ -114,7 +114,7 @@
                              SelectedItem="{Binding SelectedProperty}"
                              IsEnabled="True" 
                              MasterRowExpanded="grid_MasterRowExpanded"  
-                             MaxHeight="750"
+                             MaxHeight="575"
                              >
 
                             <dxg:GridControl.View>
