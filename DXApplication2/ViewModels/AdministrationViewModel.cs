@@ -828,7 +828,7 @@
         /// <param name="type"></param>
         public void ApplyLateFeeAction(object parameter)
         {
-            int daysLate = Convert.ToInt32(parameter);
+            string whichLate = (string)parameter;
             int? noteID = null;
             decimal amount = 20.00m;
             DateTime now = DateTime.Now;
@@ -850,7 +850,7 @@
 
             int count = list.Count();
 
-            using (var StreamWriter = new StreamWriter(@"D:\LateNotices\"+ daysLate.ToString()+"Days-Late.csv"))
+            using (var StreamWriter = new StreamWriter(@"D:\LateNotices\"+ whichLate +".csv"))
             {
                 StringBuilder sb2 = new StringBuilder();
                 sb2.Append("OwnerID|MailTo|Address|Address2|City|State|Zip");
@@ -881,13 +881,13 @@
                     /// The else-if 'true' is just here to allow for debugging.  If you want to
                     /// avoid applying late fees, just change 'true' to 'null'
                     /// 
-                    else if (true == owner.IsCurrentOwner)
+                    else if (true == owner.IsCurrentOwner && (decimal)owner.AccountBalance > 50.0m)
                     {
 
                         StringBuilder sb = new StringBuilder();
                         sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
 
-                        string note = String.Format("{0} Day Late Fee of {1} applied", daysLate.ToString(), amount.ToString("C", CultureInfo.CurrentCulture));
+                        string note = String.Format("{0} Day Late Fee of {1} applied", whichLate.ToString(), amount.ToString("C", CultureInfo.CurrentCulture));
 
                         /// Generate a new invoice for the late fee.
                         /// 
@@ -906,7 +906,7 @@
                         TheInvoice.IsPaid = false;
                         TheInvoice.Memo = note;
                         TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
-                        string desc = String.Format("{0} Day Late Fee", daysLate.ToString());
+                        string desc = String.Format("{0} Day Late Fee", whichLate.ToString());
                         TheInvoice.InvoiceItems.Add(new InvoiceItem { Item = "Late Payment Fee", Description = desc, Quanity = 1, Rate = amount }
                             );
 
@@ -932,17 +932,17 @@
                         late.LastModifiedBy = UserName;
                         late.OwnerID = owner.OwnerID;
                         late.Season = CurrentSeason.TimePeriod;
-                        if (30 == daysLate)
+                        if ("first" == whichLate)
                         {
                             late.Is30Late = true;
                             SelectedSeason.IsLate30Applied = true;
                         }
-                        if (60 == daysLate)
+                        if ("second" == whichLate)
                         {
                             late.Is60Late = true;
                             SelectedSeason.IsLate60Applied = true;
                         }
-                        if (90 == daysLate)
+                        if ("third" == whichLate)
                         {
                             late.Is90Late = true;
                             SelectedSeason.IsLate90Applied = true;
@@ -957,16 +957,16 @@
                         /// Generate the PDF Report
                         /// 
                         XtraReport report = null;
-                        string fileName = string.Format(@"D:\LateNotices\{0}Day\{0}Day-{1}.PDF", daysLate.ToString(), owner.OwnerID);
-                        if (30 == daysLate)
+                        string fileName = string.Format(@"D:\LateNotices\{0}\{0}-{1}.PDF", whichLate, owner.OwnerID);
+                        if ("first" == whichLate)
                         {
                             report = new Reports.PastDue30Days();
                         }
-                        if (60 == daysLate)
+                        if ("second" == whichLate)
                         {
                             report = new Reports.PastDue60Days();
                         }
-                        if (90 == daysLate)
+                        if ("third" == whichLate)
                         {
                             report = new Reports.PastDue90Days();
                         }

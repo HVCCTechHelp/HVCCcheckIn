@@ -211,9 +211,9 @@
 
                             <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                                 <dxlc:LayoutItem Label="Apply Dues: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 30 Day Late: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 60 Day Late: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 90 Day Late: " Width="200"/>
+                                <dxlc:LayoutItem Label="Apply 1st Late: " Width="200"/>
+                                <dxlc:LayoutItem Label="Apply 2nd Late: " Width="200"/>
+                                <dxlc:LayoutItem Label="Apply 3rd Late: " Width="200"/>
                             </dxlc:LayoutGroup>
                             <!-- Annual Dues -->
 
@@ -230,7 +230,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply30DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate30DaysCommand}" CommandParameter="30"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate30DaysCommand}" CommandParameter="first"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>
@@ -238,7 +238,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply60DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate60DaysCommand}" CommandParameter="60"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate60DaysCommand}" CommandParameter="second"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>
@@ -246,7 +246,7 @@
                                     <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply90DayLate}" >
                                         <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate90DaysCommand}" CommandParameter="90"/>
+                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyLate90DaysCommand}" CommandParameter="third"/>
                                         </dxmvvm:Interaction.Behaviors>
                                     </dxc:SimpleButton>
                                 </dxlc:LayoutItem>

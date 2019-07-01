@@ -45,9 +45,11 @@
             this.groupHeaderBand1 = new DevExpress.XtraReports.UI.GroupHeaderBand();
             this.xrRichText5 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
+            this.Balance = new DevExpress.XtraReports.Parameters.Parameter();
             this.xrRichText2 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrPanel1 = new DevExpress.XtraReports.UI.XRPanel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
+            this.InvoiceID = new DevExpress.XtraReports.Parameters.Parameter();
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
             this.InvoiceDate = new DevExpress.XtraReports.Parameters.Parameter();
             this.xrLabel12 = new DevExpress.XtraReports.UI.XRLabel();
@@ -68,8 +70,6 @@
             this.DetailCaptionBackground3 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
             this.OwnerID = new DevExpress.XtraReports.Parameters.Parameter();
-            this.InvoiceID = new DevExpress.XtraReports.Parameters.Parameter();
-            this.Balance = new DevExpress.XtraReports.Parameters.Parameter();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).BeginInit();
@@ -225,6 +225,13 @@
             this.xrLabel5.StylePriority.UseFont = false;
             this.xrLabel5.StylePriority.UseForeColor = false;
             // 
+            // Balance
+            // 
+            this.Balance.Description = "Parameter1";
+            this.Balance.Name = "Balance";
+            this.Balance.Type = typeof(int);
+            this.Balance.ValueInfo = "0";
+            // 
             // xrRichText2
             // 
             this.xrRichText2.Font = new System.Drawing.Font("Times New Roman", 9.75F);
@@ -262,6 +269,13 @@
             this.xrLabel16.StylePriority.UseBorders = false;
             this.xrLabel16.StylePriority.UseTextAlignment = false;
             this.xrLabel16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // InvoiceID
+            // 
+            this.InvoiceID.Description = "Invoice Number";
+            this.InvoiceID.Name = "InvoiceID";
+            this.InvoiceID.Type = typeof(int);
+            this.InvoiceID.ValueInfo = "0";
             // 
             // xrLabel13
             // 
@@ -458,20 +472,6 @@
             this.OwnerID.Name = "OwnerID";
             this.OwnerID.Type = typeof(int);
             this.OwnerID.ValueInfo = "0";
-            // 
-            // InvoiceID
-            // 
-            this.InvoiceID.Description = "Invoice Number";
-            this.InvoiceID.Name = "InvoiceID";
-            this.InvoiceID.Type = typeof(int);
-            this.InvoiceID.ValueInfo = "0";
-            // 
-            // Balance
-            // 
-            this.Balance.Description = "Parameter1";
-            this.Balance.Name = "Balance";
-            this.Balance.Type = typeof(int);
-            this.Balance.ValueInfo = "0";
             // 
             // PastDue90Days
             // 
