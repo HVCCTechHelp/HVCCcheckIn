@@ -17,6 +17,7 @@
     using System.Data.Linq;
     using System.Collections.ObjectModel;
     using HVCC.Shell.Validation;
+    using static HVCC.Shell.Common.Resources.Enumerations;
 
     public class Helper
     {
@@ -176,9 +177,10 @@
         /// </summary>
         /// <param name="relationship"></param>
         /// <returns></returns>
-        public static bool RemoveRelationship(IDataContext datacontext, Relationship relationship, string action = null)
+        public static RelationshipActions RemoveRelationship(IDataContext datacontext, Relationship relationship, string action = null)
         {
             HVCCDataContext dc = datacontext as HVCCDataContext;
+            RelationshipActions actionToTake;
 
             try
             {
@@ -216,22 +218,21 @@
                     /// 
                     if (0 == fuList.Count())
                     {
-                        dc.Owner_X_Relationships.DeleteAllOnSubmit(relationship.Owner_X_Relationships);
-                        dc.Relationships.DeleteOnSubmit(relationship);
+                        actionToTake = RelationshipActions.Delete;
                     }
                     /// Otherwise, to deactivate the Relationship (related to F.U. records) we just
                     /// set the Active flag false.
                     /// 
                     else
                     {
-                        relationship.Active = false;
+                        actionToTake = RelationshipActions.Deactivate;
                     }
                 }
                 /// If this is an Ownership Change, we just make the relationship inactive
                 /// 
                 else if (null != action && action.Contains("ChangeOwner"))
                 {
-                    relationship.Active = false;
+                    actionToTake = RelationshipActions.Deactivate;
                 }
                 /// Otherwise, the RelationshipID is 0, so it is a pending insert
                 /// 
@@ -242,15 +243,14 @@
                     /// store.  We raise a PropertiesList property change event to force any/all bound
                     /// views to be updated.
                     /// 
-                    dc.Relationships.DeleteOnSubmit(relationship);
+                    actionToTake = RelationshipActions.Remove;
                 }
-                ChangeSet cs = dc.GetChangeSet();  // <I> This is only for debugging.......
-                return true;
+                return actionToTake;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                return RelationshipActions.error;
             }
         }
 

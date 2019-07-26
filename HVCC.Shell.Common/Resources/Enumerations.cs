@@ -23,5 +23,13 @@
             Assending,
             Decending
         };
+
+        public enum RelationshipActions
+        {
+            error,
+            Deactivate,
+            Delete,
+            Remove
+        };
     }
 }

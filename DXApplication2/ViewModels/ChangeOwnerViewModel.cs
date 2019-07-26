@@ -20,6 +20,7 @@
     using System.Text;
     using DevExpress.Xpf.Grid;
     using System.Windows;
+    using static HVCC.Shell.Common.Resources.Enumerations;
 
     public partial class ChangeOwnerViewModel : CommonViewModel, ICommandSink
     {
@@ -130,6 +131,15 @@
                 return s;
             }
         }
+
+        public string UserName
+        {
+            get
+            {
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            }
+        }
+
 
         #region Properties
 
@@ -332,7 +342,41 @@
                     {
                         if (0 != r.RelationshipID)
                         {
-                            bool result = Helper.RemoveRelationship(this.dc, r, "ChangeOwner");
+                            var relationship = (from x in dc.Relationships
+                                                where x.RelationshipID == r.RelationshipID
+                                                select x).FirstOrDefault();
+
+                            RelationshipActions raction = Helper.RemoveRelationship(this.dc, r);
+
+                            /// If a relationship does not have facility usage records, there is no foreign key
+                            /// constraint. Therefore, the relationship and owner_x_relationship records can be deleted
+                            /// from the relationship table.
+                            /// 
+                            if (RelationshipActions.Delete == raction)
+                            {
+                                this.dc.Owner_X_Relationships.DeleteAllOnSubmit(relationship.Owner_X_Relationships);
+                                this.dc.Relationships.DeleteOnSubmit(relationship);
+                            }
+                            /// If the relatship record is pending an insert action, we can simple remove add the 
+                            /// delete to the DC's transaction queue.
+                            /// 
+                            if (RelationshipActions.Remove == raction)
+                            {
+                                this.dc.Relationships.DeleteOnSubmit(relationship);
+                            }
+                            /// If there are facility usage records, the relationship record must be preserved
+                            /// is it is updated to set Active to false.
+                            /// 
+                            if (RelationshipActions.Deactivate == raction)
+                            {
+                                relationship.Active = false;
+                            }
+                            relationship.LastModified = DateTime.Now;
+                            relationship.LastModifiedBy = UserName;
+
+                            ChangeSet cs = dc.GetChangeSet();
+                            CanSaveExecute = IsDirty;
+
                         }
                         else
                         {

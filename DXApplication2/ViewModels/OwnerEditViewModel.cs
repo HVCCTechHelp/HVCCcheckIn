@@ -20,6 +20,8 @@
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
+    using static HVCC.Shell.Common.Resources.Enumerations;
+
 
     public partial class OwnerEditViewModel : CommonViewModel, ICommandSink
     {
@@ -34,6 +36,9 @@
             // owner record to edit.  Secondarliy, the RelationshipID may be set to set the SelectedRelationship.
             int ownerID = 0;
             int relationshipID = 0;
+
+            /// Invocation is from OwnerDetailsView
+            /// 
             if (parameter is v_OwnerDetail)
             {
                 v_OwnerDetail p = parameter as v_OwnerDetail;
@@ -77,15 +82,19 @@
                 /// by using the Owner_X_Relationships.  We add each relationship object
                 /// to the private collection to avoid firing a Collection_Changed event.
                 /// 
-                _relationships = new ObservableCollection<Relationship>();
+                Relationships = new ObservableCollection<Relationship>();
                 foreach (Owner_X_Relationship oXr in SelectedOwner.Owner_X_Relationships)
                 {
                     Relationship r = (from x in this.dc.Relationships
                                       where x.RelationshipID == oXr.RelationshipID
+                                      && x.Active == true
                                       select x).FirstOrDefault();
-                    _relationships.Add(r);
+                    if (null != r)
+                    {
+                        Relationships.Add(r);
+                    }
                 }
-                _relationships.CollectionChanged += _relationships_CollectionChanged;
+                Relationships.CollectionChanged += _relationships_CollectionChanged;
 
                 CkFacilityUsage();
 
@@ -402,42 +411,6 @@
             }
         }
 
-        //private decimal? _accountBalance = null;
-        //public decimal? AccountBalance
-        //{
-        //    get
-        //    {
-        //        if (null == _accountBalance)
-        //        {
-        //            try
-        //            {
-        //                var b = SelectedOwner.FinancialTransactions.Select(x => x).LastOrDefault();
-
-        //                if (b.Balance > 0)
-        //                {
-        //                    TextColor = new SolidColorBrush(Colors.DarkRed);
-        //                }
-        //                _accountBalance = b.Balance;
-        //                RaisePropertyChanged("AccountBalance");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //                _accountBalance = null;
-        //            }
-        //        }
-        //        return _accountBalance;
-        //    }
-        //    set
-        //    {
-        //        if (value != _accountBalance)
-        //        {
-        //            _accountBalance = value;
-        //            RaisePropertyChanged("AccountBalance");
-        //        }
-        //    }
-        //}
-
         private SolidColorBrush _textColor = new SolidColorBrush(Colors.Black);
         public SolidColorBrush TextColor
         {
@@ -701,7 +674,7 @@
                     {
                         if (0 != r.RelationshipID)
                         {
-                            bool result = Helper.RemoveRelationship(this.dc, r);
+                            //bool result = Helper.RemoveRelationship(this.dc, r);
                         }
                         else
                         {
@@ -745,7 +718,7 @@
                 default:
                     break;
             }
-                RaisePropertyChanged("DataChanged");
+            RaisePropertyChanged("DataChanged");
         }
 
         #endregion
@@ -959,7 +932,7 @@
                         , MessageBoxImage.Exclamation
                         );
                 }
-                else if ((SelectedOwner.GolfGuests+SelectedOwner.PoolGuests) > 10)
+                else if ((SelectedOwner.GolfGuests + SelectedOwner.PoolGuests) > 10)
                 {
                     results = MessageBox.Show("Maximum number of guests per day has been exceeded.\nInform member the maximum number of guests per day is 10.\n Click OK to continue Checking In, or Cancel to not Check In"
                         , "Warning"
@@ -987,9 +960,9 @@
 
                     // Query to see if any Owner relationships have checked-in and have facility usage records for today. 
                     var zList = (from p in dc.FacilityUsages
-                             where (p.OwnerID == SelectedOwner.OwnerID)
-                             && (p.Date >= dt1 && p.Date <= dt2)
-                             select p);
+                                 where (p.OwnerID == SelectedOwner.OwnerID)
+                                 && (p.Date >= dt1 && p.Date <= dt2)
+                                 select p);
 
 
                     // Iterate over the Relationship records. If a relationship has checked-in previously we will update their
@@ -1132,11 +1105,51 @@
         public void RemoveRelationshipAction(object parameter)
         {
             Relationship r = parameter as Relationship;
-            if (Helper.RemoveRelationship(this.dc, r))
+            if ("Owner" != r.RelationToOwner &&
+                "Representative" != r.RelationToOwner)
             {
+
+
+                var relationship = (from x in dc.Relationships
+                                    where x.RelationshipID == r.RelationshipID
+                                    select x).FirstOrDefault();
+
+                RelationshipActions action = Helper.RemoveRelationship(this.dc, r);
+
+                /// If a relationship does not have facility usage records, there is no foreign key
+                /// constraint. Therefore, the relationship and owner_x_relationship records can be deleted
+                /// from the relationship table.
+                /// 
+                if (RelationshipActions.Delete == action)
+                {
+                    this.dc.Owner_X_Relationships.DeleteAllOnSubmit(relationship.Owner_X_Relationships);
+                    this.dc.Relationships.DeleteOnSubmit(relationship);
+                }
+                /// If the relatship record is pending an insert action, we can simple remove add the 
+                /// delete to the DC's transaction queue.
+                /// 
+                if (RelationshipActions.Remove == action)
+                {
+                    this.dc.Relationships.DeleteOnSubmit(relationship);
+                }
+                /// If there are facility usage records, the relationship record must be preserved
+                /// is it is updated to set Active to false.
+                /// 
+                if (RelationshipActions.Deactivate == action)
+                {
+                    relationship.Active = false;
+                }
                 this.Relationships.Remove(r);
+                relationship.LastModified = DateTime.Now;
+                relationship.LastModifiedBy = UserName;
+
+                ChangeSet cs = dc.GetChangeSet();
+                CanSaveExecute = IsDirty;
             }
-            CanSaveExecute = IsDirty;
+            else
+            {
+                MessageBox.Show("You cannot delete Owner or Representative records", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
