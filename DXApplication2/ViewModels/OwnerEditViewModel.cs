@@ -664,15 +664,19 @@
                 case "Reset":
                     break;
 
-                /// When items are "selected" (for removal) they will result in an "Add" action to the Relationships collection.
-                /// When new names are added to the Relationships collection, they too result in an "Add" action.
-                /// Therefore, the logic needs to determine which asction (Add or Remove) needs to happen.
-                ///
+                /// Any time the collection is changed it results in an "Add" action.  For example, when the collection is poplulated
+                /// on spin up, the Relationships are added to the collection.  We can easily ignore the add action if the RelationshipID
+                /// is non-zero.  However, when we truely add a new relationship to the collection, it fires an Add. At the point a new
+                /// Relationship is created all the values will be null.  When the AddRelationship() method is called, it changes some
+                /// of the values (Active, Photo, etc), which causes this collection changed event to fire a second time.  Therefore,
+                /// we need to ignore the second call.  This is accomplished by checking the count on the Owner_X_Relationship collection.
+                /// If the collection has a positive count we know this relationship record is already accounted for (added).
+                /// 
                 case "Add":
                     var newItems = e.NewItems;
                     foreach (Relationship r in newItems)
                     {
-                        if (0 != r.RelationshipID)
+                        if (0 != r.RelationshipID || r.Owner_X_Relationships.Count() != 0)
                         {
                             //bool result = Helper.RemoveRelationship(this.dc, r);
                         }
@@ -1082,6 +1086,9 @@
         /// <param name="parameter"></param>
         public void AddRelationshipAction(object parameter)
         {
+            /// The actual adding of the relationship to the Relationships collection is handled by the
+            /// _relationships_CollectionChanged() method (above).
+            /// 
             NavigationStyle = GridViewNavigationStyle.Row;
             NewItemPosition = NewItemRowPosition.Top;
         }

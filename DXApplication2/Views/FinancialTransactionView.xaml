@@ -336,7 +336,7 @@
                     <dxlc:LayoutGroup View="Group" Width="800" Orientation="Horizontal" HorizontalAlignment="Left" Margin="70,25,0,0">
                         <dxlc:LayoutGroup View="Group" Width="400" Orientation="Horizontal" HorizontalAlignment="Left" >
                             <dxlc:LayoutItem Label="MEMO:">
-                                <TextBox Height="80" Width="300" Text="{Binding InvoiceNote}"/>
+                                <TextBox Height="80" Width="300" Text="{Binding TheInvoice.Memo}" />
                             </dxlc:LayoutItem>
                         </dxlc:LayoutGroup>
                         <dxlc:LayoutGroup View="Group" Width="400" Orientation="Vertical" HorizontalAlignment="Right" >

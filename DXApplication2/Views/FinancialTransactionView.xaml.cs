@@ -102,5 +102,10 @@
                 Keyboard.Focus(tePayment);
             }
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
