@@ -493,15 +493,6 @@
       <Column Name="SecondaryPhone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Owner_X_Relationships" Member="Owner_X_Relationships">
-    <Type Name="Owner_X_Relationship">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Relationship_Owner_X_Relationship" Member="Relationship" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
-      <Association Name="Owner_Owner_X_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Relationships" Member="Relationships">
     <Type Name="Relationship">
       <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -556,10 +547,10 @@
       <Association Name="Owner_Property" Member="Properties" ThisKey="OwnerID" OtherKey="OwnerID" Type="Property" />
       <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
       <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
-      <Association Name="Owner_Owner_X_Relationship" Member="Owner_X_Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner_X_Relationship" />
       <Association Name="Owner_LatePayment" Member="LatePayments" ThisKey="OwnerID" OtherKey="OwnerID" Type="LatePayment" />
       <Association Name="Owner_Invoice" Member="Invoices" ThisKey="OwnerID" OtherKey="OwnerID" Type="Invoice" />
       <Association Name="Owner_Payment" Member="Payments" ThisKey="OwnerID" OtherKey="OwnerID" Type="Payment" />
+      <Association Name="Owner_Owner_X_Relationship" Member="Owner_X_Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner_X_Relationship" />
     </Type>
   </Table>
   <Table Name="dbo.Invoices" Member="Invoices">
@@ -602,6 +593,16 @@
       <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
       <Association Name="Payment_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="PaymentID" Type="Payment_X_Invoice" />
       <Association Name="Owner_Payment" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Owner_X_Relationships" Member="Owner_X_Relationships">
+    <Type Name="Owner_X_Relationship">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IgnoreMultiOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Owner_Owner_X_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+      <Association Name="Relationship_Owner_X_Relationship" Member="Relationship" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">

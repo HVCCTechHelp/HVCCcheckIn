@@ -21,7 +21,7 @@
              xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
              common:CommandSinkBinding.CommandSink="{Binding}" 
              mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1024"
+             d:DesignHeight="1768" d:DesignWidth="1024"
              Loaded="FinancialTransactionView_Loaded"
     >
 
@@ -401,6 +401,16 @@
                             <Label FontSize="36" FontWeight="Bold" FontFamily="MV Boli" Content="Customer Payment"/>
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
+                    <!--<dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                        <dxlc:LayoutItem Label="APPLY TO:" LabelHorizontalAlignment="Right" Width="300">
+                            <dxe:ToggleSwitch HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                CheckedStateContent="Non-Dues" 
+                                UncheckedStateContent="      Dues" 
+                                ContentPlacement="Both" 
+                                IsChecked="{Binding IsNotDues, Mode=TwoWay}"
+                                />
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>-->
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                         <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                             <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="250">

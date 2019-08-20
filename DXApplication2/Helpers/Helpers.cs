@@ -133,15 +133,18 @@
             try
             {
                 /// Before we add this new relationship, check to see if the owner is registered to 
-                /// mutiple Owner records under different 'MailTo' names.
+                /// mutiple Owner records under different 'MailTo' names.  There is one case where we
+                /// ignore the multi-owner Bylaw constraint.
                 /// 
                 IEnumerable<Owner_X_Relationship> oXr = (from r in dc.Owner_X_Relationships
                                                          where r.OwnerID == owner.OwnerID
                                                          select r);
                 foreach (Owner_X_Relationship x in oXr)
                 {
-                    IEnumerable<Owner_X_Relationship> associations = (from p in dc.Owner_X_Relationships
-                                                                      where p.RelationshipID == x.RelationshipID
+                    //IEnumerable<Owner_X_Relationship> 
+                    var associations = (from p in dc.Owner_X_Relationships
+                                                                      where p.RelationshipID == x.RelationshipID &&
+                                                                      p.IgnoreMultiOwner == false
                                                                       select p);
                     if (associations.Count() > 1)
                     {
@@ -158,7 +161,8 @@
                     /// Add the default HVCC image to the relationship record.  
                     relationship.Photo = LoadDefalutImage(dc);
                     relationship.Active = true;
-                    Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = relationship.RelationshipID, Owner = owner, OwnerID = owner.OwnerID };
+                    Owner_X_Relationship OXR = new Owner_X_Relationship()
+                    { RelationshipID = relationship.RelationshipID, Owner = owner, OwnerID = owner.OwnerID, IgnoreMultiOwner = false };
                     relationship.Owner_X_Relationships.Add(OXR);
                     dc.Relationships.InsertOnSubmit(relationship);
                 }

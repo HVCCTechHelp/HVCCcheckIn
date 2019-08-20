@@ -63,9 +63,6 @@ namespace HVCC.Shell.Models
     partial void InsertPayment_X_Invoice(Payment_X_Invoice instance);
     partial void UpdatePayment_X_Invoice(Payment_X_Invoice instance);
     partial void DeletePayment_X_Invoice(Payment_X_Invoice instance);
-    partial void InsertOwner_X_Relationship(Owner_X_Relationship instance);
-    partial void UpdateOwner_X_Relationship(Owner_X_Relationship instance);
-    partial void DeleteOwner_X_Relationship(Owner_X_Relationship instance);
     partial void InsertRelationship(Relationship instance);
     partial void UpdateRelationship(Relationship instance);
     partial void DeleteRelationship(Relationship instance);
@@ -81,6 +78,9 @@ namespace HVCC.Shell.Models
     partial void InsertPayment(Payment instance);
     partial void UpdatePayment(Payment instance);
     partial void DeletePayment(Payment instance);
+    partial void InsertOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void UpdateOwner_X_Relationship(Owner_X_Relationship instance);
+    partial void DeleteOwner_X_Relationship(Owner_X_Relationship instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -289,14 +289,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Owner_X_Relationship> Owner_X_Relationships
-		{
-			get
-			{
-				return this.GetTable<Owner_X_Relationship>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Relationship> Relationships
 		{
 			get
@@ -334,6 +326,14 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<Payment>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Owner_X_Relationship> Owner_X_Relationships
+		{
+			get
+			{
+				return this.GetTable<Owner_X_Relationship>();
 			}
 		}
 		
@@ -7305,198 +7305,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owner_X_Relationships")]
-	public partial class Owner_X_Relationship : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RowID;
-		
-		private int _OwnerID;
-		
-		private int _RelationshipID;
-		
-		private EntityRef<Relationship> _Relationship;
-		
-		private EntityRef<Owner> _Owner;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRowIDChanging(int value);
-    partial void OnRowIDChanged();
-    partial void OnOwnerIDChanging(int value);
-    partial void OnOwnerIDChanged();
-    partial void OnRelationshipIDChanging(int value);
-    partial void OnRelationshipIDChanged();
-    #endregion
-		
-		public Owner_X_Relationship()
-		{
-			this._Relationship = default(EntityRef<Relationship>);
-			this._Owner = default(EntityRef<Owner>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RowID
-		{
-			get
-			{
-				return this._RowID;
-			}
-			set
-			{
-				if ((this._RowID != value))
-				{
-					this.OnRowIDChanging(value);
-					this.SendPropertyChanging();
-					this._RowID = value;
-					this.SendPropertyChanged("RowID");
-					this.OnRowIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
-		public int OwnerID
-		{
-			get
-			{
-				return this._OwnerID;
-			}
-			set
-			{
-				if ((this._OwnerID != value))
-				{
-					if (this._Owner.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnOwnerIDChanging(value);
-					this.SendPropertyChanging();
-					this._OwnerID = value;
-					this.SendPropertyChanged("OwnerID");
-					this.OnOwnerIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", DbType="Int NOT NULL")]
-		public int RelationshipID
-		{
-			get
-			{
-				return this._RelationshipID;
-			}
-			set
-			{
-				if ((this._RelationshipID != value))
-				{
-					if (this._Relationship.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnRelationshipIDChanging(value);
-					this.SendPropertyChanging();
-					this._RelationshipID = value;
-					this.SendPropertyChanged("RelationshipID");
-					this.OnRelationshipIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_Owner_X_Relationship", Storage="_Relationship", ThisKey="RelationshipID", OtherKey="RelationshipID", IsForeignKey=true)]
-		public Relationship Relationship
-		{
-			get
-			{
-				return this._Relationship.Entity;
-			}
-			set
-			{
-				Relationship previousValue = this._Relationship.Entity;
-				if (((previousValue != value) 
-							|| (this._Relationship.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Relationship.Entity = null;
-						previousValue.Owner_X_Relationships.Remove(this);
-					}
-					this._Relationship.Entity = value;
-					if ((value != null))
-					{
-						value.Owner_X_Relationships.Add(this);
-						this._RelationshipID = value.RelationshipID;
-					}
-					else
-					{
-						this._RelationshipID = default(int);
-					}
-					this.SendPropertyChanged("Relationship");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
-		public Owner Owner
-		{
-			get
-			{
-				return this._Owner.Entity;
-			}
-			set
-			{
-				Owner previousValue = this._Owner.Entity;
-				if (((previousValue != value) 
-							|| (this._Owner.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Owner.Entity = null;
-						previousValue.Owner_X_Relationships.Remove(this);
-					}
-					this._Owner.Entity = value;
-					if ((value != null))
-					{
-						value.Owner_X_Relationships.Add(this);
-						this._OwnerID = value.OwnerID;
-					}
-					else
-					{
-						this._OwnerID = default(int);
-					}
-					this.SendPropertyChanged("Owner");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Relationships")]
 	public partial class Relationship : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -8084,13 +7892,13 @@ namespace HVCC.Shell.Models
 		
 		private EntitySet<Note> _Notes;
 		
-		private EntitySet<Owner_X_Relationship> _Owner_X_Relationships;
-		
 		private EntitySet<LatePayment> _LatePayments;
 		
 		private EntitySet<Invoice> _Invoices;
 		
 		private EntitySet<Payment> _Payments;
+		
+		private EntitySet<Owner_X_Relationship> _Owner_X_Relationships;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -8148,10 +7956,10 @@ namespace HVCC.Shell.Models
 			this._Properties = new EntitySet<Property>(new Action<Property>(this.attach_Properties), new Action<Property>(this.detach_Properties));
 			this._GolfCarts = new EntitySet<GolfCart>(new Action<GolfCart>(this.attach_GolfCarts), new Action<GolfCart>(this.detach_GolfCarts));
 			this._Notes = new EntitySet<Note>(new Action<Note>(this.attach_Notes), new Action<Note>(this.detach_Notes));
-			this._Owner_X_Relationships = new EntitySet<Owner_X_Relationship>(new Action<Owner_X_Relationship>(this.attach_Owner_X_Relationships), new Action<Owner_X_Relationship>(this.detach_Owner_X_Relationships));
 			this._LatePayments = new EntitySet<LatePayment>(new Action<LatePayment>(this.attach_LatePayments), new Action<LatePayment>(this.detach_LatePayments));
 			this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
 			this._Payments = new EntitySet<Payment>(new Action<Payment>(this.attach_Payments), new Action<Payment>(this.detach_Payments));
+			this._Owner_X_Relationships = new EntitySet<Owner_X_Relationship>(new Action<Owner_X_Relationship>(this.attach_Owner_X_Relationships), new Action<Owner_X_Relationship>(this.detach_Owner_X_Relationships));
 			OnCreated();
 		}
 		
@@ -8647,19 +8455,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner_X_Relationships", ThisKey="OwnerID", OtherKey="OwnerID")]
-		public EntitySet<Owner_X_Relationship> Owner_X_Relationships
-		{
-			get
-			{
-				return this._Owner_X_Relationships;
-			}
-			set
-			{
-				this._Owner_X_Relationships.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_LatePayment", Storage="_LatePayments", ThisKey="OwnerID", OtherKey="OwnerID")]
 		public EntitySet<LatePayment> LatePayments
 		{
@@ -8696,6 +8491,19 @@ namespace HVCC.Shell.Models
 			set
 			{
 				this._Payments.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner_X_Relationships", ThisKey="OwnerID", OtherKey="OwnerID")]
+		public EntitySet<Owner_X_Relationship> Owner_X_Relationships
+		{
+			get
+			{
+				return this._Owner_X_Relationships;
+			}
+			set
+			{
+				this._Owner_X_Relationships.Assign(value);
 			}
 		}
 		
@@ -8767,18 +8575,6 @@ namespace HVCC.Shell.Models
 			entity.Owner = null;
 		}
 		
-		private void attach_Owner_X_Relationships(Owner_X_Relationship entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = this;
-		}
-		
-		private void detach_Owner_X_Relationships(Owner_X_Relationship entity)
-		{
-			this.SendPropertyChanging();
-			entity.Owner = null;
-		}
-		
 		private void attach_LatePayments(LatePayment entity)
 		{
 			this.SendPropertyChanging();
@@ -8810,6 +8606,18 @@ namespace HVCC.Shell.Models
 		}
 		
 		private void detach_Payments(Payment entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = null;
+		}
+		
+		private void attach_Owner_X_Relationships(Owner_X_Relationship entity)
+		{
+			this.SendPropertyChanging();
+			entity.Owner = this;
+		}
+		
+		private void detach_Owner_X_Relationships(Owner_X_Relationship entity)
 		{
 			this.SendPropertyChanging();
 			entity.Owner = null;
@@ -9747,6 +9555,222 @@ namespace HVCC.Shell.Models
 		{
 			this.SendPropertyChanging();
 			entity.Payment = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Owner_X_Relationships")]
+	public partial class Owner_X_Relationship : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowID;
+		
+		private int _OwnerID;
+		
+		private int _RelationshipID;
+		
+		private System.Nullable<bool> _IgnoreMultiOwner;
+		
+		private EntityRef<Owner> _Owner;
+		
+		private EntityRef<Relationship> _Relationship;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIDChanging(int value);
+    partial void OnRowIDChanged();
+    partial void OnOwnerIDChanging(int value);
+    partial void OnOwnerIDChanged();
+    partial void OnRelationshipIDChanging(int value);
+    partial void OnRelationshipIDChanged();
+    partial void OnIgnoreMultiOwnerChanging(System.Nullable<bool> value);
+    partial void OnIgnoreMultiOwnerChanged();
+    #endregion
+		
+		public Owner_X_Relationship()
+		{
+			this._Owner = default(EntityRef<Owner>);
+			this._Relationship = default(EntityRef<Relationship>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this.OnRowIDChanging(value);
+					this.SendPropertyChanging();
+					this._RowID = value;
+					this.SendPropertyChanged("RowID");
+					this.OnRowIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OwnerID", DbType="Int NOT NULL")]
+		public int OwnerID
+		{
+			get
+			{
+				return this._OwnerID;
+			}
+			set
+			{
+				if ((this._OwnerID != value))
+				{
+					if (this._Owner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnOwnerIDChanging(value);
+					this.SendPropertyChanging();
+					this._OwnerID = value;
+					this.SendPropertyChanged("OwnerID");
+					this.OnOwnerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelationshipID", DbType="Int NOT NULL")]
+		public int RelationshipID
+		{
+			get
+			{
+				return this._RelationshipID;
+			}
+			set
+			{
+				if ((this._RelationshipID != value))
+				{
+					if (this._Relationship.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRelationshipIDChanging(value);
+					this.SendPropertyChanging();
+					this._RelationshipID = value;
+					this.SendPropertyChanged("RelationshipID");
+					this.OnRelationshipIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IgnoreMultiOwner", DbType="Bit")]
+		public System.Nullable<bool> IgnoreMultiOwner
+		{
+			get
+			{
+				return this._IgnoreMultiOwner;
+			}
+			set
+			{
+				if ((this._IgnoreMultiOwner != value))
+				{
+					this.OnIgnoreMultiOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._IgnoreMultiOwner = value;
+					this.SendPropertyChanged("IgnoreMultiOwner");
+					this.OnIgnoreMultiOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Owner_Owner_X_Relationship", Storage="_Owner", ThisKey="OwnerID", OtherKey="OwnerID", IsForeignKey=true)]
+		public Owner Owner
+		{
+			get
+			{
+				return this._Owner.Entity;
+			}
+			set
+			{
+				Owner previousValue = this._Owner.Entity;
+				if (((previousValue != value) 
+							|| (this._Owner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Owner.Entity = null;
+						previousValue.Owner_X_Relationships.Remove(this);
+					}
+					this._Owner.Entity = value;
+					if ((value != null))
+					{
+						value.Owner_X_Relationships.Add(this);
+						this._OwnerID = value.OwnerID;
+					}
+					else
+					{
+						this._OwnerID = default(int);
+					}
+					this.SendPropertyChanged("Owner");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Relationship_Owner_X_Relationship", Storage="_Relationship", ThisKey="RelationshipID", OtherKey="RelationshipID", IsForeignKey=true)]
+		public Relationship Relationship
+		{
+			get
+			{
+				return this._Relationship.Entity;
+			}
+			set
+			{
+				Relationship previousValue = this._Relationship.Entity;
+				if (((previousValue != value) 
+							|| (this._Relationship.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Relationship.Entity = null;
+						previousValue.Owner_X_Relationships.Remove(this);
+					}
+					this._Relationship.Entity = value;
+					if ((value != null))
+					{
+						value.Owner_X_Relationships.Add(this);
+						this._RelationshipID = value.RelationshipID;
+					}
+					else
+					{
+						this._RelationshipID = default(int);
+					}
+					this.SendPropertyChanged("Relationship");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	

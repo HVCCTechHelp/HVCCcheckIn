@@ -549,7 +549,8 @@
                     /// 
                     foreach (Relationship r in RelationshipsToProcess)
                     {
-                        Owner_X_Relationship OXR = new Owner_X_Relationship() { RelationshipID = r.RelationshipID, OwnerID = NewOwner.OwnerID };
+                        Owner_X_Relationship OXR = new Owner_X_Relationship()
+                        { RelationshipID = r.RelationshipID, OwnerID = NewOwner.OwnerID, IgnoreMultiOwner = false };
 
                         r.Active = true;
                         r.Photo = ApplDefault.Photo;
