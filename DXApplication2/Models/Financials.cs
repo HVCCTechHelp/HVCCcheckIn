@@ -97,6 +97,24 @@ namespace HVCC.Shell.Models.Financial
             }
         }
 
+        private int _priority = 1;
+        public int Priority
+        {
+            get
+            {
+                return this._priority;
+            }
+            set
+            {
+                if ((this._quanity != value))
+                {
+                    this._priority = value;
+                    RaisePropertyChanged("Priority");
+                }
+            }
+        }
+
+
         private string _description = null;
         public string Description
         {

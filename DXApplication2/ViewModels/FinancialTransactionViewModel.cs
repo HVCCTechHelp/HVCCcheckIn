@@ -359,7 +359,7 @@
             {
                 var list = (from x in dc.ListOfItems
                             where x.IsActive == true
-                            select x);
+                            select x).OrderBy(x => x.Priority);
 
                 return new ObservableCollection<ListOfItem>(list);
             }
@@ -618,12 +618,14 @@
         private ObservableCollection<Invoice> GetOpenInvoicesForOwner()
         {
             /// Build the list of outstanding invoices on the initial spin up of the payment processing.
+            /// The list is ordered first by the priority value of the Invoice (1-n), then by the Aging (days)
+            /// from oldest to newest.  Therefore, any payment will first be applied to anything Dues related,
+            /// then Covenants, then all others (title txf, golf carts, etc.)
             /// The list will be used later on in the process to determine what invoice(s) the payment will
             /// be applied to. Therefore, we do not want to change the initial collection.
-
             var list = (from x in SelectedOwner.Invoices
                         where x.BalanceDue > 0
-                        select x);
+                        select x).OrderBy(x => x.Priority).ThenByDescending(x => x.Aging);
 
             if (null == list)
             {
@@ -631,7 +633,7 @@
             }
             else
             {
-                /// The paoperty ISApplyToPayment is an extention property of Invoice (not included in the Invoice
+                /// The property ISApplyToPayment is an extention property of Invoice (not included in the Invoice
                 /// database model). Therefore, we have to set the initial value here.
                 /// 
                 foreach (Invoice i in list)
@@ -1118,6 +1120,26 @@
                                                    where x.Days == TheInvoice.TermsDays
                                                    select x.DescriptiveTerm).FirstOrDefault();
                     break;
+                case "ItemDetails":
+                    /// Set the invoice's priority based on the highest priority found in the list of items
+                    /// The lower the value, the higher the priority
+                    /// 
+                    bool isFirst = true;
+                    foreach (InvoiceItem i in TheInvoice.InvoiceItems)
+                    {
+                        if (i.Priority < TheInvoice.Priority)
+                        {
+                            TheInvoice.Priority = i.Priority;
+                        }
+                        /// Assign the first list item's description to the Invoice's memo field as a default
+                        /// 
+                        if (isFirst && String.IsNullOrEmpty(TheInvoice.Memo))
+                        {
+                            TheInvoice.Memo = i.Description;
+                            isFirst = false;
+                        }
+                    }
+                    break;
                 case "Amount":
 
                     /// If this is a new invoice, we have to get the current AccountBalance for the Owner
@@ -1129,6 +1151,7 @@
                         /// 
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
+                        TheInvoice.Priority = 99;
                         IsTransactionState = TransactionState.PendingNew;
                     }
                     /// If we are editing a new invoice, and the Amount has changed from the initial
@@ -1139,6 +1162,7 @@
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
                         TheInvoice.IsPaid = false;
+                        TheInvoice.Priority = 99;
                         dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner.Payments);
                         foreach (Payment_X_Invoice pxi in TheInvoice.Payment_X_Invoices)
                         {
@@ -1162,6 +1186,7 @@
                         TheInvoice.BalanceDue = TheInvoice.Amount;
                         TheInvoice.PaymentsApplied = 0m;
                         TheInvoice.IsPaid = false;
+                        TheInvoice.Priority = 99;
 
                         if (0 == TheInvoice.InvoiceItems.Count())
                         {
@@ -1229,7 +1254,6 @@
                             /// 
                             CheckForGolfCartSticker(TransactionType.Invoice);
                         }
-                        //IsTransactionState = TransactionState.Pending;
                     }
                     /// There are no payments to apply to this invoice....
                     /// 
@@ -2100,7 +2124,6 @@
                     /// The collection is then used by the Xtra report to show each invoice item.
                     /// 
                     TheInvoice = o as Invoice;
-                    //TheInvoice.Owner = SelectedOwner;
                     TheInvoice.Season = CurrentSeason;
                     TheInvoice.InvoiceItems = DeserializeInvoiceItems();
                 }

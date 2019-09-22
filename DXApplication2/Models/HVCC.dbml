@@ -374,24 +374,6 @@
       <Argument Parameter="rowId" Member="RowID" />
     </DeleteFunction>
   </Table>
-  <Table Name="dbo.Seasons" Member="Seasons">
-    <Type Name="Season">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="TimePeriod" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="ShortName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="IsCurrent" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsNext" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="AnnualDues" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="CartFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="IsDuesApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate30Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate60Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsLate90Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.v_OwnerTransactions" Member="v_OwnerTransactions">
     <Type Name="v_OwnerTransaction">
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -405,29 +387,6 @@
       <Column Name="EquityBalance" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="PaidOrApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="Memo" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ListOfItems" Member="ListOfItems">
-    <Type Name="ListOfItem">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="ItemCategory" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Item" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Rate" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Payment_X_Invoice" Member="Payment_X_Invoices">
-    <Type Name="Payment_X_Invoice">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="PaymentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="InvoiceID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PmtGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="InvGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="PaymentAmount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Association Name="Invoice_Payment_X_Invoice" Member="Invoice" ThisKey="InvoiceID" OtherKey="TransactionID" Type="Invoice" IsForeignKey="true" />
-      <Association Name="Payment_Payment_X_Invoice" Member="Payment" ThisKey="PaymentID" OtherKey="TransactionID" Type="Payment" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.v_ActiveRelationships" Member="v_ActiveRelationships">
@@ -519,6 +478,83 @@
       <Association Name="Owner_LatePayment" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Owner_X_Relationships" Member="Owner_X_Relationships">
+    <Type Name="Owner_X_Relationship">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IgnoreMultiOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Relationship_Owner_X_Relationship" Member="Relationship" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
+      <Association Name="Owner_Owner_X_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ListOfItems" Member="ListOfItems">
+    <Type Name="ListOfItem">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemCategory" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Item" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Invoices" Member="Invoices">
+    <Type Name="Invoice">
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IssuedDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DueDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="TermsDescriptive" Type="System.String" DbType="VarChar(25) NOT NULL" CanBeNull="false" />
+      <Column Name="TermsDays" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentsApplied" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="BalanceDue" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Aging" Type="System.Int32" DbType="Int" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ItemDetails" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Memo" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Invoice_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="InvoiceID" Type="Payment_X_Invoice" />
+      <Association Name="Owner_Invoice" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Payment_X_Invoice" Member="Payment_X_Invoices">
+    <Type Name="Payment_X_Invoice">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PmtGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="InvGUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentAmount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Invoice_Payment_X_Invoice" Member="Invoice" ThisKey="InvoiceID" OtherKey="TransactionID" Type="Invoice" IsForeignKey="true" />
+      <Association Name="Payment_Payment_X_Invoice" Member="Payment" ThisKey="PaymentID" OtherKey="TransactionID" Type="Payment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Payments" Member="Payments">
+    <Type Name="Payment">
+      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="EquityBalance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="AmountAppliedToInvoices" Type="System.Decimal" DbType="Money" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="PaymentMethod" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CheckNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="ReceiptNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="IsApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Memo" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Association Name="Payment_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="PaymentID" Type="Payment_X_Invoice" />
+      <Association Name="Owner_Payment" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.Owners" Member="Owners">
     <Type Name="Owner">
       <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -548,61 +584,28 @@
       <Association Name="Owner_GolfCart" Member="GolfCarts" ThisKey="OwnerID" OtherKey="OwnerID" Type="GolfCart" />
       <Association Name="Owner_Note" Member="Notes" ThisKey="OwnerID" OtherKey="OwnerID" Type="Note" />
       <Association Name="Owner_LatePayment" Member="LatePayments" ThisKey="OwnerID" OtherKey="OwnerID" Type="LatePayment" />
+      <Association Name="Owner_Owner_X_Relationship" Member="Owner_X_Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner_X_Relationship" />
       <Association Name="Owner_Invoice" Member="Invoices" ThisKey="OwnerID" OtherKey="OwnerID" Type="Invoice" />
       <Association Name="Owner_Payment" Member="Payments" ThisKey="OwnerID" OtherKey="OwnerID" Type="Payment" />
-      <Association Name="Owner_Owner_X_Relationship" Member="Owner_X_Relationships" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner_X_Relationship" />
     </Type>
   </Table>
-  <Table Name="dbo.Invoices" Member="Invoices">
-    <Type Name="Invoice">
-      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IssuedDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
-      <Column Name="DueDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
-      <Column Name="TermsDescriptive" Type="System.String" DbType="VarChar(25) NOT NULL" CanBeNull="false" />
-      <Column Name="TermsDays" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="PaymentsApplied" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="BalanceDue" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="IsPaid" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Aging" Type="System.Int32" DbType="Int" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="ItemDetails" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="Memo" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Invoice_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="InvoiceID" Type="Payment_X_Invoice" />
-      <Association Name="Owner_Invoice" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Payments" Member="Payments">
-    <Type Name="Payment">
-      <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PaymentDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
-      <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="EquityBalance" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="AmountAppliedToInvoices" Type="System.Decimal" DbType="Money" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="PaymentMethod" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="CheckNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
-      <Column Name="ReceiptNumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
-      <Column Name="IsApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="Memo" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastModifiedBy" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
-      <Association Name="Payment_Payment_X_Invoice" Member="Payment_X_Invoices" ThisKey="TransactionID" OtherKey="PaymentID" Type="Payment_X_Invoice" />
-      <Association Name="Owner_Payment" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Owner_X_Relationships" Member="Owner_X_Relationships">
-    <Type Name="Owner_X_Relationship">
+  <Table Name="dbo.Seasons" Member="Seasons">
+    <Type Name="Season">
       <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RelationshipID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IgnoreMultiOwner" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Association Name="Owner_Owner_X_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
-      <Association Name="Relationship_Owner_X_Relationship" Member="Relationship" ThisKey="RelationshipID" OtherKey="RelationshipID" Type="Relationship" IsForeignKey="true" />
+      <Column Name="TimePeriod" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="IsCurrent" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsNext" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="AnnualDues" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="LateFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="CartFee" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="IsDuesApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate30Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate60Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLate90Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">
@@ -858,28 +861,6 @@
     <Parameter Name="ReceiptNumber" Parameter="receiptNumber" Type="System.String" DbType="VarChar(20)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PreviousYear" Parameter="previousYear" Type="System.String" DbType="VarChar(50)" />
-    <ElementType Name="usp_GetInvoiceForOwnerResult">
-      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Customer" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="MailTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Address" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="Address2" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="State" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
-      <Column Name="Zip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="Item" Type="System.String" DbType="VarChar(52) NOT NULL" CanBeNull="false" />
-      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Rate" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="IsAssessment" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="PreviousYear" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-    </ElementType>
-  </Function>
   <Function Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">
     <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
     <Parameter Name="AccountBalance" Parameter="accountBalance" Type="System.Decimal" DbType="Money" />
@@ -902,5 +883,27 @@
     <Parameter Name="IsEmptyLot" Parameter="isEmptyLot" Type="System.Boolean" DbType="Bit" />
     <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_GetInvoiceForOwner" Method="usp_GetInvoiceForOwner">
+    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PreviousYear" Parameter="previousYear" Type="System.String" DbType="VarChar(50)" />
+    <ElementType Name="usp_GetInvoiceForOwnerResult">
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MailTo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Address2" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="Zip" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Item" Type="System.String" DbType="VarChar(52) NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="IsAssessment" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Assessment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="AssessmentAmount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="Total" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="PreviousYear" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </ElementType>
   </Function>
 </Database>

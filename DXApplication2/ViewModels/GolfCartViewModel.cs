@@ -344,6 +344,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;

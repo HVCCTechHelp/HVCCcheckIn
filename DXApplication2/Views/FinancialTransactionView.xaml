@@ -557,6 +557,8 @@
                                     <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c"/>
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Memo" Header="Description" Width="125*" ReadOnly="True">
+                            </dxg:GridColumn>
                         </dxg:GridControl>
                     </dxlc:LayoutItem>
 
