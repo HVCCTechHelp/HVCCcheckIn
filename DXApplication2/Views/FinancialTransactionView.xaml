@@ -395,25 +395,22 @@
                                        IsCollapsible="True" 
                                        IsCollapsed="{Binding IsCollapsedPayments}"
                                        Visibility="{Binding IsCollapsedPayments, Converter={StaticResource InverseBoolToVis}, Mode=TwoWay}"
-                                       Orientation="Vertical" Height="550" Width="900" IsVisibleChanged="lgPayment_IsVisibleChanged">
+                                       Orientation="Vertical" Height="600" Width="900" IsVisibleChanged="lgPayment_IsVisibleChanged">
                     <dxlc:LayoutGroup View="Group" Width="800">
                         <dxlc:LayoutItem>
                             <Label FontSize="36" FontWeight="Bold" FontFamily="MV Boli" Content="Customer Payment"/>
                         </dxlc:LayoutItem>
                     </dxlc:LayoutGroup>
-                    <!--<dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                        <dxlc:LayoutItem Label="APPLY TO:" LabelHorizontalAlignment="Right" Width="300">
-                            <dxe:ToggleSwitch HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                CheckedStateContent="Non-Dues" 
-                                UncheckedStateContent="      Dues" 
-                                ContentPlacement="Both" 
-                                IsChecked="{Binding IsNotDues, Mode=TwoWay}"
-                                />
+
+                    <dxlc:LayoutGroup  View="Group" Orientation="Horizontal" HorizontalAlignment="Left"  Width="550"
+                                           Visibility="{Binding IsCartPaymentVisable, Converter={StaticResource BoolToVis}, Mode=TwoWay}">
+                        <dxlc:LayoutItem Label="Apply Payment To Golf Cart Sticker Invoice:    " LabelHorizontalAlignment="Right">
+                            <dxe:CheckEdit EditValue="{Binding IsApplyToGolfCart, Mode=TwoWay}"/>
                         </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>-->
+                    </dxlc:LayoutGroup>
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                         <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="250">
+                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="350">
                                 <dxlc:LayoutItem Label="PAYMENT AMOUNT:" LabelHorizontalAlignment="Right">
                                     <dxe:TextEdit x:Name="tePayment" Width="100"
                                                   Text="{Binding ThePayment.Amount}"
@@ -497,13 +494,14 @@
                                 </dxlc:LayoutGroup>
                             </dxlc:LayoutGroup>
                         </dxlc:LayoutGroup>
+                        
                     </dxlc:LayoutGroup>
                     <!-- Unpaid Invoice Grid -->
                     <dxlc:LayoutItem Label="APPLY TO INVOICES" Margin="0,15,0,0">
                         <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
                                          IsEnabled="True"
                                          Width="Auto"
-                                         ItemsSource="{Binding OpenInvoices}"
+                                         ItemsSource="{Binding OpenInvoices, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                          SelectedItem="{Binding TheInvoice, Mode=TwoWay}"
                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                                          >

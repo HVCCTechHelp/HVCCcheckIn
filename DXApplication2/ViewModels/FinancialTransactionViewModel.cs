@@ -67,10 +67,7 @@
             ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
             ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
-
             FinancialTransactions = GetTransactionHistory();
-            //AllInvoices = GetAllInvoicesForOwner();
-            //AllPayments = GetAllPaymentsForOwner();
 
             CanDeleteTransaction = false;
             IsBusy = false;
@@ -214,7 +211,6 @@
                 }
             }
         }
-
 
         private v_OwnerTransaction _selectedTransaction = new v_OwnerTransaction();
         public v_OwnerTransaction SelectedTransaction
@@ -574,6 +570,56 @@
                 }
             }
         }
+
+        public bool _isCartPaymentVisable = false;
+        public bool IsCartPaymentVisable
+        {
+            get { return _isCartPaymentVisable; }
+            set
+            {
+                if (_isCartPaymentVisable != value)
+                {
+                    _isCartPaymentVisable = value;
+                    RaisePropertyChanged("IsCartPaymentVisable");
+                }
+            }
+        }
+
+        public bool _isApplyToGolfCart = false;
+        public bool IsApplyToGolfCart
+        {
+            get { return _isApplyToGolfCart; }
+            set
+            {
+                if (value != _isApplyToGolfCart)
+                {
+                    _isApplyToGolfCart = value;
+                    if (null != OpenInvoices)
+                    {
+                        ChangeSet cs = dc.GetChangeSet();
+                        CancelAction("Payment");
+                        this.IsCollapsedPayments = false;
+
+                        IsTransactionState = TransactionState.New;
+                        ThePayment = new Payment();
+                        SelectedOwner.Payments.Add(ThePayment);
+                        ThePayment.GUID = Guid.NewGuid();
+                        ThePayment.OwnerID = SelectedOwner.OwnerID;
+                        ThePayment.PaymentDate = DateTime.Now;
+                        ThePayment.PaymentMethod = "Check";
+                        OpenInvoices = GetOpenInvoicesForOwner();
+                        ThePayment.LastModified = DateTime.Now;
+                        ThePayment.LastModifiedBy = UserName;
+                    }
+                }
+                RaisePropertyChanged("IsApplyToGolfCart");
+
+                //if (null != ThePayment && 0.0m != ThePayment.Amount)
+                //{
+                //    ThePayment.Amount = 0.0m;
+                //}
+            }
+        }
         #endregion
 
         /// ViewModel Methods
@@ -615,8 +661,14 @@
 
         }
 
+        /// <summary>
+        /// Retrieves a collection of open invoices, ordered by priority then age, for the selected owner
+        /// </summary>
+        /// <returns></returns>
         private ObservableCollection<Invoice> GetOpenInvoicesForOwner()
         {
+            ObservableCollection<Invoice> theList = new ObservableCollection<Invoice>();
+
             /// Build the list of outstanding invoices on the initial spin up of the payment processing.
             /// The list is ordered first by the priority value of the Invoice (1-n), then by the Aging (days)
             /// from oldest to newest.  Therefore, any payment will first be applied to anything Dues related,
@@ -627,20 +679,49 @@
                         where x.BalanceDue > 0
                         select x).OrderBy(x => x.Priority).ThenByDescending(x => x.Aging);
 
+            /// If no open invoices are found return an empty collection
+            /// 
             if (null == list)
             {
-                return new ObservableCollection<Invoice>();
+                return theList;
             }
             else
             {
+                /// If the 'IsApplyToGolfCart' flag is true, we have to reorder the original list
+                /// to put the Golf Cart invoice at the top, as the first item, of the collection
+                /// 
+                if (IsApplyToGolfCart)
+                {
+                    var list2 = (from x in list
+                                 where x.Priority == 10
+                                 select x);
+
+                    ObservableCollection<Invoice> originalList = new ObservableCollection<Invoice>(list);
+
+                    /// We also have to remove the GC invoice from the original collection.  The two collections
+                    /// will be unioned, thus moving the GC invoice to the top of the collection
+                    /// 
+                    foreach (Invoice i in list2)
+                    {
+                        originalList.Remove(i);
+                    }
+
+                    theList = new ObservableCollection<Invoice>(list2.Union(originalList));
+                }
+                else
+                {
+                    theList = new ObservableCollection<Invoice>(list);
+                }
+
+
                 /// The property ISApplyToPayment is an extention property of Invoice (not included in the Invoice
                 /// database model). Therefore, we have to set the initial value here.
                 /// 
-                foreach (Invoice i in list)
+                foreach (Invoice i in theList)
                 {
                     i.IsPaymentApplied = false;
                 }
-                return new ObservableCollection<Invoice>(list);
+                return new ObservableCollection<Invoice>(theList);
             }
         }
 
@@ -770,6 +851,7 @@
     #region PropertyChangeEvents
     public partial class FinancialTransactionViewModel : CommonViewModel, ICommandSink
     {
+
         protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
         {
             list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
@@ -842,6 +924,10 @@
                                      where x.Item == SelectedInvoiceItem.Item
                                      select x).FirstOrDefault();
 
+                            /// All properties of the invoice must be set before the rate is 
+                            /// changed (which causes a propertychanged event to fire
+                            /// 
+                            SelectedInvoiceItem.Priority = (int)r.Priority;
                             SelectedInvoiceItem.Rate = r.Rate;
 
                             if (SelectedInvoiceItem.Item.Contains("Dues"))
@@ -1034,6 +1120,7 @@
                                 /// 
                                 foreach (Payment_X_Invoice pxi in ThePayment.Payment_X_Invoices)
                                 {
+                                    /// BUG:  pxi.Invoice is null........
                                     TheInvoice = pxi.Invoice;
                                     Financial.UnapplyPayment(pxi, ThePayment, TheInvoice, false);
                                     dc.Payment_X_Invoices.DeleteOnSubmit(pxi);
@@ -1046,7 +1133,7 @@
                             /// 
                             ThePayment.EquityBalance = Math.Abs(ThePayment.Amount);
 
-                            /// We don't refresh the Invoice list because it was updated when the payment was
+                            /// TO-DO: ????   We don't refresh the Invoice list because it was updated when the payment was
                             /// unapplied. If we refresh the Invoice list it will overwrite the unapply.
                             /// 
                             OpenInvoices = GetOpenInvoicesForOwner();
@@ -1266,7 +1353,8 @@
                     }
                     break;
             }
-            bool foo = IsDirty;
+            //bool foo = IsDirty;
+            CanSaveExecute = true;
         }
     }
     #endregion
@@ -1546,7 +1634,7 @@
                 TheInvoice.BalanceDue = 0;
                 TheInvoice.PaymentsApplied = 0;
                 TheInvoice.IsPaid = false;
-                TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+                TheInvoice.Priority = 9999;
             }
             TheInvoice.LastModified = DateTime.Now;
             TheInvoice.LastModifiedBy = UserName;
@@ -1576,6 +1664,7 @@
         public void PaymentAction(object parameter)
         {
             WhatIsBeingProcessed = TransactionType.Payment;
+
             /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
             IsInvoiceEnabled = false;
             IsPaymentEnabled = false;
@@ -1584,6 +1673,19 @@
             IsCollapsedInvoice = true;
             IsCollapsedPayments = false;
             IsCollapsedHistoryGrid = true;
+
+            this.RegisterCommands();
+
+            /// Check the Owner's Invoice collection to see if there is an open/unpaid invoice
+            /// for a golf cart sticker.  If one is found, we enable the checkbox option to
+            /// apply the payment to the sticker invoice.
+            /// 
+            var gcInvs = this.SelectedOwner.Invoices.Where(o => !o.IsPaid && o.ItemDetails.Contains("Golf Cart"));
+
+            if (0 < gcInvs.Count())
+            {
+                IsCartPaymentVisable = true;
+            }
 
             if ("New" == (string)parameter)
             {
@@ -1640,12 +1742,20 @@
                         {
                             dc.Payments.DeleteOnSubmit(t as Payment);
                         }
+                        else if (t.GetType() == typeof(Payment_X_Invoice))
+                        {
+                            dc.Payment_X_Invoices.DeleteOnSubmit(t as Payment_X_Invoice);
+                        }
                         else if (t.GetType() == typeof(GolfCart))
                         {
                             dc.GolfCarts.DeleteOnSubmit(t as GolfCart);
                         }
                     }
 
+                    /// DC updates are backed out by refreshing the data context. And just in case the SelectedOwner has
+                    /// been touch, we reset it as well.
+                    /// 
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, csi.Updates);
                     dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
                 }
                 catch (Exception ex)
@@ -1669,8 +1779,9 @@
             IsCollapsedHistoryGrid = false;
             IsInvoiceEnabled = true;
             IsPaymentEnabled = true;
-            CanSaveExecute = false;
-            ChangeSet cs = dc.GetChangeSet();
+            //IsApplyToGolfCart = false;
+            //CanSaveExecute = false;
+            //ChangeSet cs = dc.GetChangeSet();
             bool foo = IsDirty;
         }
 
@@ -2031,8 +2142,6 @@
                 dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
             }
         }
-
-
 
         ///// <summary>
         /////  Updates the payment method when the value of the radio button group changes
