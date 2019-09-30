@@ -63,9 +63,6 @@ namespace HVCC.Shell.Models
     partial void InsertOwner_X_Relationship(Owner_X_Relationship instance);
     partial void UpdateOwner_X_Relationship(Owner_X_Relationship instance);
     partial void DeleteOwner_X_Relationship(Owner_X_Relationship instance);
-    partial void InsertListOfItem(ListOfItem instance);
-    partial void UpdateListOfItem(ListOfItem instance);
-    partial void DeleteListOfItem(ListOfItem instance);
     partial void InsertInvoice(Invoice instance);
     partial void UpdateInvoice(Invoice instance);
     partial void DeleteInvoice(Invoice instance);
@@ -81,6 +78,9 @@ namespace HVCC.Shell.Models
     partial void InsertSeason(Season instance);
     partial void UpdateSeason(Season instance);
     partial void DeleteSeason(Season instance);
+    partial void InsertListOfItem(ListOfItem instance);
+    partial void UpdateListOfItem(ListOfItem instance);
+    partial void DeleteListOfItem(ListOfItem instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -289,14 +289,6 @@ namespace HVCC.Shell.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<ListOfItem> ListOfItems
-		{
-			get
-			{
-				return this.GetTable<ListOfItem>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Invoice> Invoices
 		{
 			get
@@ -334,6 +326,14 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<Season>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ListOfItem> ListOfItems
+		{
+			get
+			{
+				return this.GetTable<ListOfItem>();
 			}
 		}
 		
@@ -7206,212 +7206,6 @@ namespace HVCC.Shell.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ListOfItems")]
-	public partial class ListOfItem : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RowID;
-		
-		private System.Nullable<bool> _IsActive;
-		
-		private System.Nullable<int> _Priority;
-		
-		private string _ItemCategory;
-		
-		private string _Item;
-		
-		private decimal _Rate;
-		
-		private string _Description;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRowIDChanging(int value);
-    partial void OnRowIDChanged();
-    partial void OnIsActiveChanging(System.Nullable<bool> value);
-    partial void OnIsActiveChanged();
-    partial void OnPriorityChanging(System.Nullable<int> value);
-    partial void OnPriorityChanged();
-    partial void OnItemCategoryChanging(string value);
-    partial void OnItemCategoryChanged();
-    partial void OnItemChanging(string value);
-    partial void OnItemChanged();
-    partial void OnRateChanging(decimal value);
-    partial void OnRateChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
-    #endregion
-		
-		public ListOfItem()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RowID
-		{
-			get
-			{
-				return this._RowID;
-			}
-			set
-			{
-				if ((this._RowID != value))
-				{
-					this.OnRowIDChanging(value);
-					this.SendPropertyChanging();
-					this._RowID = value;
-					this.SendPropertyChanged("RowID");
-					this.OnRowIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit")]
-		public System.Nullable<bool> IsActive
-		{
-			get
-			{
-				return this._IsActive;
-			}
-			set
-			{
-				if ((this._IsActive != value))
-				{
-					this.OnIsActiveChanging(value);
-					this.SendPropertyChanging();
-					this._IsActive = value;
-					this.SendPropertyChanged("IsActive");
-					this.OnIsActiveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Priority", DbType="Int")]
-		public System.Nullable<int> Priority
-		{
-			get
-			{
-				return this._Priority;
-			}
-			set
-			{
-				if ((this._Priority != value))
-				{
-					this.OnPriorityChanging(value);
-					this.SendPropertyChanging();
-					this._Priority = value;
-					this.SendPropertyChanged("Priority");
-					this.OnPriorityChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemCategory", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string ItemCategory
-		{
-			get
-			{
-				return this._ItemCategory;
-			}
-			set
-			{
-				if ((this._ItemCategory != value))
-				{
-					this.OnItemCategoryChanging(value);
-					this.SendPropertyChanging();
-					this._ItemCategory = value;
-					this.SendPropertyChanged("ItemCategory");
-					this.OnItemCategoryChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Item", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-		public string Item
-		{
-			get
-			{
-				return this._Item;
-			}
-			set
-			{
-				if ((this._Item != value))
-				{
-					this.OnItemChanging(value);
-					this.SendPropertyChanging();
-					this._Item = value;
-					this.SendPropertyChanged("Item");
-					this.OnItemChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rate", DbType="Money NOT NULL")]
-		public decimal Rate
-		{
-			get
-			{
-				return this._Rate;
-			}
-			set
-			{
-				if ((this._Rate != value))
-				{
-					this.OnRateChanging(value);
-					this.SendPropertyChanging();
-					this._Rate = value;
-					this.SendPropertyChanged("Rate");
-					this.OnRateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="VarChar(250)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Invoices")]
 	public partial class Invoice : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -9821,6 +9615,212 @@ namespace HVCC.Shell.Models
 					this._IsVisible = value;
 					this.SendPropertyChanged("IsVisible");
 					this.OnIsVisibleChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ListOfItems")]
+	public partial class ListOfItem : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RowID;
+		
+		private bool _IsActive;
+		
+		private int _Priority;
+		
+		private string _ItemCategory;
+		
+		private string _Item;
+		
+		private decimal _Rate;
+		
+		private string _Description;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRowIDChanging(int value);
+    partial void OnRowIDChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnPriorityChanging(int value);
+    partial void OnPriorityChanged();
+    partial void OnItemCategoryChanging(string value);
+    partial void OnItemCategoryChanged();
+    partial void OnItemChanging(string value);
+    partial void OnItemChanged();
+    partial void OnRateChanging(decimal value);
+    partial void OnRateChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    #endregion
+		
+		public ListOfItem()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RowID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RowID
+		{
+			get
+			{
+				return this._RowID;
+			}
+			set
+			{
+				if ((this._RowID != value))
+				{
+					this.OnRowIDChanging(value);
+					this.SendPropertyChanging();
+					this._RowID = value;
+					this.SendPropertyChanged("RowID");
+					this.OnRowIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Priority", DbType="Int NOT NULL")]
+		public int Priority
+		{
+			get
+			{
+				return this._Priority;
+			}
+			set
+			{
+				if ((this._Priority != value))
+				{
+					this.OnPriorityChanging(value);
+					this.SendPropertyChanging();
+					this._Priority = value;
+					this.SendPropertyChanged("Priority");
+					this.OnPriorityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemCategory", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string ItemCategory
+		{
+			get
+			{
+				return this._ItemCategory;
+			}
+			set
+			{
+				if ((this._ItemCategory != value))
+				{
+					this.OnItemCategoryChanging(value);
+					this.SendPropertyChanging();
+					this._ItemCategory = value;
+					this.SendPropertyChanged("ItemCategory");
+					this.OnItemCategoryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Item", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		public string Item
+		{
+			get
+			{
+				return this._Item;
+			}
+			set
+			{
+				if ((this._Item != value))
+				{
+					this.OnItemChanging(value);
+					this.SendPropertyChanging();
+					this._Item = value;
+					this.SendPropertyChanged("Item");
+					this.OnItemChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rate", DbType="Money NOT NULL")]
+		public decimal Rate
+		{
+			get
+			{
+				return this._Rate;
+			}
+			set
+			{
+				if ((this._Rate != value))
+				{
+					this.OnRateChanging(value);
+					this.SendPropertyChanging();
+					this._Rate = value;
+					this.SendPropertyChanged("Rate");
+					this.OnRateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="VarChar(250) NOT NULL", CanBeNull=false)]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
 				}
 			}
 		}

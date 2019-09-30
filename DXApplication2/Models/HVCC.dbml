@@ -488,17 +488,6 @@
       <Association Name="Owner_Owner_X_Relationship" Member="Owner" ThisKey="OwnerID" OtherKey="OwnerID" Type="Owner" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ListOfItems" Member="ListOfItems">
-    <Type Name="ListOfItem">
-      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="ItemCategory" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Item" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Rate" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Invoices" Member="Invoices">
     <Type Name="Invoice">
       <Column Name="TransactionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -606,6 +595,17 @@
       <Column Name="IsLate60Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsLate90Applied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ListOfItems" Member="ListOfItems">
+    <Type Name="ListOfItem">
+      <Column Name="RowID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemCategory" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Item" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(250) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Function Name="dbo.usp_GetPropertyById" Method="usp_GetPropertyById">

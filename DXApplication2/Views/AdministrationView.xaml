@@ -111,19 +111,23 @@
                 </dxr:RibbonDefaultPageCategory>
 
             </dxr:RibbonControl>
-            <dxlc:LayoutControl Orientation="Vertical">
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="User Privileges" Width="Auto" Height="250">
+            <dx:DXTabControl>
+                <dx:DXTabItem Header="Annual Tasks">
 
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" HorizontalAlignment="Left">
-                        <dxlc:LayoutItem Label="Your Role: ">
-                            <dxe:TextEdit Text="{Binding Host.ApplPermissions.Role}" IsReadOnly="True" ShowBorder="False"/>
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                    <dxlc:GroupSeparator/>
-                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
-                        <dxlc:LayoutItem>
-                            <dxg:GridControl x:Name="privligesGrid" 
+                    <dxlc:LayoutControl Orientation="Vertical">
+
+                        <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="User Privileges" Width="Auto" Height="250">
+
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <dxlc:LayoutItem Label="Your Role: ">
+                                    <dxe:TextEdit Text="{Binding Host.ApplPermissions.Role}" IsReadOnly="True" ShowBorder="False"/>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <dxlc:GroupSeparator/>
+                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                                <dxlc:LayoutItem>
+                                    <dxg:GridControl x:Name="privligesGrid" 
                                  AutoPopulateColumns="True"
                                  IsEnabled="True"
                                  ItemsSource="{Binding Permissions, Mode=TwoWay}"
@@ -131,8 +135,8 @@
                                  Height="150"
                                  HorizontalAlignment="Left"
                                  >
-                                <dxg:GridControl.View>
-                                    <dxg:TableView x:Name="tableViewPermissions" 
+                                        <dxg:GridControl.View>
+                                            <dxg:TableView x:Name="tableViewPermissions" 
                                        Width="Auto"
                                        AllowEditing="True"
                                        AllowColumnFiltering="True" 
@@ -143,129 +147,206 @@
                                        NavigationStyle="Cell"
                                        HorizontalScrollbarVisibility="Visible"
                                        >
-                                    </dxg:TableView>
-                                </dxg:GridControl.View>
-                                <!-- columns of the detail grid -->
-                                <dxg:GridControl.Columns>
-                                    <dxg:GridColumn FieldName="RoleIndex" Header="RoleIndex" Width="25" Fixed="Left" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
-                                    <dxg:GridColumn FieldName="Role" Header="Role" Width="125" Fixed="Left" IsEnabled="False" ReadOnly="True" />
-                                    <dxg:GridColumn FieldName="CanViewAdministration" Header="CanViewAdministration" Width="75" ReadOnly="True"/>
-                                    <dxg:GridColumn FieldName="CanViewProperty" Header="CanViewProperty" Width="75" ReadOnly="False" />
-                                    <dxg:GridColumn FieldName="CanEditProperty" Header="CanEditProperty" Width="75" ReadOnly="False" />
-                                    <dxg:GridColumn FieldName="CanViewOwner" Header="CanViewOwner" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanEditOwner" Header="CanEditOwner" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanViewOwnerNotes" Header="CanViewOwnerNotes" Width="75" ReadOnly="False" />
-                                    <dxg:GridColumn FieldName="CanEditOwnerNotes" Header="CanEditOwnerNotes" Width="75" ReadOnly="False" />
-                                    <dxg:GridColumn FieldName="CanAddRelationship" Header="CanAddRelationship" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanEditRelationship" Header="CanEditRelationship" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanCheckIn" Header="CanCheckIn" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanViewWater" Header="CanViewWater" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanEditWater" Header="CanEditWater" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanImport" Header="CanImport" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanExport" Header="CanExport" Width="75" ReadOnly="False"/>
-                                    <dxg:GridColumn FieldName="CanPrint" Header="CanPrint" Width="75" ReadOnly="False"/>
-                                </dxg:GridControl.Columns>
+                                            </dxg:TableView>
+                                        </dxg:GridControl.View>
+                                        <!-- columns of the detail grid -->
+                                        <dxg:GridControl.Columns>
+                                            <dxg:GridColumn FieldName="RoleIndex" Header="RoleIndex" Width="25" Fixed="Left" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
+                                            <dxg:GridColumn FieldName="Role" Header="Role" Width="125" Fixed="Left" IsEnabled="False" ReadOnly="True" />
+                                            <dxg:GridColumn FieldName="CanViewAdministration" Header="CanViewAdministration" Width="75" ReadOnly="True"/>
+                                            <dxg:GridColumn FieldName="CanViewProperty" Header="CanViewProperty" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanEditProperty" Header="CanEditProperty" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanViewOwner" Header="CanViewOwner" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditOwner" Header="CanEditOwner" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanViewOwnerNotes" Header="CanViewOwnerNotes" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanEditOwnerNotes" Header="CanEditOwnerNotes" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanAddRelationship" Header="CanAddRelationship" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditRelationship" Header="CanEditRelationship" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanCheckIn" Header="CanCheckIn" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanViewWater" Header="CanViewWater" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditWater" Header="CanEditWater" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanImport" Header="CanImport" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanExport" Header="CanExport" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanPrint" Header="CanPrint" Width="75" ReadOnly="False"/>
+                                        </dxg:GridControl.Columns>
 
-                            </dxg:GridControl>
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                    <!-- Permissions Grid -->
-                </dxlc:LayoutGroup>
-                <!-- User Privileges -->
+                                    </dxg:GridControl>
+                                </dxlc:LayoutItem>
+                            </dxlc:LayoutGroup>
+                            <!-- Permissions Grid -->
+                        </dxlc:LayoutGroup>
+                        <!-- User Privileges -->
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Current Season" Width="Auto">
-                    <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Width="Auto">
-                        <dxlc:LayoutItem Label="Select Season: " Width="200">
-                            <dxe:ListBoxEdit 
+                        <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Current Season" Width="Auto">
+                            <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Width="Auto">
+                                <dxlc:LayoutItem Label="Select Season: " Width="200">
+                                    <dxe:ListBoxEdit 
                             Height="100 " Width="100"
                             HorizontalAlignment="Left"
                             ItemsSource="{Binding Seasons}" 
                             SelectedIndex="{Binding SelectedSeasonIndex}"
                            DisplayMember="TimePeriod"/>
-                        </dxlc:LayoutItem>
+                                </dxlc:LayoutItem>
 
-                        <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
-                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                                <dxlc:LayoutItem Label="Dues: " Width="50"/>
-                                <dxlc:LayoutItem>
-                                    <dxe:TextEdit Text="{Binding SelectedSeason.AnnualDues}" HorizontalAlignment="Left"
+                                <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                        <dxlc:LayoutItem Label="Dues: " Width="50"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.AnnualDues}" HorizontalAlignment="Left"
                                       MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True" />
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Label="LateFee: " Width="50"/>
-                                <dxlc:LayoutItem>
-                                    <dxe:TextEdit Text="{Binding SelectedSeason.LateFee}" HorizontalAlignment="Left"
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="LateFee: " Width="50"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.LateFee}" HorizontalAlignment="Left"
                                       MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True" />
-                                </dxlc:LayoutItem>
+                                        </dxlc:LayoutItem>
 
-                                <dxlc:LayoutItem Label="Cart Fee: " Width="50" HorizontalAlignment="Left"/>
-                                <dxlc:LayoutItem>
-                                    <dxe:TextEdit Text="{Binding SelectedSeason.CartFee}" HorizontalAlignment="Left"
+                                        <dxlc:LayoutItem Label="Cart Fee: " Width="50" HorizontalAlignment="Left"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.CartFee}" HorizontalAlignment="Left"
                                       MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True"/>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Label="Assessment: " Width="75"/>
-                                <dxlc:LayoutItem>
-                                    <dxe:TextEdit Text="{Binding SelectedSeason.Assessment}" HorizontalAlignment="Left"/>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Label="Amount: " Width="50"/>
-                                <dxlc:LayoutItem>
-                                    <dxe:TextEdit Text="{Binding SelectedSeason.AssessmentAmount}" HorizontalAlignment="Left"
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Assessment: " Width="75"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.Assessment}" HorizontalAlignment="Left"/>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Label="Amount: " Width="50"/>
+                                        <dxlc:LayoutItem>
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.AssessmentAmount}" HorizontalAlignment="Left"
                                       MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True"/>
-                                </dxlc:LayoutItem>
-                            </dxlc:LayoutGroup>
-                            <!-- Dues -->
-                            <Separator Height="25"/>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+                                    <!-- Dues -->
+                                    <Separator Height="25"/>
 
-                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                                <dxlc:LayoutItem Label="Apply Dues: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 1st Late: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 2nd Late: " Width="200"/>
-                                <dxlc:LayoutItem Label="Apply 3rd Late: " Width="200"/>
-                            </dxlc:LayoutGroup>
-                            <!-- Annual Dues -->
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                        <dxlc:LayoutItem Label="Apply Dues: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 1st Late: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 2nd Late: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 3rd Late: " Width="200"/>
+                                    </dxlc:LayoutGroup>
+                                    <!-- Annual Dues -->
 
-                            <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                                <dxlc:LayoutItem Width="200">
-                                    <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
+                                    <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
+                                        <dxlc:LayoutItem Width="200">
+                                            <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding SelectedSeason.IsDuesApplied, Converter={StaticResource Invert}}" >
-                                        <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyDuesCommand}"/>
-                                        </dxmvvm:Interaction.Behaviors>
-                                    </dxc:SimpleButton>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Width="200">
-                                    <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
+                                                <dxmvvm:Interaction.Behaviors>
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyDuesCommand}"/>
+                                                </dxmvvm:Interaction.Behaviors>
+                                            </dxc:SimpleButton>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Width="200">
+                                            <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply30DayLate}" >
-                                        <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyFirstLateCommand}" CommandParameter="first"/>
-                                        </dxmvvm:Interaction.Behaviors>
-                                    </dxc:SimpleButton>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Width="200">
-                                    <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
+                                                <dxmvvm:Interaction.Behaviors>
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyFirstLateCommand}" CommandParameter="first"/>
+                                                </dxmvvm:Interaction.Behaviors>
+                                            </dxc:SimpleButton>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Width="200">
+                                            <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply60DayLate}" >
-                                        <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplySecondLateCommand}" CommandParameter="second"/>
-                                        </dxmvvm:Interaction.Behaviors>
-                                    </dxc:SimpleButton>
-                                </dxlc:LayoutItem>
-                                <dxlc:LayoutItem Width="200">
-                                    <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
+                                                <dxmvvm:Interaction.Behaviors>
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplySecondLateCommand}" CommandParameter="second"/>
+                                                </dxmvvm:Interaction.Behaviors>
+                                            </dxc:SimpleButton>
+                                        </dxlc:LayoutItem>
+                                        <dxlc:LayoutItem Width="200">
+                                            <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
                                                       IsEnabled="{Binding IsApply90DayLate}" >
-                                        <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyThirdLateCommand}" CommandParameter="third"/>
-                                        </dxmvvm:Interaction.Behaviors>
-                                    </dxc:SimpleButton>
-                                </dxlc:LayoutItem>
-                            </dxlc:LayoutGroup>
-                            <!-- 30DayLate -->
+                                                <dxmvvm:Interaction.Behaviors>
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyThirdLateCommand}" CommandParameter="third"/>
+                                                </dxmvvm:Interaction.Behaviors>
+                                            </dxc:SimpleButton>
+                                        </dxlc:LayoutItem>
+                                    </dxlc:LayoutGroup>
+                                    <!-- 30DayLate -->
 
+                                </dxlc:LayoutGroup>
+
+                            </dxlc:LayoutGroup>
+                        </dxlc:LayoutGroup>
+                        <!-- Current Season -->
+
+                    </dxlc:LayoutControl>
+
+                </dx:DXTabItem>
+
+                <dx:DXTabItem Header="Invoice Items">
+
+                    <dxlc:LayoutControl Orientation="Vertical">
+                        <dxlc:LayoutItem >
+                            <Label  FontSize="36" FontWeight="Bold" FontFamily="MV Boli">Invoice Items</Label>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutItem >
+                            <Label FontStyle="Italic" FontWeight="DemiBold" Foreground="#FF0B15EE">Invoice Items in this grid should always match the chart of accounts in QuickBooks</Label>
+                        </dxlc:LayoutItem>
+                        <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
+                            <dxlc:LayoutItem>
+                                <dxg:GridControl x:Name="invoiceItems" 
+                                 AutoPopulateColumns="True"
+                                 IsEnabled="True"
+                                 ItemsSource="{Binding ListOfItems, Mode=TwoWay}"
+                                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                                 Width="Auto"
+                                 Height="400"
+                                 HorizontalAlignment="Left"
+                                 >
+                                    <dxg:GridControl.View>
+                                        <dxg:TableView x:Name="tableViewInvoiceItems" 
+                                       Width="Auto"
+                                       AllowEditing="True"
+                                       AllowColumnFiltering="True" 
+                                       AllowGrouping="False"
+                                       ShowGroupPanel="False"
+                                       AllowPerPixelScrolling="True" 
+                                       AutoWidth="False"
+                                       NavigationStyle="Cell"
+                                       HorizontalScrollbarVisibility="Visible"
+                                       NewItemRowPosition="Bottom"
+                                       >
+
+                                            <dxg:TableView.RowCellMenuCustomizations>
+                                                <dxb:BarButtonItem x:Name="removeRowItem"
+                                                       Content="Remove"
+                                                       Glyph="{dx:DXImage Image=Delete_16x16.png}"
+                                                       IsVisible="True"
+                                                       Command="{Binding DataContext.RemoveItemCommand, ElementName=Administration}"
+                                                       CommandParameter="{Binding DataContext.SelectedItem, ElementName=Administration}"
+                                        />
+                                                <!--NOTE: The 'ElementName' of the BarButtonItem MUST match the x:Name of the View-->
+                                            </dxg:TableView.RowCellMenuCustomizations>
+                                        </dxg:TableView>
+                                    </dxg:GridControl.View>
+                                    <!-- columns of the detail grid -->
+                                    <dxg:GridControl.Columns>
+                                        <dxg:GridColumn FieldName="IsActive" Header="Active" Width="75" Fixed="Left"/>
+                                        <dxg:GridColumn FieldName="Priority" Header="Priority" Width="75" Fixed="Left" SortIndex="0"/>
+                                        <dxg:GridColumn FieldName="ItemCategory" Header="Category" Width="150">
+                                            <dxg:GridColumn.EditSettings>
+                                                <dxe:TextEditSettings MaskType="RegEx" MaskUseAsDisplayFormat="True" Mask="([A-Z]|\d)+"/>
+                                            </dxg:GridColumn.EditSettings>
+                                        </dxg:GridColumn>
+                                        <dxg:GridColumn FieldName="Item" Header="Item"  Width="200"/>
+                                        <dxg:GridColumn FieldName="Rate" Header="Rate"  Width="75">
+                                            <dxg:GridColumn.EditSettings>
+                                                <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                                </dxe:TextEditSettings>
+                                            </dxg:GridColumn.EditSettings>
+                                        </dxg:GridColumn>
+
+                                        <dxg:GridColumn FieldName="Description" Header="Description"  Width="200*"/>
+                                    </dxg:GridControl.Columns>
+
+                                </dxg:GridControl>
+                            </dxlc:LayoutItem>
                         </dxlc:LayoutGroup>
 
-                    </dxlc:LayoutGroup>
-                </dxlc:LayoutGroup>
-                <!-- Current Season -->
+                    </dxlc:LayoutControl>
+                </dx:DXTabItem>
+            </dx:DXTabControl>
 
-            </dxlc:LayoutControl>
         </DockPanel>
     </dxb:BarManager>
 

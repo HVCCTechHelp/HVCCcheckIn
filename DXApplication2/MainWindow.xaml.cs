@@ -488,14 +488,17 @@
         {
             if (Host.Instance.AnyDirty())
             {
-                MessageBoxResult result = MessageBox.Show("You have unsaved edits, close without saving changes?", "Unsaved Edits", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show("You have unsaved edits. Save changes before closing?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
                 switch (result)
                 {
-                    case MessageBoxResult.Cancel:
+                    case MessageBoxResult.Yes:
                         e.Cancel = true;
+                        return;
+                    case MessageBoxResult.No:
                         break;
                     default:
-                        break;
+                        e.Cancel = true;
+                        return;
                 }
             }
         }

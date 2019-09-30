@@ -25,14 +25,6 @@
 
     public partial class AdministrationViewModel : CommonViewModel, ICommandSink
     {
-        public string UserName
-        {
-            get
-            {
-                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -40,9 +32,13 @@
         /// <param name="parameter"></param>
         public AdministrationViewModel(IDataContext dc, IDataContext pDC = null)
         {
+            this.RegisterCommands();
+
             IsBusy = false;
             this.dc = dc as HVCCDataContext;
             this.Host = HVCC.Shell.Host.Instance;
+            ApplPermissions = this.Host.AppPermissions as ApplicationPermission;
+            ApplDefault = this.Host.AppDefault as ApplicationDefault;
             this.RegisterCommands();
 
             var permissions = (from x in this.dc.ApplicationPermissions
@@ -64,28 +60,30 @@
                 ndx++;
             }
             SelectedSeasonIndex = ndx;
+
+            var items = (from x in this.dc.ListOfItems
+                         where x.IsActive == true
+                         select x);
+
+            if (null != items)
+            {
+                ListOfItems = new ObservableCollection<ListOfItem>(items);
+            }
+
+            Host.PropertyChanged +=
+                new System.ComponentModel.PropertyChangedEventHandler(this.HostNotification_PropertyChanged);
         }
 
-        public override bool IsValid { get { return true; } }
-
-        public override bool IsDirty
+        public string UserName
         {
             get
             {
-                string[] caption = Caption.ToString().Split('*');
-                ChangeSet cs = dc.GetChangeSet();
-                if (0 == cs.Updates.Count &&
-                    0 == cs.Inserts.Count &&
-                    0 == cs.Deletes.Count)
-                {
-                    Caption = caption[0].TrimEnd(' ');
-                    return false;
-                }
-                Caption = caption[0].TrimEnd(' ') + "*";
-                return true;
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             }
-            set { }
         }
+
+        public ApplicationPermission ApplPermissions { get; set; }
+        public ApplicationDefault ApplDefault { get; set; }
 
         private bool _isBusy = false;
         public override bool IsBusy
@@ -102,6 +100,29 @@
                 }
             }
         }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                string[] caption = Caption.ToString().Split('*');
+                ChangeSet cs = dc.GetChangeSet();
+                if (0 == cs.Updates.Count &&
+                    0 == cs.Inserts.Count &&
+                    0 == cs.Deletes.Count)
+                {
+                    Caption = caption[0].TrimEnd(' ');
+                    CanSaveExecute = false;
+                    return false;
+                }
+                Caption = caption[0].TrimEnd(' ') + "*";
+                CanSaveExecute = true;
+                return true;
+            }
+            set { }
+        }
+
+        public override bool IsValid => throw new NotImplementedException();
 
         private ObservableCollection<ApplicationPermission> _permissions = null;
         public ObservableCollection<ApplicationPermission> Permissions
@@ -194,6 +215,53 @@
         }
 
         public ObservableCollection<Owner> Owners { get; set; }
+
+        private ObservableCollection<ListOfItem> _listOfItems = null;
+        public ObservableCollection<ListOfItem> ListOfItems
+        {
+            get
+            {
+                return _listOfItems;
+            }
+            set
+            {
+                if (value != _listOfItems)
+                {
+                    // When the collection changes; an item is added/removed, we unregister the previous CollectionChanged
+                    // event listner to avoid a propogation of objects being created in memory and possibly leading to an out of memory error.
+                    if (_listOfItems != null)
+                    {
+                        _listOfItems.CollectionChanged -= _listOfItems_CollectionChanged;
+                    }
+                    _listOfItems = value;
+                    // Once the new value is assigned, we register a new PropertyChanged event listner.
+                    this._listOfItems.CollectionChanged += _listOfItems_CollectionChanged;
+
+                    /// Register a change notiification for the Invoice Items collection so changes
+                    /// are processed.
+                    /// 
+                    this.RegisterForChangedNotification<ListOfItem>(ListOfItems);
+                    RaisePropertyChanged("ListOfItems");
+                }
+            }
+        }
+
+        private ListOfItem _selectedItem = null;
+        public ListOfItem SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                if (value != _selectedItem)
+                {
+                    _selectedItem = value;
+                    RaisePropertyChanged("SelectedItem");
+                }
+            }
+        }
 
         private Invoice _theInvoice = null;
         public Invoice TheInvoice
@@ -322,6 +390,9 @@
             return invoiceItems;
         }
 
+
+        /* ------------------------------------ Private Methods -------------------------------------------- */
+        #region Private Methods
 
         /// <summary>
         /// Generates an Annual Invoice for an Owner
@@ -526,9 +597,120 @@
             report.ExportToPdf(fileName);
         }
 
+
+        protected void RegisterForChangedNotification<T>(ObservableCollection<T> list) where T : INotifyPropertyChanged
+        {
+            list.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.List_CollectionChanged<T>);
+            foreach (T row in list)
+            {
+                row.PropertyChanged += new PropertyChangedEventHandler(this.ListItem_PropertyChanged);
+            }
+        }
+
+        private void List_CollectionChanged<T>(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) where T : INotifyPropertyChanged
+        {
+            if (e != null && e.OldItems != null)
+            {
+                foreach (T row in e.OldItems)
+                {
+                    if (row != null)
+                    {
+                        // If one is deleted you can DeleteOnSubmit it here or something, also unregister for its property changed
+                        row.PropertyChanged -= this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+
+            if (e != null && e.NewItems != null)
+            {
+                foreach (T row in e.NewItems)
+                {
+                    if (row != null)
+                    {
+                        // If a new one is entered you can InsertOnSubmit it here or something, also register for its property changed
+                        row.PropertyChanged += this.ListItem_PropertyChanged;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Executes when the RelationsToProcess collection changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _listOfItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            string action = e.Action.ToString();
+
+            switch (action)
+            {
+                case "Add":
+                    var newItems = e.NewItems;
+                    foreach (ListOfItem i in newItems)
+                    {
+                        dc.ListOfItems.InsertOnSubmit(i);
+                    }
+                    break;
+                case "Remove":
+                    var oldItems = e.OldItems;
+                    foreach (ListOfItem i in oldItems)
+                    {
+                        dc.ListOfItems.DeleteOnSubmit(i);
+                    }
+                    break;
+            }
+            bool foo = IsDirty;
+            RaisePropertyChanged("DataChanged");
+        }
+
+
+        /// <summary>
+        /// Listen for changes to a registered collection's property(ies)
+        /// </summary>
+        /// <param name = "sender" ></ param >
+        /// < param name="e"></param>
+        private void ListItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //string prop = e.PropertyName;
+
+            //switch (prop)
+            //{
+            //    case "InvoiceItem":
+            //        InvoiceItem invoiceItem = sender as InvoiceItem;
+
+            //        bool foo1 = IsDirty;
+            //        break;
+            //}
+            bool foo = IsDirty;
+            RaisePropertyChanged("DataChanged");
+        }
+        #endregion
+
+        /* ------------------------------------ Public Methods -------------------------------------------- */
+        #region Public Methods
+
+        /// <summary>
+        /// Property Changed event handler for the Host instance
+        /// </summary>
+        /// <param name="sender">object invoking the method</param>
+        /// <param name="e">property change event arguments</param>
+        protected void HostNotification_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Refresh":
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, dc.ListOfItems);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
     }
 
-    /*================================================================================================================================================*/
+    /*====================================================Command Sink Bindings======================================================================*/
     /// <summary>
     /// Command sink bindings......
     /// </summary>
@@ -553,10 +735,8 @@
         /// </summary>
         private bool CanSaveExecute
         {
-            get
-            {
-                return false;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -566,6 +746,7 @@
         private void SaveExecute()
         {
             this.IsBusy = true;
+            ChangeSet cs = dc.GetChangeSet();
             this.dc.SubmitChanges();
             RaisePropertyChanged("DataChanged");
             this.IsBusy = false;
@@ -587,7 +768,7 @@
         #endregion
     }
 
-    /*================================================================================================================================================*/
+    /*=====================================================Commands and Actions===============================================================*/
     public partial class AdministrationViewModel : CommonViewModel
     {
         /// <summary>
@@ -879,7 +1060,7 @@
                     SelectedSeason.IsCurrent = true;
                     SelectedSeason.IsNext = false;
                     SelectedSeason.IsDuesApplied = true;
-                    Seasons[SelectedSeasonIndex + 1].IsNext = true; 
+                    Seasons[SelectedSeasonIndex + 1].IsNext = true;
                     Seasons[SelectedSeasonIndex + 1].IsVisible = true;
 
                     ChangeSet cs = dc.GetChangeSet();
@@ -959,7 +1140,7 @@
 
             int count = list.Count();
 
-            using (var StreamWriter = new StreamWriter(@"D:\LateNotices\"+ whichLate +".csv"))
+            using (var StreamWriter = new StreamWriter(@"D:\LateNotices\" + whichLate + ".csv"))
             {
                 StringBuilder sb2 = new StringBuilder();
                 sb2.Append("OwnerID|MailTo|Address|Address2|City|State|Zip");
@@ -1104,189 +1285,31 @@
         }
 
         /// <summary>
-        /// Apply 60 Days Late fee Command
+        /// Remove Invoice Item from grid Command
         /// </summary>
-        //private ICommand _applyLate60DaysCommand;
-        //public ICommand ApplyLate60DaysCommand
-        //{
-        //    get
-        //    {
-        //        return _applyLate60DaysCommand ?? (_applyLate60DaysCommand = new CommandHandler(() => ApplyLate60DaysAction(), true));
-        //    }
-        //}
+        private ICommand _removeItemCommand;
+        public ICommand RemoveItemCommand
+        {
+            get
+            {
+                return _removeItemCommand ?? (_removeItemCommand = new CommandHandlerWparm((object parameter) => RemoveItemAction(parameter), true));
+            }
+        }
 
         /// <summary>
-        /// 60 Day Late command action
+        /// Remove invoice item from grid command action
         /// </summary>
         /// <param name="type"></param>
-        //public void ApplyLate60DaysAction()
-        //{
-        //    int? transactionID = null;
-        //    int? noteID = null;
+        public void RemoveItemAction(object parameter)
+        {
+            ListOfItem item = parameter as ListOfItem;
 
-        //    if (!IsApply60DayLate)
-        //    {
-        //        MessageBox.Show("You cannot apply fees before July 1st, or after July 7th");
-        //    }
-        //    else
-        //    {
-        //        IsBusy = true;
-
-        //        var list = (from x in this.dc.v_OwnerDetails
-        //                    where x.Balance > 100.00m
-        //                    select x);
-        //        foreach (v_OwnerDetail ownerDetail in list)
-        //        {
-        //            Owner owner = (from x in dc.Owners
-        //                           where x.OwnerID == ownerDetail.OwnerID
-        //                           select x).FirstOrDefault();
-
-        //            StringBuilder sb = new StringBuilder();
-        //            decimal amount = 20.00m;
-        //            sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-        //            //if (assessment == true)
-        //            //{
-        //            //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-        //            //}
-        //            //sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-
-        //            string note = String.Format("60 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-        //            noteID = AddNote(owner, note);
-        //            //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
-
-        //            /// Add the XRef record Transaction <-> Note
-        //            /// 
-        //            // --OLD--
-        //            //try
-        //            //{
-        //            //    TransactionXNote tXn = new TransactionXNote();
-        //            //    int? tXnID = null;
-        //            //    dc.usp_InsertTransactionXNote(
-        //            //        transactionID,
-        //            //        noteID,
-        //            //        ref tXnID);
-        //            //}
-        //            //catch (Exception ex)
-        //            //{
-        //            //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            //}
-
-        //            // Generate the PDF Report
-        //            Late60Day late60 = new Late60Day();
-        //            late60.OwnerID = (int)ownerDetail.OwnerID;
-        //            late60.Season = CurrentSeason.TimePeriod;
-        //            dc.Late60Days.InsertOnSubmit(late60);
-
-        //            ChangeSet cs = dc.GetChangeSet();
-        //            this.dc.SubmitChanges();
-
-        //            string fileName = string.Format(@"D:\LateNotices\60Day\60Day-{0}.PDF", ownerDetail.OwnerID);
-        //            Reports.PastDue60Days report = new Reports.PastDue60Days();
-        //            report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
-        //            report.Parameters["InvoiceDate"].Value = DateTime.Now;
-        //            report.CreateDocument();
-        //            report.ExportToPdf(fileName);
-        //        }
-
-        //        IsBusy = false;
-
-        //        SelectedSeason.IsLate60Applied = true;
-        //        this.dc.SubmitChanges();
-        //        MessageBox.Show("Fees have been applied");
-        //    }
-        //}
-
-        /// <summary>
-        /// Apply 90 Days Late fee Command
-        /// </summary>
-        //private ICommand _applyLate90DaysCommand;
-        //public ICommand ApplyLate90DaysCommand
-        //{
-        //    get
-        //    {
-        //        return _applyLate90DaysCommand ?? (_applyLate90DaysCommand = new CommandHandler(() => ApplyLate90DaysAction(), true));
-        //    }
-        //}
-
-        /// <summary>
-        /// 90 Day Late command action
-        /// </summary>
-        /// <param name="type"></param>
-        //public void ApplyLate90DaysAction()
-        //{
-        //    int? transactionID = null;
-        //    int? noteID = null;
-
-        //    if (!IsApply90DayLate)
-        //    {
-        //        MessageBox.Show("You cannot apply fees before Aug 1st, or after Aug 7th");
-        //    }
-        //    else
-        //    {
-        //        IsBusy = true;
-
-        //        var list = (from x in this.dc.v_OwnerDetails
-        //                    where x.Balance > 100.00m
-        //                    select x);
-        //        foreach (v_OwnerDetail ownerDetail in list)
-        //        {
-        //            Owner owner = (from x in dc.Owners
-        //                           where x.OwnerID == ownerDetail.OwnerID
-        //                           select x).FirstOrDefault();
-
-        //            StringBuilder sb = new StringBuilder();
-        //            decimal amount = 20.00m;
-        //            sb.AppendFormat("LateFee:{0}", amount.ToString("C", CultureInfo.CurrentCulture));
-        //            //if (assessment == true)
-        //            //{
-        //            //    amount += SelectedSeason.AssessmentAmount * propertyCount;
-        //            //    sb.AppendFormat(" {0} Assessment:{1}", SelectedSeason.Assessment, (SelectedSeason.CartFee * cartCount).ToString("C", CultureInfo.CurrentCulture));
-        //            //}
-
-        //            string note = String.Format("90 Day Late Fee of {0} applied", amount.ToString("C", CultureInfo.CurrentCulture));
-        //            noteID = AddNote(owner, note);
-        //            //transactionID = GenerateFinancialTransaction(owner, amount, sb.ToString(), "Fee applied: 90 days late");
-
-        //            /// Add the XRef record Transaction <-> Note
-        //            /// 
-        //            //--OLD--
-        //            //try
-        //            //{
-        //            //    TransactionXNote tXn = new TransactionXNote();
-        //            //    int? tXnID = null;
-        //            //    dc.usp_InsertTransactionXNote(
-        //            //        transactionID,
-        //            //        noteID,
-        //            //        ref tXnID);
-        //            //}
-        //            //catch (Exception ex)
-        //            //{
-        //            //    MessageBox.Show("Error saving", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            //}
-
-        //            // Generate the PDF report
-        //            Late90Day late90 = new Late90Day();
-        //            late90.OwnerID = (int)ownerDetail.OwnerID;
-        //            late90.Season = CurrentSeason.TimePeriod;
-        //            dc.Late90Days.InsertOnSubmit(late90);
-
-        //            ChangeSet cs = dc.GetChangeSet();
-        //            this.dc.SubmitChanges();
-
-        //            string fileName = string.Format(@"D:\LateNotices\90Day\90Day-{0}.PDF", ownerDetail.OwnerID);
-        //            Reports.PastDue90Days report = new Reports.PastDue90Days();
-        //            report.Parameters["OwnerID"].Value = ownerDetail.OwnerID;
-        //            report.Parameters["InvoiceDate"].Value = DateTime.Now;
-        //            report.CreateDocument();
-        //            report.ExportToPdf(fileName);
-        //        }
-        //        IsBusy = false;
-
-        //        SelectedSeason.IsLate90Applied = true;
-        //        this.dc.SubmitChanges();
-        //        MessageBox.Show("Fees have been applied");
-        //    }
-        //}
+            /// Remove the selected item from the in-memory collection.  This action will
+            /// in turn cause a collection_changed event to fire which will result in the
+            /// item being removed from the DC's entity set.
+            /// 
+            this.ListOfItems.Remove(item);
+        }
     }
 
     /*================================================================================================================================================*/
