@@ -252,7 +252,7 @@
                             <dxg:GridControl.TotalSummary>
                                 <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
                                 <dxg:GridSummaryItem FieldName="PropertyCount" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />
-                                <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum"  DisplayFormat="{}{0:c0}" />
+                                <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum"  DisplayFormat="{}{0:c2}" />
                             </dxg:GridControl.TotalSummary>
 
                             <!-- Because we are using a View for the Owners, we cannot get the related  -->
