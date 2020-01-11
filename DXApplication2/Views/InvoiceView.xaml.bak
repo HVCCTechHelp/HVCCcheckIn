@@ -16,7 +16,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
@@ -78,7 +78,7 @@
 
                 <dxlc:LayoutGroup View="Group" Orientation="Vertical">
                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Header="Season">
-                        <dxlc:LayoutItem Label="For Fiscal Year:" x:Name="lbFiscalYear" Margin="0,0,0,10" HorizontalAlignment="Left" />
+                        <dxlc:LayoutItem Label="For Fiscal Year:" x:Name="lbFiscalYear"  Margin="0,0,0,10" HorizontalAlignment="Left"/>
                         <dxlc:LayoutItem>
                             <dxe:ComboBoxEdit x:Name="ceFiscalYear" Width="150" HorizontalAlignment="Left"
                                               ItemsSource="{Binding FiscalYears}"
@@ -91,7 +91,7 @@
                                               ValidateOnEnterKeyPressed="False"
                                               >
                                 <dxe:TextEdit.EditValue>
-                                    <Binding Path="FiscalYear" Mode="TwoWay" />
+                                    <Binding Path="FiscalYear" Mode="TwoWay"/>
                                 </dxe:TextEdit.EditValue>
                             </dxe:ComboBoxEdit>
                         </dxlc:LayoutItem>
@@ -131,7 +131,7 @@
                                 </dxg:GridControl.View>
                                 <!-- columns of the detail grid -->
                                 <dxg:GridControl.Columns>
-                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" ReadOnly="True" SortOrder="Ascending" SortIndex="0">
+                                    <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="20" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
                                             </dxe:TextEditSettings>
@@ -144,7 +144,7 @@
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>-->
-                                    <dxg:GridColumn FieldName="Properties" Header="Properties" Width="150" ReadOnly="True" />
+                                    <dxg:GridColumn FieldName="Properties" Header="Properties" Width="150" ReadOnly="True"/>
                                     <dxg:GridColumn FieldName="Dues" Header="Dues" Width="25" ReadOnly="True">
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">

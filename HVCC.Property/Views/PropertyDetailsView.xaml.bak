@@ -12,7 +12,7 @@
         xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         mc:Ignorable="d" 
         d:DesignHeight="700" d:DesignWidth="900"
         >
@@ -127,7 +127,7 @@
                                             ReadOnly="True"
                                             EditFormVisible="False"
                                             />
-                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="20"     
+                            <dxg:GridColumn FieldName="Lot" Header="Lot" Width="20"   
                                             AllowEditing="False" 
                                             ReadOnly="True"
                                             EditFormVisible="False"
@@ -148,8 +148,8 @@
                                     </dxe:TextEditSettings>
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.IsInGoodStanding"  Width="10" 
-                                            AllowEditing="True" 
+                            <dxg:GridColumn FieldName="CurrentAnnualPropertyInformation.IsInGoodStanding" Width="10" 
+                                            AllowEditing="True"
                                             EditFormVisible="True" 
                                             EditFormCaption="Good Standing:" 
                                             />

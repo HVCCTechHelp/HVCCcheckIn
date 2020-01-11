@@ -12,7 +12,7 @@
         xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
         mc:Ignorable="d" 
         d:DesignHeight="700" d:DesignWidth="900"
         >

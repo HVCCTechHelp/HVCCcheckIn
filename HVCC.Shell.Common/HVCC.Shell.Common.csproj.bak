@@ -45,17 +45,17 @@
     <AssemblyOriginatorKeyFile>HVCCShell_Key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Images.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Mvvm.v16.1" />
-    <Reference Include="DevExpress.Xpf.Core.v16.1" />
-    <Reference Include="DevExpress.Data.v16.1" />
-    <Reference Include="DevExpress.Printing.v16.1.Core" />
-    <Reference Include="DevExpress.Xpf.Docking.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Grid.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Grid.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.LayoutControl.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Printing.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Ribbon.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Images.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Mvvm.v17.1" />
+    <Reference Include="DevExpress.Xpf.Core.v17.1" />
+    <Reference Include="DevExpress.Data.v17.1" />
+    <Reference Include="DevExpress.Printing.v17.1.Core" />
+    <Reference Include="DevExpress.Xpf.Docking.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Grid.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Grid.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.LayoutControl.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Printing.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Ribbon.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
@@ -73,14 +73,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandSinkBinding.cs" />
+    <Compile Include="Commands\CommandActions.cs" />
     <Compile Include="Commands\CustomCommands.cs" />
     <Compile Include="Converters\BalanceValueToTypeConverter.cs" />
+    <Compile Include="Converters\Base64ImageConverter.cs" />
     <Compile Include="Converters\BooleanToVisibility.cs" />
+    <Compile Include="Converters\DoubleToIntConverter.cs" />
     <Compile Include="Converters\EventArgsConverter.cs" />
     <Compile Include="Converters\BitmapToByteArrayConverter.cs" />
     <Compile Include="Converters\InvertBoolean.cs" />
     <Compile Include="Converters\NullToCollapsed.cs" />
     <Compile Include="Converters\RowClickConverter.cs" />
+    <Compile Include="Converters\XmlConverter.cs" />
     <Compile Include="ExportService.cs" />
     <Compile Include="CommandSink.cs" />
     <Compile Include="Interfaces\IDataContext.cs" />
@@ -104,6 +108,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Resources\Enumerations.cs" />
     <Compile Include="ViewModels\CommonViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

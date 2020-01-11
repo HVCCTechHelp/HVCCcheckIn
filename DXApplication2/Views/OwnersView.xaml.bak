@@ -16,7 +16,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
@@ -44,14 +44,14 @@
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage Caption="Actions">
+                    <dxr:RibbonPage Caption="Actions" >
                         <dxr:RibbonPageGroup Caption="Data">
                             <dxb:BarButtonItem Content="Refresh" 
                                                        IsEnabled="{Binding IsRefreshEnabled, Mode=TwoWay}"
                                                        Command="{Binding RefreshCommand}"
                                                        Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
                                                        LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
-                                                       ToolTip="Refresh Property Data" />
+                                                       ToolTip="Refresh Property Data"/>
                             <!--<dxb:BarButtonItem Content="Undo" 
                                                        IsEnabled="False"
                                                        Command="{Binding UndoCommand}"
@@ -148,7 +148,7 @@
 
             </dxr:RibbonControl>
             <dxlc:LayoutControl Orientation="Vertical">
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Name Search">
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Name Search" >
 
                     <dxlc:LayoutItem Label="Enter a name to search" Width="450" HorizontalAlignment="Left">
                         <dxg:LookUpEdit Name="searchLookUpEdit" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30"
@@ -157,16 +157,16 @@
                                     AutoPopulateColumns="False"
                                     DisplayMember="LName" Width="650">
                             <dxg:LookUpEdit.StyleSettings>
-                                <dxg:SearchLookUpEditStyleSettings />
+                                <dxg:SearchLookUpEditStyleSettings/>
                             </dxg:LookUpEdit.StyleSettings>
                             <dxg:LookUpEdit.PopupContentTemplate>
                                 <ControlTemplate>
                                     <dxg:GridControl Name="PART_GridControl">
                                         <dxg:GridControl.Columns>
-                                            <dxg:GridColumn FieldName="FName" Header="First Name" />
-                                            <dxg:GridColumn FieldName="LName" Header="Last Name" />
-                                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship" />
-                                            <dxg:GridColumn FieldName="MailTo" Header="Owner" />
+                                            <dxg:GridColumn FieldName="FName" Header="First Name"/>
+                                            <dxg:GridColumn FieldName="LName" Header="Last Name"/>
+                                            <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship"/>
+                                            <dxg:GridColumn FieldName="MailTo" Header="Owner"/>
                                         </dxg:GridControl.Columns>
                                         <dxg:GridControl.View>
                                             <dxg:TableView Width="650">
@@ -223,18 +223,18 @@
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="30" ReadOnly="True" SortOrder="Ascending" SortIndex="0">
+                                <dxg:GridColumn FieldName="OwnerID" Header="OwnerID" Width="30" ReadOnly="True" SortOrder="Ascending" SortIndex="0" >
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="PropertyCount" Header="Properties" Width="20" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="PropertyCount" Header="Properties" Width="20" ReadOnly="True"/>
                                 <dxg:GridColumn FieldName="MailTo" Header="MailTo" Width="75" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address" Header="Address" Width="100" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Address2" Header="Address2" Width="30" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="City" Header="City" Width="50" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="State" Header="State" Width="25" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="State" Header="State" Width="25" ReadOnly="True"/>
                                 <dxg:GridColumn FieldName="Zip" Header="Zip" Width="30" ReadOnly="True" />
                                 <dxg:GridColumn FieldName="Balance" Header="Balance" Width="25" ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
@@ -243,16 +243,16 @@
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="PrimaryPhone" Header="Primary Phone" Width="50" ReadOnly="True" />
-                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
+                                <dxg:GridColumn FieldName="SecondaryPhone" Header="Secondary Phone" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="False"/>
                                 <dxg:GridColumn FieldName="EmailAddress" Header="E-Mail" Width="100" ReadOnly="True" Visible="False" ShowInColumnChooser="False" />
                                 <dxg:GridColumn FieldName="IsSendByEmail" Header="Send Email" Width="50" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                                 <dxg:GridColumn FieldName="IsCurrentOwner" Header="Active" Width="20" ReadOnly="True" Visible="False" ShowInColumnChooser="True" />
                             </dxg:GridControl.Columns>
 
                             <dxg:GridControl.TotalSummary>
-                                <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count" DisplayFormat="{}{0:n0}" />
-                                <dxg:GridSummaryItem FieldName="PropertyCount" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
-                                <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="{}{0:c2}" />
+                                <dxg:GridSummaryItem FieldName="OwnerID" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="PropertyCount" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum"  DisplayFormat="{}{0:c2}" />
                             </dxg:GridControl.TotalSummary>
 
                             <!-- Because we are using a View for the Owners, we cannot get the related  -->

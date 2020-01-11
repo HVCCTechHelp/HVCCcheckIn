@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.OwnershipHistoryView" x:Name="OwnershipHistory"
+﻿<UserControl x:Class="HVCC.Shell.Views.WaterShutoffView" x:Name="WaterShutoff"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
@@ -16,22 +16,12 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
+        Loaded="WaterShutoff_Loaded"
         >
-
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <converters:BooleanToVisibility x:Key="BoolToVis" />
-            <converters:InvertBoolean x:Key="Invert" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/StyleDictionary.xaml" />
-                <ResourceDictionary Source="/HVCC.Shell.Common;component/Resources/ConverterDictionary.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:OpenFileDialogService Title="Open File" />
@@ -46,11 +36,15 @@
     </UserControl.CommandBindings>
 
     <dxb:BarManager>
+        <dxb:BarManager.Items>
+            <dxb:BarButtonItem x:Name="saveBtn" Content="Save" Command="ApplicationCommands.Save" Glyph="{dx:DXImage Image=Save_16x16.png}" LargeGlyph="{dx:DXImage Image=Save_32x32.png}" />
+        </dxb:BarManager.Items>
+
         <DockPanel x:Name="dockPanel">
 
             <dxr:RibbonControl DockPanel.Dock="Top">
                 <dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPage x:Name="OwnerChanges" Caption="Actions">
+                    <dxr:RibbonPage x:Name="shutoffActions" Caption="Actions">
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
                             <dxb:BarSubItem Content="Export" 
@@ -76,64 +70,103 @@
                                                    LargeGlyph="{dx:DXImage Image=Print_32x32.png}" />
                             </dxb:BarSubItem>
                         </dxr:RibbonPageGroup>
-                    </dxr:RibbonPage>
-                </dxr:RibbonDefaultPageCategory>
-            </dxr:RibbonControl>
 
+                    </dxr:RibbonPage>
+                    
+                    <!--<dxr:RibbonPage x:Name="shutoffReports" Caption="Reports">
+                        <dxr:RibbonPageGroup Caption="Reports">
+                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
+                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
+                        </dxr:RibbonPageGroup>
+                    </dxr:RibbonPage>-->
+
+                </dxr:RibbonDefaultPageCategory>
+
+            </dxr:RibbonControl>
             <dxlc:LayoutControl Orientation="Vertical">
 
-                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Property Ownership History">
+                <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Water Shutoff List" Width="Auto">
                     <dxlc:LayoutItem>
-                        <dxg:GridControl AutoPopulateColumns="False" x:Name="changeHistoryGrid" 
+                        <dxg:GridControl AutoPopulateColumns="False" x:Name="shutoffGrid" 
                                  IsEnabled="True"
-                                 ItemsSource="{Binding OwnershipHistories}"
-                                 SelectedItem="{Binding SelectedOwner, Mode=TwoWay}"
-                                 CurrentCellValue="{Binding CellValue, Mode=TwoWay}"
+                                 ItemsSource="{Binding WaterShutoffs}"
+                                 SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
                                  Width="Auto"
-                                 Height="800"
+                                 Height="700"
                                  HorizontalAlignment="Left"
                                  >
                             <dxg:GridControl.View>
-                                <dxg:TableView x:Name="tableViewOwnershipHistory" 
+                                <dxg:TableView x:Name="tableViewShutoffs" 
+                                               Width="Auto"
                                        AllowEditing="False"
                                        AllowColumnFiltering="True" 
                                        AllowGrouping="False"
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
-                                       AutoWidth="True" 
+                                       AutoWidth="False"
+                                       NavigationStyle="Row"
                                        SearchPanelNullText="Search"
                                        ShowSearchPanelMode="Always"
                                        ShowSearchPanelFindButton="True"
                                        SearchPanelClearOnClose="False"
 				                       ShowFixedTotalSummary="True" 
-                                       ShowTotalSummary="True"
-                                       NavigationStyle="Cell"
+                                       ShowTotalSummary="True" 
+                                       HorizontalScrollbarVisibility="Visible"
                                        >
+                                    <dxg:TableView.FormatConditions>
+                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Red" />
+                                        </dxg:FormatCondition>
+                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
+                                            <dxc:Format Foreground="Green" />
+                                        </dxg:FormatCondition>
+                                    </dxg:TableView.FormatConditions>
 
                                     <dxmvvm:Interaction.Behaviors>
                                         <dxmvvm:EventToCommand EventName="RowDoubleClick" 
-                                             Command="{Binding RowDoubleClickCommand}" CommandParameter="{Binding SelectedOwner}" />
+                                              Command="{Binding WaterShutoffCommand}" CommandParameter="{Binding SelectedRow}" />
                                     </dxmvvm:Interaction.Behaviors>
                                 </dxg:TableView>
                             </dxg:GridControl.View>
                             <!-- columns of the detail grid -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer" Header="Property" Width="50" IsEnabled="False" ReadOnly="True" Focusable="False" SortOrder="Ascending" SortIndex="0" AllowFocus="False" />
-                                <dxg:GridColumn FieldName="NewOwner" Header="New Owner" Width="200" IsEnabled="False" ReadOnly="True" Focusable="False" AllowFocus="False" />
-                                <dxg:GridColumn FieldName="NewOwnerID" Header="ID" Width="20" ReadOnly="True" Focusable="True" />
-                                <dxg:GridColumn FieldName="PreviousOwner" Header="Previous Owner" Width="200" IsEnabled="False" Focusable="False" AllowFocus="False" />
-                                <dxg:GridColumn FieldName="PreviousOwnerID" Header="ID" Width="20" Focusable="True" />
-                                <dxg:GridColumn FieldName="LastModified" Header="Recorded" Width="100" IsEnabled="False" Focusable="False" AllowFocus="False">
+                                <dxg:GridColumn FieldName="OwnerID" Header="ID" Width="60" ReadOnly="True" SortOrder="Ascending" SortIndex="0" Fixed="Left">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="000000">
+                                    </dxe:TextEditSettings>
+                                </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="MailTo" Header="Owner" Width="150" ReadOnly="True"  Fixed="Left"/>
+                                <dxg:GridColumn FieldName="Balance" Header="Balance" Width="100" ReadOnly="True" Fixed="Left">
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:DateEditSettings Mask="d" MaskUseAsDisplayFormat="True" />
+                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
+                                        </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="SuspensionDate" Header="Suspended" Width="125" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="IsWaterShutoff" Header="Water Off" Width="125" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="IsMeterLocked" Header="Meter Locked" Width="125" ReadOnly="True" />
+                                <dxg:GridColumn FieldName="IsLate30" Header="Late-30" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsLate60" Header="Late-60" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsLate90" Header="Late-90" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsOnPaymentPlan" Header="On Pmt Plan" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsInCollections" Header="In Collections" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsIntentToLien" Header="Intent Lien" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="IsLienFiled" Header="Liened" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="FirstNotificationDate" Header="1st Notification" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="SecondNotificationDate" Header="2nd Notification" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="ShutoffNoticeIssuedDate" Header="Shutoff Notified" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="LienFiledDate" Header="Lien Filed" Width="125" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="TermsOfPaymentPlan" Header="Payment Plan Terms" Width="250" ReadOnly="True"/>
                             </dxg:GridControl.Columns>
                             <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="Total: {0:c2}" />
                                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />
                             </dxg:GridControl.TotalSummary>
+
                         </dxg:GridControl>
                     </dxlc:LayoutItem>
+
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
         </DockPanel>

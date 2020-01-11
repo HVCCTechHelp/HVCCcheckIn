@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HVCC.Shell.Views.AdministrationView" x:Name="Administration"
+﻿<UserControl  x:Class="HVCC.Shell.Views.AdministrationView" x:Name="Administration"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
@@ -16,7 +16,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
@@ -121,10 +121,10 @@
 
                             <dxlc:LayoutGroup View="Group" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <dxlc:LayoutItem Label="Your Role: ">
-                                    <dxe:TextEdit Text="{Binding Host.ApplPermissions.Role}" IsReadOnly="True" ShowBorder="False" />
+                                    <dxe:TextEdit Text="{Binding Host.ApplPermissions.Role}" IsReadOnly="True" ShowBorder="False"/>
                                 </dxlc:LayoutItem>
                             </dxlc:LayoutGroup>
-                            <dxlc:GroupSeparator />
+                            <dxlc:GroupSeparator/>
                             <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
                                 <dxlc:LayoutItem>
                                     <dxg:GridControl x:Name="privligesGrid" 
@@ -153,21 +153,21 @@
                                         <dxg:GridControl.Columns>
                                             <dxg:GridColumn FieldName="RoleIndex" Header="RoleIndex" Width="25" Fixed="Left" IsEnabled="False" ReadOnly="True" SortOrder="Ascending" SortIndex="0" />
                                             <dxg:GridColumn FieldName="Role" Header="Role" Width="125" Fixed="Left" IsEnabled="False" ReadOnly="True" />
-                                            <dxg:GridColumn FieldName="CanViewAdministration" Header="CanViewAdministration" Width="75" ReadOnly="True" />
+                                            <dxg:GridColumn FieldName="CanViewAdministration" Header="CanViewAdministration" Width="75" ReadOnly="True"/>
                                             <dxg:GridColumn FieldName="CanViewProperty" Header="CanViewProperty" Width="75" ReadOnly="False" />
                                             <dxg:GridColumn FieldName="CanEditProperty" Header="CanEditProperty" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanViewOwner" Header="CanViewOwner" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanEditOwner" Header="CanEditOwner" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanViewOwner" Header="CanViewOwner" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditOwner" Header="CanEditOwner" Width="75" ReadOnly="False"/>
                                             <dxg:GridColumn FieldName="CanViewOwnerNotes" Header="CanViewOwnerNotes" Width="75" ReadOnly="False" />
                                             <dxg:GridColumn FieldName="CanEditOwnerNotes" Header="CanEditOwnerNotes" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanAddRelationship" Header="CanAddRelationship" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanEditRelationship" Header="CanEditRelationship" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanCheckIn" Header="CanCheckIn" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanViewWater" Header="CanViewWater" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanEditWater" Header="CanEditWater" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanImport" Header="CanImport" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanExport" Header="CanExport" Width="75" ReadOnly="False" />
-                                            <dxg:GridColumn FieldName="CanPrint" Header="CanPrint" Width="75" ReadOnly="False" />
+                                            <dxg:GridColumn FieldName="CanAddRelationship" Header="CanAddRelationship" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditRelationship" Header="CanEditRelationship" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanCheckIn" Header="CanCheckIn" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanViewWater" Header="CanViewWater" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanEditWater" Header="CanEditWater" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanImport" Header="CanImport" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanExport" Header="CanExport" Width="75" ReadOnly="False"/>
+                                            <dxg:GridColumn FieldName="CanPrint" Header="CanPrint" Width="75" ReadOnly="False"/>
                                         </dxg:GridControl.Columns>
 
                                     </dxg:GridControl>
@@ -180,83 +180,83 @@
                         <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Current Season" Width="Auto">
                             <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Width="Auto">
                                 <dxlc:LayoutItem Label="Select Season: " Width="200">
-                                    <dxe:ListBoxEdit Height="100 " Width="100"
+                                    <dxe:ListBoxEdit 
+                            Height="100 " Width="100"
                             HorizontalAlignment="Left"
                             ItemsSource="{Binding Seasons}" 
                             SelectedIndex="{Binding SelectedSeasonIndex}"
-                           DisplayMember="TimePeriod" />
+                           DisplayMember="TimePeriod"/>
                                 </dxlc:LayoutItem>
 
                                 <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="Auto">
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                                        <dxlc:LayoutItem Label="Dues: " Width="50" />
+                                        <dxlc:LayoutItem Label="Dues: " Width="50"/>
                                         <dxlc:LayoutItem>
                                             <dxe:TextEdit Text="{Binding SelectedSeason.AnnualDues}" HorizontalAlignment="Left"
-                                      MaskType="Numeric" Mask="c" MaskUseAsDisplayFormat="True" />
+                                      MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True" />
                                         </dxlc:LayoutItem>
-                                        <dxlc:LayoutItem Label="LateFee: " Width="50" />
+                                        <dxlc:LayoutItem Label="LateFee: " Width="50"/>
                                         <dxlc:LayoutItem>
                                             <dxe:TextEdit Text="{Binding SelectedSeason.LateFee}" HorizontalAlignment="Left"
-                                      MaskType="Numeric" Mask="c" MaskUseAsDisplayFormat="True" />
+                                      MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True" />
                                         </dxlc:LayoutItem>
 
-                                        <dxlc:LayoutItem Label="Cart Fee: " Width="50" HorizontalAlignment="Left" />
+                                        <dxlc:LayoutItem Label="Cart Fee: " Width="50" HorizontalAlignment="Left"/>
                                         <dxlc:LayoutItem>
                                             <dxe:TextEdit Text="{Binding SelectedSeason.CartFee}" HorizontalAlignment="Left"
-                                      MaskType="Numeric" Mask="c" MaskUseAsDisplayFormat="True" />
+                                      MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True"/>
                                         </dxlc:LayoutItem>
-                                        <dxlc:LayoutItem Label="Assessment: " Width="75" />
+                                        <dxlc:LayoutItem Label="Assessment: " Width="75"/>
                                         <dxlc:LayoutItem>
-                                            <dxe:TextEdit Text="{Binding SelectedSeason.Assessment}" HorizontalAlignment="Left"
-                                      />
+                                            <dxe:TextEdit Text="{Binding SelectedSeason.Assessment}" HorizontalAlignment="Left"/>
                                         </dxlc:LayoutItem>
-                                        <dxlc:LayoutItem Label="Amount: " Width="50" />
+                                        <dxlc:LayoutItem Label="Amount: " Width="50"/>
                                         <dxlc:LayoutItem>
                                             <dxe:TextEdit Text="{Binding SelectedSeason.AssessmentAmount}" HorizontalAlignment="Left"
-                                      MaskType="Numeric" Mask="c" MaskUseAsDisplayFormat="True" />
+                                      MaskType="Numeric" Mask="c"  MaskUseAsDisplayFormat="True"/>
                                         </dxlc:LayoutItem>
                                     </dxlc:LayoutGroup>
                                     <!-- Dues -->
-                                    <Separator Height="25" />
+                                    <Separator Height="25"/>
 
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
-                                        <dxlc:LayoutItem Label="Apply Dues: " Width="200" />
-                                        <dxlc:LayoutItem Label="Apply 1st Late: " Width="200" />
-                                        <dxlc:LayoutItem Label="Apply 2nd Late: " Width="200" />
-                                        <dxlc:LayoutItem Label="Apply 3rd Late: " Width="200" />
+                                        <dxlc:LayoutItem Label="Apply Dues: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 1st Late: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 2nd Late: " Width="200"/>
+                                        <dxlc:LayoutItem Label="Apply 3rd Late: " Width="200"/>
                                     </dxlc:LayoutGroup>
                                     <!-- Annual Dues -->
 
                                     <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="Auto">
                                         <dxlc:LayoutItem Width="200">
                                             <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
-                                                      IsEnabled="{Binding SelectedSeason.IsDuesApplied, Converter={StaticResource Invert}}">
+                                                      IsEnabled="{Binding SelectedSeason.IsDuesApplied, Converter={StaticResource Invert}}" >
                                                 <dxmvvm:Interaction.Behaviors>
-                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyDuesCommand}" />
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyDuesCommand}"/>
                                                 </dxmvvm:Interaction.Behaviors>
                                             </dxc:SimpleButton>
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Width="200">
                                             <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
-                                                      IsEnabled="{Binding IsApply30DayLate}">
+                                                      IsEnabled="{Binding IsApply30DayLate}" >
                                                 <dxmvvm:Interaction.Behaviors>
-                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyFirstLateCommand}" CommandParameter="first" />
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyFirstLateCommand}" CommandParameter="first"/>
                                                 </dxmvvm:Interaction.Behaviors>
                                             </dxc:SimpleButton>
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Width="200">
                                             <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
-                                                      IsEnabled="{Binding IsApply60DayLate}">
+                                                      IsEnabled="{Binding IsApply60DayLate}" >
                                                 <dxmvvm:Interaction.Behaviors>
-                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplySecondLateCommand}" CommandParameter="second" />
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplySecondLateCommand}" CommandParameter="second"/>
                                                 </dxmvvm:Interaction.Behaviors>
                                             </dxc:SimpleButton>
                                         </dxlc:LayoutItem>
                                         <dxlc:LayoutItem Width="200">
                                             <dxc:SimpleButton Content="Apply" Width="75" HorizontalAlignment="Left"
-                                                      IsEnabled="{Binding IsApply90DayLate}">
+                                                      IsEnabled="{Binding IsApply90DayLate}" >
                                                 <dxmvvm:Interaction.Behaviors>
-                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyThirdLateCommand}" CommandParameter="third" />
+                                                    <dxmvvm:EventToCommand EventName="Click" Command="{Binding ApplyThirdLateCommand}" CommandParameter="third"/>
                                                 </dxmvvm:Interaction.Behaviors>
                                             </dxc:SimpleButton>
                                         </dxlc:LayoutItem>
@@ -276,10 +276,10 @@
                 <dx:DXTabItem Header="Invoice Items">
 
                     <dxlc:LayoutControl Orientation="Vertical">
-                        <dxlc:LayoutItem>
-                            <Label FontSize="36" FontWeight="Bold" FontFamily="MV Boli">Invoice Items</Label>
+                        <dxlc:LayoutItem >
+                            <Label  FontSize="36" FontWeight="Bold" FontFamily="MV Boli">Invoice Items</Label>
                         </dxlc:LayoutItem>
-                        <dxlc:LayoutItem>
+                        <dxlc:LayoutItem >
                             <Label FontStyle="Italic" FontWeight="DemiBold" Foreground="#FF0B15EE">Invoice Items in this grid should always match the chart of accounts in QuickBooks</Label>
                         </dxlc:LayoutItem>
                         <dxlc:LayoutGroup View="Group" Orientation="Horizontal">
@@ -321,22 +321,22 @@
                                     </dxg:GridControl.View>
                                     <!-- columns of the detail grid -->
                                     <dxg:GridControl.Columns>
-                                        <dxg:GridColumn FieldName="IsActive" Header="Active" Width="75" Fixed="Left" />
-                                        <dxg:GridColumn FieldName="Priority" Header="Priority" Width="75" Fixed="Left" SortIndex="0" />
+                                        <dxg:GridColumn FieldName="IsActive" Header="Active" Width="75" Fixed="Left"/>
+                                        <dxg:GridColumn FieldName="Priority" Header="Priority" Width="75" Fixed="Left" SortIndex="0"/>
                                         <dxg:GridColumn FieldName="ItemCategory" Header="Category" Width="150">
                                             <dxg:GridColumn.EditSettings>
-                                                <dxe:TextEditSettings MaskType="RegEx" MaskUseAsDisplayFormat="True" Mask="([A-Z]|\d)+" />
+                                                <dxe:TextEditSettings MaskType="RegEx" MaskUseAsDisplayFormat="True" Mask="([A-Z]|\d)+"/>
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
-                                        <dxg:GridColumn FieldName="Item" Header="Item" Width="200" />
-                                        <dxg:GridColumn FieldName="Rate" Header="Rate" Width="75">
+                                        <dxg:GridColumn FieldName="Item" Header="Item"  Width="200"/>
+                                        <dxg:GridColumn FieldName="Rate" Header="Rate"  Width="75">
                                             <dxg:GridColumn.EditSettings>
                                                 <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
                                                 </dxe:TextEditSettings>
                                             </dxg:GridColumn.EditSettings>
                                         </dxg:GridColumn>
 
-                                        <dxg:GridColumn FieldName="Description" Header="Description" Width="200*" />
+                                        <dxg:GridColumn FieldName="Description" Header="Description"  Width="200*"/>
                                     </dxg:GridControl.Columns>
 
                                 </dxg:GridControl>

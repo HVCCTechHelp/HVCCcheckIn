@@ -22,7 +22,7 @@ namespace HVCC.Shell.Models
     /// Extends definition of Invoice
     /// </summary>
  #region Invoice
-    public partial class Invoice : ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
+    public partial class Invoice : IDisposable, ICloneable, INotifyPropertyChanging, INotifyPropertyChanged
     {
         /// <summary>
         /// PaymentAmount is only used for referential calculations associated to an invoice
@@ -160,6 +160,171 @@ namespace HVCC.Shell.Models
 
         #endregion
     }
+
+    public partial class AnnualInvoice : IDisposable
+    {
+        public Owner Owner { get; set; }
+        public Decimal BalanceBeforeInvoice { get; set; }
+        public Season Season { get; set; }
+        public int Quanity { get; set; }
+        public Decimal DuesRate { get; set; }
+        public string Description { get; set; }
+        public string Assessment { get; set; }
+        public Decimal AssessmentRate { get; set; }
+        public Decimal TotalAmount { get; set; }
+        public int InvoiceNum { get; set; }
+    }
+
+
+    /*================================================================================================================================================*/
+    /// <summary>
+    /// Disposition.......
+    /// </summary>
+    #region public partial class Invoice : IDisposable
+    public partial class Invoice : IDisposable
+    {
+        // Resources that must be disposed:
+        public Invoice invoice = null;
+
+        private bool disposed = false;
+
+        // Implement IDisposable.
+        // Do not make this method virtual.
+        // A derived class should not be able to override this method.
+        public void Dispose()
+        {
+            this.Dispose(true);
+
+            // This object will be cleaned up by the Dispose method.
+            // Therefore, you should call GC.SupressFinalize to
+            // take this object off the finalization queue
+            // and prevent finalization code for this object
+            // from executing a second time.
+            GC.SuppressFinalize(!this.disposed); // if !disposed, there is more cleanup to do.
+        }
+
+        // Dispose(bool disposing) executes in two distinct scenarios.
+        // If disposing equals true, the method has been called directly
+        // or indirectly by a user's code. Managed and unmanaged resources
+        // can be disposed.
+        // If disposing equals false, the method has been called by the
+        // runtime from inside the finalizer and you should not reference
+        // other objects. Only unmanaged resources can be disposed.
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.DisposeManagedResources();
+
+                    //// TODO:   Clean up desposables.....
+                    if (null != this.invoice)
+                    {
+                        this.invoice.Dispose();
+                        this.invoice = null;
+                    }
+                }
+
+                /*Clean up unmanaged resources here*/
+
+                this.disposed = true;
+            }
+        }
+
+        protected virtual void DisposeManagedResources()
+        {
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the class.  (a.k.a. destructor)
+        /// </summary>
+        ~Invoice()
+        {
+            // call Dispose with false.  Since we're in the
+            // destructor call, the managed resources will be
+            // disposed of anyways.
+            this.Dispose(false);
+        }
+    }
+    #endregion
+
+
+    /*================================================================================================================================================*/
+    /// <summary>
+    /// Disposition.......
+    /// </summary>
+    #region public partial class AnualInvoice : IDisposable
+    public partial class AnnualInvoice : IDisposable
+    {
+        // Resources that must be disposed:
+        public Invoice annualInvoice = null;
+
+        private bool disposed = false;
+
+        // Implement IDisposable.
+        // Do not make this method virtual.
+        // A derived class should not be able to override this method.
+        public void Dispose()
+        {
+            this.Dispose(true);
+
+            // This object will be cleaned up by the Dispose method.
+            // Therefore, you should call GC.SupressFinalize to
+            // take this object off the finalization queue
+            // and prevent finalization code for this object
+            // from executing a second time.
+            GC.SuppressFinalize(!this.disposed); // if !disposed, there is more cleanup to do.
+        }
+
+        // Dispose(bool disposing) executes in two distinct scenarios.
+        // If disposing equals true, the method has been called directly
+        // or indirectly by a user's code. Managed and unmanaged resources
+        // can be disposed.
+        // If disposing equals false, the method has been called by the
+        // runtime from inside the finalizer and you should not reference
+        // other objects. Only unmanaged resources can be disposed.
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.DisposeManagedResources();
+
+                    //// TODO:   Clean up desposables.....
+                    if (null != this.annualInvoice)
+                    {
+                        this.annualInvoice.Dispose();
+                        this.annualInvoice = null;
+                    }
+                }
+
+                /*Clean up unmanaged resources here*/
+
+                this.disposed = true;
+            }
+        }
+
+        protected virtual void DisposeManagedResources()
+        {
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the class.  (a.k.a. destructor)
+        /// </summary>
+        ~AnnualInvoice()
+        {
+            // call Dispose with false.  Since we're in the
+            // destructor call, the managed resources will be
+            // disposed of anyways.
+            this.Dispose(false);
+        }
+    }
+    #endregion
+
 
     #region Extend Owner Model
 

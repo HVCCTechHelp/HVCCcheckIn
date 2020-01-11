@@ -14,7 +14,7 @@
         xmlns:common="clr-namespace:HVCC.Shell.Common;assembly=HVCC.Shell.Common"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
         common:CommandSinkBinding.CommandSink="{Binding}" 
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
@@ -63,7 +63,7 @@
                                                Command="{Binding RefreshCommand}"
                                                Glyph="{dx:DXImage Image=Refresh_16x16.png}" 
                                                LargeGlyph="{dx:DXImage Image=Refresh_32x32.png}"
-                                               ToolTip="Refresh Meter Data"/>
+                                               ToolTip="Refresh Meter Data" />
                         </dxr:RibbonPageGroup>
 
                         <dxr:RibbonPageGroup Caption="Print/Export">
@@ -189,7 +189,7 @@
                                                 HorizontalHeaderContentAlignment="Center"
                                             >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" HorizontalContentAlignment="Center"/>
+                                        <dxe:TextEditSettings Mask="Numeric" DisplayFormat="{}{0:n0}" HorizontalContentAlignment="Center" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn FieldName="ReadingDate" Header="Last Reading" Width="20" 
@@ -234,8 +234,8 @@
 
                             <dxg:GridControl.TotalSummary>
                                 <!--<dxg:GridSummaryItem SummaryType="Count" Alignment="Left" />-->
-                                <dxg:GridSummaryItem FieldName="Customer" SummaryType="Count"  DisplayFormat="{}{0:n0}" />
-                                <dxg:GridSummaryItem FieldName="Consumption" SummaryType="Sum"  DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Customer" SummaryType="Count" DisplayFormat="{}{0:n0}" />
+                                <dxg:GridSummaryItem FieldName="Consumption" SummaryType="Sum" DisplayFormat="{}{0:n0}" />
                             </dxg:GridControl.TotalSummary>
 
                             <!--<dxg:GridControl.LayoutTransform>

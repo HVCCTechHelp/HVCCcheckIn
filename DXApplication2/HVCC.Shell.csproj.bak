@@ -15,7 +15,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>D:\HVCCApplication\</PublishUrl>
+    <PublishUrl>\\HVCCServer\HVCCApplication\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -23,16 +23,17 @@
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
+    <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\HVCCServer\\HVCCApplication\</InstallUrl>
-    <UpdateUrl>\\hvccserver\data\HVCCApplication\</UpdateUrl>
+    <UpdateUrl>\\hvccserver\HVCCApplication\</UpdateUrl>
     <ProductName>High Valley Country Club Membership</ProductName>
     <PublisherName>HVCC</PublisherName>
+    <MinimumRequiredVersion>2.0.1.67</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.3.1.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <ApplicationRevision>23</ApplicationRevision>
+    <ApplicationVersion>2.1.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>true</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -58,10 +59,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A5F2FA357FDBBB1507141A36465841EE3605DE67</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>CCA2A02A7EB543386D14F93D64361336D0C12CD6</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>HVCCShell_Key.pfx</ManifestKeyFile>
+    <ManifestKeyFile>HVCC.Shell_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -73,70 +74,79 @@
     <ApplicationIcon>Images\Icons\HVCC.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>HVCCShell_Key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Charts.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.DataAccess.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.ExpressApp.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Images.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
+    <Reference Include="DevExpress.Charts.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.DataAccess.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.ExpressApp.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Images.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Mvvm.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Mvvm.v16.1.ViewModel, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Office.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Pdf.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Persistent.Base.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.PivotGrid.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.RichEdit.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Sparkline.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Spreadsheet.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Utils.v16.1.UI, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Xpf.Charts.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Core.v16.1" />
-    <Reference Include="DevExpress.Data.v16.1" />
-    <Reference Include="DevExpress.Xpf.Docking.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Xpf.Grid.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Grid.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Layout.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Xpf.LayoutControl.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Xpf.NavBar.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Printing.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Ribbon.v16.1" />
-    <Reference Include="DevExpress.Printing.v16.1.Core" />
-    <Reference Include="DevExpress.Xpf.Spreadsheet.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.DXStyle.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.HybridApp.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.LightGray.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2007Black.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2007Blue.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2007Silver.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2010Black.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2010Blue.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2010Silver.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2013.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2013DarkGray.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2013LightGray.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2016Black.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2016Colorful.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Office2016White.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.Seven.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.TouchlineDark.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpf.Themes.VS2010.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Xpo.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.XtraCharts.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraEditors.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.XtraGauges.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraPrinting.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.CodeParser.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v16.1.Extensions, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Mvvm.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Mvvm.v17.1.ViewModel, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Office.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Persistent.Base.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Spreadsheet.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v17.1.UI, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.Carousel.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Charts.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Controls.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Core.v17.1" />
+    <Reference Include="DevExpress.Data.v17.1" />
+    <Reference Include="DevExpress.Xpf.Docking.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.Grid.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Grid.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Layout.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.LayoutControl.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.NavBar.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Printing.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Ribbon.v17.1" />
+    <Reference Include="DevExpress.Printing.v17.1.Core" />
+    <Reference Include="DevExpress.Xpf.Spreadsheet.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.DXStyle.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.HybridApp.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.LightGray.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2007Black.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2007Blue.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2007Silver.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2010Black.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2010Blue.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2010Silver.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2013.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2013DarkGray.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2013LightGray.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2016Black.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2016Colorful.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Office2016White.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.Seven.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.TouchlineDark.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.VS2010.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraCharts.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGauges.v17.1.Core, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.CodeParser.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v17.1.Export, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v17.1, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v17.1.Extensions, Version=17.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -169,15 +179,55 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Host.cs" />
+    <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\DataBaseRole.cs" />
     <Compile Include="Helpers\Helpers.cs" />
+    <Compile Include="Models\Financials.cs" />
     <Compile Include="Models\HVCC.designer.cs">
       <DependentUpon>HVCC.dbml</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Models\UnmatchedBalance.cs" />
+    <Compile Include="Models\UtilityClasses.cs" />
     <Compile Include="Models\WaterMeterException.cs" />
     <Compile Include="Models\WellMeterHistory.cs" />
+    <Compile Include="Reports\IntentToLienNotice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\IntentToLienNotice.Designer.cs">
+      <DependentUpon>IntentToLienNotice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\CollectionsNotice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CollectionsNotice.Designer.cs">
+      <DependentUpon>CollectionsNotice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue90Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue90Days.Designer.cs">
+      <DependentUpon>PastDue90Days.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue60Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue60Days.Designer.cs">
+      <DependentUpon>PastDue60Days.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\PastDue30Days.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PastDue30Days.Designer.cs">
+      <DependentUpon>PastDue30Days.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\AnnuaInvoices.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\AnnuaInvoices.Designer.cs">
+      <DependentUpon>AnnuaInvoices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Reports\BalancesDueReport.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -196,11 +246,35 @@
     <Compile Include="Reports\FacilitiesUsageReport.Designer.cs">
       <DependentUpon>FacilitiesUsageReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Reports\PaymentReceiptReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PaymentReceiptReport.Designer.cs">
+      <DependentUpon>PaymentReceiptReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Reports\PropertyNotesReport.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PropertyNotesReport.Designer.cs">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\StandardInvoiceReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StandardInvoiceReport.Designer.cs">
+      <DependentUpon>StandardInvoiceReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\TransactionReceipt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\TransactionReceipt.Designer.cs">
+      <DependentUpon>TransactionReceipt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\WeeklyFinancialTransactionReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\WeeklyFinancialTransactionReport.Designer.cs">
+      <DependentUpon>WeeklyFinancialTransactionReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Reports\WellMeterDetailReport.cs">
       <SubType>Component</SubType>
@@ -217,19 +291,28 @@
     <Compile Include="Resources\CloseByEscapeBehavior.cs" />
     <Compile Include="Resources\CommandHandler.cs" />
     <Compile Include="Resources\RowTemplateSelector.cs" />
+    <Compile Include="Validation\Exceptions.cs" />
+    <Compile Include="Validation\RequiredValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
+    <Compile Include="ViewModels\AdministrationViewModel.cs" />
     <Compile Include="ViewModels\ChangeOwnerViewModel.cs" />
-    <Compile Include="ViewModels\CommandExecutedEventArgs.cs" />
-    <Compile Include="ViewModels\CommandExecutingEventArgs.cs" />
+    <Compile Include="ViewModels\FacilityUsageGraphViewModel.cs" />
     <Compile Include="ViewModels\GolfCartViewModel.cs" />
+    <Compile Include="ViewModels\InvoiceViewModel.cs" />
+    <Compile Include="ViewModels\OwnerEditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.AboutHandler.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\PropertiesUpdatedViewModel.cs" />
+    <Compile Include="ViewModels\FinancialTransactionViewModel.cs" />
+    <Compile Include="ViewModels\OwnershipHistoryViewModel.cs" />
+    <Compile Include="ViewModels\OwnersViewModel.cs" />
+    <Compile Include="ViewModels\OwnerBalanceUpdatedViewModel.cs" />
     <Compile Include="ViewModels\PropertiesDetailsViewModel.cs" />
     <Compile Include="ViewModels\PropertyEditViewModel.cs" />
+    <Compile Include="ViewModels\ReportCarouselViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterEditViewModel.cs" />
-    <Compile Include="ViewModels\WaterMeterUpdatedViewModel.cs" />
     <Compile Include="ViewModels\WaterMeterViewModel.cs" />
+    <Compile Include="ViewModels\WaterShutoffEditViewModel.cs" />
+    <Compile Include="ViewModels\WaterShutoffViewModel.cs" />
     <Compile Include="ViewModels\WaterWellViewModel.cs" />
     <Compile Include="Views\AdministrationView.xaml.cs">
       <DependentUpon>AdministrationView.xaml</DependentUpon>
@@ -237,17 +320,38 @@
     <Compile Include="Views\ChangeOwnerView.xaml.cs">
       <DependentUpon>ChangeOwnerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FacilityUsageGraphView.xaml.cs">
+      <DependentUpon>FacilityUsageGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InvoiceView.xaml.cs">
+      <DependentUpon>InvoiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OwnerEditView.xaml.cs">
+      <DependentUpon>OwnerEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FinancialTransactionView.xaml.cs">
+      <DependentUpon>FinancialTransactionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OwnershipHistoryView.xaml.cs">
+      <DependentUpon>OwnershipHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OwnersView.xaml.cs">
+      <DependentUpon>OwnersView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GolfCartView.xaml.cs">
       <DependentUpon>GolfCartView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PropertiesUpdatedView.xaml.cs">
-      <DependentUpon>PropertiesUpdatedView.xaml</DependentUpon>
+    <Compile Include="Views\OwnerBalanceUpdatedView.xaml.cs">
+      <DependentUpon>OwnerBalanceUpdatedView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertyDetailsView.xaml.cs">
       <DependentUpon>PropertyDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertyEditView.xaml.cs">
       <DependentUpon>PropertyEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportCarouselView.xaml.cs">
+      <DependentUpon>ReportCarouselView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateFacilitiesUsagesView.xaml.cs">
       <DependentUpon>UpdateFacilitiesUsagesView.xaml</DependentUpon>
@@ -260,6 +364,12 @@
     </Compile>
     <Compile Include="Views\WaterMeterView.xaml.cs">
       <DependentUpon>WaterMeterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WaterShutoffEditView.xaml.cs">
+      <DependentUpon>WaterShutoffEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WaterShutoffView.xaml.cs">
+      <DependentUpon>WaterShutoffView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WellMeterReadingsView.xaml.cs">
       <DependentUpon>WellMeterReadingsView.xaml</DependentUpon>
@@ -284,11 +394,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FacilityUsageGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InvoiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OwnerEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FinancialTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OwnershipHistoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OwnersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GolfCartView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PropertiesUpdatedView.xaml">
+    <Page Include="Views\OwnerBalanceUpdatedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -299,6 +433,10 @@
     <Page Include="Views\PropertyEditView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ReportCarouselView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UpdateFacilitiesUsagesView.xaml">
       <SubType>Designer</SubType>
@@ -313,6 +451,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WaterMeterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WaterShutoffEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WaterShutoffView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -338,6 +484,24 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Reports\IntentToLienNotice.resx">
+      <DependentUpon>IntentToLienNotice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CollectionsNotice.resx">
+      <DependentUpon>CollectionsNotice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue90Days.resx">
+      <DependentUpon>PastDue90Days.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue60Days.resx">
+      <DependentUpon>PastDue60Days.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PastDue30Days.resx">
+      <DependentUpon>PastDue30Days.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\AnnuaInvoices.resx">
+      <DependentUpon>AnnuaInvoices.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\BalancesDueReport.resx">
       <DependentUpon>BalancesDueReport.cs</DependentUpon>
     </EmbeddedResource>
@@ -347,8 +511,20 @@
     <EmbeddedResource Include="Reports\FacilitiesUsageReport.resx">
       <DependentUpon>FacilitiesUsageReport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PaymentReceiptReport.resx">
+      <DependentUpon>PaymentReceiptReport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PropertyNotesReport.resx">
       <DependentUpon>PropertyNotesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StandardInvoiceReport.resx">
+      <DependentUpon>StandardInvoiceReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\TransactionReceipt.resx">
+      <DependentUpon>TransactionReceipt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\WeeklyFinancialTransactionReport.resx">
+      <DependentUpon>WeeklyFinancialTransactionReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\WellMeterDetailReport.resx">
       <DependentUpon>WellMeterDetailReport.cs</DependentUpon>
@@ -356,6 +532,8 @@
     <EmbeddedResource Include="Reports\WellMeterSummaryReport.resx">
       <DependentUpon>WellMeterSummaryReport.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="HVCC.Shell_1_TemporaryKey.pfx" />
+    <None Include="HVCC.Shell_TemporaryKey.pfx" />
     <None Include="HVCCShell_Key.pfx" />
     <None Include="Models\HVCC.dbml.layout">
       <DependentUpon>HVCC.dbml</DependentUpon>
@@ -371,6 +549,7 @@
       <LastGenOutput>HVCC.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -471,6 +650,50 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\Financal-32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\payment_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Membership.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Water-Shut-Off-Notice.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Shutdown-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\GolfCart_Red_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\Report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Reports\BalanceDue.JPG" />
+    <Resource Include="Images\Reports\DailyUsage.JPG" />
+    <Resource Include="Images\Reports\FacilityUsage.JPG" />
+    <Resource Include="Images\Reports\OwnershipHistory.JPG" />
+    <Resource Include="Images\Reports\PropertyNotes.JPG" />
+    <Resource Include="Images\Reports\Transactions.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\MapLocation.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\invoice.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\payment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\PaidLeaf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\QBCash.png" />
+    <Resource Include="Images\Icons\QBcheck.png" />
+    <Resource Include="Images\Icons\QBMemo.png" />
+    <Resource Include="Images\Icons\QBOrder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

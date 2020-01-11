@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HVCC.History.Views"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
-             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
+             xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v18.2"   
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900"
              >

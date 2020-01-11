@@ -16,7 +16,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:HVCC.Shell.ViewModels"
-        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v16.1"   
+        xmlns:Serialization="clr-namespace:DevExpress.Xpf.LayoutControl.Serialization;assembly=DevExpress.Xpf.LayoutControl.v17.1"   
         mc:Ignorable="d" 
         d:DesignHeight="768" d:DesignWidth="1024"
         >
@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
-        <dx:DXMessageBoxService/>
+        <dx:DXMessageBoxService />
     </dxmvvm:Interaction.Behaviors>
 
     <DockPanel x:Name="dockPanel">
@@ -52,7 +52,7 @@
 
         <dxlc:LayoutControl Orientation="Vertical">
 
-            <dxlc:LayoutGroup  View="GroupBox" Orientation="Horizontal" Header="Import Exceptions">
+            <dxlc:LayoutGroup View="GroupBox" Orientation="Horizontal" Header="Import Exceptions">
 
                 <dxlc:LayoutGroup dx:ScrollViewerTouchBehavior.IsEnabled="True" Serialization:SerializableItem.TypeName="LayoutGroup">
 
@@ -79,11 +79,11 @@
 
                             <!-- Use the GroupIndex attribute on the GridColumn to group on opening -->
                             <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Customer"  Header="Customer" Width="20" 
+                                <dxg:GridColumn FieldName="Customer" Header="Customer" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             />
-                                <dxg:GridColumn FieldName="CurrentMeterReadingDate"  Header="Reading Date" Width="20" 
+                                <dxg:GridColumn FieldName="CurrentMeterReadingDate" Header="Reading Date" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             >
@@ -92,7 +92,7 @@
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="LastMeterReadingDate"  Header="Last Reading Date" Width="20" 
+                                <dxg:GridColumn FieldName="LastMeterReadingDate" Header="Last Reading Date" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             >
@@ -101,11 +101,11 @@
                                         </dxe:TextEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="LastMeterReading"  Header="Last Reading" Width="20" 
+                                <dxg:GridColumn FieldName="LastMeterReading" Header="Last Reading" Width="20" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             />
-                                <dxg:GridColumn FieldName="CurrentMeterReading"  Header="Current Reading" Width="100" 
+                                <dxg:GridColumn FieldName="CurrentMeterReading" Header="Current Reading" Width="100" 
                                             Visible="True"
                                             AllowEditing="False" 
                                             />
