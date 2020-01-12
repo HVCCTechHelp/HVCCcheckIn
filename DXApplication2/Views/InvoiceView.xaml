@@ -82,7 +82,7 @@
                         <dxlc:LayoutItem>
                             <dxe:ComboBoxEdit x:Name="ceFiscalYear" Width="150" HorizontalAlignment="Left"
                                               ItemsSource="{Binding FiscalYears}"
-                                              SelectedItem="{Binding SelectedSeason}"
+                                              SelectedItem="{Binding FiscalYear, NotifyOnSourceUpdated=True}"
                                               AutoComplete="True" 
                                               AllowNullInput="False" 
                                               IsTextEditable="False" 

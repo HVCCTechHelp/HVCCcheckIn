@@ -235,6 +235,7 @@
             {
                 var result = (from row in this.dc.FacilityUsages
                               where row.GolfRoundsMember > 0
+                              && row.Date >= BeginDate && row.Date <= EndDate
                               group row by new { row.Date.Date } into g
                               select new GroupedRow()
                               {
@@ -253,6 +254,7 @@
             {
                 var result = (from row in this.dc.FacilityUsages
                               where row.GolfRoundsGuest > 0
+                              && row.Date >= BeginDate && row.Date <= EndDate
                               group row by new { row.Date.Date } into g
                               select new GroupedRow()
                               {
@@ -271,6 +273,7 @@
             {
                 var result = (from row in this.dc.FacilityUsages
                               where row.PoolMember > 0
+                              && row.Date >= BeginDate && row.Date <= EndDate
                               group row by new { row.Date.Date } into g
                               select new GroupedRow()
                               {
@@ -289,6 +292,7 @@
             {
                 var result = (from row in this.dc.FacilityUsages
                               where row.PoolGuest > 0
+                              && row.Date >= BeginDate && row.Date <= EndDate
                               group row by new { row.Date.Date } into g
                               select new GroupedRow()
                               {
@@ -299,6 +303,49 @@
 
                 return new ObservableCollection<GroupedRow>(result);
             }
+        }
+
+        private DateTime _beginDate = new DateTime(2017,5,1,0,0,0);
+        public DateTime BeginDate
+        {
+            get
+            {
+                return _beginDate;
+            }
+            set
+            {
+                if (value != _beginDate)
+                {
+                    _beginDate = value;
+                    RaisePropertiesChanged("GolfMembers");
+                    RaisePropertiesChanged("GolfGuests");
+                    RaisePropertiesChanged("PoolMembers");
+                    RaisePropertiesChanged("PoolGuests");
+                    RaisePropertiesChanged("BeginDate");
+                }
+            }
+        }
+
+        private DateTime _endDate = DateTime.Now;
+        public DateTime EndDate
+        {
+            get
+            {
+                return _endDate;
+            }
+            set
+            {
+                if (value != _endDate)
+                {
+                    _endDate = value;
+                    RaisePropertiesChanged("GolfMembers");
+                    RaisePropertiesChanged("GolfGuests");
+                    RaisePropertiesChanged("PoolMembers");
+                    RaisePropertiesChanged("PoolGuests");
+                    RaisePropertiesChanged("EndDate");
+                }
+            }
+
         }
 
     }

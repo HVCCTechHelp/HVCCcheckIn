@@ -834,27 +834,6 @@
         /// <summary>
         /// View Notes about Properties
         /// </summary>
-        private ICommand _graphGolfCommand;
-        public ICommand GraphGolfCommand
-        {
-            get
-            {
-                return _graphGolfCommand ?? (_graphGolfCommand = new CommandHandler(() => GraphGolfAction(), true));
-            }
-        }
-
-        /// <summary>
-        /// View Notes about Properties
-        /// </summary>
-        /// <param name="type"></param>
-        public void GraphGolfAction()
-        {
-            Host.Execute(HostVerb.Open, "Graph Facilities");
-        }
-
-        /// <summary>
-        /// View Notes about Properties
-        /// </summary>
         private ICommand _generateAnnualInvoicesCommand;
         public ICommand GenerateAnnualInvoicesCommand
         {

@@ -228,7 +228,7 @@
         <classShapeMoniker Id="0e74a68b-1b83-4b64-8042-8e8e81315b70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(12.375 : 5.33251057942708); (10.9270833333333 : 5.33251057942708 : JumpStart); (10.6666666666667 : 5.33251057942708 : JumpEnd); (8.875 : 5.33251057942708)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(12.375 : 5.33251057942708); (8.875 : 5.33251057942708)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HVCCDataContext/Owner/Owner_Note" />
       <nodes>
         <classShapeMoniker Id="94eb3c42-f558-46bf-8279-ee4fadbf218e" />

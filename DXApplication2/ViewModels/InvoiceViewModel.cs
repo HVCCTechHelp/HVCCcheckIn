@@ -95,7 +95,6 @@
             }
         }
 
-
         private ObservableCollection<ApplicationPermission> _permissions = null;
         public ObservableCollection<ApplicationPermission> Permissions
         {
@@ -135,7 +134,37 @@
                 if (_selectedSeason != value)
                 {
                     _selectedSeason = value;
+
+                    int ndx = 0;
+                    foreach (Season s in Seasons)
+                    {
+                        if (s.TimePeriod == SelectedSeason.TimePeriod)
+                        {
+                            break;
+                        }
+                        ndx++;
+                    }
+                    SelectedSeasonIndex = ndx;
+
                     RaisePropertyChanged("SelectedSeason");
+                }
+            }
+        }
+
+        private int _selectedSeasonIndex = 0;
+        public int SelectedSeasonIndex
+        {
+            get
+            {
+                return _selectedSeasonIndex;
+            }
+            set
+            {
+                if (_selectedSeasonIndex != value)
+                {
+                    _selectedSeasonIndex = value;
+                    SelectedSeason = Seasons[_selectedSeasonIndex];
+                    //RaisePropertyChanged("SelectedSeasonIndex");
                 }
             }
         }
@@ -163,8 +192,8 @@
                 {
                     _fiscalYear = value;
                     SelectedSeason = (from x in Seasons
-                                          where x.TimePeriod == _fiscalYear
-                                          select x).FirstOrDefault();
+                                      where x.TimePeriod == _fiscalYear
+                                      select x).FirstOrDefault();
 
                     RaisePropertyChanged("FiscalYear");
                 }
@@ -205,7 +234,7 @@
             {
                 IsBusy = true;
 
-                HeaderText = string.Format("Invoice List for {0}", FiscalYear);
+                HeaderText = string.Format("Invoice List for {0}", SelectedSeason.TimePeriod);
 
                 ObservableCollection<x_Invoice> invoiceList = new ObservableCollection<x_Invoice>();
 
@@ -224,8 +253,10 @@
                                        where y.OwnerID == o.OwnerID
                                        select y.Balance).FirstOrDefault();
 
+                    int cartCount = (from z in o.GolfCarts
+                                 where z.Year == Seasons[SelectedSeasonIndex - 1].TimePeriod
+                                 select z.Quanity).FirstOrDefault();
                     int propertyCount = o.Properties.Count();
-                    int cartCount = o.GolfCarts.Count();
 
                     invoice.Dues = SelectedSeason.AnnualDues * propertyCount;
 

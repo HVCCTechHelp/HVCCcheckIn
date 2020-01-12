@@ -1,4 +1,4 @@
-﻿<UserControl    x:Class="HVCC.Shell.Views.FacilityUsageGraphView" x:Name="FacilityUsageGraph"
+﻿<UserControl xmlns:my="http://schemas.devexpress.com/winfx/2008/xaml/charts/rangecontrolclient"     x:Class="HVCC.Shell.Views.FacilityUsageGraphView" x:Name="FacilityUsageGraph"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
@@ -80,28 +80,28 @@
                             <dxc1:Legend/>
                         </dxc1:ChartControl.Legends>
 
-                        <dxc1:XYDiagram2D >
+                        <dxc1:XYDiagram2D EnableAxisXNavigation="True" >
                             <dxc1:XYDiagram2D.Series>
                                 <dxc1:LineSeries2D DisplayName="Golf Members"
-                                  DataSource="{Binding GolfMembers}"
+                                  DataSource="{Binding GolfMembers, UpdateSourceTrigger=PropertyChanged}"
                                   ArgumentDataMember="Date"
                                   ValueDataMember="Sum"
                                   Visible="{Binding IsDisplayGolfMembers, UpdateSourceTrigger=PropertyChanged}"
                                 />
                                 <dxc1:LineSeries2D DisplayName="Golf Guests"
-                                  DataSource="{Binding GolfGuests}"
+                                  DataSource="{Binding GolfGuests, UpdateSourceTrigger=PropertyChanged}"
                                   ArgumentDataMember="Date"
                                   ValueDataMember="Sum"
                                   Visible="{Binding IsDisplayGolfGuests, UpdateSourceTrigger=PropertyChanged}"
                                  />
                                 <dxc1:LineSeries2D DisplayName="Pool Members"
-                                  DataSource="{Binding PoolMembers}"
+                                  DataSource="{Binding PoolMembers, UpdateSourceTrigger=PropertyChanged}"
                                   ArgumentDataMember="Date"
                                   ValueDataMember="Sum"
                                   Visible="{Binding IsDisplayPoolMembers, UpdateSourceTrigger=PropertyChanged}"
                                 />
                                 <dxc1:LineSeries2D DisplayName="Pool Guests"
-                                  DataSource="{Binding PoolGuests}"
+                                  DataSource="{Binding PoolGuests, UpdateSourceTrigger=PropertyChanged}"
                                   ArgumentDataMember="Date"
                                   ValueDataMember="Sum"
                                   Visible="{Binding IsDisplayPoolGuests, UpdateSourceTrigger=PropertyChanged}"
@@ -114,15 +114,17 @@
 
                 <dxlc:LayoutControl Orientation="Horizontal">
                     <dxlc:LayoutGroup View="Group" Orientation="Vertical">
-                        <dxlc:LayoutItem Label="Select Season: " Width="100"/>
+
+                        <dxlc:LayoutItem Label="Begin Date" Width="100"/>
                         <dxlc:LayoutItem Width="100">
-                            <dxe:ListBoxEdit 
-                            Height="100 " Width="100"
-                            HorizontalAlignment="Left"
-                            ItemsSource="{Binding Seasons}" 
-                            SelectedIndex="{Binding SelectedSeasonIndex}"
-                           DisplayMember="TimePeriod"/>
+                            <DatePicker DisplayDate="{Binding BeginDate, Mode=TwoWay}" Text="{Binding BeginDate, Mode=TwoWay}" Width="100" />
                         </dxlc:LayoutItem>
+
+                        <dxlc:LayoutItem Label="End Date" Width="100" Margin="0,75,0,0"/>
+                        <dxlc:LayoutItem Width="100">
+                            <DatePicker DisplayDate="{Binding EndDate, Mode=TwoWay}" Text="{Binding EndDate, Mode=TwoWay}" Width="100" />
+                        </dxlc:LayoutItem>
+
                     </dxlc:LayoutGroup>
 
                     <dxlc:LayoutGroup View="GroupBox" Orientation="Vertical" Header="Golf Members" Width="225">
@@ -133,14 +135,14 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="golfMembersGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding GolfMembers}"
-                                 Width="200"
-                                 Height="300"
+                                 Width="175"
+                                 Height="200"
                                  HorizontalAlignment="Left"
                                  >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewMembers" 
                                        AllowEditing="{Binding ApplPermissions.CanEditOwner}"
-                                       AllowColumnFiltering="True" 
+                                       AllowColumnFiltering="False" 
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
                                        AutoWidth="True" 
@@ -168,14 +170,14 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="golfGuestGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding GolfGuests}"
-                                 Width="200"
-                                 Height="300"
+                                 Width="175"
+                                 Height="200"
                                  HorizontalAlignment="Left"
                                  >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewGolfGuests" 
                                        AllowEditing="{Binding ApplPermissions.CanEditOwner}"
-                                       AllowColumnFiltering="True" 
+                                       AllowColumnFiltering="False" 
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
                                        AutoWidth="True" 
@@ -204,14 +206,14 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="poolMembersGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding PoolMembers}"
-                                 Width="200"
-                                 Height="300"
+                                 Width="175"
+                                 Height="200"
                                  HorizontalAlignment="Left"
                                  >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewPoolMembers" 
                                        AllowEditing="{Binding ApplPermissions.CanEditOwner}"
-                                       AllowColumnFiltering="True" 
+                                       AllowColumnFiltering="False" 
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
                                        AutoWidth="True" 
@@ -240,14 +242,14 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="poolGuestGrid" 
                                  IsEnabled="True"
                                  ItemsSource="{Binding PoolGuests}"
-                                 Width="200"
-                                 Height="300"
+                                 Width="175"
+                                 Height="200"
                                  HorizontalAlignment="Left"
                                  >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewPoolGuests" 
                                        AllowEditing="{Binding ApplPermissions.CanEditOwner}"
-                                       AllowColumnFiltering="True" 
+                                       AllowColumnFiltering="False" 
                                        ShowGroupPanel="False"
                                        AllowPerPixelScrolling="True" 
                                        AutoWidth="True" 

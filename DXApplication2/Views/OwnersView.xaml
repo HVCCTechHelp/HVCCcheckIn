@@ -110,6 +110,13 @@
                                ItemClick="BFilterStatus_ItemClick"
                                Glyph="{dx:DXImage Image=Filter_16x16.png}" 
                                LargeGlyph="{dx:DXImage Image=Filter_32x32.png}" />
+                            <dxb:BarButtonItem Content="Facility Usage Graph"
+                                                   Command="{Binding GraphFacilityUsageCommand}"
+                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
+                                                   IsEnabled="True"
+                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
+                                                   ToolTip="Run Report" />
+
                         </dxr:RibbonPageGroup>
 
                     </dxr:RibbonPage>

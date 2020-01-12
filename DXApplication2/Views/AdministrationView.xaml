@@ -93,18 +93,6 @@
                                                    IsEnabled="True"
                                                    Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
                                                    ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Graph Golf"
-                                                   Command="{Binding GraphGolfCommand}"
-                                                   IsVisible="{Binding ApplPermissions.CanEditOwner}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <!--<dxb:BarButtonItem Content="ConvertOwners"
-                                                   Command="{Binding ConvertOwnersCommand}"
-                                                   IsVisible="True" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />-->
                         </dxr:RibbonPageGroup>
                     </dxr:RibbonPage>
 

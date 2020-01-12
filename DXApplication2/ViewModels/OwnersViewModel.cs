@@ -294,6 +294,28 @@
     public partial class OwnersViewModel
     {
         /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _graphFacilityUsageCommand;
+        public ICommand GraphFacilityUsageCommand
+        {
+            get
+            {
+                return _graphFacilityUsageCommand ?? (_graphFacilityUsageCommand = new CommandHandler(() => GraphFacilityUsageAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void GraphFacilityUsageAction()
+        {
+            Host.Execute(HostVerb.Open, "Graph Facilities");
+        }
+
+
+        /// <summary>
         /// Financial Transaction Command
         /// </summary>
         private ICommand _financialTransactionCommand;
