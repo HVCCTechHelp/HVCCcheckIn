@@ -19,6 +19,10 @@
     using System.Text;
     using System.Globalization;
     using HVCC.Shell.Common.Commands;
+    using System.Collections.Generic;
+    using HVCC.Shell.Common.Converters;
+    using HVCC.Shell.Models.Financial;
+    using static HVCC.Shell.Common.Resources.Enumerations;
 
     public partial class InvoiceViewModel : CommonViewModel, ICommandSink
     {
@@ -38,6 +42,14 @@
             Permissions = new ObservableCollection<ApplicationPermission>(permissions);
 
             this.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.Property_PropertyChanged);
+        }
+
+        public string UserName
+        {
+            get
+            {
+                return System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            }
         }
 
         public override bool IsValid { get { return true; } }
@@ -122,6 +134,22 @@
             }
         }
 
+        private Season _currentSeason = null;
+        public Season CurrentSeason
+        {
+            get
+            {
+                return _currentSeason;
+            }
+            set
+            {
+                if (_currentSeason != value)
+                {
+                    _currentSeason = value;
+                }
+            }
+        }
+
         private Season _selectedSeason = null;
         public Season SelectedSeason
         {
@@ -202,6 +230,57 @@
 
         public ObservableCollection<Owner> Owners { get; set; }
 
+        private Owner _selectedOwner = null;
+        public Owner SelectedOwner
+        {
+            get
+            {
+                return _selectedOwner;
+            }
+            set
+            {
+                if (value != _selectedOwner)
+                {
+                    _selectedOwner = value;
+                    RaisePropertyChanged("SelectedOwner");
+                }
+            }
+        }
+
+        private x_Invoice _selectedInvoice = null;
+        public x_Invoice SelectedInvoice
+        {
+            get
+            {
+                return _selectedInvoice;
+            }
+            set
+            {
+                if (value != _selectedInvoice)
+                {
+                    _selectedInvoice = value;
+                    RaisePropertyChanged("SelectedInvoice");
+                }
+            }
+        }
+
+        private Invoice _theInvoice = new Invoice();
+        public Invoice TheInvoice
+        {
+            get
+            {
+                return _theInvoice;
+            }
+            set
+            {
+                if (value != _theInvoice)
+                {
+                    _theInvoice = value;
+                    RaisePropertyChanged("TheInvoice");
+                }
+            }
+        }
+
         private ObservableCollection<x_Invoice> _invoices = null;
         public ObservableCollection<x_Invoice> Invoices
         {
@@ -216,6 +295,18 @@
                     _invoices = value;
                     RaisePropertyChanged("Invoices");
                 }
+            }
+        }
+
+        private DateTime MayFirst
+        {
+            get
+            {
+                string[] yrs = SelectedSeason.TimePeriod.Split('-');
+                int year = Int32.Parse(yrs[0]);
+                //int year = DateTime.Now.Year;
+                DateTime mayFirst = new DateTime(year, 5, 1);
+                return mayFirst;
             }
         }
 
@@ -250,12 +341,12 @@
                     invoice.OwnerID = o.OwnerID;
                     invoice.MailTo = o.MailTo;
                     invoice.Balance = (decimal)(from y in dc.v_OwnerDetails
-                                       where y.OwnerID == o.OwnerID
-                                       select y.Balance).FirstOrDefault();
+                                                where y.OwnerID == o.OwnerID
+                                                select y.Balance).FirstOrDefault();
 
                     int cartCount = (from z in o.GolfCarts
-                                 where z.Year == Seasons[SelectedSeasonIndex - 1].TimePeriod
-                                 select z.Quanity).FirstOrDefault();
+                                     where z.Year == Seasons[SelectedSeasonIndex - 1].TimePeriod
+                                     select z.Quanity).FirstOrDefault();
                     int propertyCount = o.Properties.Count();
 
                     invoice.Dues = SelectedSeason.AnnualDues * propertyCount;
@@ -290,7 +381,6 @@
                 IsBusy = false;
             }
         }
-
         #endregion
     }
 
@@ -357,6 +447,191 @@
     public partial class InvoiceViewModel : CommonViewModel
     {
 
+        /// <summary>
+        /// THIS IS A PURE HACK~!
+        /// ------------------------------------------------------------------------------------------------
+        /// This was created to solve a time sensitive issue with Annual Invoices.  It should be used
+        /// with caution.....  AT 01/26/2020
+        /// </summary>
+        public void AnnualInvoice()
+        {
+
+            CurrentSeason = (from x in Seasons
+                             where x.IsCurrent == true
+                             select x).FirstOrDefault();
+
+            SelectedSeason = CurrentSeason;
+
+            /// Get the list of all the current (active) owners to invoice
+            /// 
+            var currentOwnerList = (from x in dc.Owners
+                                    where x.IsCurrentOwner == true
+                                    select x);
+            Owners = new ObservableCollection<Owner>(currentOwnerList);
+
+            SelectedOwner = (from x in Owners
+                             where x.OwnerID == SelectedInvoice.OwnerID
+                             select x).FirstOrDefault();
+
+
+            int propertyCount = SelectedOwner.Properties.Count();
+
+            /// Check to see if Special Assessment needs to be applied.
+            /// 
+            decimal assessedAmt = 0m;
+            foreach (Property p in SelectedOwner.Properties)
+            {
+                if (p.IsAssessment)
+                {
+                    assessedAmt += (decimal)SelectedSeason.AssessmentAmount;
+                }
+            }
+
+            InvoiceItem invoiceItem = new InvoiceItem();
+            try
+            {
+                TheInvoice = null;
+                TheInvoice = new Invoice();
+                decimal currentAccountBalance = (decimal)SelectedOwner.AccountBalance;
+                bool recalculateBalance = false;
+                /// If the account has a credit balance, we want to recalculate the balance
+                /// so payments with equity are applied to the invoice.
+                /// 
+                if (currentAccountBalance < 0) { recalculateBalance = true; }
+
+                TheInvoice.Season = SelectedSeason;
+                TheInvoice.LastModifiedBy = UserName;
+                TheInvoice.LastModified = DateTime.Now;
+                TheInvoice.Season = SelectedSeason;
+                TheInvoice.InvoiceItems = new ObservableCollection<InvoiceItem>();
+                TheInvoice.GUID = Guid.NewGuid();
+                TheInvoice.OwnerID = SelectedOwner.OwnerID;
+                TheInvoice.IssuedDate = DateTime.Now;
+                TheInvoice.DueDate = MayFirst;
+                TheInvoice.TermsDays = -1;  /// -1 Indicates "Due by May 1st"
+                TheInvoice.TermsDescriptive = "Due by May 1st";
+                TheInvoice.PaymentsApplied = 0m;
+                TheInvoice.IsPaid = false;
+                TheInvoice.Priority = 1;
+
+                /// Create the InvoiceItem
+                /// 
+                StringBuilder description = new StringBuilder();
+                description.AppendLine("Membership dues for May 1 to Apr 30");
+                description.Append("Lot(s)# ");
+                foreach (Property p in SelectedOwner.Properties)
+                {
+                    description.Append(p.Customer);
+                    if (SelectedOwner.Properties.Count() > 1)
+                    {
+                        description.Append(", ");
+                    }
+                }
+                /// Remove the trailing comma from the string.
+                /// 
+                char[] remove = { ' ', ',' }; ;
+
+                invoiceItem.Item = String.Format("FY{0} Dues", CurrentSeason.TimePeriod);
+                invoiceItem.Priority = 1;
+                invoiceItem.Description = description.ToString().TrimEnd(remove);
+                invoiceItem.Quanity = SelectedOwner.Properties.Count();
+                invoiceItem.Rate = SelectedSeason.AnnualDues;
+                invoiceItem.Amount = invoiceItem.Quanity * invoiceItem.Rate;
+
+                TheInvoice.InvoiceItems.Add(invoiceItem);
+                TheInvoice.Memo = invoiceItem.Description;
+                TheInvoice.Amount = invoiceItem.Amount;
+
+                /// If the Owner has a credit balance...
+                /// 
+                if (SelectedOwner.AccountBalance < TheInvoice.Amount)
+                {
+                    /// If the account balance isn't enough to cover the total invoice amount....
+                    /// 
+                    if (Math.Abs((decimal)SelectedOwner.AccountBalance) < TheInvoice.Amount)
+                    {
+                        TheInvoice.BalanceDue = TheInvoice.Amount + (decimal)SelectedOwner.AccountBalance;
+                    }
+                    /// If the account balance is more than enough to cover the total invoice amount...
+                    /// 
+                    else
+                    {
+                        TheInvoice.BalanceDue = 0;
+                    }
+                    SelectedOwner.AccountBalance += TheInvoice.Amount;
+                }
+                /// If the Owner has a zero balance.....
+                /// 
+                else if (SelectedOwner.AccountBalance == TheInvoice.Amount)
+                {
+                    TheInvoice.BalanceDue = TheInvoice.Amount;
+                    SelectedOwner.AccountBalance += TheInvoice.Amount;
+                }
+                /// If the Owner has a balanced owed....
+                /// 
+                else
+                {
+                    TheInvoice.BalanceDue = TheInvoice.Amount;
+                    SelectedOwner.AccountBalance += TheInvoice.Amount;
+                }
+
+                /// Seralize the InvoiceItems collection to an XML string.
+                /// 
+                var xmlString = TheInvoice.InvoiceItems.ToArray().XmlSerializeToString();
+                TheInvoice.ItemDetails = xmlString;
+
+                AnnualInvoice AnnualInvoice = new AnnualInvoice();
+                AnnualInvoice.Owner = SelectedOwner;
+                AnnualInvoice.BalanceBeforeInvoice = currentAccountBalance;
+                AnnualInvoice.Season = SelectedSeason;
+                AnnualInvoice.Quanity = SelectedOwner.Properties.Count();
+                AnnualInvoice.Description = description.ToString();
+                AnnualInvoice.DuesRate = SelectedSeason.AnnualDues;
+                AnnualInvoice.Assessment = SelectedSeason.Assessment;
+                AnnualInvoice.AssessmentRate = (decimal)SelectedSeason.AssessmentAmount;
+                AnnualInvoice.TotalAmount = TheInvoice.Amount;
+                AnnualInvoice.InvoiceNum = TheInvoice.TransactionID;
+
+                /// The Xtra report requires a collection type with an interface (IEnumerable, IList, etc)
+                /// A List entity set satisfies the requirement, so we add the invoice to the list so it
+                /// can be passed as the data source object to the report.
+                /// 
+                string fileName = string.Empty;
+                fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", SelectedOwner.OwnerID);
+                List<AnnualInvoice> ai = new List<AnnualInvoice>();
+                ai.Add(AnnualInvoice);
+                Reports.AnnuaInvoices report = new Reports.AnnuaInvoices();
+                report.DataSource = ai;
+                report.CreateDocument();
+                report.ExportToPdf(fileName);
+
+                /// Dispose the objects
+                report.Dispose();
+                report = null;
+                AnnualInvoice.Dispose();
+
+                dc.Invoices.InsertOnSubmit(TheInvoice);
+                ChangeSet cs = dc.GetChangeSet();
+                SaveExecute();
+
+                /// Apply payment equity balance to the new invoice
+                /// 
+                if (recalculateBalance)
+                {
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
+                    Financial.RecalculateAccount(dc, SelectedOwner);
+                    cs = dc.GetChangeSet();
+                    SaveExecute();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Invoice Error:" + ex.Message, "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
+        }
+
         public virtual ISaveFileDialogService SaveFileDialogService { get { return this.GetService<ISaveFileDialogService>(); } }
         public virtual IExportService ExportService { get { return GetService<IExportService>(); } }
         public bool CanExport = true;
@@ -386,6 +661,29 @@
                 return _printCommand ?? (_printCommand = new CommandHandlerWparm((object parameter) => action.PrintAction(parameter, Table, ExportService), CanPrint));
             }
         }
+
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        private ICommand _generateAnnualInvoicesCommand;
+        public ICommand GenerateAnnualInvoicesCommand
+        {
+            get
+            {
+                return _generateAnnualInvoicesCommand ?? (_generateAnnualInvoicesCommand = new CommandHandler(() => GenerateAnnualInvoicesAction(), true));
+            }
+        }
+
+        /// <summary>
+        /// View Notes about Properties
+        /// </summary>
+        /// <param name="type"></param>
+        public void GenerateAnnualInvoicesAction()
+        {
+            AnnualInvoice();
+        }
+
 
     }
 

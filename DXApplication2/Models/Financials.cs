@@ -2,7 +2,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Linq;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -387,5 +389,100 @@ namespace HVCC.Shell.Models.Financial
             foreach (Invoice i in owner.Invoices) { invoices += i.Amount; }
             return (payments + invoices);
         }
+
+
+        /// <summary>
+        /// Reprocesses all Invoices and Payments to ensure the account balance is accurate.
+        /// </summary>
+        public static void RecalculateAccount(HVCCDataContext dc, Owner selectedOwner)
+        {
+            ChangeSet cs = null;
+            Invoice theInvoice = new Invoice();
+            Payment thePayment = new Payment();
+            ObservableCollection<Payment> OpenPayments = null;
+
+            /// Unlink invoices from payments by deleting all the associated Payment_X_Invoices
+            /// records. The affected invoices will also be updates to reset the balance due, amount applied
+            /// and isPaymentApplied flag.
+            ///
+            foreach (Invoice i in selectedOwner.Invoices)
+            {
+                i.BalanceDue = i.Amount;
+                i.IsPaymentApplied = false;
+                i.PaymentAmount = 0m;
+                dc.Payment_X_Invoices.DeleteAllOnSubmit(i.Payment_X_Invoices);
+            }
+            cs = dc.GetChangeSet();
+            dc.SubmitChanges();
+
+            /// Refresh the datacontext so the deletions above will be reflected in
+            /// the datacontext.
+            /// 
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, selectedOwner);
+
+            /// Unlink payments from invoices and update/reset the payment(s)
+            /// 
+            foreach (Payment p in selectedOwner.Payments)
+            {
+                p.EquityBalance = Math.Abs(p.Amount);
+                p.IsApplied = false;
+                dc.Payment_X_Invoices.DeleteAllOnSubmit(p.Payment_X_Invoices);
+            }
+            cs = dc.GetChangeSet();
+            dc.SubmitChanges();
+            dc.Refresh(RefreshMode.OverwriteCurrentValues, selectedOwner);
+
+            /// Get a list of all Payments with a positive equity balance.
+            /// 
+            var list = (from x in selectedOwner.Payments
+                        where x.OwnerID == selectedOwner.OwnerID &&
+                        x.EquityBalance > 0m
+                        orderby x.PaymentDate
+                        select x);
+            OpenPayments = new ObservableCollection<Payment>(list);
+
+            /// IF the selected owner does not have any payments, then we can 
+            /// skip processing the invoices.
+            /// 
+            if (null != OpenPayments)
+            {
+                /// Iterate the list of Invoices for the selected owner. Payments will
+                /// be applied in order by date and priority.
+                /// 
+                foreach (Invoice i in selectedOwner.Invoices.OrderBy(i => i.IssuedDate))
+                {
+                    theInvoice = i;
+                    /// Now apply payments to the invoice if there are available payments with 
+                    /// an equity balance.
+                    /// 
+                    if (OpenPayments != null && OpenPayments.Count() > 0)
+                    {
+                        /// Iterate the Payments collection to apply equity balance(s)
+                        /// to this invoice. Because the invoice Amount can change, by modifying
+                        /// an invoice items's rate or quanity, we play it safe and refresh
+                        /// the payment, and clear out the PxI collection each time before applying
+                        /// a payment.  This keeps from corrupting the payment values if rate/quanity
+                        /// is modified.
+                        /// 
+                        int ndx = 0;
+                        while (ndx < OpenPayments.Count() && theInvoice.BalanceDue > 0)
+                        {
+                            thePayment = OpenPayments[ndx];
+                            thePayment.PaymentMsg.Visibility = Visibility.Hidden;
+                            Financial.ApplyPayment(thePayment, theInvoice, TransactionType.Invoice);
+                            theInvoice.IsPaymentApplied = true;
+                            ++ndx;
+                        }
+                        dc.Payment_X_Invoices.InsertAllOnSubmit(theInvoice.Payment_X_Invoices);
+                    }
+                    /// Changes to the data context are processed by the invoking method
+                    /// 
+                    //cs = dc.GetChangeSet();
+                    //dc.SubmitChanges();
+                    //dc.Refresh(RefreshMode.OverwriteCurrentValues, selectedOwner);
+                }
+            }
+        }
+
     }
 }

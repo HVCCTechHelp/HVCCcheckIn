@@ -53,7 +53,7 @@
                         <dxe:ComboBoxEditItem Content="Child" />
                         <dxe:ComboBoxEditItem Content="In-Law" />
                         <dxe:ComboBoxEditItem Content="Parent" />
-                        <dxe:ComboBoxEditItem Content="Grandchild" />
+                        <dxe:ComboBoxEditItem Content="Grandchild" Visibility="Hidden"/>
                         <dxe:ComboBoxEditItem Content="Grandparent" />
                     </dxe:ComboBoxEdit.Items>
                 </dxe:ComboBoxEdit>

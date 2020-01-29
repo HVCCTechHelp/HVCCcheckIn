@@ -431,12 +431,18 @@
         /// <param name="selectedOwner"></param>
         private void GenerateAnnualInvoice()
         {
+            decimal currentAccountBalance = (decimal)SelectedOwner.AccountBalance;
+            bool recalculateBalance = false;
             InvoiceItem invoiceItem = new InvoiceItem();
+            ChangeSet cs = null;
             try
             {
                 using (Invoice TheInvoice = new Invoice())
                 {
-                    decimal currentAccountBalance = (decimal)SelectedOwner.AccountBalance;
+                    /// If the account has a credit balance, we want to recalculate the balance
+                    /// so payments with equity are applied to the invoice.
+                    /// 
+                    if (currentAccountBalance < 0) { recalculateBalance = true; }
 
                     TheInvoice.Season = SelectedSeason;
                     TheInvoice.LastModifiedBy = UserName;
@@ -489,16 +495,15 @@
                         /// 
                         if (Math.Abs((decimal)SelectedOwner.AccountBalance) < TheInvoice.Amount)
                         {
-                            TheInvoice.BalanceDue = (decimal)SelectedOwner.AccountBalance + TheInvoice.Amount;
-                            SelectedOwner.AccountBalance += TheInvoice.BalanceDue;
+                            TheInvoice.BalanceDue = TheInvoice.Amount + (decimal)SelectedOwner.AccountBalance;
                         }
                         /// If the account balance is more than enough to cover the total invoice amount...
                         /// 
                         else
                         {
                             TheInvoice.BalanceDue = 0;
-                            SelectedOwner.AccountBalance += TheInvoice.Amount;
                         }
+                        SelectedOwner.AccountBalance += TheInvoice.Amount;
                     }
                     /// If the Owner has a zero balance.....
                     /// 
@@ -512,7 +517,7 @@
                     else
                     {
                         TheInvoice.BalanceDue = TheInvoice.Amount;
-                        SelectedOwner.AccountBalance += TheInvoice.BalanceDue;
+                        SelectedOwner.AccountBalance += TheInvoice.Amount;
                     }
 
                     /// Seralize the InvoiceItems collection to an XML string.
@@ -523,8 +528,8 @@
                     /// Save the invoice to the owners account
                     /// 
                     dc.Invoices.InsertOnSubmit(TheInvoice);
-                    ChangeSet cs = dc.GetChangeSet();
-                    dc.SubmitChanges();
+                    cs = dc.GetChangeSet();
+                    SaveExecute();
 
                     /// We use the AnnualInvoice class to create an object that can be passed
                     /// to the Annual Invoice report.  This report is a different format than
@@ -535,7 +540,7 @@
 
                     AnnualInvoice AnnualInvoice = new AnnualInvoice();
                     AnnualInvoice.Owner = SelectedOwner;
-                    AnnualInvoice.BalanceBeforeInvoice = (decimal)SelectedOwner.AccountBalance - TheInvoice.Amount;
+                    AnnualInvoice.BalanceBeforeInvoice = currentAccountBalance;
                     AnnualInvoice.Season = SelectedSeason;
                     AnnualInvoice.Quanity = SelectedOwner.Properties.Count();
                     AnnualInvoice.Description = description.ToString();
@@ -560,6 +565,15 @@
                     report.Dispose();
                     report = null;
                     AnnualInvoice.Dispose();
+                }
+                /// Apply payment equity balance to the new invoice
+                /// 
+                if (recalculateBalance)
+                {
+                    dc.Refresh(RefreshMode.OverwriteCurrentValues, SelectedOwner);
+                    Financial.RecalculateAccount(dc, SelectedOwner);
+                    cs = dc.GetChangeSet();
+                    SaveExecute();
                 }
             }
             catch (Exception ex)
@@ -650,6 +664,7 @@
                     report.Dispose();
                     report = null;
                 }
+                TheInvoice = null; /// NOTE: We do not want to add this to the data context
             }
             catch (Exception ex)
             {
@@ -995,6 +1010,7 @@
                         /// 
                         foreach (Owner owner in Owners)
                         {
+
                             SelectedOwner = owner;
                             propertyCount = 0;
                             cartCount = 0;
