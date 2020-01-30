@@ -599,12 +599,12 @@ namespace HVCC.Shell.Models
                     }
                     break;
 
-                case "RelationToOwner":
-                    if (String.IsNullOrEmpty(RelationToOwner))
-                    {
-                        SetErrorInfo(info, "Field can't be empty, please make a selection", ErrorType.Critical);
-                    }
-                    break;
+                //case "RelationToOwner":
+                //    if (String.IsNullOrEmpty(RelationToOwner))
+                //    {
+                //        SetErrorInfo(info, "Field can't be empty, please make a selection", ErrorType.Critical);
+                //    }
+                //    break;
 
             }
         }

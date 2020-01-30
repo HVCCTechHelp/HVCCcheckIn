@@ -40,11 +40,11 @@
             <!-- Creates a template for a ComboBox selection for the various Relationships to the owner -->
             <DataTemplate x:Key="cmbTmp">
                 <dxe:ComboBoxEdit Name="PART_Editor" 
-                                  EditValue="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
-                                  Text="{Binding DataContext.RelationToOwner, ElementName=PropertyDialogBinding}"
+                                  EditValue="Value"
+                                  Text="Name"
                                   AutoComplete="True" 
                                   AllowNullInput="False"
-                                   IsTextEditable="False"
+                                  IsTextEditable="False"
                                   >
                     <dxe:ComboBoxEdit.Items>
                         <dxe:ComboBoxEditItem Content="Owner" />
@@ -53,7 +53,7 @@
                         <dxe:ComboBoxEditItem Content="Child" />
                         <dxe:ComboBoxEditItem Content="In-Law" />
                         <dxe:ComboBoxEditItem Content="Parent" />
-                        <dxe:ComboBoxEditItem Content="Grandchild" Visibility="Hidden"/>
+                        <dxe:ComboBoxEditItem Content="Grandchild"/>
                         <dxe:ComboBoxEditItem Content="Grandparent" />
                     </dxe:ComboBoxEdit.Items>
                 </dxe:ComboBoxEdit>
@@ -120,50 +120,6 @@
                                                Glyph="/Images/Icons/Water-Shut-Off-Notice.jpg" 
                                                LargeGlyph="/Images/Icons/Water-Shut-Off-Notice.jpg" />-->
                         </dxr:RibbonPageGroup>
-                    </dxr:RibbonPage>
-
-                    <dxr:RibbonPage x:Name="ownerReports" Caption="Reports">
-
-                        <!--<dxr:RibbonPageGroup Caption="Reports">
-                            <dxb:BarButtonItemLink BarItemName="bXXXXX" RibbonStyle="Large" MergeType="Replace" />
-                            <dxb:BarButtonItemLink BarItemName="bDetailMeterReadings" RibbonStyle="Large" MergeType="Replace" />
-                        </dxr:RibbonPageGroup>-->
-
-                        <!--<dxr:RibbonPageGroup Caption="Owner Reports" IsVisible="{Binding IsPropertyRibbonVisible}">
-                            <dxb:BarButtonItem Content="Period Usage"
-                                                   ItemClick="bb_PeriodReportClick"
-                                                   IsVisible="True" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Daily Usage"
-                                                   ItemClick="bb_DailyReportClick"
-                                                   IsVisible="True" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Property Notes"
-                                                   ItemClick="bb_NotesReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            <dxb:BarButtonItem Content="Balances Due"
-                                                   ItemClick="bb_BalanceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />
-                            -->
-                        <!--<dxb:BarButtonItem Content="Annual Invoices"
-                                                   ItemClick="bb_AnnualInvoiceReportClick"
-                                                   IsVisible="{Binding ApplPermissions.CanViewOwnerNotes, Mode=TwoWay}" 
-                                                   IsEnabled="True"
-                                                   Glyph="/Images/Icons/Report-16x16.png" LargeGlyph="/Images/Icons/Report-32x32.png"
-                                                   ToolTip="Run Report" />-->
-                        <!--
-                        </dxr:RibbonPageGroup>-->
-
                     </dxr:RibbonPage>
                 </dxr:RibbonDefaultPageCategory>
 
@@ -465,70 +421,6 @@
                                         />
                                     </dxlc:LayoutItem>
                                     <dxlc:LayoutItem>
-                                        <!--<dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
-                                     IsEnabled="True"
-                                     ItemsSource="{Binding FinancialTransactions}"
-                                     SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}"
-                                     >
-                                            <dxg:GridControl.View>
-                                                <dxg:TableView x:Name="tableViewPayments" 
-                                           AllowEditing="False"
-                                           AllowPerPixelScrolling="True" 
-                                           AutoWidth="True" 
-                                           Height="100"
-                                           NavigationStyle="Row" 
-                                           ShowGroupPanel="False"
-                                           >
-                                                    <dxg:TableView.FormatConditions>
-                                                        <dxg:FormatCondition Expression="[Balance] &gt; 0.0" FieldName="Balance">
-                                                            <dxc:Format Foreground="Red" />
-                                                        </dxg:FormatCondition>
-                                                        <dxg:FormatCondition Expression="[Balance] &lt; 0.0" FieldName="Balance">
-                                                            <dxc:Format Foreground="Green" />
-                                                        </dxg:FormatCondition>
-                                                    </dxg:TableView.FormatConditions>
-                                                </dxg:TableView>
-                                            </dxg:GridControl.View>
-                                            <dxg:GridControl.Columns>
-                                                <dxg:GridColumn FieldName="TransactionDate" Header="Date" 
-                                            Width="50" 
-                                            SortOrder="Descending" 
-                                            SortIndex="0" 
-                                            IsEnabled="True"
-                                            >
-                                                    <dxg:GridColumn.EditSettings>
-                                                        <dxe:DateEditSettings DisplayFormat="d" />
-                                                    </dxg:GridColumn.EditSettings>
-                                                </dxg:GridColumn>
-                                                <dxg:GridColumn FieldName="CreditAmount" Header="Credit" 
-                                            Width="50" 
-                                            Visible="True"
-                                            >
-                                                    <dxg:GridColumn.EditSettings>
-                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                                        </dxe:TextEditSettings>
-                                                    </dxg:GridColumn.EditSettings>
-                                                </dxg:GridColumn>
-                                                <dxg:GridColumn FieldName="DebitAmount" Header="Debit" 
-                                            Width="50" 
-                                            Visible="True"
-                                            >
-                                                    <dxg:GridColumn.EditSettings>
-                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                                        </dxe:TextEditSettings>
-                                                    </dxg:GridColumn.EditSettings>
-                                                </dxg:GridColumn>
-                                                <dxg:GridColumn FieldName="Balance" Header="Balance" 
-                                            Width="75" 
-                                            IsEnabled="True"
-                                            >
-                                                    <dxg:GridColumn.EditSettings>
-                                                        <dxe:TextEditSettings MaskType="Numeric" MaskUseAsDisplayFormat="True" Mask="c">
-                                                        </dxe:TextEditSettings>
-                                                    </dxg:GridColumn.EditSettings>
-                                                </dxg:GridColumn>
-                                            </dxg:GridControl.Columns>
-                                        </dxg:GridControl>-->
                                         <dxg:GridControl AutoPopulateColumns="False" x:Name="paymentGrid" 
                                          IsEnabled="True"
                                          Width="Auto"
@@ -763,7 +655,7 @@
                             <dxg:GridControl AutoPopulateColumns="False" x:Name="relationshipsGrid" 
                                      IsEnabled="True"
                                      ItemsSource="{Binding Relationships, Mode=TwoWay}"
-                                     SelectedItem="{Binding SelectedRelationship, Mode=TwoWay}" 
+                                     SelectedItem="{Binding SelectedRelationship, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      >
                                 <dxg:GridControl.View>
                                     <dxg:TableView x:Name="tableViewDetail"  
@@ -822,9 +714,7 @@
                                     <dxg:GridColumn FieldName="LName" Header="Last Name" 
                                             Width="75" 
                                             />
-                                    <dxg:GridColumn FieldName="RelationToOwner" 
-                                            x:Name="txtRelationship"
-                                             Header="Relationship"
+                                    <dxg:GridColumn FieldName="RelationToOwner" Header="Relationship"
                                              Width="75"
                                              AutoFilterCondition="Default" 
                                              CellTemplateSelector="{StaticResource rowTemplateSelector}"

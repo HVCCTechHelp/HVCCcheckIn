@@ -1089,7 +1089,7 @@
             /// The actual adding of the relationship to the Relationships collection is handled by the
             /// _relationships_CollectionChanged() method (above).
             /// 
-            NavigationStyle = GridViewNavigationStyle.Row;
+            NavigationStyle = GridViewNavigationStyle.Cell;
             NewItemPosition = NewItemRowPosition.Top;
         }
 
