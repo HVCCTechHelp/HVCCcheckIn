@@ -536,7 +536,7 @@
                     /// the standard invoice.
                     /// 
                     string fileName = string.Empty;
-                    fileName = string.Format(@"D:\Invoices\Invoice-{0}.PDF", SelectedOwner.OwnerID);
+                    fileName = string.Format(@"\\HVCCSERVER\Invoices\Invoice-{0}.PDF", SelectedOwner.OwnerID);
 
                     AnnualInvoice AnnualInvoice = new AnnualInvoice();
                     AnnualInvoice.Owner = SelectedOwner;
