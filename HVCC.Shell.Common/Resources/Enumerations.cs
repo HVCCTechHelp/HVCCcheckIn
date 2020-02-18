@@ -31,5 +31,14 @@
             Delete,
             Remove
         };
+
+        public enum LicenseState
+        {
+            Valid,
+            Expiring,
+            Expired,
+            KeyError,
+            Error
+        }
     }
 }

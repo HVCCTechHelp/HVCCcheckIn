@@ -81,6 +81,9 @@ namespace HVCC.Shell.Models
     partial void InsertListOfItem(ListOfItem instance);
     partial void UpdateListOfItem(ListOfItem instance);
     partial void DeleteListOfItem(ListOfItem instance);
+    partial void InsertKey(Key instance);
+    partial void UpdateKey(Key instance);
+    partial void DeleteKey(Key instance);
     #endregion
 		
 		public HVCCDataContext() : 
@@ -334,6 +337,14 @@ namespace HVCC.Shell.Models
 			get
 			{
 				return this.GetTable<ListOfItem>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Key> Keys
+		{
+			get
+			{
+				return this.GetTable<Key>();
 			}
 		}
 		
@@ -9821,6 +9832,92 @@ namespace HVCC.Shell.Models
 					this._Description = value;
 					this.SendPropertyChanged("Description");
 					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Audit.Keys")]
+	public partial class Key : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _KEY1;
+		
+		private System.DateTime _Expiration;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnKEY1Changing(System.Guid value);
+    partial void OnKEY1Changed();
+    partial void OnExpirationChanging(System.DateTime value);
+    partial void OnExpirationChanged();
+    #endregion
+		
+		public Key()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[KEY]", Storage="_KEY1", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid KEY1
+		{
+			get
+			{
+				return this._KEY1;
+			}
+			set
+			{
+				if ((this._KEY1 != value))
+				{
+					this.OnKEY1Changing(value);
+					this.SendPropertyChanging();
+					this._KEY1 = value;
+					this.SendPropertyChanged("KEY1");
+					this.OnKEY1Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expiration", DbType="DateTime NOT NULL")]
+		public System.DateTime Expiration
+		{
+			get
+			{
+				return this._Expiration;
+			}
+			set
+			{
+				if ((this._Expiration != value))
+				{
+					this.OnExpirationChanging(value);
+					this.SendPropertyChanging();
+					this._Expiration = value;
+					this.SendPropertyChanged("Expiration");
+					this.OnExpirationChanged();
 				}
 			}
 		}

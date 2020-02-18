@@ -17,6 +17,7 @@
     using DevExpress.Xpf.Printing;
     using System.ComponentModel;
     using HVCC.Shell.Common;
+    using static HVCC.Shell.Common.Resources.Enumerations;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -81,12 +82,38 @@
         /// <param name="routedEventArgs"></param>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            // Check to make sure there is a connection to the database
+            /// Check to make sure there is a connection to the database
+            /// 
             if (!Host.Instance.IsConnected)
             {
                 MessageBox.Show("Cannot establish connection to the database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
             }
+            /// Check right to use license
+            /// 
+            LicenseState state = Host.Instance.IsLicensed;
+            switch (state)
+            {
+                case LicenseState.Error:
+                    /// this message is handled in MainViewModel so the actual error can be captured
+                    /// 
+                    this.Close();
+                    break;
+                case LicenseState.KeyError:
+                    MessageBox.Show("License Error:\nUnable to obtain license key", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Close();
+                    break;
+                case LicenseState.Expiring:
+                    MessageBox.Show("The license for the application will expire on April 30th.\nPlease renew the license key.", "WARNING", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    break;
+                case LicenseState.Expired:
+                    MessageBox.Show("The application license has expired.\nYou will need to obtain a new license to run the application.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Close();
+                    break;
+                case LicenseState.Valid:
+                    break;
+            }
+
         }
 
         /// <summary>

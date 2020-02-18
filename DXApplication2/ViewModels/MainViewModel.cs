@@ -6,6 +6,7 @@
     using DevExpress.Mvvm;
     using HVCC.Shell.Common.Interfaces;
     using DevExpress.Xpf.Grid;
+    using System.Windows;
 
     /// <summary>
     /// Shell.Instance is the "ViewModel" to the MainWindow "View"

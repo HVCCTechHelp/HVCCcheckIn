@@ -14,6 +14,7 @@
     using HVCC.Shell.Models;
     using System.Windows;
     using System.ComponentModel;
+    using static HVCC.Shell.Common.Resources.Enumerations;
 
     public enum UserRole
     {
@@ -421,6 +422,51 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Indicates state of right to use license
+        /// </summary>
+        public LicenseState IsLicensed
+        {
+            get
+            {
+                try
+                {
+                    string text = System.IO.File.ReadAllText(@"\\HVCCServer\HVCCApplication\license.key");
+                    Guid key = new Guid(text);
+
+                    Key LicenseKey = (from x in dc.Keys
+                                      where x.KEY1 == key
+                                      select x).FirstOrDefault();
+
+                    if (null == LicenseKey)
+                    {
+                        return LicenseState.KeyError;
+                    }
+                    else
+                    {
+                        if (LicenseKey.Expiration < DateTime.Now)
+                        {
+                            return LicenseState.Expired;
+                        }
+                        else if (LicenseKey.Expiration.AddDays(-30) <= DateTime.Now)
+                        {
+                            return LicenseState.Expiring;
+                        }
+                        else
+                        {
+                            return LicenseState.Valid;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("License Error:\n" + ex.Message, "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return LicenseState.Error;
+                }
+            }
+        }
+
 
         public static UserRole DBRole
         {
