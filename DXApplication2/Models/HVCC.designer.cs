@@ -441,20 +441,6 @@ namespace HVCC.Shell.Models
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteFacilityUsage")]
-		public int usp_DeleteFacilityUsage([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UdateFacilityUsage")]
-		public int usp_UdateFacilityUsage([global::System.Data.Linq.Mapping.ParameterAttribute(Name="PropertyId", DbType="Int")] System.Nullable<int> propertyId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="GolfRoundsMember", DbType="Int")] System.Nullable<int> golfRoundsMember, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="GolfRoundsGuest", DbType="Int")] System.Nullable<int> golfRoundsGuest, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PoolMember", DbType="Int")] System.Nullable<int> poolMember, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PoolGuest", DbType="Int")] System.Nullable<int> poolGuest)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), propertyId, golfRoundsMember, golfRoundsGuest, poolMember, poolGuest);
-			return ((int)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_DeleteNote")]
 		public int usp_DeleteNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
 		{
@@ -487,13 +473,6 @@ namespace HVCC.Shell.Models
 		public int usp_DeleteRelationship([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RelationshipId", DbType="Int")] System.Nullable<int> relationshipId)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), relationshipId);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_InsertProperty")]
-		public int usp_InsertProperty([global::System.Data.Linq.Mapping.ParameterAttribute(Name="Customer", DbType="VarChar(50)")] string customer, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Section", DbType="Int")] System.Nullable<int> section, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Block", DbType="Int")] System.Nullable<int> block, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Lot", DbType="Int")] System.Nullable<int> lot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SubLot", DbType="VarChar(10)")] string subLot, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="BillTo", DbType="VarChar(100)")] string billTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Decimal(19,4)")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsInGoodStanding", DbType="Bit")] System.Nullable<bool> isInGoodStanding, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Parcel", DbType="VarChar(50)")] string parcel, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PhysicalAddress", DbType="VarChar(50)")] string physicalAddress, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Status", DbType="VarChar(10)")] string status, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="MeterNumber", DbType="Int")] System.Nullable<int> meterNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="WaterSystemNotes", DbType="VarChar(250)")] string waterSystemNotes)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), customer, section, block, lot, subLot, billTo, balance, isInGoodStanding, parcel, physicalAddress, status, meterNumber, waterSystemNotes);
 			return ((int)(result.ReturnValue));
 		}
 		
@@ -613,13 +592,6 @@ namespace HVCC.Shell.Models
 		public int usp_DeleteTransactionXNote([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_UpdateFinancialTransaction")]
-		public int usp_UpdateFinancialTransaction([global::System.Data.Linq.Mapping.ParameterAttribute(Name="RowId", DbType="Int")] System.Nullable<int> rowId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="OwnerID", DbType="Int")] System.Nullable<int> ownerID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FiscalYear", DbType="VarChar(20)")] string fiscalYear, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Balance", DbType="Money")] System.Nullable<decimal> balance, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreditAmount", DbType="Money")] System.Nullable<decimal> creditAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="DebitAmount", DbType="Money")] System.Nullable<decimal> debitAmount, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionDate", DbType="DateTime")] System.Nullable<System.DateTime> transactionDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionMethod", DbType="VarChar(50)")] string transactionMethod, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TransactionAppliesTo", DbType="VarChar(100)")] string transactionAppliesTo, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Comment", DbType="VarChar(100)")] string comment, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CheckNumber", DbType="VarChar(20)")] string checkNumber, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ReceiptNumber", DbType="VarChar(20)")] string receiptNumber)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), rowId, ownerID, fiscalYear, balance, creditAmount, debitAmount, transactionDate, transactionMethod, transactionAppliesTo, comment, checkNumber, receiptNumber);
 			return ((int)(result.ReturnValue));
 		}
 		

@@ -100,6 +100,15 @@
                                                LargeGlyph="/Images/Icons/payment.png"
                                                ToolTip="Post payment for customer" 
                                                 />
+
+                            <dxb:BarButtonItem x:Name="beRefund" Content="Refund"
+                                               Command="{Binding RefundCommand}"
+                                               CommandParameter="Refund"
+                                               IsEnabled="{Binding IsPaymentEnabled}"
+                                               Glyph="/Images/Icons/Refund.png" 
+                                               LargeGlyph="/Images/Icons/Refund.png"
+                                               ToolTip="Post refund for customer" 
+                                                />
                         </dxr:RibbonPageGroup>
                         
                         <dxr:RibbonPageGroup Caption="Special">
@@ -445,8 +454,8 @@
                                                  />
                                 </dxlc:LayoutItem>
                             </dxlc:LayoutGroup>
-                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="250" Height="80" Margin="0,20,0,0">
-                                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="250" Height="60" >
+                            <dxlc:LayoutGroup View="Group" Orientation="Vertical" Width="350" Height="80" Margin="0,20,0,0">
+                                <dxlc:LayoutGroup View="Group" Orientation="Horizontal" Width="350" Height="60" >
                                     <dxlc:LayoutGroup Orientation="Vertical">
                                         <dxlc:LayoutItem VerticalAlignment="Top" HorizontalAlignment="Left">
                                             <Image Height="50" Width="50" Source="/Images/Icons/QBCheck.png"/>

@@ -933,7 +933,7 @@
             this.xrLabel23.StylePriority.UseFont = false;
             this.xrLabel23.StylePriority.UseForeColor = false;
             this.xrLabel23.StylePriority.UseTextAlignment = false;
-            this.xrLabel23.Text = "Detach & Return with Payment, due in our office before May 1, 2019 ";
+            this.xrLabel23.Text = "Detach & Return with Payment, due in our office before May 1st";
             this.xrLabel23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLabel24

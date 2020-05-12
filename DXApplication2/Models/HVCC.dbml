@@ -658,18 +658,6 @@
     <Parameter Name="ReadingDate" Parameter="readingDate" Type="System.DateTime" DbType="Date" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_DeleteFacilityUsage" Method="usp_DeleteFacilityUsage">
-    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_UdateFacilityUsage" Method="usp_UdateFacilityUsage">
-    <Parameter Name="PropertyId" Parameter="propertyId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="GolfRoundsMember" Parameter="golfRoundsMember" Type="System.Int32" DbType="Int" />
-    <Parameter Name="GolfRoundsGuest" Parameter="golfRoundsGuest" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PoolMember" Parameter="poolMember" Type="System.Int32" DbType="Int" />
-    <Parameter Name="PoolGuest" Parameter="poolGuest" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
   <Function Id="FunctionId12" Name="dbo.usp_DeleteNote" Method="usp_DeleteNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
     <Return Type="System.Int32" />
@@ -708,22 +696,6 @@
   </Function>
   <Function Name="dbo.usp_DeleteRelationship" Method="usp_DeleteRelationship">
     <Parameter Name="RelationshipId" Parameter="relationshipId" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_InsertProperty" Method="usp_InsertProperty">
-    <Parameter Name="Customer" Parameter="customer" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Section" Parameter="section" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Block" Parameter="block" Type="System.Int32" DbType="Int" />
-    <Parameter Name="Lot" Parameter="lot" Type="System.Int32" DbType="Int" />
-    <Parameter Name="SubLot" Parameter="subLot" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="BillTo" Parameter="billTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Decimal(19,4)" />
-    <Parameter Name="IsInGoodStanding" Parameter="isInGoodStanding" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="Parcel" Parameter="parcel" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="PhysicalAddress" Parameter="physicalAddress" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="Status" Parameter="status" Type="System.String" DbType="VarChar(10)" />
-    <Parameter Name="MeterNumber" Parameter="meterNumber" Type="System.Int32" DbType="Int" />
-    <Parameter Name="WaterSystemNotes" Parameter="waterSystemNotes" Type="System.String" DbType="VarChar(250)" />
     <Return Type="System.Int32" />
   </Function>
   <Function Id="FunctionId4" Name="dbo.usp_InsertOwnershipChange" Method="usp_InsertOwnershipChange">
@@ -850,21 +822,6 @@
   </Function>
   <Function Name="dbo.usp_DeleteTransactionXNote" Method="usp_DeleteTransactionXNote">
     <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_UpdateFinancialTransaction" Method="usp_UpdateFinancialTransaction">
-    <Parameter Name="RowId" Parameter="rowId" Type="System.Int32" DbType="Int" />
-    <Parameter Name="OwnerID" Parameter="ownerID" Type="System.Int32" DbType="Int" />
-    <Parameter Name="FiscalYear" Parameter="fiscalYear" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="Balance" Parameter="balance" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="CreditAmount" Parameter="creditAmount" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="DebitAmount" Parameter="debitAmount" Type="System.Decimal" DbType="Money" />
-    <Parameter Name="TransactionDate" Parameter="transactionDate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="TransactionMethod" Parameter="transactionMethod" Type="System.String" DbType="VarChar(50)" />
-    <Parameter Name="TransactionAppliesTo" Parameter="transactionAppliesTo" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="Comment" Parameter="comment" Type="System.String" DbType="VarChar(100)" />
-    <Parameter Name="CheckNumber" Parameter="checkNumber" Type="System.String" DbType="VarChar(20)" />
-    <Parameter Name="ReceiptNumber" Parameter="receiptNumber" Type="System.String" DbType="VarChar(20)" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_InsertOwner" Method="usp_InsertOwner">

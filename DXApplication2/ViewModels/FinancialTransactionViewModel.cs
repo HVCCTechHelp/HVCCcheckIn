@@ -347,6 +347,26 @@
         }
 
         /// <summary>
+        /// A refund Payment object
+        /// </summary>
+        private Payment _theRefund = null;
+        public Payment TheRefund
+        {
+            get
+            {
+                return _theRefund;
+            }
+            set
+            {
+                if (value != _theRefund)
+                {
+                    _theRefund = value;
+                    RaisePropertyChanged("TheRefund");
+                }
+            }
+        }
+
+        /// <summary>
         /// List of billible items for an invoice
         /// </summary>
         public ObservableCollection<ListOfItem> AvailableItems
@@ -1698,6 +1718,51 @@
                 ThePayment.PaymentMethod = "Check";
                 OpenInvoices = GetOpenInvoicesForOwner();
             }
+            ThePayment.LastModified = DateTime.Now;
+            ThePayment.LastModifiedBy = UserName;
+
+            /// NOTE: Transaction edits are processed in the RowDoubleClickAction method
+        }
+
+        ///// <summary>
+        /////  Expands the payment layout group and collapses the invoice layout group
+        ///// </summary>
+        private ICommand _refundCommand;
+        public ICommand RefundCommand
+        {
+            get
+            {
+                return _refundCommand ?? (_refundCommand = new CommandHandlerWparm((object parameter) => RefundAction(parameter), ApplPermissions.CanImport));
+            }
+        }
+
+        ///// <summary>
+        ///// Expands the payment layout group and collapses the invoice layout group
+        ///// </summary>
+        ///// <param name="type"></param>
+        public void RefundAction(object parameter)
+        {
+            WhatIsBeingProcessed = TransactionType.Payment;
+
+            /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
+            IsInvoiceEnabled = false;
+            IsPaymentEnabled = false;
+            /// Expand Payment and collapse Invoice......
+            /// 
+            IsCollapsedInvoice = true;
+            IsCollapsedPayments = false;
+            IsCollapsedHistoryGrid = true;
+
+            this.RegisterCommands();
+
+            IsTransactionState = TransactionState.New;
+            ThePayment = new Payment();
+            SelectedOwner.Payments.Add(ThePayment);
+            ThePayment.GUID = Guid.NewGuid();
+            ThePayment.OwnerID = SelectedOwner.OwnerID;
+            ThePayment.PaymentDate = DateTime.Now;
+            ThePayment.PaymentMethod = "Refund";
+
             ThePayment.LastModified = DateTime.Now;
             ThePayment.LastModifiedBy = UserName;
 
