@@ -392,8 +392,8 @@
                             {
                                 newReading.Consumption = newReading.MeterReading - (int)lastWMR.MeterReading;
                                 // Check to make sure this isn't a duplicate reading.....
-                                if (newReading.ReadingDate != lastWMR.ReadingDate
-                                   && newReading.MeterReading != lastWMR.MeterReading)
+                                if (newReading.ReadingDate > lastWMR.ReadingDate
+                                   && newReading.MeterReading >= lastWMR.MeterReading)
                                 {
                                     // Add this reading to the data context's change set
                                     dc.WaterMeterReadings.InsertOnSubmit(newReading);
