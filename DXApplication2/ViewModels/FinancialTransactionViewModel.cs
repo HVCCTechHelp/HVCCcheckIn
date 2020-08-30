@@ -1046,10 +1046,16 @@
                     /// using addition. If the transaction is new, we also add the new payment
                     /// record to the datacontext's tranaction stack.
                     /// 
-                    if (ThePayment.Amount > 0)
+                    if (ThePayment.Amount < 0 && ThePayment.PaymentMethod.Contains("Refund"))
                     {
                         ThePayment.Amount = ThePayment.Amount * -1;
                     }
+                    else if (ThePayment.Amount > 0 && !ThePayment.PaymentMethod.Contains("Refund"))
+                    {
+                        ThePayment.Amount = ThePayment.Amount * -1;
+                    }
+                    else;
+
                     /// There is two different sets of logic for processing a payment depending of
                     /// if the payment is new, or is being edited.  
                     /// 
@@ -1061,37 +1067,40 @@
                         /// 
 
                         // TO-DO: Need to find a way to update OpenInvoices so it isn't processed a second time....
-                        var list = (from x in OpenInvoices
-                                    where x.IsPaid == false
-                                    select x);
-
-                        int ndx = 0;
-                        while (ThePayment.EquityBalance > 0 && list.Count() > ndx) //OpenInvoices.Count() > ndx)
+                        if (null != OpenInvoices)
                         {
-                            if (OpenInvoices[ndx].BalanceDue > 0)
+                            var list = (from x in OpenInvoices
+                                        where x.IsPaid == false
+                                        select x);
+
+                            int ndx = 0;
+                            while (ThePayment.EquityBalance > 0 && list.Count() > ndx) //OpenInvoices.Count() > ndx)
                             {
-                                TheInvoice = OpenInvoices[ndx];
-                                Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
+                                if (OpenInvoices[ndx].BalanceDue > 0)
+                                {
+                                    TheInvoice = OpenInvoices[ndx];
+                                    Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
 
-                                /// Deserialize the XML string to get the list of invoice items so it can also be copied
-                                /// to the InvoiceItems collection which is bound to a UI grid.
+                                    /// Deserialize the XML string to get the list of invoice items so it can also be copied
+                                    /// to the InvoiceItems collection which is bound to a UI grid.
+                                    /// 
+                                    TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+
+                                    /// Apply the payment to the invoice
+                                    /// 
+                                    ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
+
+                                    TheInvoice.IsPaymentApplied = true;
+
+                                    /// Check to see if they paid for a Golf Cart sticker.....
+                                    /// 
+                                    CheckForGolfCartSticker(TransactionType.Payment);
+                                }
+
+                                /// Increment the invoice array index, and do it again
                                 /// 
-                                TheInvoice.InvoiceItems = DeserializeInvoiceItems();
-
-                                /// Apply the payment to the invoice
-                                /// 
-                                ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
-
-                                TheInvoice.IsPaymentApplied = true;
-
-                                /// Check to see if they paid for a Golf Cart sticker.....
-                                /// 
-                                CheckForGolfCartSticker(TransactionType.Payment);
+                                ++ndx;
                             }
-
-                            /// Increment the invoice array index, and do it again
-                            /// 
-                            ++ndx;
                         }
 
                         /// Set the transaction state to 'Pending' to avoid a RaisePropertyChanged event
@@ -1100,6 +1109,7 @@
                         PendingPmtAmount = ThePayment.Amount;
                         IsTransactionState = TransactionState.PendingEdit;
                         bool foo = IsDirty;
+
                     }
                     /// Else, we are editing the payment....
                     /// 

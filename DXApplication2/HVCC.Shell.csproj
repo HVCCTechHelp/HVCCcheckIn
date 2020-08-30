@@ -30,7 +30,7 @@
     <PublisherName>HVCC</PublisherName>
     <MinimumRequiredVersion>2.0.1.67</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>32</ApplicationRevision>
+    <ApplicationRevision>34</ApplicationRevision>
     <ApplicationVersion>2.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -59,10 +59,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>CCA2A02A7EB543386D14F93D64361336D0C12CD6</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6A9EA1DDE034C99CEC49DFCF47A77598B43B88DD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>HVCC.Shell_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>HVCC.Shell_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -534,6 +534,7 @@
       <DependentUpon>WellMeterSummaryReport.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="HVCC.Shell_1_TemporaryKey.pfx" />
+    <None Include="HVCC.Shell_2_TemporaryKey.pfx" />
     <None Include="HVCC.Shell_TemporaryKey.pfx" />
     <None Include="HVCCShell_Key.pfx" />
     <None Include="Models\HVCC.dbml.layout">

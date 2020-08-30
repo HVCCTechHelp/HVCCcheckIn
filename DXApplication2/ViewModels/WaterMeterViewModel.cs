@@ -361,9 +361,12 @@
                         RowNum++;
                         string[] columns = line.Split(',');
 
-                        // Lets deal with the first two columns where are Date and Time
+                        /// Lets deal with the first two columns where are Date and Time. We will use the short date
+                        /// format later to compare this reading to the last reading. Therefore, we always set the time
+                        /// to 12:00:00AM so the time of the two records will always be the same.
+                        /// 
                         string date = columns[(int)Column.Date];
-                        string time = columns[(int)Column.Time];
+                        string time = "00:00:00"; // columns[(int)Column.Time];
                         string datetime = String.Format("{0} {1}", date, time);
 
                         // We need to fetch the last meter reading for the property to calculate
