@@ -44,6 +44,7 @@
             this.xrRichText5 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrRichText2 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
+            this.Balance = new DevExpress.XtraReports.Parameters.Parameter();
             this.xrPanel1 = new DevExpress.XtraReports.UI.XRPanel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
             this.InvoiceID = new DevExpress.XtraReports.Parameters.Parameter();
@@ -70,7 +71,7 @@
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrRichText3 = new DevExpress.XtraReports.UI.XRRichText();
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
-            this.Balance = new DevExpress.XtraReports.Parameters.Parameter();
+            this.Amount = new DevExpress.XtraReports.Parameters.Parameter();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).BeginInit();
@@ -143,7 +144,7 @@
             // 
             // xrPictureBox1
             // 
-            this.xrPictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("xrPictureBox1.Image")));
+            this.xrPictureBox1.ImageSource = new DevExpress.XtraPrinting.Drawing.ImageSource("img", resources.GetString("xrPictureBox1.ImageSource"));
             this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(3.051758E-05F, 17.22918F);
             this.xrPictureBox1.Name = "xrPictureBox1";
             this.xrPictureBox1.SizeF = new System.Drawing.SizeF(150F, 120.5417F);
@@ -207,6 +208,13 @@
             this.xrLabel14.SizeF = new System.Drawing.SizeF(131.9165F, 23F);
             this.xrLabel14.StylePriority.UseFont = false;
             this.xrLabel14.WordWrap = false;
+            // 
+            // Balance
+            // 
+            this.Balance.Description = "Account Balance";
+            this.Balance.Name = "Balance";
+            this.Balance.Type = typeof(int);
+            this.Balance.ValueInfo = "0";
             // 
             // xrPanel1
             // 
@@ -475,12 +483,10 @@
             this.xrLabel18.Text = "Water Termination Policy";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
-            // Balance
+            // Amount
             // 
-            this.Balance.Description = "Account Balance";
-            this.Balance.Name = "Balance";
-            this.Balance.Type = typeof(int);
-            this.Balance.ValueInfo = "0";
+            this.Amount.Description = "Fee AMount";
+            this.Amount.Name = "Amount";
             // 
             // PastDue30Days
             // 
@@ -500,7 +506,8 @@
             this.OwnerID,
             this.InvoiceDate,
             this.InvoiceID,
-            this.Balance});
+            this.Balance,
+            this.Amount});
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
             this.DetailCaption3,
@@ -508,7 +515,7 @@
             this.DetailData3_Odd,
             this.DetailCaptionBackground3,
             this.PageInfo});
-            this.Version = "17.1";
+            this.Version = "18.2";
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrRichText1)).EndInit();
@@ -559,5 +566,6 @@
         private DevExpress.XtraReports.UI.XRRichText xrRichText5;
         private DevExpress.XtraReports.Parameters.Parameter InvoiceID;
         private DevExpress.XtraReports.Parameters.Parameter Balance;
+        private DevExpress.XtraReports.Parameters.Parameter Amount;
     }
 }

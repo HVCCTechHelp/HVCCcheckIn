@@ -334,7 +334,7 @@
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
                 DateTime startDate = new DateTime(yyyy, 5, 31, 0, 0, 0);
-                DateTime endDate = new DateTime(yyyy, 6, 15, 0, 0, 0);
+                DateTime endDate = new DateTime(yyyy, 6, 15, 0, 0, 0); endDate = DateTime.Now;
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
                     && !SelectedSeason.IsLate60Applied)
@@ -352,7 +352,7 @@
                 int yyyy;
                 Int32.TryParse(strings[0], out yyyy);
                 DateTime startDate = new DateTime(yyyy, 7, 1, 0, 0, 0);
-                DateTime endDate = new DateTime(yyyy, 7, 15, 0, 0, 0);
+                DateTime endDate = new DateTime(yyyy, 7, 15, 0, 0, 0); endDate = DateTime.Now;
                 if (DateTime.Now >= startDate
                     && DateTime.Now <= endDate
                     && !SelectedSeason.IsLate90Applied)
@@ -1161,7 +1161,7 @@
         {
             string whichLate = (string)parameter;
             int? noteID = null;
-            decimal amount = 20.00m;
+            decimal amount = CurrentSeason.LateFee; //20.00m;
             DateTime now = DateTime.Now;
 
             string[] strings = SelectedSeason.TimePeriod.Split('-');
@@ -1204,6 +1204,15 @@
                                    && p.IsPaid == false
                                    select p);
 
+                        /// We also need to delete any open Payment_X_Invoice references
+                        /// 
+                        foreach (Invoice i in nix)
+                        {
+                            var pxi = (from x in this.dc.Payment_X_Invoices
+                                       where x.InvoiceID == i.TransactionID
+                                       select x);
+                            dc.Payment_X_Invoices.DeleteAllOnSubmit(pxi);
+                        }
                         dc.Invoices.DeleteAllOnSubmit(nix);
                         owner.AccountBalance = 0;
                         ChangeSet cs = dc.GetChangeSet();
@@ -1305,6 +1314,7 @@
                         report.Parameters["Balance"].Value = owner.AccountBalance;
                         report.Parameters["InvoiceID"].Value = TheInvoice.TransactionID;
                         report.Parameters["InvoiceDate"].Value = DateTime.Now;
+                        report.Parameters["Amount"].Value = amount.ToString("C2");
                         report.CreateDocument();
                         report.ExportToPdf(fileName);
 

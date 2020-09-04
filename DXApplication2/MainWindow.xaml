@@ -169,7 +169,7 @@
                                                 <Image  Source="Images/Icons/Report.png" MouseLeftButtonDown="OnClicked_ReportCarousel" Width="75" Height="75" ToolTip="View Reports"/>
                                             </dxd:LayoutControlItem>
                                             <dxd:LayoutControlItem Visibility="{Binding ApplPermissions.CanViewAdministration, Converter={StaticResource BoolToVis}}">
-                                                <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="75" Height="75" ToolTip="View Permissions"/>
+                                                <Image  Source="Images/Icons/Test_32x32.png" MouseLeftButtonDown="OnClicked_Administration" Width="75" Height="75" ToolTip="Administration Tasks"/>
                                             </dxd:LayoutControlItem>
                                         </dxd:LayoutGroup>
                                     </dxd:LayoutGroup>
