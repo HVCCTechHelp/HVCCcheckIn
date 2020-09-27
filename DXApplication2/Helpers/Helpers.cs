@@ -268,7 +268,7 @@
             {
                 foreach (Relationship r in relationships)
                 {
-                    if ("Owner" == r.RelationToOwner)
+                    if ("Owner" == r.RelationToOwner || "Representative" == r.RelationToOwner)
                     {
                         return true;
                     }

@@ -499,6 +499,7 @@
         /// </summary>
         private void SaveExecute()
         {
+            ChangeSet cs = dc.GetChangeSet();
 
             if (0 == NewOwner.OwnerID)
             {
@@ -526,6 +527,7 @@
                     /// 
                     NewOwner.Customer = SelectedProperty.Customer;
                     NewOwner.AccountBalance = 0m;
+                    cs = dc.GetChangeSet();
                     dc.Owners.InsertOnSubmit(NewOwner);
 
                     /// Create the initial financial record as a payment with $0.00
@@ -543,6 +545,7 @@
                     thePayment.Amount = 0m;
 
                     NewOwner.Payments.Add(thePayment);
+                    cs = dc.GetChangeSet();
                     dc.Payments.InsertOnSubmit(thePayment);
 
                     /// Insert the Relationship collection and create the XRef
@@ -557,12 +560,13 @@
                         r.Owner_X_Relationships.Add(OXR);
                         NewOwner.Owner_X_Relationships.Add(OXR);
 
+                        cs = dc.GetChangeSet();
                         dc.Relationships.InsertOnSubmit(r);
                         dc.Owner_X_Relationships.InsertOnSubmit(OXR);
                     }
                     try
                     {
-                        //ChangeSet cs = dc.GetChangeSet();
+                        cs = dc.GetChangeSet();
                         dc.SubmitChanges();
                     }
                     catch (Exception ex)
@@ -597,6 +601,7 @@
             oc.PreviousOwner = oldBillTo;
             oc.NewOwnerID = NewOwner.OwnerID;
             oc.NewOwner = newBillTo;
+            cs = dc.GetChangeSet();
             dc.OwnershipChanges.InsertOnSubmit(oc);
 
             /// Set the previous owner inactive. We also need to de-activate any relationships associated to the 
@@ -638,7 +643,7 @@
 
             try
             {
-                //ChangeSet cs2 = dc.GetChangeSet();
+                cs = dc.GetChangeSet();
                 this.dc.SubmitChanges();
                 this.IsBusy = false;
                 RaisePropertyChanged("IsNotBusy");
