@@ -6,7 +6,8 @@
         {
             None,
             Invoice,
-            Payment
+            Payment,
+            Refund
         };
         public enum TransactionState
         {

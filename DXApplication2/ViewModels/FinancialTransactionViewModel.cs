@@ -1061,45 +1061,51 @@
                     /// 
                     if (IsTransactionState == TransactionState.New)
                     {
-                        ThePayment.EquityBalance = Math.Abs(ThePayment.Amount);
-
-                        /// Apply payment if there are unpaid invoices available
+                        /// Additionally, since a refund is a type of payment we need to make sure the refund doesn't have an equity balance.
+                        /// Therefore, we skip over looking for open invoices to apply the credit to.
                         /// 
-
-                        // TO-DO: Need to find a way to update OpenInvoices so it isn't processed a second time....
-                        if (null != OpenInvoices)
+                        if (WhatIsBeingProcessed != TransactionType.Refund)
                         {
-                            var list = (from x in OpenInvoices
-                                        where x.IsPaid == false
-                                        select x);
+                            ThePayment.EquityBalance = Math.Abs(ThePayment.Amount);
 
-                            int ndx = 0;
-                            while (ThePayment.EquityBalance > 0 && list.Count() > ndx) //OpenInvoices.Count() > ndx)
+                            /// Apply payment if there are unpaid invoices available
+                            /// 
+
+                            // TO-DO: Need to find a way to update OpenInvoices so it isn't processed a second time....
+                            if (null != OpenInvoices)
                             {
-                                if (OpenInvoices[ndx].BalanceDue > 0)
+                                var list = (from x in OpenInvoices
+                                            where x.IsPaid == false
+                                            select x);
+
+                                int ndx = 0;
+                                while (ThePayment.EquityBalance > 0 && list.Count() > ndx) //OpenInvoices.Count() > ndx)
                                 {
-                                    TheInvoice = OpenInvoices[ndx];
-                                    Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
+                                    if (OpenInvoices[ndx].BalanceDue > 0)
+                                    {
+                                        TheInvoice = OpenInvoices[ndx];
+                                        Financial.ApplyPayment(ThePayment, TheInvoice, TransactionType.Payment);
 
-                                    /// Deserialize the XML string to get the list of invoice items so it can also be copied
-                                    /// to the InvoiceItems collection which is bound to a UI grid.
+                                        /// Deserialize the XML string to get the list of invoice items so it can also be copied
+                                        /// to the InvoiceItems collection which is bound to a UI grid.
+                                        /// 
+                                        TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+
+                                        /// Apply the payment to the invoice
+                                        /// 
+                                        ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
+
+                                        TheInvoice.IsPaymentApplied = true;
+
+                                        /// Check to see if they paid for a Golf Cart sticker.....
+                                        /// 
+                                        CheckForGolfCartSticker(TransactionType.Payment);
+                                    }
+
+                                    /// Increment the invoice array index, and do it again
                                     /// 
-                                    TheInvoice.InvoiceItems = DeserializeInvoiceItems();
-
-                                    /// Apply the payment to the invoice
-                                    /// 
-                                    ThePayment.PaymentMsg.Visibility = Visibility.Hidden;
-
-                                    TheInvoice.IsPaymentApplied = true;
-
-                                    /// Check to see if they paid for a Golf Cart sticker.....
-                                    /// 
-                                    CheckForGolfCartSticker(TransactionType.Payment);
+                                    ++ndx;
                                 }
-
-                                /// Increment the invoice array index, and do it again
-                                /// 
-                                ++ndx;
                             }
                         }
 
@@ -1434,10 +1440,15 @@
                 {
                     RePrintAction(TheInvoice);
                 }
-                if (WhatIsBeingProcessed == TransactionType.Payment)
+                else if (WhatIsBeingProcessed == TransactionType.Payment)
                 {
                     RePrintAction(ThePayment);
                 }
+                else if (WhatIsBeingProcessed == TransactionType.Refund)
+                {
+                    RePrintAction(ThePayment);
+                }
+                else;
             }
             catch (Exception ex)
             {
@@ -1693,45 +1704,53 @@
         ///// <param name="type"></param>
         public void PaymentAction(object parameter)
         {
-            WhatIsBeingProcessed = TransactionType.Payment;
-
-            /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
-            IsInvoiceEnabled = false;
-            IsPaymentEnabled = false;
-            /// Expand Payment and collapse Invoice......
-            /// 
-            IsCollapsedInvoice = true;
-            IsCollapsedPayments = false;
-            IsCollapsedHistoryGrid = true;
-
-            this.RegisterCommands();
-
-            /// Check the Owner's Invoice collection to see if there is an open/unpaid invoice
-            /// for a golf cart sticker.  If one is found, we enable the checkbox option to
-            /// apply the payment to the sticker invoice.
-            /// 
-            var gcInvs = this.SelectedOwner.Invoices.Where(o => !o.IsPaid && o.ItemDetails.Contains("Golf Cart"));
-
-            if (0 < gcInvs.Count())
+            try
             {
-                IsCartPaymentVisable = true;
-            }
+                WhatIsBeingProcessed = TransactionType.Payment;
 
-            if ("New" == (string)parameter)
+                /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
+                IsInvoiceEnabled = false;
+                IsPaymentEnabled = false;
+                /// Expand Payment and collapse Invoice......
+                /// 
+                IsCollapsedInvoice = true;
+                IsCollapsedPayments = false;
+                IsCollapsedHistoryGrid = true;
+
+                this.RegisterCommands();
+
+                /// Check the Owner's Invoice collection to see if there is an open/unpaid invoice
+                /// for a golf cart sticker.  If one is found, we enable the checkbox option to
+                /// apply the payment to the sticker invoice.
+                /// 
+                var gcInvs = this.SelectedOwner.Invoices.Where(o => !o.IsPaid && o.ItemDetails.Contains("Golf Cart"));
+
+                if (null != gcInvs && 0 < gcInvs.Count())
+                {
+                    IsCartPaymentVisable = true;
+                }
+
+                if ("New" == (string)parameter)
+                {
+                    IsTransactionState = TransactionState.New;
+                    ThePayment = new Payment();
+                    SelectedOwner.Payments.Add(ThePayment);
+                    ThePayment.GUID = Guid.NewGuid();
+                    ThePayment.OwnerID = SelectedOwner.OwnerID;
+                    ThePayment.PaymentDate = DateTime.Now;
+                    ThePayment.PaymentMethod = "Check";
+                    OpenInvoices = GetOpenInvoicesForOwner();
+                }
+                ThePayment.LastModified = DateTime.Now;
+                ThePayment.LastModifiedBy = UserName;
+
+                /// NOTE: Transaction edits are processed in the RowDoubleClickAction method
+                /// 
+            }
+            catch (Exception ex)
             {
-                IsTransactionState = TransactionState.New;
-                ThePayment = new Payment();
-                SelectedOwner.Payments.Add(ThePayment);
-                ThePayment.GUID = Guid.NewGuid();
-                ThePayment.OwnerID = SelectedOwner.OwnerID;
-                ThePayment.PaymentDate = DateTime.Now;
-                ThePayment.PaymentMethod = "Check";
-                OpenInvoices = GetOpenInvoicesForOwner();
+                MessageBox.Show("Error", "Database Error: " + ex.Message, MessageBoxButton.OK);
             }
-            ThePayment.LastModified = DateTime.Now;
-            ThePayment.LastModifiedBy = UserName;
-
-            /// NOTE: Transaction edits are processed in the RowDoubleClickAction method
         }
 
         ///// <summary>
@@ -1752,29 +1771,39 @@
         ///// <param name="type"></param>
         public void RefundAction(object parameter)
         {
-            WhatIsBeingProcessed = TransactionType.Payment;
-
-            /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
-            IsInvoiceEnabled = false;
-            IsPaymentEnabled = false;
-            /// Expand Payment and collapse Invoice......
+            /// The account must have a credit balance in order to give a refund.
             /// 
-            IsCollapsedInvoice = true;
-            IsCollapsedPayments = false;
-            IsCollapsedHistoryGrid = true;
+            if (0 > SelectedOwner.AccountBalance)
+            {
+                WhatIsBeingProcessed = TransactionType.Refund;
 
-            this.RegisterCommands();
+                /// Disable the Invoice and Payment ribbon buttons while we have an active Invoice/Payment in process...
+                IsInvoiceEnabled = false;
+                IsPaymentEnabled = false;
+                /// Expand Payment and collapse Invoice......
+                /// 
+                IsCollapsedInvoice = true;
+                IsCollapsedPayments = false;
+                IsCollapsedHistoryGrid = true;
 
-            IsTransactionState = TransactionState.New;
-            ThePayment = new Payment();
-            SelectedOwner.Payments.Add(ThePayment);
-            ThePayment.GUID = Guid.NewGuid();
-            ThePayment.OwnerID = SelectedOwner.OwnerID;
-            ThePayment.PaymentDate = DateTime.Now;
-            ThePayment.PaymentMethod = "Refund";
+                this.RegisterCommands();
 
-            ThePayment.LastModified = DateTime.Now;
-            ThePayment.LastModifiedBy = UserName;
+                IsTransactionState = TransactionState.New;
+                ThePayment = new Payment();
+                SelectedOwner.Payments.Add(ThePayment);
+                ThePayment.GUID = Guid.NewGuid();
+                ThePayment.OwnerID = SelectedOwner.OwnerID;
+                ThePayment.PaymentDate = DateTime.Now;
+                ThePayment.PaymentMethod = "Refund";
+                ThePayment.IsApplied = true;
+                ThePayment.EquityBalance = 0;
+                ThePayment.LastModified = DateTime.Now;
+                ThePayment.LastModifiedBy = UserName;
+            }
+            else
+            {
+                MessageBox.Show("Refunds can only be given for accounts with a credit balance.", "Info", MessageBoxButton.OK);
+            }
 
             /// NOTE: Transaction edits are processed in the RowDoubleClickAction method
         }
