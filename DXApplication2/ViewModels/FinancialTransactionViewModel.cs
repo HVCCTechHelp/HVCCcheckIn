@@ -2011,7 +2011,7 @@
                             /// 
                             //foreach (Invoice i in ThePayment.Invoices)
                             //{
-                            int total = TheInvoice.Payment_X_Invoices.Count();
+                            int total = ThePayment.Payment_X_Invoices.Count();
                             int ndx = 0;
                             while (ndx < total)
                             {
@@ -2023,7 +2023,7 @@
                                 ndx++;
                                 //}// while
                                 //TheInvoice = i;
-                                //TheInvoice.InvoiceItems = DeserializeInvoiceItems();
+                                TheInvoice.InvoiceItems = DeserializeInvoiceItems();
                                 ////--HERE--
                                 //PXI = Financial.UnapplyPayment(null, ThePayment, TheInvoice, TransactionType.Payment);
 
@@ -2032,8 +2032,8 @@
                                 /// from the golf cart table to indicate it is unpaid.
                                 /// 
                                 var gcItem = (from x in TheInvoice.InvoiceItems
-                                              where x.Item == "Golf Cart Sticker"
-                                              select x);
+                                              where x.Item.Contains("Golf Cart Sticker")
+                                              select x).FirstOrDefault();
 
                                 if (null != gcItem)
                                 {
